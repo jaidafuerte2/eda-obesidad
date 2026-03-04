@@ -406,7 +406,76 @@ unique(df_obesidad$toma_bebidas_caloricas) # produce: [1] no si
 ##
 ############################################
 
+# Conocer el tipo de la variable de actividad física
 class(df_obesidad$actividad_fisica) # produce: "numeric"
+# Conocer los valores de la variable de actividad física 
+unique(df_obesidad$actividad_fisica)[1:20] # produce: 
+#[1] 0.000000 1.000000 0.866045 1.467863 1.967973 1.930033 0.598655
+#[8] 2.000000 1.425712 3.000000 1.995582 1.097905 0.680464 1.191020
+#[15] 1.999836 1.465931 0.826660 0.035928 1.628637 1.427413
+
+# Valor mínimo de la variable de actividad física
+min(df_obesidad$actividad_fisica) # produce: 0
+# Valor máximo de la variable de actividad física
+max(df_obesidad$actividad_fisica) # produce: 3
+
+############################################
+##
+## Transformaciones de Uso de Tecnología
+##
+############################################
+
+# Conocer el tipo de la variable de uso de tecnología
+class(df_obesidad$uso_tecnologia) # produce: "numeric"
+# Conocer los valores de la variablede uso de tecnología
+unique(df_obesidad$uso_tecnologia)[1:20] # produce: 
+#[1] 0.976473 1.000000 1.673584 0.780199 0.931721 0.696948 0.000000
+#[8] 0.218645 0.553311 0.947884 2.000000 0.930836 0.619012 0.081156
+#[15] 1.258881 0.079334 0.250502 0.232858 0.453649 0.831412
+
+# Valor mínimo de la variable de uso de tecnología 
+min(df_obesidad$uso_tecnologia) # produce: [1] 0
+# Valor máximo de la variable de uso de tecnología 
+max(df_obesidad$uso_tecnologia) # produce: [1] 2
+
+##############################################
+##
+## Transformaciones de Consumo de Alcohol
+##
+##############################################
+
+# Conocer el tipo de la varaible de cosumo de alcohol
+class(df_obesidad$consume_alcohol) # produce: character
+# Conocer los valores de la varaible de consumo de alcohol
+unique(df_obesidad$consume_alcohol) # produce: 
+# [1] "Sometimes"  "0"          "Frequently"
+
+# Cambiar los vaores de la variable de consumo de alcohol para que
+# cero sea "nunca", sometime sea "ocasional" y frequently sea 
+# "frecuente"
+df_obesidad <- df_obesidad |>
+  mutate(
+    consume_alcohol = recode(
+      consume_alcohol,
+      "0" = "nunca",
+      "Sometimes" = "ocasional",
+      "Frequently" = "frecuente"
+    )
+  )
+unique(df_obesidad$consume_alcohol) # produce: 
+#[1] "ocasional" "nunca"     "frecuente"
+
+df_obesidad <- df_obesidad |>
+  mutate(
+    consume_alcohol = factor(
+      consume_alcohol,
+      levels = c("nunca", "ocasional", "frecuente"),
+      ordered = TRUE
+    )
+  )
+unique(df_obesidad$consume_alcohol) # produce:
+#[1] ocasional nunca     frecuente
+#Levels: nunca < ocasional < frecuente
 
 ###############################################
 ##
