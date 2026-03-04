@@ -1,0 +1,344 @@
+#################################
+##                             ##
+## Transformaciones Básicas    ##
+## del obesity risk            ##
+##                             ##
+#################################
+
+# Introducción
+
+library(readr)
+library(dplyr)
+library(tidyverse)
+
+# Importar desde el IDE la tabla obesity latin y cuidar de llamarla 
+# df_obesity
+
+###################################
+##
+## Renombrar variables a español
+##
+###################################
+
+# Renombrar las variables del obesity risk para que su nombre se
+# entienda mejor en español
+
+df_obesidad <- df_obesidad |>
+  rename(
+    genero = Gender,
+    edad = Age,
+    talla = Height,
+    peso = Weight,
+    tiene_familiares_obesos = family_history_with_overweight,
+    come_densidad_alta = FAVC,
+    consumo_vegetales = FCVC,
+    comidas_principales = NCP,
+    come_refrigerios = CAEC,
+    fuma = SMOKE,
+    consumo_agua_diaria = CH2O,
+    toma_bebidas_caloricas = SCC,
+    actividad_fisica = FAF,
+    uso_tecnologia = TUE,
+    consume_alcohol = CALC,
+    medio_transporte = MTRANS
+  )
+glimpse(df_obesity[1:4,])
+#Rows: 4
+#Columns: 20
+#$ id                      <int> 0, 1, 2, 3
+#$ Gender                  <chr> "Male", "Female", "Female", "Female"
+#$ Age                     <dbl> 24.44301, 18.00000, 18.00000, 20.95274
+#$ Height                  <dbl> 1.699998, 1.560000, 1.711460, 1.710730
+#$ Weight                  <dbl> 81.66995, 57.00000, 50.16575, 131.27485
+#$ tiene_familiares_obesos <int> 1, 1, 1, 1
+#$ come_densidad_alta      <int> 1, 1, 1, 1
+#$ consumo_vegetales       <dbl> 2.000000, 2.000000, 1.880534, 3.000000
+#$ comidas_principales     <dbl> 2.983297, 3.000000, 1.411685, 3.000000
+#$ come_refrigerios        <chr> "Sometimes", "Frequently", "Sometimes",…
+#$ fuma                    <int> 0, 0, 0, 0
+#$ consumo_agua_diaria     <dbl> 2.763573, 2.000000, 1.910378, 1.674061
+#$ toma_bebidas_caloricas  <int> 0, 0, 0, 0
+#$ actividad_fisica        <dbl> 0.000000, 1.000000, 0.866045, 1.467863
+#$ uso_tecnologia          <dbl> 0.976473, 1.000000, 1.673584, 0.780199
+#$ consume_alcohol         <chr> "Sometimes", "0", "0", "Sometimes"
+#$ medio_transporte        <chr> "Public_Transportation", "Automobile", …
+#$ X0be1dad                <chr> "Overweight_Level_II", "0rmal_Weight", …
+#$ imc                     <dbl> 28.25956, 23.42209, 17.12671, 44.85580
+#$ tipo_obesidad           <ord> sobrepeso, peso_normal, desnutricion, o…
+
+################################################
+##
+## Crear las variables imc y tipo de obesidad 
+##
+################################################
+
+# Crear la variable imc y calcular el índice de masa corporal.
+df_obesidad <- df_obesidad |>
+  mutate(
+    imc = peso / (talla ^ 2)
+  )
+unique(df_obesidad$imc) # produce:
+#[1] 28.25956 23.42209 17.12671 44.85580 25.59915 16.86193 36.61079
+#[8] 38.59145 24.22145 41.43135 23.87511 32.99929 43.99566 19.87910
+#[15] 35.22807 27.68166 20.54569 36.46328 28.68514 23.50781 40.69075
+#[22] 34.51503 16.93431 27.97504 43.11063 39.29935 18.73049 33.29865
+
+# Reclasificar el tipo de obesidad porque no coincide con la 
+# clasificación de la OMS
+df_obesidad <- df_obesidad |>
+  mutate(
+    tipo_obesidad = case_when(
+      imc < 18.5 ~ "desnutricion",
+      imc < 25 ~ "peso_normal",
+      imc < 30 ~ "sobrepeso",
+      imc < 35 ~ "obesidad_1",
+      imc < 40 ~ "obesidad_2",
+      imc >= 40 ~ "obesidad_3",
+      TRUE ~ NA_character_
+    )
+  )
+unique(df_obesidad$tipo_obesidad) # produce:
+[1] "sobrepeso"    "peso_normal"  "desnutricion" "obesidad_3"  
+[5] "obesidad_2"   "obesidad_1" 
+
+# Transformar en un factor ordenado a la variable de tipo de obesidad
+df_obesidad <- df_obesidad |>
+  mutate(
+    tipo_obesidad = factor(
+      tipo_obesidad,
+      levels = c(
+        "desnutricion",
+        "peso_normal",
+        "sobrepeso",
+        "obesidad_1",
+        "obesidad_2",
+        "obesidad_3"
+      ),
+      ordered = TRUE
+    )
+  )
+unique(df_obesidad$tipo_obesidad) # produce:
+#[1] sobrepeso    peso_normal  desnutricion obesidad_3   obesidad_2  
+#[6] obesidad_1  
+#6 Levels: desnutricion < peso_normal < sobrepeso < ... < obesidad_3
+
+#################################
+##
+## Transformaciones de Género
+##
+#################################
+
+# Conocer el tipo de valores de la variable genero
+unique(df_obesidad$genero) # produce: [1] "Male"   "Female"
+# Conocer el tipo de la varaible género
+class(df_obesidad$genero) # produce: [1] "character"
+
+# Recodificar la variable género para que male sea masculino y female 
+# sea femenino
+df_obesidad <- df_obesidad |>
+  mutate(
+    genero = recode(
+      genero,
+      "Male" = "masculino",
+      "Female" = "femenino"
+    )
+  )
+unique(df_obesidad$genero) # produce: [1] "masculino" "femenino" 
+
+# Cambiar el tipo de la variable de género de character a factor 
+df_obesidad <- df_obesidad |>
+  mutate(
+    genero = factor(
+      genero,
+      levels = c("masculino", "femenino")
+    )
+  )
+class(df_obesidad$genero) # produce: "factor"
+
+######################################################
+##
+## Transformaciones de Historia Familiar de Obesidad
+##
+######################################################
+
+# Conocer los valores de la variable historia familiar de obesidad
+unique(df_obesidad$tiene_familiares_obesos) # produce: [1] 1 0
+
+# Conocer el tipo de la varaiable de historia familiar de obesidad
+class(df_obesidad$tiene_familiares_obesos) # produce:
+[1] "integer"
+
+# Cambiar el tipo de la variable de historia familiar de obesidad
+df_obesidad <- df_obesidad |>
+  mutate(
+    tiene_familiares_obesos = factor(
+      tiene_familiares_obesos,
+      levels = c(0, 1)
+    )
+  )
+class(df_obesidad$tiene_familiares_obesos) # produce: "factor"
+
+# Cambiar los valores de la variable de historia familiar de obesidad
+# para que "0" sea "no" y "1" sea "si" 
+df_obesidad <- df_obesidad |>
+  mutate(
+    tiene_familiares_obesos = recode(
+      tiene_familiares_obesos,
+      "0" = "no",
+      "1" = "si"
+    )
+  )
+unique(df_obesidad$tiene_familiares_obesos) # produce:
+#[1] si no
+#Levels: no si
+
+############################################
+##
+## Transformaciones de Comida de alta 
+## densidad calórica
+##
+############################################
+
+# Conocer los valores de la variable de consumo de comida de alta
+# densidad calórica
+unique(df_obesidad$come_densidad_alta) # produce:[1] 1 0
+# Conocer el tipo de la varaible de consumo de alimentos de alta 
+# densidad calórica
+class(df_obesidad$come_densidad_alta) # produce: "integer"
+
+# Cambiar el tipo de la varaible de consumo de comida de alta densidad
+# calórica de integer a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    come_densidad_alta = factor(
+      come_densidad_alta,
+      levels = c(0, 1)
+    )
+  )
+class(df_obesidad$come_densidad_alta) # produce: "factor"
+
+# Cambiar los valores de la variable de consumo de alimentos de alta
+# densidad calórica para que 0 sea no y 1 sea si
+df_obesidad <- df_obesidad |>
+  mutate(
+    come_densidad_alta = recode(
+      come_densidad_alta,
+      "0" = "no",
+      "1" = "si"
+    )
+  )
+unique(df_obesidad$come_densidad_alta) # produce: [1] si no
+
+##############################################
+##
+## Transformaciones de Consumo de Vegetales
+##
+##############################################
+
+# Conocer el tipo de la variable de consumo de vegetales 
+class(df_obesidad$consumo_vegetales) # produce: "numeric"
+# Conocer los valores de la variable de consumo de vegetales
+unique(df_obesidad$consumo_vegetales)[1:20] # produce:
+#[1] 2.000000 1.880534 3.000000 2.679664 2.919751 1.991240 1.397468
+#[8] 2.636719 1.000000 1.392665 2.203962 2.971588 2.668949 1.989899
+#[15] 2.417635 2.219186 2.919526 2.263245 2.649406 1.754401
+
+# NOTA: Es posible que sean valores por semana, el manual no lo 
+# indica. "numeric" es double o de doble precisión es decir que puede
+# tener decimales
+
+#####################################################
+##
+## Transformaciones Cantidad de Comidas Principales
+##
+#####################################################
+
+# Conocer el tipo de la variable de cantidad de comidas principales
+class(df_obesidad$comidas_principales) # produce: "numeric"
+# Conocer los valores de la variable cantidad de comidas principales
+unique(df_obesidad$comidas_principales)[1:20] # produce:
+#[1] 2.983297 3.000000 1.411685 1.971472 2.164839 1.000000 2.954446
+#[8] 1.893811 3.998618 1.703299 2.937989 2.996444 2.581015 2.473913
+#[15] 1.437959 2.989791 4.000000 2.853676 1.104642 3.362758
+
+#################################################
+##
+## Transformaciones de Consumo de Refrigerios
+##
+#################################################
+
+# Conocer el tipo de la variable de consumo de refrigerios
+class(df_obesidad$come_refrigerios) # produce: "character"
+# Conocer los valores de la variable de consumo de refrigerios
+unique(df_obesidad$come_refrigerios) # produce:
+#[1] "Sometimes"  "Frequently" "0"          "Always" 
+
+# Cambiar a español los valores de la variable de consumo de 
+# refigerios
+df_obesidad <- df_obesidad |>
+  mutate(
+    come_refrigerios = recode(
+      come_refrigerios,
+      "0" = "nunca",
+      "Sometimes" = "ocasional",
+      "Frequently" = "frecuente",
+      "Always" = "siempre"
+    )
+  )
+unique(df_obesidad$come_refrigerios) # produce:
+#[1] "ocasional" "frecuente" "nunca"     "siempre" 
+
+# Cambiar de tipo a la variable de consumo de refriegerios de 
+# character a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    come_refrigerios = factor(
+      come_refrigerios,
+      levels = c("nunca", "ocasional", "frecuente", "siempre"),
+      ordered = TRUE
+    )
+  )
+class(df_obesidad$come_refrigerios) # produce: [1] "ordered" "factor" 
+
+###############################################
+##
+## Retirar desnutridos y crear 3 categorías: 
+## normal, sobrepero y obesidad
+##
+###############################################
+
+# Excluir de la tabla a los desnutridos (imc < 18.5) pues este análisis
+# trata sobre obesidad y, la desnutrición y el bajo peso tienen 
+# características psico-socio-económicas distintas al exceso de peso
+df_sobre_obesidad <- df_obesidad |>
+  filter(tipo_obesidad != "desnutricion")
+min(df_sobre_obesidad$imc) # produce: [1] 18.50301
+
+# Reclasificar por peso normal, sobrepeso y obesidad
+# imc_grupos3
+df_sobre_obesidad <- df_sobre_obesidad |>
+  mutate(
+    imc_grupos3 = case_when(
+      imc < 25 ~ "peso_normal",
+      imc < 30 ~ "sobrepeso",
+      imc >= 30 ~ "obesidad"#,
+      #TRUE ~ NA_character_  # Ya no es necesario porque ya está 
+      # filtrado
+    )
+  )
+unique(df_sobre_obesidad$imc_grupos3) # produce:
+#[1] "sobrepeso"   "peso_normal" "obesidad" 
+
+# Ordenar a las 3 categorías de peso:
+df_sobre_obesidad <- df_sobre_obesidad |>
+  mutate(
+    imc_grupos3 = factor(
+      imc_grupos3,
+      levels = c("peso_normal", "sobrepeso", "obesidad"),
+      ordered = TRUE # importante si en algún momento se va a 
+      # modelar (por ejemplo: regresión lineal)
+    )
+  )
+unique(df_sobre_obesidad$imc_grupos3) # produce:
+#[1] sobrepeso   peso_normal obesidad   
+#Levels: peso_normal < sobrepeso < obesidad
