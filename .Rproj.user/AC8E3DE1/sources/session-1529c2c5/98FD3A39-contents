@@ -400,6 +400,14 @@ df_obesidad <- df_obesidad |>
   )
 unique(df_obesidad$toma_bebidas_caloricas) # produce: [1] no si
 
+############################################
+##
+## Transformaciones de Actividad Física
+##
+############################################
+
+class(df_obesidad$actividad_fisica) # produce: "numeric"
+
 ###############################################
 ##
 ## Retirar desnutridos y crear 3 categorías: 
