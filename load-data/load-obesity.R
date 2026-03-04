@@ -82,6 +82,11 @@ unique(df_obesidad$imc) # produce:
 #[8] 38.59145 24.22145 41.43135 23.87511 32.99929 43.99566 19.87910
 #[15] 35.22807 27.68166 20.54569 36.46328 28.68514 23.50781 40.69075
 #[22] 34.51503 16.93431 27.97504 43.11063 39.29935 18.73049 33.29865
+# Conocer el valor mínimo de la variable imc
+min(df_obesidad$imc) # produce: [1] 12.86854
+# Conocer el valor máximo
+max(df_obesidad$imc) # produce: [1] 54.99799
+
 
 # Reclasificar el tipo de obesidad porque no coincide con la 
 # clasificación de la OMS
@@ -242,8 +247,12 @@ unique(df_obesidad$consumo_vegetales)[1:20] # produce:
 #[1] 2.000000 1.880534 3.000000 2.679664 2.919751 1.991240 1.397468
 #[8] 2.636719 1.000000 1.392665 2.203962 2.971588 2.668949 1.989899
 #[15] 2.417635 2.219186 2.919526 2.263245 2.649406 1.754401
+# Valor mínimo de la varaible de consumo de vegetales
+min(df_obesidad$consumo_vegetales) # produce: 1
+# Valor máximo de la varaible de consumo de vegetales
+max(df_obesidad$consumo_vegetales) # produce: 3
 
-# NOTA: Es posible que sean valores por semana, el manual no lo 
+# NOTA: Es posible que sean valores diarios, el manual no lo 
 # indica. "numeric" es double o de doble precisión es decir que puede
 # tener decimales
 
@@ -260,6 +269,10 @@ unique(df_obesidad$comidas_principales)[1:20] # produce:
 #[1] 2.983297 3.000000 1.411685 1.971472 2.164839 1.000000 2.954446
 #[8] 1.893811 3.998618 1.703299 2.937989 2.996444 2.581015 2.473913
 #[15] 1.437959 2.989791 4.000000 2.853676 1.104642 3.362758
+# Valor mínimo de la varaible de número de comidas principales
+min(df_obesidad$comidas_principales) # produce: 1
+#Valor máximo de la variable de número de comidas principales
+max(df_obesidad$comidas_principales) # produce: 4
 
 #################################################
 ##
@@ -299,6 +312,93 @@ df_obesidad <- df_obesidad |>
     )
   )
 class(df_obesidad$come_refrigerios) # produce: [1] "ordered" "factor" 
+
+######################################################
+##
+## Transformaciones de Hábito de Fumar
+##
+######################################################
+
+# Conocer los valores de la variable de hábito de fumar
+unique(df_obesidad$fuma) # produce: [1] 0 1
+# Conocer el tipo de la variable hábito de fumar
+class(df_obesidad$fuma) # produce: "intenger"
+
+# Cambiar el tipo de la variable de hábito de fumar de integer a 
+# factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    fuma = factor(
+      fuma,
+      levels = c(0, 1)
+    )
+  )
+class(df_obesidad$fuma) # produce: "factor"
+
+# Cambiar los valores de la variable de hábito de fumar para que
+# cero sea "no" y uno sea "si"
+df_obesidad <- df_obesidad |>
+  mutate(
+    fuma = recode(
+      fuma,
+      "0" = "no",
+      "1" = "si"
+    )
+  )
+unique(df_obesidad$fuma) # produce: [1] no si
+
+###############################################
+##
+## Transformaciones Consumo diario de Agua
+##
+###############################################
+
+# Conocer el tipo de la variable consumo diario de agua
+class(df_obesidad$consumo_agua_diaria) # produce: "numeric"
+# Conocer los valores de la variable consumo diario de agua  
+unique(df_obesidad$consumo_agua_diaria)[1:20] # produce:
+#[1] 2.763573 2.000000 1.910378 1.674061 1.979848 2.137550 3.000000
+#[8] 2.632253 2.530157 1.959531 1.000000 1.238057 2.724099 2.072194
+#[15] 2.609052 2.487070 2.854161 2.632224 1.726109 2.939492
+# Valor mínimo de la varaible de consumo diario de agua:
+min(df_obesidad$consumo_agua_diaria) # produce: 1
+# Valor máximo de la varaible de consumo diario de agua
+max(df_obesidad$consumo_agua_diaria) # produce: 3
+# NOTA: Puede referirse al consumo en litros diarios
+
+#######################################################
+##
+## Transformaciones de Consumo de Bebidas Calóricas
+##
+#######################################################
+
+# Conocer el tipo de la variable de consumo de bebidas calóricas 
+class(df_obesidad$toma_bebidas_caloricas) # produce: integer
+# Conocer los valores de la varaible de consumo de bebidas calóricas
+unique(df_obesidad$toma_bebidas_caloricas) # produce: [1] 0 1
+
+# Cambiar el tipo de la variable de consumo de bebidas calóricas
+# de integer a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    toma_bebidas_caloricas = factor(
+      toma_bebidas_caloricas,
+      levels = c(0, 1)
+    )
+  )
+class(df_obesidad$toma_bebidas_caloricas) # produce: "factor"
+
+# Cambiar los valores de la variable de consumo de bebidas calóricas
+# para que cero sea "0" y uno sea "si"
+df_obesidad <- df_obesidad |>
+  mutate(
+    toma_bebidas_caloricas = recode(
+      toma_bebidas_caloricas,
+      "0" = "no",
+      "1" = "si"
+    )
+  )
+unique(df_obesidad$toma_bebidas_caloricas) # produce: [1] no si
 
 ###############################################
 ##
