@@ -103,8 +103,8 @@ df_obesidad <- df_obesidad |>
     )
   )
 unique(df_obesidad$tipo_obesidad) # produce:
-[1] "sobrepeso"    "peso_normal"  "desnutricion" "obesidad_3"  
-[5] "obesidad_2"   "obesidad_1" 
+#[1] "sobrepeso"    "peso_normal"  "desnutricion" "obesidad_3"  
+#[5] "obesidad_2"   "obesidad_1" 
 
 # Transformar en un factor ordenado a la variable de tipo de obesidad
 df_obesidad <- df_obesidad |>
@@ -170,8 +170,7 @@ class(df_obesidad$genero) # produce: "factor"
 unique(df_obesidad$tiene_familiares_obesos) # produce: [1] 1 0
 
 # Conocer el tipo de la varaiable de historia familiar de obesidad
-class(df_obesidad$tiene_familiares_obesos) # produce:
-[1] "integer"
+class(df_obesidad$tiene_familiares_obesos) # produce: [1] "integer"
 
 # Cambiar el tipo de la variable de historia familiar de obesidad
 df_obesidad <- df_obesidad |>
@@ -476,6 +475,47 @@ df_obesidad <- df_obesidad |>
 unique(df_obesidad$consume_alcohol) # produce:
 #[1] ocasional nunca     frecuente
 #Levels: nunca < ocasional < frecuente
+
+######################################################
+##
+## Transformaciones de Tipo de Medio de Transporte
+##
+######################################################
+
+# Conocer el tipo de la variable de medio de transporte
+class(df_obesidad$medio_transporte) # produce: "character"
+# Conocer los valores de la varaible de medio de transporte
+unique(df_obesidad$medio_transporte) # produce:
+#[1] "Public_Transportation" "Automobile"           
+#[3] "Walking"               "Motorbike"            
+#[5] "Bike"           
+
+# Cambiar los valores de la variable de medio de transporte de inglés
+# a español
+df_obesidad <- df_obesidad |>
+  mutate(
+    medio_transporte = recode(
+      medio_transporte,
+      "Public_Transportation" = "publico",
+      "Automobile" = "auto",
+      "Motorbike" = "moto",
+      "Bike" = "bicicleta",
+      "Walking" = "camina"
+    )
+  )
+unique(df_obesidad$medio_transporte) # produce:
+#[1] "publico"   "auto"      "camina"    "moto"      "bicicleta"
+
+# Cambiar el tipo de la variable de medio de transporte de character
+# a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    medio_transporte = factor(
+      medio_transporte,
+      levels = c("publico", "auto", "moto", "bicileta", "camina")
+    )
+  )
+class(df_obesidad$medio_transporte) # produce: "factor"
 
 ###############################################
 ##
