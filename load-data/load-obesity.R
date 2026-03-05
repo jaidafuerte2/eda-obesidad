@@ -42,7 +42,7 @@ df_obesidad <- df_obesidad |>
     consume_alcohol = CALC,
     medio_transporte = MTRANS
   )
-glimpse(df_obesity[1:4,])
+glimpse(df_obesidad[1:4,])
 #Rows: 4
 #Columns: 20
 #$ id                      <int> 0, 1, 2, 3
