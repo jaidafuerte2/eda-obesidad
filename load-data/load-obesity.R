@@ -181,13 +181,16 @@ df_obesidad <- df_obesidad |>
     )
   )
 class(df_obesidad$tiene_familiares_obesos_cat) # produce: "factor"
+unique(df_obesidad$tiene_familiares_obesos_cat) # produce:
+#[1] 1 0
+#Levels: 0 1
 
 # Cambiar los valores de la variable de historia familiar de obesidad
 # para que "0" sea "no" y "1" sea "si" 
 df_obesidad <- df_obesidad |>
   mutate(
     tiene_familiares_obesos_cat = recode(
-      tiene_familiares_obesos,
+      tiene_familiares_obesos_cat,
       "0" = "no",
       "1" = "si"
     )
@@ -330,6 +333,7 @@ df_obesidad <- df_obesidad |>
       comidas_principales <= 2 ~ "1-2",
       comidas_principales <= 3 ~ "3",
       comidas_principales > 3 ~ ">3",
+      TRUE ~ NA_character_
     )
   )
 class(df_obesidad$comidas_principales_cat) # produce: "character"
@@ -453,6 +457,40 @@ min(df_obesidad$consumo_agua_diaria) # produce: 1
 max(df_obesidad$consumo_agua_diaria) # produce: 3
 # NOTA: Puede referirse al consumo en litros diarios
 
+# Cambiar la varaible de consumo de agua diaria de numérica a categórica
+df_obesidad <- df_obesidad |>
+  mutate(
+    consumo_agua_diaria_cat = case_when(
+      consumo_agua_diaria <= 1.5 ~ "<1L",
+      consumo_agua_diaria <= 2.5 ~ "1-2L",
+      consumo_agua_diaria > 2.5 ~ ">2L",
+      TRUE ~ NA_character_
+    )
+  )
+class(df_obesidad$consumo_agua_diaria_cat) # produce: "character"
+
+# Cambiar el tipo de la variable de consumo de agua diaria  de
+# character a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    consumo_agua_diaria_cat = factor(
+      consumo_agua_diaria_cat,
+      levels = c("<1L", "1-2L", ">2L"),
+      ordered = TRUE
+    )
+  )
+class(df_obesidad$consumo_agua_diaria_cat) # produce:
+#[1] "ordered" "factor"
+unique(df_obesidad$consumo_agua_diaria_cat) # produce:
+#[1] >2L  1-2L <1L 
+#Levels: <1L < 1-2L < >2L
+class(df_obesidad$consumo_agua_diaria) # produce: "numeric"
+
+# Reposicionar la variable categórica de consumo de agua diaria
+# para que esté junto a su correspondiente numérica
+df_obesidad <- df_obesidad |>
+  relocate(consumo_agua_diaria_cat, .after = consumo_agua_diaria)
+
 #######################################################
 ##
 ## Transformaciones de Consumo de Bebidas Calóricas
@@ -468,24 +506,33 @@ unique(df_obesidad$toma_bebidas_caloricas) # produce: [1] 0 1
 # de integer a factor
 df_obesidad <- df_obesidad |>
   mutate(
-    toma_bebidas_caloricas = factor(
+    toma_bebidas_caloricas_cat = factor(
       toma_bebidas_caloricas,
       levels = c(0, 1)
     )
   )
-class(df_obesidad$toma_bebidas_caloricas) # produce: "factor"
+class(df_obesidad$toma_bebidas_caloricas_cat) # produce: "factor"
 
 # Cambiar los valores de la variable de consumo de bebidas calóricas
 # para que cero sea "0" y uno sea "si"
 df_obesidad <- df_obesidad |>
   mutate(
-    toma_bebidas_caloricas = recode(
-      toma_bebidas_caloricas,
+    toma_bebidas_caloricas_cat = recode(
+      toma_bebidas_caloricas_cat,
       "0" = "no",
       "1" = "si"
     )
   )
-unique(df_obesidad$toma_bebidas_caloricas) # produce: [1] no si
+unique(df_obesidad$toma_bebidas_caloricas_cat) # produce: 
+#[1] no si
+#Levels: no si
+class(df_obesidad$toma_bebidas_caloricas) # produce: "integer"
+
+# Reposicionar la variable categórica de consumo de bebidas azucaradas
+# para que esté junto a su correspondiente numérica
+df_obesidad <- df_obesidad |>
+  relocate(toma_bebidas_caloricas_cat, 
+           .after = toma_bebidas_caloricas)
 
 ############################################
 ##
@@ -506,6 +553,38 @@ min(df_obesidad$actividad_fisica) # produce: 0
 # Valor máximo de la variable de actividad física
 max(df_obesidad$actividad_fisica) # produce: 3
 
+# Cambiar la variable de actividad física de numérica a categórica
+df_obesidad <- df_obesidad |>
+  mutate(
+    actividad_fisica_cat = case_when(
+      actividad_fisica <= 0.5 ~ "0_dias",
+      actividad_fisica <= 1.5 ~ "1-2_dias",
+      actividad_fisica <= 2.5 ~ "3-4_dias",
+      actividad_fisica > 2.5 ~ "5+_dias",
+      TRUE ~ NA_character_
+    )
+  )
+class(df_obesidad$actividad_fisica_cat) # produce: character
+
+# Cambiar la varaible actividad física de character a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    actividad_fisica_cat = factor(
+      actividad_fisica_cat,
+      levels = c("0_dias", "1-2_dias", "3-4_dias", "5+_dias")
+    )
+  )
+unique(df_obesidad$actividad_fisica_cat) # produce:
+#[1] 0_dias   1-2_dias 3-4_dias 5+_dias 
+#Levels: 0_dias 1-2_dias 3-4_dias 5+_dias
+
+class(df_obesidad$actividad_fisica) # produce: "numeric"
+
+# Reposicionar la variable categórica de actividad física para que
+# esté junto a su correpondiente numérica
+df_obesidad <- df_obesidad |>
+  relocate(actividad_fisica_cat, .after = actividad_fisica)
+
 ############################################
 ##
 ## Transformaciones de Uso de Tecnología
@@ -524,6 +603,35 @@ unique(df_obesidad$uso_tecnologia)[1:20] # produce:
 min(df_obesidad$uso_tecnologia) # produce: [1] 0
 # Valor máximo de la variable de uso de tecnología 
 max(df_obesidad$uso_tecnologia) # produce: [1] 2
+
+#  Pasar la varaible de uso de tecnología de numerica a categórica
+df_obesidad <- df_obesidad |>
+  mutate(
+    uso_tecnologia_cat = case_when(
+      uso_tecnologia <= 0.5 ~ "0-2h",
+      uso_tecnologia <= 1.5 ~ "3-5h",
+      uso_tecnologia > 1.5 ~ ">5h"
+    )
+  )
+class(df_obesidad$uso_tecnologia_cat) # produce: character
+
+# Cambiar de tipo a la varaible de uso de tecnología de character
+# a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    uso_tecnologia_cat = factor(
+      uso_tecnologia_cat,
+      levels = c("0-2h", "3-5h", ">5h"),
+      ordered = TRUE
+    )
+  )
+unique(df_obesidad$uso_tecnologia_cat) # produce:
+#[1] "3-5h" ">5h"  "0-2h"
+
+# Reposicionar la variable categórica de uso de tecnología para que
+# esté junto a su correspondiente numérica
+df_obesidad <- df_obesidad |>
+  relocate(uso_tecnologia_cat, .after = uso_tecnologia) 
 
 ##############################################
 ##

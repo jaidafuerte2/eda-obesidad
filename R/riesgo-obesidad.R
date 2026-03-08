@@ -173,6 +173,7 @@ df_obesidad |>
 #4 obesidad_1        23      32.5
 #5 obesidad_2        26.0    37.1
 #6 obesidad_3        26.0    42.1
+
 #############################################
 ##
 ## 3.- Historia familiar de exceso de peso 
@@ -180,21 +181,21 @@ df_obesidad |>
 #############################################
 
 # Conocer el tipo de la variable de historia familiar de obesidad 
-class(df_obesidad$tiene_familiares_obesos) # produce: "factor"
+class(df_obesidad$tiene_familiares_obesos_cat) # produce: "factor"
 # Conocer el tipo de valores de la variable de historia familiar
 # de obesidad
-unique(df_obesidad$tiene_familiares_obesos) # produce:
+unique(df_obesidad$tiene_familiares_obesos_cat) # produce:
 #[1] si no
 #Levels: no si
 
 # Diagrama de caja que relaciona la historia familiar de obesidad con
 # el índice de masa corporal
-ggplot(df_obesidad, aes(x = tiene_familiares_obesos, y = imc)) +
+ggplot(df_obesidad, aes(x = tiene_familiares_obesos_cat, y = imc)) +
   geom_boxplot()
 
 # Gráfico de barras que relaciona la historia familiar de exceso de
 # peso con el tipo de obesida
-ggplot(df_obesidad, aes(x = tiene_familiares_obesos, 
+ggplot(df_obesidad, aes(x = tiene_familiares_obesos_cat, 
                         fill = tipo_obesidad)) +
   geom_bar(position = "fill")
 
@@ -203,8 +204,9 @@ ggplot(df_obesidad, aes(x = tiene_familiares_obesos,
 df_obesidad |>
   group_by(tipo_obesidad) |>
   summarise(
-    sum_familiares = sum(tiene_familiares_obesos == "si", na.rm = TRUE),
-    porc_si_familiares = mean(tiene_familiares_obesos == "si",
+    sum_familiares = sum(tiene_familiares_obesos_cat == "si", 
+                         na.rm = TRUE),
+    porc_si_familiares = mean(tiene_familiares_obesos_cat == "si",
                            na.rm = TRUE) * 100,
     .groups = "keep"
   ) # produce:
@@ -225,8 +227,9 @@ df_obesidad |>
 df_sobre_obesidad |>
   group_by(imc_grupos3) |>
   summarise(
-    sum_familiares = sum(tiene_familiares_obesos == "si", na.rm = TRUE),
-    porc_si_familiares = mean(tiene_familiares_obesos == "si",
+    sum_familiares = sum(tiene_familiares_obesos_cat == "si", 
+                         na.rm = TRUE),
+    porc_si_familiares = mean(tiene_familiares_obesos_cat == "si",
                               na.rm = TRUE) * 100,
     .groups = "keep"
   ) # produce:
@@ -246,21 +249,21 @@ df_sobre_obesidad |>
 ###############################
 
 # Conocer el tipo de la variable de consumo de comida de alta densidad 
-class(df_obesidad$come_densidad_alta) # produce: "factor"
+class(df_obesidad$come_densidad_alta_cat) # produce: "factor"
 # Conocer los valores de la variable de consumo de comida de alta 
 # densidad
-unique(df_obesidad$come_densidad_alta) # produce:
+unique(df_obesidad$come_densidad_alta_cat) # produce:
 #[1] si no
 #Levels: no si
 
 # Diagrama de caja que relaciona el consumo de comida de alta densidad
 # con el índice de masa corporal
-ggplot(df_obesidad, aes(x = come_densidad_alta, y = imc)) +
+ggplot(df_obesidad, aes(x = come_densidad_alta_cat, y = imc)) +
   geom_boxplot()
 
 # Gráfico de barras que relaciona el consumo de comida de alta densidad
 # con el tipo de obesidad
-ggplot(df_obesidad, aes(x = come_densidad_alta, 
+ggplot(df_obesidad, aes(x = come_densidad_alta_cat, 
                         fill = tipo_obesidad)) +
   geom_bar(position = "fill")
 
@@ -269,7 +272,7 @@ ggplot(df_obesidad, aes(x = come_densidad_alta,
 df_obesidad |>
   group_by(tipo_obesidad) |>
   summarise(
-    porc_si_densidad_alta = mean(come_densidad_alta == "si",
+    porc_si_densidad_alta = mean(come_densidad_alta_cat == "si",
                                  na.rm = TRUE) * 100,
     .groups = "keep"
   )
@@ -290,7 +293,7 @@ df_obesidad |>
 df_sobre_obesidad |>
   group_by(imc_grupos3) |>
   summarise(
-    porc_si_densidad_alta = mean(come_densidad_alta == "si",
+    porc_si_densidad_alta = mean(come_densidad_alta_cat == "si",
                                  na.rm = TRUE) * 100,
     .groups = "keep"
   ) # produce:
@@ -365,6 +368,34 @@ df_sobre_obesidad |>
 #2 sobrepeso            2   
 #3 obesidad             2.93
 
+######### Consumo de vegetales categórica ###########
+
+# Diagrama de caja que relaciona el consumo de vegetales con el 
+# índice de masa corporal
+ggplot(df_obesidad, aes(x = consumo_vegetales_cat, y = imc)) +
+  geom_boxplot()
+
+# Gráfico de barras que relaciona el consumo de vegetales con el
+# tipo de obesidad
+ggplot(df_obesidad,aes(x = consumo_vegetales_cat, 
+                       fill = tipo_obesidad)) +
+  geom_bar(position = "fill")
+
+# Agrupar por consumo de vegetales y resumir por índice de masa 
+# corporal
+df_obesidad |>
+  group_by(consumo_vegetales_cat) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# A tibble: 3 × 2
+# Groups:   consumo_vegetales_cat [3]
+#  consumo_vegetales_cat med_imc
+#  <ord>                   <dbl>
+#1 nunca                    27.7
+#2 ocasional                27.8
+#3 siempre                  35.6
 
 #############################
 ##
@@ -432,6 +463,32 @@ df_sobre_obesidad |>
 #2 sobrepeso                 3            2.56
 #3 obesidad                  3            2.79
 
+########## Comidas principales categórica ##########
+
+# Diagrama de caja que relaciona las comidas principales con el
+# índice de masa corporal
+ggplot(df_obesidad, aes(x = comidas_principales_cat, y = imc)) +
+  geom_boxplot()
+
+# Grafico de barras que relaciona las comidas principales con el 
+# tipo de obesidad
+ggplot(df_obesidad, aes(x = comidas_principales_cat, 
+                        fill = tipo_obesidad)) +
+  geom_bar(position = "fill")
+
+df_obesidad |>
+  group_by(comidas_principales_cat) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# Groups:   comidas_principales_cat [3]
+#  comidas_principales_cat med_imc
+#  <ord>                     <dbl>
+#1 1-2                        27.4
+#2 3                          31.9
+#3 >3                         18.6
+
 ##################################
 ##
 ## 7.- Consumo de refrigerios
@@ -472,30 +529,36 @@ df_obesidad |>
 ###########################
 
 # Conocer el tipo  de la variable de hábito de fumar 
-class(df_obesidad$fuma) # produce: "factor"
+class(df_obesidad$fuma_cat) # produce: "factor"
 # Conocer los valores de la variable de hábito de fumar
-unique(df_obesidad$fuma) # produce:
+unique(df_obesidad$fuma_cat) # produce:
 #[1] no si
 #Levels: no si
 
 # Diagrama de caja que relaciona el hábito de fumar con el índice de
 # masa corporal
-ggplot(df_obesidad, aes(x = fuma, y = imc)) +
+ggplot(df_obesidad, aes(x = fuma_cat, y = imc)) +
   geom_boxplot()
 
 # Gráfico de barras que relaciona el hábito de fumar con el tipo
 # de obesidad
-ggplot(df_obesidad, aes(x = fuma, fill = tipo_obesidad)) +
+ggplot(df_obesidad, aes(x = fuma_cat, fill = tipo_obesidad)) +
   geom_bar(position = "fill")
 
 # Agrupar tabla de obesidad por hábito de fumar y resumir por índice
 # de masa corporal
 df_obesidad |>
-  group_by(fuma) |>
+  group_by(fuma_cat) |>
   summarise(
     med_imc = median(imc, na.rm = TRUE),
     .groups = "keep"
-  )
+  ) # produce:
+# A tibble: 2 × 2
+# Groups:   fuma_cat [2]
+#  fuma_cat med_imc
+#  <fct>      <dbl>
+#1 no          29.4
+#2 si          32.9
   
 #################################
 ##
