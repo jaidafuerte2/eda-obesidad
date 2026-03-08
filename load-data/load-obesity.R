@@ -175,26 +175,35 @@ class(df_obesidad$tiene_familiares_obesos) # produce: [1] "integer"
 # Cambiar el tipo de la variable de historia familiar de obesidad
 df_obesidad <- df_obesidad |>
   mutate(
-    tiene_familiares_obesos = factor(
+    tiene_familiares_obesos_cat = factor(
       tiene_familiares_obesos,
       levels = c(0, 1)
     )
   )
-class(df_obesidad$tiene_familiares_obesos) # produce: "factor"
+class(df_obesidad$tiene_familiares_obesos_cat) # produce: "factor"
 
 # Cambiar los valores de la variable de historia familiar de obesidad
 # para que "0" sea "no" y "1" sea "si" 
 df_obesidad <- df_obesidad |>
   mutate(
-    tiene_familiares_obesos = recode(
+    tiene_familiares_obesos_cat = recode(
       tiene_familiares_obesos,
       "0" = "no",
       "1" = "si"
     )
   )
-unique(df_obesidad$tiene_familiares_obesos) # produce:
+unique(df_obesidad$tiene_familiares_obesos_cat) # produce:
 #[1] si no
 #Levels: no si
+
+class(df_obesidad$tiene_familiares_obesos_cat) # produce:
+class(df_obesidad$tiene_familiares_obesos) # produce:
+
+# Reposicionar la variable categórica de tiene familiares obesos
+# junto a la varaible integer
+df_obesidad <- df_obesidad |>
+  relocate(tiene_familiares_obesos_cat, 
+           .after = tiene_familiares_obesos)
 
 ############################################
 ##
@@ -214,24 +223,33 @@ class(df_obesidad$come_densidad_alta) # produce: "integer"
 # calórica de integer a factor
 df_obesidad <- df_obesidad |>
   mutate(
-    come_densidad_alta = factor(
+    come_densidad_alta_cat = factor(
       come_densidad_alta,
       levels = c(0, 1)
     )
   )
-class(df_obesidad$come_densidad_alta) # produce: "factor"
+class(df_obesidad$come_densidad_alta_cat) # produce: "factor"
 
 # Cambiar los valores de la variable de consumo de alimentos de alta
 # densidad calórica para que 0 sea no y 1 sea si
 df_obesidad <- df_obesidad |>
   mutate(
-    come_densidad_alta = recode(
-      come_densidad_alta,
+    come_densidad_alta_cat = recode(
+      come_densidad_alta_cat,
       "0" = "no",
       "1" = "si"
     )
   )
-unique(df_obesidad$come_densidad_alta) # produce: [1] si no
+unique(df_obesidad$come_densidad_alta_cat) # produce: [1] si no
+
+class(df_obesidad$come_densidad_alta_cat) # produce: factor
+class(df_obesidad$come_densidad_alta) # produce: "integer"
+
+# Reposicionar la variable categórica de consumo de comida de alta 
+# densidad junto a la varaible integer
+df_obesidad <- df_obesidad |>
+  relocate(come_densidad_alta_cat, 
+           .after = come_densidad_alta)
 
 ##############################################
 ##
@@ -255,6 +273,37 @@ max(df_obesidad$consumo_vegetales) # produce: 3
 # indica. "numeric" es double o de doble precisión es decir que puede
 # tener decimales
 
+# Cambiar la variable de consumo de vegetales de numérica a categórica
+df_obesidad <- df_obesidad |>
+  mutate(
+    consumo_vegetales_cat = case_when(
+      consumo_vegetales <= 1.5 ~ "nunca",
+      consumo_vegetales <= 2.5 ~ "ocasional",
+      consumo_vegetales > 2.5 ~ "siempre",
+      TRUE ~ NA_character_
+    )
+  )
+class(df_obesidad$consumo_vegetales_cat) # produce: character
+
+# Cambiar la varaible de consumo de vegetales a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    consumo_vegetales_cat = factor(
+      consumo_vegetales_cat,
+      levels = c("nunca", "ocasional", "siempre"),
+      ordered = TRUE
+    )
+  )
+unique(df_obesidad$consumo_vegetales_cat) # produce:
+#[1] ocasional siempre   nunca    
+#Levels: nunca < ocasional < siempre
+
+# Reposicionar la variable categórica de consumo de vegetales de
+# para juntarla a su correpondiente numérica
+df_obesidad <- df_obesidad |>
+  relocate(consumo_vegetales_cat, 
+           .after = consumo_vegetales)
+
 #####################################################
 ##
 ## Transformaciones Cantidad de Comidas Principales
@@ -272,6 +321,36 @@ unique(df_obesidad$comidas_principales)[1:20] # produce:
 min(df_obesidad$comidas_principales) # produce: 1
 #Valor máximo de la variable de número de comidas principales
 max(df_obesidad$comidas_principales) # produce: 4
+
+# Cambiar la variable de comidas principales de numérica a 
+# categórica
+df_obesidad <- df_obesidad |>
+  mutate(
+    comidas_principales_cat = case_when(
+      comidas_principales <= 2 ~ "1-2",
+      comidas_principales <= 3 ~ "3",
+      comidas_principales > 3 ~ ">3",
+    )
+  )
+class(df_obesidad$comidas_principales_cat) # produce: "character"
+
+# Cambiar la varaible de comidas principales de character a factor
+df_obesidad <- df_obesidad |>
+  mutate(
+    comidas_principales_cat = factor(
+      comidas_principales_cat,
+      levels = c("1-2", "3", ">3"),
+      ordered = TRUE
+    )
+  )
+unique(df_obesidad$comidas_principales_cat) # produce:
+#[1] 3   1-2 >3 
+#Levels: 1-2 < 3 < >3
+
+# Reposicionar la variable categórica de comidas principales junto
+# con su correspondiente variable numérica.
+df_obesidad <- df_obesidad |>
+  relocate(comidas_principales_cat, .after = comidas_principales)
 
 #################################################
 ##
@@ -327,24 +406,33 @@ class(df_obesidad$fuma) # produce: "intenger"
 # factor
 df_obesidad <- df_obesidad |>
   mutate(
-    fuma = factor(
+    fuma_cat = factor(
       fuma,
       levels = c(0, 1)
     )
   )
-class(df_obesidad$fuma) # produce: "factor"
+class(df_obesidad$fuma_cat) # produce: "factor"
 
 # Cambiar los valores de la variable de hábito de fumar para que
 # cero sea "no" y uno sea "si"
 df_obesidad <- df_obesidad |>
   mutate(
-    fuma = recode(
-      fuma,
+    fuma_cat = recode(
+      fuma_cat,
       "0" = "no",
       "1" = "si"
     )
   )
-unique(df_obesidad$fuma) # produce: [1] no si
+unique(df_obesidad$fuma) # produce: [1] 0 1
+class(df_obesidad$fuma) # produce: integer
+unique(df_obesidad$fuma_cat) # produce:
+#[1] no si
+#Levels: no si
+
+# Reposicionar la variable categórica de hábito de fumar junto a su
+# correspondiente numérica
+df_obesidad <- df_obesidad |>
+  relocate(fuma_cat, .after = fuma) 
 
 ###############################################
 ##
