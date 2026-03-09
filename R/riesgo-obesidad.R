@@ -241,6 +241,19 @@ df_sobre_obesidad |>
 #2 sobrepeso             3910               82.5
 #3 obesidad             10021               99.4
 
+df_obesidad |>
+  group_by(tiene_familiares_obesos_cat) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# A tibble: 2 × 2
+# Groups:   tiene_familiares_obesos_cat [2]
+#  tiene_familiares_obesos_cat med_imc
+#  <fct>                         <dbl>
+#1 no                             20.8
+#2 si                             32.4
+
 ###############################
 ##
 ## 4.- Consumo de comida de 
@@ -304,6 +317,21 @@ df_sobre_obesidad |>
 #1 peso_normal                  84.1
 #2 sobrepeso                    85.8
 #3 obesidad                     98.2
+
+# Agrupar la tabla de obesidad por comida de alta densidad calórica
+# y resumir por imc
+df_obesidad |>
+  group_by(come_densidad_alta_cat) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) produce:
+# A tibble: 2 × 2
+# Groups:   come_densidad_alta_cat [2]
+#  come_densidad_alta_cat med_imc
+#  <fct>                    <dbl>
+#1 no                        24.7
+#2 si                        31.0
 
 ##################################
 ##
@@ -476,6 +504,8 @@ ggplot(df_obesidad, aes(x = comidas_principales_cat,
                         fill = tipo_obesidad)) +
   geom_bar(position = "fill")
 
+# Agrupar la tabla de obesidad por consumo de comidas principales y
+# resumir por índice de masa corporal
 df_obesidad |>
   group_by(comidas_principales_cat) |>
   summarise(
@@ -513,14 +543,23 @@ ggplot(df_obesidad, aes(x = come_refrigerios, y = imc)) +
 ggplot(df_obesidad, aes(x = come_refrigerios, fill = tipo_obesidad)) +
   geom_bar(position = "fill")
 
-# 
+# Agrupar la tabla obesidad por consumo de refrigerios y rusumir
+# por índice de masa corporal
 df_obesidad |>
   group_by(come_refrigerios) |>
   summarise(
     med_imc = median(imc, na.rm = TRUE),
     avg_imc = mean(imc, na.rm = TRUE),
     .groups = "keep"
-  )
+  ) # produce:
+# A tibble: 4 × 3
+# Groups:   come_refrigerios [4]
+#  come_refrigerios med_imc avg_imc
+#  <ord>              <dbl>   <dbl>
+#1 nunca               26.3    25.6
+#2 ocasional           32.0    31.8
+#3 frecuente           19.1    21.0
+#4 siempre             23.5    24.3
 
 ###########################
 ##
@@ -607,6 +646,35 @@ df_obesidad |>
 #5 obesidad_2        2.02     2.00
 #6 obesidad_3        2.63     2.43
 
+######### Agua diaria categórica ###########
+
+# Diagrama de caja que relaciona el consumo de agua con el índice
+# de masa corporal
+ggplot(df_obesidad, aes(x = consumo_agua_diaria_cat, y = imc)) +
+  geom_boxplot()
+
+# Gráfico de barras que relaciona el consumo de agua con el tipo de
+# obesidad
+ggplot(df_obesidad, aes(x = consumo_agua_diaria_cat, 
+                        fill = tipo_obesidad)) +
+  geom_bar(position = "fill")
+
+# Agrupa la tabla de obsidad por consumo diario de agua y resumir 
+# por índice de masa corporal
+df_obesidad |>
+  group_by(consumo_agua_diaria_cat) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# A tibble: 3 × 2
+# Groups:   consumo_agua_diaria_cat [3]
+#  consumo_agua_diaria_cat med_imc
+#  <ord>                     <dbl>
+#1 <1L                        27.0
+#2 1-2L                       27.8
+#3 >2L                        36.6
+
 ########################################
 ##
 ## 10.- Consumo de bebidas azucaradas
@@ -614,25 +682,27 @@ df_obesidad |>
 ########################################
 
 # Conocer el tipo de la variable de consumo de bebidas calóricas
-class(df_obesidad$toma_bebidas_caloricas) # produce: "factor"
+class(df_obesidad$toma_bebidas_caloricas_cat) # produce: "factor"
 # Conocer los valores de la variable de consumo de bebidas calóricas
-unique(df_obesidad$toma_bebidas_caloricas) # produce:
+unique(df_obesidad$toma_bebidas_caloricas_cat) # produce:
 #[1] no si
 #Levels: no si
 
-#  Diagrama de caja que relacionoa el consumo de bebidas azucaradas
+#  Diagrama de caja que relaciona el consumo de bebidas azucaradas
 # con el índice de masa corporal
-ggplot(df_obesidad, aes(x = toma_bebidas_caloricas, y = imc)) +
+ggplot(df_obesidad, aes(x = toma_bebidas_caloricas_cat, y = imc)) +
   geom_boxplot()
 
 # Gráfico de barras que relaciona el consumo de bebidas azucaradas
 # con el tipo de obesidad
-ggplot(df_obesidad, aes(x = toma_bebidas_caloricas, 
+ggplot(df_obesidad, aes(x = toma_bebidas_caloricas_cat, 
                         fill = tipo_obesidad)) +
   geom_bar(position = "fill")
 
+# Agrupar por consumo de bebidas calóricas y resumir por índice de 
+# masa corporal
 df_obesidad |>
-  group_by(toma_bebidas_caloricas) |>
+  group_by(toma_bebidas_caloricas_cat) |>
   summarise(
     med_imc = median(imc, na.rm = TRUE),
     .groups = "keep"
@@ -644,12 +714,30 @@ df_obesidad |>
 #1 no                        30.1
 #2 si                        22.5
 
+# Agrupar la tabla de obesidad por tipo de obesidad y consumo de 
+# bebidas azucaradas y resumir por índice de masa corporal
 df_obesidad |>
-  group_by(tipo_obesidad, toma_bebidas_caloricas) |>
+  group_by(tipo_obesidad, toma_bebidas_caloricas_cat) |>
   summarise(
     med_imc = median(imc, na.rm = TRUE),
     .groups = "keep"
-  )
+  ) # produce:
+# A tibble: 12 × 3
+# Groups:   tipo_obesidad, toma_bebidas_caloricas_cat [12]
+#  tipo_obesidad toma_bebidas_caloricas_cat med_imc
+#  <ord>         <fct>                        <dbl>
+#1 desnutricion  no                            17.4
+#2 desnutricion  si                            17.5
+#3 peso_normal   no                            22.1
+#4 peso_normal   si                            22.4
+#5 sobrepeso     no                            27.2
+#6 sobrepeso     si                            26.2
+#7 obesidad_1    no                            32.5
+#8 obesidad_1    si                            32.1
+#9 obesidad_2    no                            37.1
+#10 obesidad_2    si                            36.6
+#11 obesidad_3    no                            42.1
+#12 obesidad_3    si                            40.8
 
 #################################
 ##
@@ -670,5 +758,117 @@ min(df_obesidad$actividad_fisica) # produce: 0
 # Conocer el valor máximo de la varaible de actividad física
 max(df_obesidad$actividad_fisica) # produce: 3
 
+# Diagrama de dispersión que relaciona la actividad física con el 
+# índice de masa corporal
 ggplot(df_obesidad, aes(x = actividad_fisica, y = imc)) +
   geom_point(alpha = 1/10)
+
+# Diagrama de caja que relaciona el tipo de obesidad con la actividad
+# física
+ggplot(df_obesidad, aes(x = tipo_obesidad, y = actividad_fisica)) +
+  geom_boxplot()
+
+# Agrupar la tabla de obesidad por tipo de obesidad y resumir por
+# actividad física
+df_obesidad |>
+  group_by(tipo_obesidad) |>
+  summarise(
+    med_imc = median(actividad_fisica, na.rm = TRUE),
+    avg_imc = mean(actividad_fisica, na.rm = TRUE),
+    .groups = "keep"
+  )
+
+######## Análisis de Actividad Física Categórica #########
+
+# Diagrama de caja que relaciona la actividad física con el índice
+# de masa corporal
+ggplot(df_obesidad, aes(x = actividad_fisica_cat, 
+                        y = imc)) +
+  geom_boxplot()
+
+# Agrupar la tabla obesidad por actividad física y resumir por índice
+# de masa corporal
+df_obesidad |>
+  group_by(actividad_fisica_cat) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    #avg_imc = mean(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# A tibble: 4 × 2
+# Groups:   actividad_fisica_cat [4]
+#  actividad_fisica_cat med_imc
+#  <fct>                  <dbl>
+#1 0_dias                  33.0
+#2 1-2_dias                28.7
+#3 3-4_dias                27.3
+#4 5+_dias                 26.0
+
+###################################
+##
+## 12.- Uso de tecnología
+##
+###################################
+
+# Conocer el tipo de la varaible de uso de tecnología
+class(df_obesidad$uso_tecnologia) # produce: "numeric"
+# Conocer los valores de la varaible de uso de tecnología
+unique(df_obesidad$uso_tecnologia)[1:20] # produce:
+#[1] 0.976473 1.000000 1.673584 0.780199 0.931721 0.696948 0.000000
+#[8] 0.218645 0.553311 0.947884 2.000000 0.930836 0.619012 0.081156
+#[15] 1.258881 0.079334 0.250502 0.232858 0.453649 0.831412
+# Conocer el valor mínimo de la variable de uso de tecnología
+min(df_obesidad$uso_tecnologia) # produce: 0
+# Conocer el valor mpaximo de la variable de uso de tecnología 
+max(df_obesidad$uso_tecnologia) # produce:2
+
+# Diagrama de dispersión que muestra
+ggplot(df_obesidad, aes(x = uso_tecnologia, y = imc)) +
+  geom_point(alpha = 1/10)
+
+# Diagrama de caja que relaciona el tipo de obesidad con el uso de
+# tecnología
+ggplot(df_obesidad, aes(x = tipo_obesidad, y = uso_tecnologia)) +
+  geom_boxplot()
+
+# Agrupar la tabla obesidad por tipo de obesidad y resumir por
+# uso de tecnología
+df_obesidad |>
+  group_by(tipo_obesidad) |>
+  summarise(
+    med_tecnologia = median(uso_tecnologia, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# A tibble: 6 × 2
+# Groups:   tipo_obesidad [6]
+#  tipo_obesidad med_tecnologia
+#  <ord>                  <dbl>
+#1 desnutricion           1    
+#2 peso_normal            1    
+#3 sobrepeso              0.659
+#4 obesidad_1             0.504
+#5 obesidad_2             0.414
+#6 obesidad_3             0.552
+
+########## Análisis de uso de tecnología categórica ###########
+
+# Diagrama de caja que relaciona el uso de tecnología con el 
+# índice de masa corporal
+ggplot(df_obesidad, aes(x = uso_tecnologia_cat, y = imc)) +
+  geom_boxplot()
+
+df_obesidad |>
+  group_by(uso_tecnologia_cat) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    avg_imc = mean(imc, na.rm = TRUE),
+    .groups = "keep"
+  )
+# A tibble: 3 × 3
+# Groups:   uso_tecnologia_cat [3]
+#  uso_tecnologia_cat med_imc avg_imc
+#  <ord>                <dbl>   <dbl>
+#1 0-2h                  30.9    30.6
+#2 3-5h                  29.4    30.6
+#3 >5h                   27.5    26.9
+
