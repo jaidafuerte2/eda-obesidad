@@ -708,7 +708,7 @@ df_obesidad <- df_obesidad |>
   mutate(
     medio_transporte = factor(
       medio_transporte,
-      levels = c("publico", "auto", "moto", "bicileta", "camina")
+      levels = c("publico", "auto", "moto", "bicicleta", "camina")
     )
   )
 class(df_obesidad$medio_transporte) # produce: "factor"

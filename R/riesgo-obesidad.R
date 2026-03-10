@@ -5,6 +5,7 @@
 ##########################################################
 
 library(tidyverse)
+library(scales)
 source("eda-obesidad/load-data/load-obesity.R")
 
 ##################################
@@ -66,19 +67,21 @@ unique(df_obesidad$genero) # produce:
 #[1] masculino femenino 
 #Levels: masculino femenino
 
-# Gráfico de barras de la varaible género
-ggplot(df_obesidad, aes(x = genero)) +
-  geom_bar()
-
 # Diagrama de caja que relaciona el género con el índice de masa
 # corporal  y está facetado por tipo de obesidad
 ggplot(df_obesidad, aes(x = genero, y = imc)) +
-  geom_boxplot() +
-  facet_wrap(~tipo_obesidad)
+  geom_boxplot() 
 
 # Gráfico de barras que relaciona el género con el tipo de obesidad
 ggplot(df_obesidad, aes(x = genero, fill = tipo_obesidad)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  scale_y_continuous(name = "Porcentaje", labels = label_percent()) +
+  labs(
+    color = "Tipo de obesidad",
+    title = "El porcentaje de obesidad grado 3 en mujeres es mayor",
+    subtitle = "Pero el porcentaje de obesidad grado 2 es mayor en hombres",
+    caption = "Datos del dataset de riesgo de obesidad de kaggle"
+  )
 
 # Agrupar la tabla de obesidad y resumir por imc y cantidad
 obesidad_genero <- df_obesidad |>
@@ -106,18 +109,29 @@ obesidad_genero # produce:
 #11 obesidad_3    masculino    41.2   107
 #12 obesidad_3    femenino     42.2  3146
 
-# Diagrama de caja que relaciona el género con la cantidad de 
-# individuos (agrupados por tipo de obesidad y género), facetado
-# por tipo de obesidad
-ggplot(obesidad_genero, aes(x = genero, y = n_cantidad)) +
-  geom_boxplot() +
-  facet_wrap(~tipo_obesidad)
-
-# Diagrama de dispersión que relaciona el índice de masa corporal
-# con la cantidad de individuos. Facetado por tipo de obesidad
-ggplot(obesidad_genero, aes(x = med_imc, y = n_cantidad)) +
-  geom_point(aes(color = genero)) +
-  facet_wrap(~tipo_obesidad)
+# Agrupar la tabla obesidad-género y crear una nueva columna de
+# porcentajes
+obesidad_genero |>
+  group_by(genero) |>
+  mutate(
+    porcentaje = n_cantidad / sum(n_cantidad) * 100
+  ) # produce:
+# A tibble: 12 × 5
+# Groups:   genero [2]
+#  tipo_obesidad genero    med_imc n_cantidad porcentaje
+#  <ord>         <fct>       <dbl>      <int>      <dbl>
+#1 desnutricion  masculino    17.4        876       8.48
+#2 desnutricion  femenino     17.4       1532      14.7 
+#3 peso_normal   masculino    22.5       1640      15.9 
+#4 peso_normal   femenino     21.8       1886      18.1 
+#5 sobrepeso     masculino    27.3       2991      28.9 
+#6 sobrepeso     femenino     26.9       1749      16.8 
+#7 obesidad_1    masculino    32.9       1923      18.6 
+#8 obesidad_1    femenino     31.9       1195      11.5 
+#9 obesidad_2    masculino    36.6       2799      27.1 
+#10 obesidad_2    femenino     38.9        914       8.77
+#11 obesidad_3    masculino    41.2        107       1.04
+#12 obesidad_3    femenino     42.2       3146      30.2 
 
 ######################
 ##
@@ -147,12 +161,20 @@ ggplot(df_obesidad, aes(x = edad)) +
 
 # Diagrama de dispersión que relacione la edad con el índice de masa
 # corporal
-ggplot(df_obesidad, aes(x = imc, y = edad)) +
-  geom_point(alpha = 1/20)
+ggplot(df_obesidad, aes(x = edad, y = imc)) +
+  geom_point(alpha = 1/50) 
 
 # Diagrama de caja que relaciona el tipo de obesidad con la edad
 ggplot(df_obesidad, aes(x = tipo_obesidad, y = edad)) +
-  geom_boxplot()
+  geom_boxplot(alpha = 1/20) +
+  labs(
+    y = "Edad (años)",
+    x = "Tipo de obesidad (según OMS)",
+    title = "A mayor edad es mayor la obesidad",
+    subtitle = "Pero no es una diferencia mayor",
+    caption = "Datos del dataset de riesgo de obesidad de kaggle"
+  )
+
 
 # Agrupar la tabla de obesidad por tipo de obesidad y resumir por
 # índice de masa corporal y edad
@@ -197,7 +219,15 @@ ggplot(df_obesidad, aes(x = tiene_familiares_obesos_cat, y = imc)) +
 # peso con el tipo de obesida
 ggplot(df_obesidad, aes(x = tiene_familiares_obesos_cat, 
                         fill = tipo_obesidad)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  scale_y_continuous(name = "Porcentaje", labels = label_percent()) +
+  labs(
+    x = "Historia familiar de obesidad",
+    color = "Tipo de obesidad",
+    title = "Sin historia familiar de obesidad casi no hay obesidad",
+    subtitle = "Con historia familiar de obesidad hay mucha obesidad",
+    caption = "Datos del dataset de riesho de obesidad de Kaggle"
+  )
 
 # Agrupar la tabla de obesidad por tipo de obesidad y resumir por
 # porcentaje de personas que sí tienen familiares obesos
@@ -221,26 +251,6 @@ df_obesidad |>
 #5 obesidad_2              3710               99.9
 #6 obesidad_3              3251               99.9
 
-# Agrupar la tabla de obesidad (con 3 grupos de tipo según) por
-# tipo de obesidad y resumir por porcentaje de personas que sí tienen
-# historia familiar de exceso de peso
-df_sobre_obesidad |>
-  group_by(imc_grupos3) |>
-  summarise(
-    sum_familiares = sum(tiene_familiares_obesos_cat == "si", 
-                         na.rm = TRUE),
-    porc_si_familiares = mean(tiene_familiares_obesos_cat == "si",
-                              na.rm = TRUE) * 100,
-    .groups = "keep"
-  ) # produce:
-# A tibble: 3 × 3
-# Groups:   imc_grupos3 [3]
-#  imc_grupos3 sum_familiares porc_si_familiares
-#  <ord>                <int>              <dbl>
-#1 peso_normal           2078               58.9
-#2 sobrepeso             3910               82.5
-#3 obesidad             10021               99.4
-
 df_obesidad |>
   group_by(tiene_familiares_obesos_cat) |>
   summarise(
@@ -253,6 +263,56 @@ df_obesidad |>
 #  <fct>                         <dbl>
 #1 no                             20.8
 #2 si                             32.4
+
+# Agrupar la tabla de obesidad por historia familiar de oebsidad y
+# Tipo de obesidad y resumir por cantidad
+obesidad_familiar <- df_obesidad |>
+  group_by(tiene_familiares_obesos_cat, tipo_obesidad) |>
+  summarise(
+    n_cantidad = n(),
+    .groups = "keep"
+  )
+obesidad_familiar  # produce:
+# A tibble: 12 × 4
+# Groups:   tiene_familiares_obesos_cat, tipo_obesidad [12]
+#  tiene_familiares_obesos_cat tipo_obesidad med_imc n_cantidad
+#  <fct>                       <ord>           <dbl>      <int>
+#1 no                          desnutricion     17.3       1403
+#2 no                          peso_normal      21.9       1448
+#3 no                          sobrepeso        26.6        830
+#4 no                          obesidad_1       32.0         58
+#5 no                          obesidad_2       35.6          3
+#6 no                          obesidad_3       41.2          2
+#7 si                          desnutricion     17.5       1005
+#8 si                          peso_normal      22.2       2078
+#9 si                          sobrepeso        27.4       3910
+#10 si                          obesidad_1       32.5       3060
+#11 si                          obesidad_2       37.1       3710
+#12 si                          obesidad_3       42.1       3251
+
+# Volver a agrupar la tabla y crear una variable de porcentaje 
+obesidad_familiar |>
+  group_by(tiene_familiares_obesos_cat) |>
+  mutate(
+    porcentaje = n_cantidad / sum(n_cantidad) * 100
+  ) # produce:
+# A tibble: 12 × 4
+# Groups:   tiene_familiares_obesos_cat [2]
+#  tiene_familiares_obesos_cat tipo_obesidad n_cantidad porcentaje
+#  <fct>                       <ord>              <int>      <dbl>
+#1 no                          desnutricion        1403    37.5   
+#2 no                          peso_normal         1448    38.7   
+#3 no                          sobrepeso            830    22.2   
+#4 no                          obesidad_1            58     1.55  
+#5 no                          obesidad_2             3     0.0801
+#6 no                          obesidad_3             2     0.0534
+#7 si                          desnutricion        1005     5.91  
+#8 si                          peso_normal         2078    12.2   
+#9 si                          sobrepeso           3910    23.0   
+#10 si                          obesidad_1          3060    18.0   
+#11 si                          obesidad_2          3710    21.8   
+#12 si                          obesidad_3          3251    19.1 
+
 
 ###############################
 ##
@@ -272,26 +332,40 @@ unique(df_obesidad$come_densidad_alta_cat) # produce:
 # Diagrama de caja que relaciona el consumo de comida de alta densidad
 # con el índice de masa corporal
 ggplot(df_obesidad, aes(x = come_densidad_alta_cat, y = imc)) +
-  geom_boxplot()
+  geom_boxplot(alpha = 1/5) +
+  labs(
+    x = "Consumo de comida de alta densidad calórica",
+    y = "Indice de Masa Corporal",
+    title = "Los que no comen alimentos de alta densidad suelen ser delgados",
+    subtitle = "Los que sí comen estos alimentos suelen ser obesos",
+    caption = "datos del dataset de riesgo de obesidad de Kaggle"
+  )
 
 # Gráfico de barras que relaciona el consumo de comida de alta densidad
 # con el tipo de obesidad
 ggplot(df_obesidad, aes(x = come_densidad_alta_cat, 
                         fill = tipo_obesidad)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  scale_y_continuous(name = "Porcentaje", labels = label_percent()) +
+  labs(
+    x = "Consumo de comida de alta densidad",
+    title = "Los que no comen comida densa tienen poca obesidad",
+    subtitle = "Los que sí comen tienen más obesidad",
+    caption = "Datos del dataset de riesgo de obesidad de Kaggle"
+  )
 
 # Agrupar la tabla de obesidad por tipo de obesidad y resumir por
 # los que sí comen comida de alta densidad calórica
 df_obesidad |>
   group_by(tipo_obesidad) |>
   summarise(
-    porc_si_densidad_alta = mean(come_densidad_alta_cat == "si",
+    porcentaje = mean(come_densidad_alta_cat == "si",
                                  na.rm = TRUE) * 100,
     .groups = "keep"
   )
 # A tibble: 6 × 2
 # Groups:   tipo_obesidad [6]
-#  tipo_obesidad porc_si_densidad_alta
+#  tipo_obesidad            porcentaje
 #  <ord>                         <dbl>
 #1 desnutricion                   84.9
 #2 peso_normal                    84.1
@@ -300,23 +374,6 @@ df_obesidad |>
 #5 obesidad_2                     98.7
 #6 obesidad_3                     99.8
 
-# Agrupar la tabla de obesidad por 3 tipos de peso según índice
-# de masa corporal y resumir por los que sí comen comida de alta 
-# densidad calórica
-df_sobre_obesidad |>
-  group_by(imc_grupos3) |>
-  summarise(
-    porc_si_densidad_alta = mean(come_densidad_alta_cat == "si",
-                                 na.rm = TRUE) * 100,
-    .groups = "keep"
-  ) # produce:
-# A tibble: 3 × 2
-# Groups:   imc_grupos3 [3]
-#  imc_grupos3 porc_si_densidad_alta
-#  <ord>                       <dbl>
-#1 peso_normal                  84.1
-#2 sobrepeso                    85.8
-#3 obesidad                     98.2
 
 # Agrupar la tabla de obesidad por comida de alta densidad calórica
 # y resumir por imc
@@ -325,13 +382,63 @@ df_obesidad |>
   summarise(
     med_imc = median(imc, na.rm = TRUE),
     .groups = "keep"
-  ) produce:
+  ) # produce:
 # A tibble: 2 × 2
 # Groups:   come_densidad_alta_cat [2]
 #  come_densidad_alta_cat med_imc
 #  <fct>                    <dbl>
 #1 no                        24.7
 #2 si                        31.0
+
+# Agrupar la tabla de obesidad por consumo de comida de alta densidad
+# calórica y tipo de obesidad y resumir por cantidad
+obesidad_densidad <- df_obesidad |>
+  group_by(come_densidad_alta_cat, tipo_obesidad) |>
+  summarise(
+    n_cantidad = n(),
+    .groups = "keep"
+  ) 
+obesidad_densidad # produce:
+# A tibble: 12 × 4
+# Groups:   come_densidad_alta_cat, tipo_obesidad [12]
+#  come_densidad_alta_cat tipo_obesidad med_imc n_cantidad
+#  <fct>                  <ord>           <dbl>      <int>
+#1 no                     desnutricion     17.5        364
+#2 no                     peso_normal      22.4        562
+#3 no                     sobrepeso        27.2        673
+#4 no                     obesidad_1       32.1        119
+#5 no                     obesidad_2       36.7         50
+#6 no                     obesidad_3       40.8          8
+#7 si                     desnutricion     17.4       2044
+#8 si                     peso_normal      22.0       2964
+#9 si                     sobrepeso        27.1       4067
+#10 si                     obesidad_1       32.5       2999
+#11 si                     obesidad_2       37.1       3663
+#12 si                     obesidad_3       42.1       3245
+
+# Agrupar la tabla por consumo de alimentos de alta densidad y crear
+# una varaible para conocer los porcentajes
+obesidad_densidad |>
+  group_by(come_densidad_alta_cat) |>
+  mutate(
+    porcentaje = n_cantidad / sum(n_cantidad) * 100
+  ) # produce:
+# A tibble: 12 × 4
+# Groups:   come_densidad_alta_cat [2]
+#  come_densidad_alta_cat tipo_obesidad n_cantidad porcentaje
+#  <fct>                  <ord>              <int>      <dbl>
+#1 no                     desnutricion         364     20.5  
+#2 no                     peso_normal          562     31.6  
+#3 no                     sobrepeso            673     37.9  
+#4 no                     obesidad_1           119      6.70 
+#5 no                     obesidad_2            50      2.82 
+#6 no                     obesidad_3             8      0.450
+#7 si                     desnutricion        2044     10.8  
+#8 si                     peso_normal         2964     15.6  
+#9 si                     sobrepeso           4067     21.4  
+#10 si                     obesidad_1          2999     15.8  
+#11 si                     obesidad_2          3663     19.3  
+#12 si                     obesidad_3          3245     17.1  
 
 ##################################
 ##
@@ -380,34 +487,35 @@ df_obesidad |>
 #5 obesidad_2             2.72
 #6 obesidad_3             3 
 
-# Agrupar la tabla de obesidad por tipo de peso (acon 3 categorías) 
-# y resumir por  consumo de vegetales
-df_sobre_obesidad |>
-  group_by(imc_grupos3) |>
-  summarise(
-    med_vegetales = median(consumo_vegetales, na.rm = TRUE),
-    .groups = "keep"
-  )
-# A tibble: 3 × 2
-# Groups:   imc_grupos3 [3]
-#  imc_grupos3 med_vegetales
-#  <ord>               <dbl>
-#1 peso_normal          2   
-#2 sobrepeso            2   
-#3 obesidad             2.93
-
 ######### Consumo de vegetales categórica ###########
 
 # Diagrama de caja que relaciona el consumo de vegetales con el 
 # índice de masa corporal
 ggplot(df_obesidad, aes(x = consumo_vegetales_cat, y = imc)) +
-  geom_boxplot()
+  geom_boxplot() + 
+  labs(
+    x = "Consumo de vegetales",
+    y = "Índice de Masa Corporal",
+    title = "Quienes siempre comen vegetales tienen un peso mayor",
+    subtitle = "Los que siempre comen vegetales tienen un imc mayor a 35",
+    caption= "Datos del dataset de riesgo de obesidad de Kaggle"
+  ) +
+  theme_linedraw()
 
 # Gráfico de barras que relaciona el consumo de vegetales con el
 # tipo de obesidad
 ggplot(df_obesidad,aes(x = consumo_vegetales_cat, 
                        fill = tipo_obesidad)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  scale_y_continuous(name = "Porcentaje", labels = label_percent()) +
+  labs(
+    x = "Consumo de Vegetales",
+    color = "Tipo de Obesidad",
+    title = "Comer siempre vegetales muestra alto porcentaje de obesidad grado 3",
+    subtitle = "Comer vegetales nunca y ocasional muestra poca obesidad grado 3",
+    caption = "Datos del dataset de riesgo de obesidad de Kaggle"
+  ) +
+  theme_linedraw()
 
 # Agrupar por consumo de vegetales y resumir por índice de masa 
 # corporal
@@ -424,6 +532,37 @@ df_obesidad |>
 #1 nunca                    27.7
 #2 ocasional                27.8
 #3 siempre                  35.6
+
+# Contar por tipo de obesidad y consumo de vegetales, agrupar 
+# por tipo de obesidad y elegir el máximo. Sacar la moda de 
+# consumo de vegetales por tipo de obesidad.
+df_obesidad |>
+  count(tipo_obesidad, consumo_vegetales_cat) |>
+  group_by(tipo_obesidad) |>
+  slice_max(n, n = 1) #  produce:
+# A tibble: 6 × 3
+# Groups:   tipo_obesidad [6]
+#  tipo_obesidad consumo_vegetales_cat     n
+#  <ord>         <ord>                 <int>
+#1 desnutricion  siempre                1369
+#2 peso_normal   ocasional              1991
+#3 sobrepeso     ocasional              3351
+#4 obesidad_1    ocasional              2257
+#5 obesidad_2    siempre                2126
+#6 obesidad_3    siempre                3190
+
+# Moda del consumo de vegetales con 3 tipos de peso 
+df_sobre_obesidad |>
+  count(imc_grupos3, consumo_vegetales_cat) |>
+  group_by(imc_grupos3) |>
+  slice_max(n, n = 1) # produce:
+# A tibble: 3 × 3
+# Groups:   imc_grupos3 [3]
+#  imc_grupos3 consumo_vegetales_cat     n
+#  <ord>       <ord>                 <int>
+#1 peso_normal ocasional              1991
+#2 sobrepeso   ocasional              3351
+#3 obesidad    siempre                6052
 
 #############################
 ##
@@ -582,7 +721,7 @@ ggplot(df_obesidad, aes(x = fuma_cat, y = imc)) +
 # Gráfico de barras que relaciona el hábito de fumar con el tipo
 # de obesidad
 ggplot(df_obesidad, aes(x = fuma_cat, fill = tipo_obesidad)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") 
 
 # Agrupar tabla de obesidad por hábito de fumar y resumir por índice
 # de masa corporal
@@ -605,7 +744,9 @@ df_obesidad |>
 ##
 #################################
 
+# Conocer el tipo de la variable consumo diario de agua
 class(df_obesidad$consumo_agua_diaria) # produce: "numeric"
+# Conocer los valores de la varaibles de consumo de agua
 unique(df_obesidad$consumo_agua_diaria)[1:20] # produce:
 #[1] 2.763573 2.000000 1.910378 1.674061 1.979848 2.137550 3.000000
 #[8] 2.632253 2.530157 1.959531 1.000000 1.238057 2.724099 2.072194
@@ -691,13 +832,28 @@ unique(df_obesidad$toma_bebidas_caloricas_cat) # produce:
 #  Diagrama de caja que relaciona el consumo de bebidas azucaradas
 # con el índice de masa corporal
 ggplot(df_obesidad, aes(x = toma_bebidas_caloricas_cat, y = imc)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(
+    x = "Consumo de bebidas calóricas",
+    y = "índice de Masa Corporal",
+    title = "Quienes toman bebidas calóricas son más delgados",
+    subtitle = "Son más delgados y tienen un imc menor a 25",
+    caption = "Datos del dataset de riesgo de obesidad de Kaggle"
+  ) +
+  theme_linedraw()
 
 # Gráfico de barras que relaciona el consumo de bebidas azucaradas
 # con el tipo de obesidad
 ggplot(df_obesidad, aes(x = toma_bebidas_caloricas_cat, 
                         fill = tipo_obesidad)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  scale_y_continuous(name = "Porcentaje", labels = label_percent()) +
+  labs(
+    x = "Consumo de bebidas calóricas",
+    title = "Tomar bebidas azucaradas tiene menos obesidad",
+    subtitle = "Mientras no tomar tiene mucha obesidad"
+  ) +
+  theme_linedraw()
 
 # Agrupar por consumo de bebidas calóricas y resumir por índice de 
 # masa corporal
@@ -714,30 +870,54 @@ df_obesidad |>
 #1 no                        30.1
 #2 si                        22.5
 
-# Agrupar la tabla de obesidad por tipo de obesidad y consumo de 
-# bebidas azucaradas y resumir por índice de masa corporal
-df_obesidad |>
-  group_by(tipo_obesidad, toma_bebidas_caloricas_cat) |>
+
+obesidad_bebidas <- df_obesidad |>
+  group_by(toma_bebidas_caloricas_cat, tipo_obesidad) |>
   summarise(
-    med_imc = median(imc, na.rm = TRUE),
+    n_cantidad = n(),
     .groups = "keep"
-  ) # produce:
+  )
+obesidad_bebidas  # produce:
 # A tibble: 12 × 3
-# Groups:   tipo_obesidad, toma_bebidas_caloricas_cat [12]
-#  tipo_obesidad toma_bebidas_caloricas_cat med_imc
-#  <ord>         <fct>                        <dbl>
-#1 desnutricion  no                            17.4
-#2 desnutricion  si                            17.5
-#3 peso_normal   no                            22.1
-#4 peso_normal   si                            22.4
-#5 sobrepeso     no                            27.2
-#6 sobrepeso     si                            26.2
-#7 obesidad_1    no                            32.5
-#8 obesidad_1    si                            32.1
-#9 obesidad_2    no                            37.1
-#10 obesidad_2    si                            36.6
-#11 obesidad_3    no                            42.1
-#12 obesidad_3    si                            40.8
+# Groups:   toma_bebidas_caloricas_cat, tipo_obesidad [12]
+#  toma_bebidas_caloricas_cat tipo_obesidad n_cantidad
+#  <fct>                      <ord>              <int>
+#1 no                         desnutricion        2183
+#2 no                         peso_normal         3307
+#3 no                         sobrepeso           4516
+#4 no                         obesidad_1          3106
+#5 no                         obesidad_2          3708
+#6 no                         obesidad_3          3251
+#7 si                         desnutricion         225
+#8 si                         peso_normal          219
+#9 si                         sobrepeso            224
+#10 si                         obesidad_1            12
+#11 si                         obesidad_2             5
+#12 si                         obesidad_3             2
+
+
+obesidad_bebidas |>
+  group_by(toma_bebidas_caloricas_cat) |>
+  mutate(
+    porcentaje = n_cantidad / sum(n_cantidad) * 100
+  ) |>
+  relocate(porcentaje, .before = n_cantidad) # produce:
+# A tibble: 12 × 4
+# Groups:   toma_bebidas_caloricas_cat [2]
+#  toma_bebidas_caloricas_cat tipo_obesidad porcentaje n_cantidad
+#  <fct>                      <ord>              <dbl>      <int>
+#1 no                         desnutricion      10.9         2183
+#2 no                         peso_normal       16.5         3307
+#3 no                         sobrepeso         22.5         4516
+#4 no                         obesidad_1        15.5         3106
+#5 no                         obesidad_2        18.5         3708
+#6 no                         obesidad_3        16.2         3251
+#7 si                         desnutricion      32.8          225
+#8 si                         peso_normal       31.9          219
+#9 si                         sobrepeso         32.6          224
+#10 si                         obesidad_1         1.75          12
+#11 si                         obesidad_2         0.728          5
+#12 si                         obesidad_3         0.291          2
 
 #################################
 ##
@@ -784,7 +964,21 @@ df_obesidad |>
 # de masa corporal
 ggplot(df_obesidad, aes(x = actividad_fisica_cat, 
                         y = imc)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(
+    x = "Actividad Física",
+    y = "índice de Masa Corporal",
+    title = "A menos actividad física mayor peso",
+    subtitle = "Incluso haciendo 5 días ejercicio el imc es mayor a 25",
+    caption = "Datos del dataset de riesgo de obesidad de Kaggle"
+  ) +
+  theme_linedraw()
+
+# Gráfico de barras que relaciona la actividad física con el
+# índice de masa corporal
+ggplot(df_obesidad, aes(x = actividad_fisica_cat, 
+                        fill = tipo_obesidad)) +
+  geom_bar(position = "fill")
 
 # Agrupar la tabla obesidad por actividad física y resumir por índice
 # de masa corporal
@@ -803,6 +997,37 @@ df_obesidad |>
 #2 1-2_dias                28.7
 #3 3-4_dias                27.3
 #4 5+_dias                 26.0
+
+# Contar por tipo de obesidad y actividad física, agrupar por tipo
+# de obesidad y elegir el máximo. Sacar la moda de actividad física
+# por tipo de obesidad
+df_obesidad |>
+  count(tipo_obesidad, actividad_fisica_cat) |>
+  group_by(tipo_obesidad) |>
+  slice_max(n, n = 1) #  produce:
+# A tibble: 6 × 3
+# Groups:   tipo_obesidad [6]
+#  tipo_obesidad actividad_fisica_cat     n
+#  <ord>         <fct>                <int>
+#1 desnutricion  3-4_dias               890
+#2 peso_normal   1-2_dias              1481
+#3 sobrepeso     1-2_dias              2219
+#4 obesidad_1    1-2_dias              1279
+#5 obesidad_2    1-2_dias              1804
+#6 obesidad_3    0_dias                1840
+
+# Moda con 3 tipos de peso 
+df_sobre_obesidad |>
+  count(imc_grupos3, actividad_fisica_cat) |>
+  group_by(imc_grupos3) |>
+  slice_max(n, n = 1) # produce:
+# A tibble: 3 × 3
+# Groups:   imc_grupos3 [3]
+#  imc_grupos3 actividad_fisica_cat     n
+#  <ord>       <fct>                <int>
+#1 peso_normal 1-2_dias              1481
+#2 sobrepeso   1-2_dias              2219
+#3 obesidad    0_dias                4307
 
 ###################################
 ##
@@ -857,6 +1082,8 @@ df_obesidad |>
 ggplot(df_obesidad, aes(x = uso_tecnologia_cat, y = imc)) +
   geom_boxplot()
 
+# Agrupar por uso de tecnología y resumir por índice de masa 
+# corporal
 df_obesidad |>
   group_by(uso_tecnologia_cat) |>
   summarise(
@@ -872,3 +1099,142 @@ df_obesidad |>
 #2 3-5h                  29.4    30.6
 #3 >5h                   27.5    26.9
 
+###################################
+##
+## 13.- Consumo de alcohol
+##
+###################################
+
+# Conocer el tipo de la variable conusmo de alcohol
+class(df_obesidad$consume_alcohol) # produce:
+#[1] "ordered" "factor" 
+# Conocer los valores de la variable de consumo de alcohol
+unique(df_obesidad$consume_alcohol) # produce:
+#[1] ocasional nunca     frecuente
+#Levels: nunca < ocasional < frecuente
+
+# Diagrama de caja que relaciona el consumo de alcohol con el
+# índice de masa corporal
+ggplot(df_obesidad, aes(x = consume_alcohol, y = imc)) +
+  geom_boxplot()
+
+# Gráfico de barras que relaciona el consumo de alcohol con el 
+# tipo de obesidad
+ggplot(df_obesidad, aes(x = consume_alcohol, fill = tipo_obesidad)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(name = "Porcentaje", labels = label_percent()) +
+  labs(
+    x = "Consumo de Alcohol",
+    title = "Los tomadores ocasionales son más obesos",
+    subtitle = "Los tomadores ocasionales son más obesos grado 2 y 3",
+    caption = "Datos del dataset de riesgo de obesidad de Kaggle"
+  ) +
+  theme_linedraw()
+  
+# Agrupar la tabla de obesidad por consumo de alcohol y resumir por
+# índice de masa corporal
+df_obesidad |>
+  group_by(consume_alcohol) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    avg_imc = mean(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# A tibble: 3 × 3
+# Groups:   consume_alcohol [3]
+#  consume_alcohol med_imc avg_imc
+#  <ord>             <dbl>   <dbl>
+#1 nunca              27.6    26.7
+#2 ocasional          32.2    31.6
+#3 frecuente          27.0    27.0
+  
+###############################
+##
+## 14.- Medio de transporte
+## 
+###############################
+
+# Conocer el tipo de la variable de medio de transporte
+class(df_obesidad$medio_transporte) # produce: factor
+# Conocer los valores de la variable de medio de transporte 
+unique(df_obesidad$medio_transporte) # produce:
+#[1] publico auto    camina  moto    <NA>   
+#  Levels: publico auto moto bicicleta camina
+
+# Diagrama de caja que relaciona el medio de transporte con el
+# índice de masa corporal
+ggplot(df_obesidad, aes(x = medio_transporte, y = imc)) +
+  geom_boxplot() +
+  labs(
+    x = "Medio de transporte",
+    y = "Índice de masa corporal",
+    title = "Los que no usan transporte público ni auto son más delgados",
+    subtitle = "Los que usan transporte público tienen un imc mayor a 30",
+    caption = "Datos del dataset de riesgo de obesidad de Kaggle"
+  ) +
+  theme_linedraw()
+
+# Gráfico de barras que relaciona el medio de transporte con el 
+# tipo de obesidad
+ggplot(df_obesidad, aes(x = medio_transporte, 
+                        fill = tipo_obesidad)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(name = "Porcentaje", labels = label_percent()) +
+  labs(
+    x = "Medio de transporte",
+    color = "Tipo de Obeisdad",
+    title = "Los que caminan y usan bicicleta tienen menos obesidad",
+    subtitle = "Los que usan auto y transporte público tienen más obesidad",
+    caption = "Datos del dataset de riesgo de obesidad de Kaggle"
+  ) +
+  theme_linedraw()
+
+# Agrupar por medio de transporte y resumir por índice de masa 
+# corporal
+df_obesidad |>
+  group_by(medio_transporte) |>
+  summarise(
+    med_imc = median(imc, na.rm = TRUE),
+    avg_imc = mean(imc, na.rm = TRUE),
+    .groups = "keep"
+  ) # produce:
+# A tibble: 5 × 3
+# Groups:   medio_transporte [5]
+#  medio_transporte med_imc avg_imc
+#  <fct>              <dbl>   <dbl>
+#1 publico             30.0    30.5
+#2 auto                29.4    29.9
+#3 moto                24.5    25.5
+#4 bicicleta           24.4    24.5
+#5 camina              24.2    23.7
+
+# Contar por tipo de obesidad y medio de transporte, agrupar por tipo
+# de obesidad y elegir el máximo. Sacar la moda de medio de 
+# transporte  por tipo de obesidad
+df_obesidad |>
+  count(tipo_obesidad, medio_transporte) |>
+  group_by(tipo_obesidad) |>
+  slice_max(n, n = 1) #  produce:
+# A tibble: 6 × 3
+# Groups:   tipo_obesidad [6]
+#  tipo_obesidad medio_transporte     n
+#  <ord>         <fct>            <int>
+#1 desnutricion  publico           2111
+#2 peso_normal   publico           2846
+#3 sobrepeso     publico           3386
+#4 obesidad_1    publico           2301
+#5 obesidad_2    publico           2818
+#6 obesidad_3    publico           3225
+
+# Moda con 3 tipos de peso 
+df_sobre_obesidad |>
+  count(imc_grupos3, medio_transporte) |>
+  group_by(imc_grupos3) |>
+  slice_max(n, n = 1) # produce:
+# A tibble: 3 × 3
+# Groups:   imc_grupos3 [3]
+#  imc_grupos3 medio_transporte     n
+#  <ord>       <fct>            <int>
+#1 peso_normal publico           2846
+#2 sobrepeso   publico           3386
+#3 obesidad    publico           8344
