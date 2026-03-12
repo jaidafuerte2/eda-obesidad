@@ -34,8 +34,8 @@ df_corazon <- df_corazon |>
     tiene_diabetes = Diabetes,
     imc = BMI,
     tiene_presion_alta = High.Blood.Pressure,
-    bajo_colesterol_hdl = Low.HDL.Cholesterol,
-    alto_colesterol_ldl = High.LDL.Cholesterol,
+    tiene_bajo_hdl = Low.HDL.Cholesterol,
+    tiene_alto_ldl = High.LDL.Cholesterol,
     toma_alcohol = Alcohol.Consumption,
     tiene_estres = Stress.Level,
     horas_sueno = Sleep.Hours,
@@ -393,4 +393,89 @@ df_corazon <- df_corazon |>
 class(df_corazon$tiene_presion_alta) # produce: "factor"
 unique(df_corazon$tiene_presion_alta) # produce:
 #[1] si   no   <NA>
+#Levels: no si
+
+##############################################
+##
+## Tranformaciones de bajo colesterol hdl
+##
+##############################################
+
+# Conocer el tipo de la variable de bajo colesterol hdl
+class(df_corazon$tiene_bajo_hdl) # produce:  character
+# Conocer los valores de la variable de bajo colesterol hdl
+unique(df_corazon$tiene_bajo_hdl) # produce:
+#[1] "Yes" "No"  ""   
+sum(df_corazon$tiene_bajo_hdl == "") # produce: 25
+
+# Cambiar las cadenas vacías de bajo colesterol hdl a valores 
+# faltantes
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_bajo_hdl = na_if(tiene_bajo_hdl, "")
+  )
+sum(is.na(df_corazon$tiene_bajo_hdl)) # produce: 25
+
+# Cambiar a español los valores de bajo colesterol hdl
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_bajo_hdl = recode(
+      tiene_bajo_hdl,
+      "Yes" = "si",
+      "No" = "no"
+    )
+  )
+unique(df_corazon$tiene_bajo_hdl) # produce: [1] "si" "no" NA 
+
+# Cambiar el tipo de la variable de bajo colesterol hdl de 
+# character a factor
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_bajo_hdl = factor(tiene_bajo_hdl)
+  )
+class(df_corazon$tiene_bajo_hdl) # produce: "factor"
+unique(df_corazon$tiene_bajo_hdl) # produce:
+#[1] si   no   <NA>
+#Levels: no si
+
+#############################################
+##
+## Transformaciones de alto colesterol ldl
+##
+#############################################
+
+# Conocer el tipo de la variable de alto colesterol ldl
+class(df_corazon$tiene_alto_ldl) # produce: character
+# Conocer los valores de la variable de alto colesterol ldl
+unique(df_corazon$tiene_alto_ldl) # produce: [1] "No"  "Yes" ""
+sum(df_corazon$tiene_alto_ldl == "") # produce: 26
+
+# Cambiar las cadenas vacías de alto colesterol ldl a valores
+# faltantes
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_alto_ldl = na_if(tiene_alto_ldl, "")
+  )
+sum(is.na(df_corazon$tiene_alto_ldl)) # produce: 26
+
+# Cambiar a español los valores de la variable de alto colesterol ldl
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_alto_ldl = recode(
+      tiene_alto_ldl,
+      "Yes" = "si",
+      "No" = "no"
+    )
+  )
+unique(df_corazon$tiene_alto_ldl) # produce: [1] "no" "si" NA  
+
+# Cambiar el tipo de la variable de alto colesterol ldl de character
+# a factor
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_alto_ldl = factor(tiene_alto_ldl)
+  )
+class(df_corazon$tiene_alto_ldl) # produce: "factor"
+unique(df_corazon$tiene_alto_ldl) # produce:
+#[1] no   si   <NA>
 #Levels: no si
