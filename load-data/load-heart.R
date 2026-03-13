@@ -137,6 +137,25 @@ sum(is.na(df_corazon$imc)) # produce: 22
 
 #################################
 ##
+## Transformaciones de edad
+##
+#################################
+
+# Conocer el tipo de la variable edad
+class(df_corazon$edad) # produce:  numeric
+# Conocer los valores de la variable edad
+unique(df_corazon$edad) # produce:
+#[1] 56 69 46 32 60 25 78 38 75 36 40 28 41 70 53 57 20 39 19 61 47 55 77
+#[24] 50 29 42 66 44 76 80 59 45 33 79 64 68 72 74 54 24 26 35 21 31 67 43
+#[47] 37 52 34 23 71 51 27 48 65 62 58 18 22 30 49 73 63 NA
+
+sum(is.na(df_corazon$edad)) # produce: 29
+
+min(df_corazon$edad, na.rm = TRUE) # produce: 18
+max(df_corazon$edad, na.rm = TRUE) # produce: 80
+
+#################################
+##
 ## Transformaciones de Género
 ##
 #################################
@@ -176,6 +195,56 @@ class(df_corazon$genero) # produce: factor
 unique(df_corazon$genero) # produce: 
 #[1] masculino femenino  <NA>     
 #Levels: femenino masculino
+
+########################################
+##
+## Tranformaciones de presión arterial
+##
+########################################
+
+# Conocer el tipo de la variable de presión arterial
+class(df_corazon$presion_arterial) # produce: numeric
+# Conocer los valores de la variable de presión arterial
+unique(df_corazon$presion_arterial) # produce:
+#[1] 153 146 126 122 166 152 121 161 135 144 179 134 143 150 133 173 125
+#[18] 136 137 139 170 159 158 171 151 163 128 165 129 168 155 142 127 132
+#[35] 176 141 160 154 164 138 149 178 140 147  NA 175 162 157 174 123 145
+#[52] 124 148 169 172 167 131 120 177 130 180 156
+
+# Conocer la cuántos valores faltantes tiene la variable de presión
+# arterial
+sum(is.na(df_corazon$presion_arterial)) # produce: 19
+
+# Valor mínimo de la variable de presión arterial
+min(df_corazon$presion_arterial, na.rm = TRUE) # produce: 120
+
+# Valor máximo de la variable de presión arterial
+max(df_corazon$presion_arterial, na.rm = TRUE) # produce: 180
+
+###################################
+##
+## Tranformaciones de nivel de
+## colesterol
+##
+###################################
+
+# Conocer el tipo de la variable de nivel de colesterol
+class(df_corazon$nivel_colesterol) # produce: numeric
+# Conocer los valores de la variable de nivel de colesterol
+unique(df_corazon$nivel_colesterol)[1:20] # produce: 
+#[1] 155 286 216 293 242 257 175 187 291 252 191 296 215 290 255 245 219
+#[18] 246 268 300
+
+# Conocer cuanto valores faltantes hay en la variable nivel de 
+# colesterol
+sum(is.na(df_corazon$nivel_colesterol)) # produce: 30
+
+# Valor mínimo de nivel de colesterol
+min(df_corazon$nivel_colesterol, na.rm = TRUE) # produce: 150
+# Valor máximo de nivel de colesterol
+max(df_corazon$nivel_colesterol, na.rm = TRUE) # produce: 300
+
+
 
 ####################################
 ##
@@ -574,3 +643,214 @@ class(df_corazon$tiene_estres) # produce: "factor"
 unique(df_corazon$tiene_estres) # produce:
 #[1] moderado mucho    poco     <NA>    
 #Levels: poco moderado mucho
+
+####################################
+##
+## Transformaciones de horas sueño
+##
+####################################
+
+# Conocer el tipo de la variable de horas sueño
+class(df_corazon$horas_sueno) # produce: numeric
+# Conocer los valores de la variable de horas sueño
+unique(df_corazon$horas_sueno)[1:20] # produce:
+#[1] 7.633228 8.744034 4.440440 5.249405 7.030971 5.504876 9.240911
+#[8] 7.841008 6.941403 4.002662 9.151889 6.765162 7.188455 8.189629
+#[15] 9.624732 4.949260 4.427105 4.731453 8.444345 4.775667
+
+# Conocer los valores faltantes de la variable de horas sueño
+sum(is.na(df_corazon$horas_sueno)) # produce: 25
+
+# Valor mínimo de la variable de horas sueño
+min(df_corazon$horas_sueno, na.rm = TRUE) # produce: [1] 4.000605
+
+# Valor máximo de la variable de horas sueño
+max(df_corazon$horas_sueno, na.rm = TRUE) # produce: [1] 9.999952
+
+##########################################
+##
+## Transformaciones de Consumo de Azúcar
+## 
+##########################################
+
+# Conocer el tipo de la variable de consumo de azúcar
+class(df_corazon$come_azucar) # produce: "character"
+# Conocer los valores de la variable de consumo de azúcar 
+unique(df_corazon$come_azucar) # produce: 
+#[1] "Medium" "Low"    "High"   "" 
+# Conocer cuántas cadenas vacías tiene la variable de consumo de azúcar
+sum(df_corazon$come_azucar == "") # produce: 30
+
+# Tranformar las cadenas vacías de la variable de consumo de azúcar
+# a valores faltantes
+df_corazon <- df_corazon |>
+  mutate(
+    come_azucar = na_if(come_azucar, "")
+  )
+sum(is.na(df_corazon$come_azucar)) # produce: 30
+
+# Cambiar a español los valores de la variable de consumo de azúcar
+df_corazon <- df_corazon |>
+  mutate(
+    come_azucar = recode(
+      come_azucar,
+      "Low" = "poco",
+      "Medium" = "moderado",
+      "High" = "alto"
+    )
+  )
+unique(df_corazon$come_azucar) # produce:
+#[1] "moderado" "poco"     "alto"     NA 
+
+# Cambiar el tipo de la variable de consumo de azúcar de character
+# a factor ordenado
+df_corazon <- df_corazon |>
+  mutate(
+    come_azucar = factor(
+      come_azucar,
+      levels = c("poco", "moderado", "alto")
+    )
+  )
+class(df_corazon$come_azucar) # produce: "factor"
+unique(df_corazon$come_azucar) # produce:
+#[1] moderado poco     alto     <NA>    
+#Levels: poco moderado alto
+
+#######################################
+##
+## Transformaciones de triglicéridos
+##
+#######################################
+
+# Conocer el tipo de la variable de triglicéridos
+class(df_corazon$trigliceridos) # produce:  numeric
+
+# Conocer los valores de la variable de triglicéridos
+unique(df_corazon$trigliceridos)[1:20] # produce:
+[1] 342 133 393 293 263 126 107 228 317 199 231 109 196 178 343 397 212
+[18] 384 346 290
+
+# Conocer cuántos valores faltantes tiene la variable triglicéridos
+sum(is.na(df_corazon$trigliceridos)) # produce: 26
+
+# Valor mínimo de la variable triglicéridos
+min(df_corazon$trigliceridos, na.rm = TRUE) # produce: 100
+# Valor máximo de la variable triglicéridos
+max(df_corazon$trigliceridos, na.rm = TRUE) # produce: 400
+
+########################################
+##
+## Tranformaciones de glucosa en sangre
+##
+########################################
+
+# Conocer el tipo de la variable de glucosa en sangre
+class(df_corazon$glucosa_sangre) # produce: numeric
+
+# Conocer los valores de la variable de glucosa en sangre
+unique(df_corazon$glucosa_sangre)[1:20] # produce:
+#[1]  NA 157  92  94 154  91  85 111 103  96 139 142 102 124 155 160 132
+#[18] 106 144 135  80 116 122 146 126 101  95 151  90 104 129  86  89  84
+#[35]  82 110 112 127 134  99 131  98  97 159 153 149  87 147 114 119 100
+#[52] 128 130 109 125 121 118 138 140 156 133 117 141 108 136 107 143 145
+#[69] 152  88 113 148 120 150 137  83  93 105 123 115 158  81
+
+# Conocer cuántos valores faltantes tiene la variable de glucosa en 
+# sangre
+sum(is.na(df_corazon$glucosa_sangre)) # produce: 22
+
+# Valor mínimo de la variable de glucosa en sangre:
+min(df_corazon$glucosa_sangre, na.rm = TRUE) # produce: 80
+
+# Valor máximo de la variable de glucosa en sangre:
+max(df_corazon$glucosa_sangre, na.rm = TRUE) # produce: 160
+
+#########################################
+##
+## Tranformaciones de PCR
+## 
+#########################################
+
+# Conocer el tipo de la variable de PCR
+class(df_corazon$pcr) # produce: numeric
+
+# Conocer los valores de la variable de PCR
+unique(df_corazon$pcr)[1:20] # produce: 
+#[1] 12.96924569  9.35538940 12.70987253 12.50904619 10.38125923
+#[6]  4.29757473 11.58298299  4.92938115  5.11901481 10.00569840
+#[11] 13.58334685  6.69478476  8.42672501  3.38083906 10.05179068
+#[16]  4.62001186 13.30906912  0.02843593  7.17629144 12.47282074
+
+# Conocer cuántos valores faltantes tiene la variable de PCR
+sum(is.na(df_corazon$pcr)) # produce: 26
+
+# Valor mínimo de la variable de pcr
+min(df_corazon$pcr, na.rm = TRUE) # produce: [1] 0.003646712
+
+# Valor máximo de la variable de pcr
+max(df_corazon$pcr, na.rm = TRUE) # produce: 14.99
+
+########################################
+##
+## Trandformaciones de Homocisteína
+##
+########################################
+
+# Conocer el tipo de la variable de homociteína
+class(df_corazon$homocisteina) # produce: "numeric"
+
+# Conocer los valores de la variable de homociteína
+unique(df_corazon$homocisteina)[1:20] # produce:
+#[1] 12.387250 19.298875 11.230926  5.961958  8.153887 10.815983
+#[7] 19.659461 17.146599  6.051129  7.604357 13.783722 19.440650
+#[13] 11.146408 17.478149  9.897205  7.919947  9.784993 14.306619
+#[19] 13.868994 11.703830
+
+# Saber cuántos valores faltantes hay en la variable de homocisteína
+sum(is.na(df_corazon$homocisteina)) # produce: 20
+
+# Valor mínimo de la variable homocisteína
+min(df_corazon$homocisteina, na.rm = TRUE) # produce: [1] 5.000236
+
+# Valor máximo de la variable homocisteína
+max(df_corazon$homocisteina, na.rm = TRUE) # produce: [1] [1] 19.99904
+
+
+##########################################
+##
+## Transformaciones de enfermedad
+##              cardíaca
+##
+##########################################
+
+
+# Conocer el tipo de la variable de enfermedad cardíaca 
+class(df_corazon$tiene_enfermedad_corazon) # produce: "character"
+# Conocer los valores de la variable de enfermedad cardíaca
+unique(df_corazon$tiene_enfermedad_corazon) # produce:
+#[1] "No"  "Yes"
+
+# Cambiar a español los valores de la variable de enfermedad
+# cardíaca
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_enfermedad_corazon = recode(
+      tiene_enfermedad_corazon,
+      "Yes" = "si",
+      "No" = "no"
+    )
+  )
+unique(df_corazon$tiene_enfermedad_corazon) # produce:
+#[1] "no" "si"
+
+# Cambiar el tipo de la variable de enfermedad cardíaca de character
+# a factor
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_enfermedad_corazon = factor(tiene_enfermedad_corazon)
+  )
+class(df_corazon$tiene_enfermedad_corazon) # produce: factor
+unique(df_corazon$tiene_enfermedad_corazon) # produce:
+#[1] no si
+#Levels: no si
+
