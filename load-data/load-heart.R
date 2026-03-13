@@ -479,3 +479,98 @@ class(df_corazon$tiene_alto_ldl) # produce: "factor"
 unique(df_corazon$tiene_alto_ldl) # produce:
 #[1] no   si   <NA>
 #Levels: no si
+
+###########################################
+##
+## Transformaciones de consumo de alcohol
+##
+###########################################
+
+class(df_corazon$toma_alcohol) #produce: [1] "character"
+unique(df_corazon$toma_alcohol) # produce:
+#[1] "High"   "Medium" "Low"    "None"   ""  
+sum(df_corazon$toma_alcohol == "") # produce: 32
+
+# Transformar las cadenas vacías de consumo de alcohol a valores
+# faltantes
+df_corazon <- df_corazon |>
+  mutate(
+    toma_alcohol = na_if(toma_alcohol, "")
+  )
+sum(is.na(df_corazon$toma_alcohol)) # produce: 32
+
+# Pasar a español los valores de la variable de consumo de alcohol
+df_corazon <-df_corazon |>
+  mutate(
+    toma_alcohol = recode(
+      toma_alcohol,
+      "None" = "nada",
+      "Low" = "poco",
+      "Medium" = "moderado",
+      "High" = "mucho"
+    )
+  )
+unique(df_corazon$toma_alcohol) # produce:
+#[1] "mucho"    "moderado" "poco"     "nada"     NA  
+
+# Cambiar el tipo de la variable de consumo de alcohol de character
+# a factor
+df_corazon <- df_corazon |>
+  mutate(
+    toma_alcohol = factor(
+      toma_alcohol,
+      levels = c("mucho", "moderado", "poco", "nada")
+    )
+  )
+class(df_corazon$toma_alcohol) # produce: factor
+unique(df_corazon$toma_alcohol) # produce:
+#[1] mucho    moderado poco     nada     <NA>    
+#Levels: mucho moderado poco nada
+
+##############################################
+##
+## Transformaciones de la variable estrés
+##
+##############################################
+
+# Conocer el tipo de la variable estrés
+class(df_corazon$tiene_estres) # produce: character
+# Conocer los valores de la varaible estrés
+unique(df_corazon$tiene_estres) # produce:
+#[1] "Medium" "High"   "Low"    ""
+# Conocer la cantidad de cadenas vacías de la variable de estrés
+sum(df_corazon$tiene_estres == "" ) # produce: 22
+
+# Transformar las cadenas vacías de la variable estrés a valores
+# faltantes
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_estres = na_if(tiene_estres, "")
+  )
+sum(is.na(df_corazon$tiene_estres)) # produce: 22
+
+# Transformar a español los valores de la variable de estrés
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_estres = recode(
+      tiene_estres,
+      "Low" = "poco",
+      "Medium" = "moderado",
+      "High" = "mucho"
+    )
+  )
+unique(df_corazon$tiene_estres) # produce:
+#[1] "moderado" "mucho"    "poco"     NA    
+
+# Tranformar el tipo de la variable de estrés de character a factor
+df_corazon <- df_corazon |>
+  mutate(
+    tiene_estres = factor(
+      tiene_estres,
+      levels = c("poco", "moderado", "mucho")
+    )
+  )
+class(df_corazon$tiene_estres) # produce: "factor"
+unique(df_corazon$tiene_estres) # produce:
+#[1] moderado mucho    poco     <NA>    
+#Levels: poco moderado mucho
