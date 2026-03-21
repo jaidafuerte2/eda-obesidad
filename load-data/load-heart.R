@@ -727,8 +727,8 @@ class(df_corazon$trigliceridos) # produce:  numeric
 
 # Conocer los valores de la variable de triglicéridos
 unique(df_corazon$trigliceridos)[1:20] # produce:
-[1] 342 133 393 293 263 126 107 228 317 199 231 109 196 178 343 397 212
-[18] 384 346 290
+#[1] 342 133 393 293 263 126 107 228 317 199 231 109 196 178 343 397 212
+#[18] 384 346 290
 
 # Conocer cuántos valores faltantes tiene la variable triglicéridos
 sum(is.na(df_corazon$trigliceridos)) # produce: 26
