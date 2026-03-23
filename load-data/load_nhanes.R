@@ -24,6 +24,12 @@ library(tidyverse)
 ##
 #################################
 
+demographic <- read_csv(
+  "eda-obesidad/data/demographic.csv",
+  guess_max = 10000,
+  show_col_types = FALSE
+)
+
 ######### SEQN ############
 
 class(demographic$SEQN) # produce: [1] "integer"
@@ -95,6 +101,9 @@ head(demografico) # produce:
 ##
 #################################
 
+examination <- read_csv("eda-obesidad/data/examination.csv",
+                        guess_max = 10000,
+                        show_col_types = FALSE)
 
 ########### Presión Arterial #############
 
@@ -222,6 +231,10 @@ head(examina) # produce:
 ## Diet
 ##
 #################################
+
+diet <- read_csv("eda-obesidad/data/diet.csv",
+                 guess_max = 10000,
+                 show_col_types = FALSE)
 
 ############ Sigues alguna dieta #################
 
@@ -584,6 +597,10 @@ head(dieta) # produce:
 ##
 #################################
 
+labs <- read_csv("eda-obesidad/data/labs.csv",
+                 guess_max = 10000,
+                 show_col_types = FALSE)
+
 ############# Insulina en ayunas ################
 
 # LBXIN - Insulin (uU/mL)
@@ -724,6 +741,10 @@ head(laboratorio) # produce:
 ## Questionnaire
 ##
 #################################
+
+questionnaire <- read_csv("eda-obesidad/data/questionnaire.csv",
+                          guess_max = 10000,
+                          show_col_types = FALSE)
 
 ####### Le dijeron que tenía presión arterial alta #######
 
@@ -968,3 +989,395 @@ summary(questionnaire$PAQ640) # produce:
 unique(questionnaire$PAQ640) # produce: [1] NA  6  7  5  2  3  1  4
 # Donde los números de refieren a los números de días
 
+######### Actividades recreativas vigorosas #############
+
+# PAQ650 - Actividades recreativas vigorosas
+
+# Se refiere a hacer deportes (no actividad laboral ni transporte) o
+# actividad física de alta intensidad que provoque un gran aumento
+# de la frecuencia respiratoria o cardíaca como correr o jugar 
+# baloncesto por al menos 10 minutos
+
+summary(questionnaire$PAQ650) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   1.000   2.000   1.713   2.000   9.000    3028
+
+unique(questionnaire$PAQ650) # produce: [1]  2 NA  1  9
+# Dónde 1 es sí, 2 es no y 9 es no lo sé
+
+######### Días de actividades recreativas vigorosas ############
+
+# PAQ655 - Días de actividades recreativas vigorosas
+
+summary(questionnaire$PAQ655) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   2.000   3.000   3.663   5.000  99.000    8117
+
+unique(questionnaire$PAQ655) # produce: 
+#[1] NA  6  2  5  4  3  7  1 99
+# Donde los números representan días de la semana y 99 es no lo sé
+
+######### Minutos de actividades recreativas vigorosas ###########
+
+# PAD660 - Minutos de actividades recreativas vigorosas
+
+# Se refiere a minutos de actividades recreativas de alta intensidad
+# realizadas en un día típico que no son trabajo ni transporte
+
+summary(questionnaire$PAD660) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#10.00   40.00   60.00   91.97  120.00 9999.00    8120
+
+unique(questionnaire$PAD660)[1:20] # produce:
+# [1]  NA 120  40 180  60  70  20  90 240  30  45  15  10  75  25  35  11
+#[18] 150  14 360
+
+########## Actividades recreativas moderadas ############
+
+# PAQ665 - Actividades recreativas moderadas
+
+# Se refiere a hacer deportes (no actividad laboral ni transporte) o
+# actividad física de alta intensidad que provoque un aumento ligero
+# de la frecuencia respiratoria o cardíaca como andar a paso ligero, 
+# ciclear o jugar voleibol por al menos 10 minutos
+
+summary(questionnaire$PAQ665) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   1.000   2.000   1.574   2.000   9.000    3030 
+
+unique(questionnaire$PAQ665) # produce: [1]  2  1 NA  9
+# Donde 1 es sí, 2 es no y 9 es no lo sé
+
+######### Días de actividades recreativas moderadas ###########
+
+# PAQ670 - Días de actividades recreativas moderadas
+
+summary(questionnaire$PAQ670) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   2.000   3.000   3.636   5.000  99.000    7115
+
+unique(questionnaire$PAQ670) # produce:
+# [1] NA  1  4  2  7  3  5  6 99
+# Donde los números son número de días a la semana y 99 es no lo sé
+
+######### Minutos de actividades recreativas moderadas ###########
+
+# PAD675 - Minutos de actividades recreativas moderadas
+
+# Se refiere a minutos de actividades recreativas de poca intensidad
+# realizadas en un día típico que no son trabajo ni transporte
+
+summary(questionnaire$PAD675) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   30.00   60.00   63.19   60.00  900.00    7118 
+
+unique(questionnaire$PAD675)[1:20] # produce:
+#[1]  NA 180  30  60  50  20 120  40  45 300  10  25   0  15  39 480  90
+#[18] 240 360  75
+# Donde 7777 es rechazado y 9999 es no lo sé
+
+############# Minutos de actividad sedentaria ############
+
+# PAD680 - Minutos de actividad sedentaria
+
+# Se refiere al tiempo que una persona pasa sentada en trabajo,
+# quehaceres domésticos, bus, etc. No incluye tiempo durmiendo
+
+summary(questionnaire$PAD680) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+# 0.0   300.0   480.0   478.5   600.0  9999.0    3036
+
+unique(questionnaire$PAD680) # produce:
+#[1]  600  540  300   NA  480  360   60   30  120  240  720 1080  960
+#[14]  420  180  840  780  660   20  900  150 9999    1 1020   15    5
+#[27]   90 7777 1140   45   81    0   25  105   10 1200  490
+# Donde: 7777 es rechazado y 9999 es no lo sé
+
+######## Días de actividad física de al menos 60 min. #########
+
+# PAQ706 - Días de actividad física de al menos 60 min.
+
+# Actividad física que aumentó el ritmo cardíaco o respiratorio 
+# en algún momento de al menos 60 minutos
+
+summary(questionnaire$PAQ706) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.000   4.000   7.000   5.802   7.000  99.000    7186 
+
+unique(questionnaire$PAQ706) # produce:
+# [1] NA  5  4  7  1  3  6  2 99  0
+# Donde 99 es no lo sé
+
+########### Horas viendo televisión o videos ############
+
+# PAQ710 - Horas viendo televisión o videos en los últimos 30 días
+
+summary(questionnaire$PAQ710) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.000   1.000   2.000   2.516   4.000  99.000     727 
+
+unique(questionnaire$PAQ710) # produce:
+# [1]  2  4  3  1  5 NA  0  8 99 77
+# Donde 0 es menos de una hora, 5 es 5 horas, 8 es no veo tv ni videos,
+# 99 es no lo sé y 77 es rechazado
+
+########### Horas de uso de la computadora  ##############
+
+# PAQ715 - Horas de uso de la computadora en los últimos 30 días
+
+# Se refiere al tiempo de uso de computadoras y videojuegos por fuera
+# de la escuela
+
+summary(questionnaire$PAQ715) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00    0.00    2.00    3.16    8.00    8.00     727 
+
+unique(questionnaire$PAQ715) # produce:
+#[1]  8  0  2  1 NA  5  3  4
+
+######## Toma aspirina en dosis baja por prescripción #########
+
+# RXQ515 - ¿Siguió las indicaciones y tomó aspirina en dosis bajas?
+
+summary(questionnaire$RXQ515) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   1.000   1.000   1.386   2.000   4.000    8891 
+
+unique(questionnaire$RXQ515) # produce: [1]  1  3 NA  2  4
+# Donde 1 es sí, 2 es no , 3 a veces y 4 es dejé de usar por los 
+# efectos secundarios
+
+######### Toma aspirina en dosis bajas por su cuenta ############
+
+# RXQ520 - ¿Toma aspirina en dosis bajas por su cuenta?
+
+summary(questionnaire$RXQ520) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   2.000   2.000   1.962   2.000   9.000    7644 
+
+unique(questionnaire$RXQ520) # produce: [1] NA  2  1  9  7
+
+########## Dosis de aspirina en miligramos ###############
+
+# RXD530 - Dosis de aspirina en miligramos (mg)
+
+summary(questionnaire$RXD530) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  20      81      81    1172      81   99999    9042 
+
+unique(questionnaire$RXD530) # produce:
+#[1]    81    NA   325    20 99999   400   500   150   120    90    75
+#[12]   200   250   163
+# Donde 99999 es no lo sé
+
+############ ¿Cuántas horas duermes? ################
+
+# SLD010H - ¿Cuántas horas duermes?
+
+summary(questionnaire$SLD010H) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#2.00    6.00    7.00    7.05    8.00   99.00    3714
+
+unique(questionnaire$SLD010H) # produce:
+#[1]  7  9  8 NA  5  6 10  4  3 12 11  2 99
+# Donde: 12 es 12 o más horas, y 99 es no lo sé
+
+########### Trastorno del sueño por médico ###############
+
+# SLQ060 - ¿Alguna vez le ha dicho su médico que tiene un trastorno del sueño?
+
+summary(questionnaire$SLQ060) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   2.000   2.000   1.925   2.000   9.000    3711 
+
+unique(questionnaire$SLQ060) # produce: [1]  2 NA  1  9
+# Donde 1 es sí, 2 es no, 9 es no lo sé
+
+############# Estatura Autoinformada #################  
+
+# WHD010 - Estatura actual autoinformada (pulgadas)
+
+summary(questionnaire$WHD010) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#48.0    63.0    66.0   163.2    69.0  9999.0    3736 
+
+unique(questionnaire$WHD010) # produce:
+#[1]   69   71   70   NA   67   64   61   60   62   68   66   74   63
+#[14]   75   72   65   73   76   77 9999   59   58   57   55   79   54
+
+######## Peso actual autoinformado #############
+
+# WHD020 - Peso actual autoinformado (libras)
+
+summary(questionnaire$WHD020) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#75.0   143.0   170.0   254.2   200.0  9999.0    3745 
+
+unique(questionnaire$WHD020)[1:20] # produce:
+#[1]  180  200  195   NA  120  235  212  137  165  105  224  128  145
+#[14] 9999  175  104  205  170  240  230
+
+############  Peso hace un año ##############
+ 
+# WHD050 - Peso autoinformado - hace 1 año (libras)
+
+summary(questionnaire$WHD050) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#75.0   140.0   170.0   312.5   200.0  9999.0    3753
+
+(questionnaire$WHD050)[1:20] # produce:
+#[1] 210 160 195  NA 150 240  NA 212 190 137 165 110  NA  NA 222  NA  NA
+#[18] 123  NA 165
+
+############### Cambio de peso intencional ###############
+
+# WHQ060 - Cambio de peso intencional
+
+summary(questionnaire$WHQ060) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.00    1.00    1.00    1.37    2.00    9.00    8936 
+
+unique(questionnaire$WHQ060) # produce: [1]  1 NA  2  9
+# Donde 1 es sí, 2 es no y 9 es no sé
+
+############## Intentó perder peso el año pasado ##############
+
+# WHQ070 - Intentó perder peso el año pasado
+
+summary(questionnaire$WHQ070) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   1.000   2.000   1.641   2.000   9.000    4501 
+
+unique(questionnaire$WHQ070) # produce: [1] NA  2  1  9
+# Donde 1 es sí, 2 es no y 9 es no sé
+
+############# Comí menos para bajar de peso ################
+
+# WHD080A - Comí menos para bajar de peso
+
+summary(questionnaire$WHD080A) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  10      10      10      10      10      10    8482 
+unique(questionnaire$WHD080A) # produce: [1] NA 10
+# Donde 10 es sí
+
+########## Cambié a alimentos con menos calorías #############
+
+#WHD080B - Cambié a alimentos con menos calorías.
+
+summary(questionnaire$WHD080B) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  11      11      11      11      11      11    9292
+
+unique(questionnaire$WHD080B) # produce: [1] NA 11
+
+########### Comí menos grasa para bajar de peso ###############
+
+# WHD080C - Comí menos grasa para bajar de peso
+
+summary(questionnaire$WHD080C) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  12      12      12      12      12      12    9373 
+     
+unique(questionnaire$WHD080C) # produce: [1] NA 12
+
+############### Hacer ejercicio para bajar de peso ##############
+
+# WHD080D - Hacer ejercicio para bajar de peso
+
+summary(questionnaire$WHD080D) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  13      13      13      13      13      13    8345 
+
+unique(questionnaire$WHD080D) # produce: [1] NA 13
+# Donde 13 es sí
+
+############### Comidas Omitidas ##################
+
+# WHD080E - Comidas omitidas
+
+summary(questionnaire$WHD080E) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  14      14      14      14      14      14    9776
+
+unique(questionnaire$WHD080E) # produce: [1] NA 14
+
+####### Consumió alimentos o productos dietéticos. ######## 
+
+# WHD080F - Consumió alimentos o productos dietéticos.
+
+summary(questionnaire$WHD080F) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  15      15      15      15      15      15    9942 
+
+unique(questionnaire$WHD080F) # produce: [1] NA 15
+
+######## Se unió a un programa de pérdida de peso ########
+
+# WHD080H - Se unió a un programa de pérdida de peso.
+
+summary(questionnaire$WHD080H) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  17      17      17      17      17      17   10061 
+
+unique(questionnaire$WHD080H) # produce: [1] NA 17
+
+######## Tomar agua para adelgazar ########## 
+
+# WHD080M - Bebió mucha agua 
+
+summary(questionnaire$WHD080M) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  34      34      34      34      34      34    9142 
+
+unique(questionnaire$WHD080M) # produce: [1] NA 34
+
+######## Comer menos carbohidratos para adelgazar ##########
+
+# WHD080O - Consumió menos carbohidratos
+
+summary(questionnaire$WHD080O) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  41      41      41      41      41      41    9486 
+
+unique(questionnaire$WHD080O) # produce: [1] NA 41
+
+########## Fumar para adelgazar ###########
+
+# WHD080P - Empezó a echar humo o volvió a echar humo
+
+summary(questionnaire$WHD080P) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  42      42      42      42      42      42   10156 
+
+unique(questionnaire$WHD080P) # produce: [1] NA 42
+
+######### Comer vegetales para adelgazar #############
+
+# WHD080Q - Comió más frutas, verduras y ensaladas.
+
+summary(questionnaire$WHD080Q) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#43      43      43      43      43      43    9054 
+
+unique(questionnaire$WHD080Q) # produce: [1] NA 43
+
+########### Comer menos azúcar para adelgazar #############
+
+# WHD080S - Comió menos azúcar, caramelos y dulces.
+
+summary(questionnaire$WHD080S) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  45      45      45      45      45      45    9232 
+
+unique(questionnaire$WHD080S) # produce: [1] NA 45
+
+######## Comer menos comida chatarra para adelgazar ############
+
+# WHD080T - Comió menos comida chatarra o comida rápida.
+
+summary(questionnaire$WHD080T) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#  46      46      46      46      46      46    9179 
+
+unique(questionnaire$WHD080T) # produce: [1] NA 46
