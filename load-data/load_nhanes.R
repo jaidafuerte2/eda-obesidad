@@ -581,7 +581,7 @@ unique(diet$DR1TP226)[1:20] # produce:
 
 # Seleccionar los distintos tipos de dietas y nutrientes
 dieta <- diet |>
-  select(DRQSDT1, DRQSDT2, DRQSDT3, DRQSDT4, DRQSDT6, DRQSDT7, DRQSDT9, 
+  select(SEQN, DRQSDT1, DRQSDT2, DRQSDT3, DRQSDT4, DRQSDT6, DRQSDT7, DRQSDT9, 
          DRQSDT10, DRQSDT11, DRQSDIET, DBD100, DR1TKCAL, DR1TPROT, DR1TCARB,
          DR1TSUGR, DR1TFIBE, DR1TTFAT, DR1TSFAT, DR1TMFAT,
          DR1TPFAT, DR1TCHOL, DR1TP182, DR1TP205, DR1TP226) 
@@ -726,7 +726,7 @@ unique(labs$LBDLYMNO)[1:20] # produce:
 # Seleccionar los exámenes de laboratorio más importantes
 # Seleccionar los distintos tipos de dietas y nutrientes
 laboratorio <- labs |>
-  select(LBXIN, LBXSGL, LBXSGTSI, LBXTC, LBDLDL, LBDHDD, LBXTR, 
+  select(SEQN, LBXIN, LBXSGL, LBXSGTSI, LBXTC, LBDLDL, LBDHDD, LBXTR, 
          LBDNENO, LBDLYMNO) 
 head(laboratorio) # produce:
 #   LBXIN LBXSGL LBXSGTSI LBXTC LBDLDL LBDHDD LBXTR LBDNENO LBDLYMNO
@@ -781,7 +781,7 @@ unique(questionnaire$BPQ080) # produce: [1]  1 NA  2  9
 
 ########### Medicamentos colesterol ################
 
-# BPQ100D - Ahora estoy tomando medicamentos recetados
+# BPQ100D - Ahora estoy tomando medicamentos para colesterol
 
 summary(questionnaire$BPQ100D) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1263,7 +1263,7 @@ unique(questionnaire$WHD080A) # produce: [1] NA 10
 
 ########## Cambié a alimentos con menos calorías #############
 
-#WHD080B - Cambié a alimentos con menos calorías.
+# WHD080B - Cambié a alimentos con menos calorías.
 
 summary(questionnaire$WHD080B) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1404,7 +1404,9 @@ summary(questionnaire$MCQ082) # produce:
 unique(questionnaire$MCQ082) # produce: [1]  2 NA  1  9
 # Donde 1 es sí, 2 es no y 9 es no sé
 
-######## MCQ086 - ¿Sigues una dieta sin gluten? #########
+######## ¿Sigues una dieta sin gluten? #########
+
+# MCQ086 - ¿Sigues una dieta sin gluten? 
 
 summary(questionnaire$MCQ086) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1415,7 +1417,7 @@ unique(questionnaire$MCQ086) # produce: [1]  2 NA  1  9
 
 ###### ¿Alguna vez el médico le dijo que tenía artritis? ######
 
-# MCQ160a - ¿Alguna vez el médico le dijo que tenía artritis?
+# MCQ160A - ¿Alguna vez el médico le dijo que tenía artritis?
 
 summary(questionnaire$MCQ160A) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1450,7 +1452,7 @@ unique(questionnaire$MCQ195) # produce: [1]  9 NA  2  4  1  3  7
 
 ############ Insuficiencia cardíaca ##############
 
-# MCQ160b - ¿Alguna vez le han dicho que tiene insuficiencia cardíaca?
+# MCQ160B - ¿Alguna vez le han dicho que tiene insuficiencia cardíaca?
 
 summary(questionnaire$MCQ160B) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1461,7 +1463,7 @@ unique(questionnaire$MCQ160B) # produce: [1]  2 NA  1  9
 
 ###### Edad a la que le diagnosticaron insuficiencia ######
 
-# MCQ180b - Edad a la que le diagnosticaron insuficiencia cardíaca
+# MCQ180B - Edad a la que le diagnosticaron insuficiencia cardíaca
 
 summary(questionnaire$MCQ180B) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1472,7 +1474,7 @@ unique(questionnaire$MCQ180B)[1:20] # produce:
 
 ########### Enfermedad Coronaria #############
 
-# MCQ160c - ¿Alguna vez te han dicho que tienes una enfermedad coronaria?
+# MCQ160C - ¿Alguna vez te han dicho que tienes una enfermedad coronaria?
 
 summary(questionnaire$MCQ160C) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1483,7 +1485,7 @@ unique(questionnaire$MCQ160C) # produce: [1]  2 NA  1  9
 
 ############## Edad Enfermedad Coronaria ################
 
-# MCQ180c - Edad a la que le diagnosticaron enfermedad coronaria
+# MCQ180C - Edad a la que le diagnosticaron enfermedad coronaria
 
 summary(questionnaire$MCQ180C) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1494,7 +1496,7 @@ unique(questionnaire$MCQ180C)[1:20] # produce:
 
 ########### Infarto Cardíaco #############
 
-# MCQ160e - ¿Alguna vez te han dicho que tuviste un ataque al corazón?
+# MCQ160E - ¿Alguna vez te han dicho que tuviste un ataque al corazón?
 
 summary(questionnaire$MCQ160E) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1505,7 +1507,7 @@ unique(questionnaire$MCQ160E) # produce: [1]  2 NA  1  9
 
 ######### Edad Infarto cardíaco ############
 
-# MCQ180e - Edad a la que le dijeron que había sufrido un infarto
+# MCQ180E - Edad a la que le dijeron que había sufrido un infarto
 
 summary(questionnaire$MCQ180E) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1516,7 +1518,7 @@ unique(questionnaire$MCQ180E)[1:20] # produce:
 
 ############ Derrame cerebral ###############
 
-# MCQ160f - ¿Alguna vez te han dicho que tuviste un derrame cerebral?
+# MCQ160F - ¿Alguna vez te han dicho que tuviste un derrame cerebral?
 
 summary(questionnaire$MCQ160F) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1527,7 +1529,7 @@ unique(questionnaire$MCQ160F) # produce: [1]  1  2 NA  9
 
 ############# Edad Derrame cerebral ###############
 
-#MCQ180f - Edad a la que le dijeron que había sufrido un derrame cerebral
+# MCQ180F - Edad a la que le dijeron que había sufrido un derrame cerebral
 
 summary(questionnaire$MCQ180F) # produce:
 #Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
@@ -1538,7 +1540,7 @@ unique(questionnaire$MCQ180F)[1:20] # produce:
 
 ############## Hipotiroidismo #################
 
-# MCQ160m - ¿Alguna vez te han dicho que tienes un problema de tiroides?
+# MCQ160M - ¿Alguna vez te han dicho que tienes un problema de tiroides?
   
 summary(questionnaire$MCQ160M) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1549,7 +1551,7 @@ unique(questionnaire$MCQ160M) # produce: [1]  2 NA  1  9
 
 ######## ¿Sigues teniendo problemas de tiroides? ########
 
-# MCQ170m - ¿Sigues teniendo problemas de tiroides?
+# MCQ170M - ¿Sigues teniendo problemas de tiroides?
 
 summary(questionnaire$MCQ170M) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1560,7 +1562,7 @@ unique(questionnaire$MCQ170M) # produce: [1] NA  1  2  9
 
 ############ Edad de hipotiroidismo ##############
 
-# MCQ180m - Edad a la que le diagnosticaron un problema de tiroides
+# MCQ180M - Edad a la que le diagnosticaron un problema de tiroides
 
 summary(questionnaire$MCQ180M) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -1569,3 +1571,37 @@ summary(questionnaire$MCQ180M) # produce:
 unique(questionnaire$MCQ180M)[1:20] # produce:
 #  [1] NA 50 53 20 72 46 51 60 65 38 14 15 25 55 30 26 24 49 70 59
 
+# Seleccionar los distintos tipos de dietas y nutrientes
+cuestionario <- questionnaire |>
+  select(SEQN, BPQ030, BPQ050A, BPQ080, BPQ100D, DIQ010, DIQ160,
+         DIQ050, DID060, DBQ197, DBQ223A, DBQ223D, PAQ605,
+         PAQ610, PAD615, PAQ620, PAQ625, PAD630, PAQ635, PAQ640,
+         PAQ650, PAQ655, PAD660, PAQ665, PAQ670, PAD675, PAD680,
+         PAQ706, PAQ710, PAQ715, RXQ515, RXQ520, RXD530, SLD010H,
+         SLQ060, WHD010, WHD020, WHD050, WHQ060, WHQ070, WHD080A,
+         WHD080B, WHD080C, WHD080D, WHD080E, WHD080F, WHD080H,
+         WHD080M, WHD080O, WHD080P, WHD080Q, WHD080S, WHD080T,
+         MCQ080, MCQ082, MCQ086, MCQ160A, MCQ180A, MCQ195, MCQ160B,
+         MCQ180B, MCQ160C, MCQ180C, MCQ160E, MCQ180E, MCQ160F, 
+         MCQ180F, MCQ160M, MCQ170M, MCQ180M) 
+head(cuestionario) # produce:
+
+
+############################
+##
+## Unir todas las datasets 
+## en una sola
+##
+############################
+
+obesidad_nhanes <- demografico %>%
+  left_join(examina, by = "SEQN") %>%
+  left_join(laboratorio, by = "SEQN") %>%
+  left_join(cuestionario, by = "SEQN") %>%
+  left_join(dieta, by = "SEQN")
+
+dim(obesidad_nhanes) # produce: [1] 10175   113
+
+write.csv(obesidad_nhanes, 
+          "eda-obesidad/data/obesidad_nhanes.csv", 
+          row.names = FALSE)
