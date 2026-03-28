@@ -153,29 +153,79 @@ unique(labs$LBDLYMNO)[1:20] # produce:
 #[1] 1.0 1.4 1.6 1.3 1.8 3.2 1.7 2.7 2.5 2.3 0.9 0.8 2.1 3.3 2.4 2.2 2.9
 #[18] 1.9 2.0 1.5
 
+###############################
+##
+## Transformar cuestionario
+## de ayuno en labs
+##
+###############################
+
+# Horas de ayuno
+
+summary(labs$PHAFSTHR.x) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.000   2.000   4.000   6.249  11.000  39.000     631 
+summary(labs$PHAFSTHR.y) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   10.00   11.00   10.87   13.00   34.00    6522
+
+# Crear variable final
+labs <- labs %>%
+  mutate(PHAFSTHR_final = coalesce(PHAFSTHR.y, PHAFSTHR.x))
+# La función coalesce toma el primer valor no NA
+summary(labs$PHAFSTHR_final) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.000   2.000   4.000   6.249  11.000  39.000     631 
+
+# Borrar las variables intermedias
+labs <- labs %>%
+  select(-PHAFSTHR.x, -PHAFSTHR.y, -PHAFSTHR)
+
+# Minutos de ayuno
+
+summary(labs$PHAFSTMN.x) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   14.00   30.00   29.38   44.00   59.00     631 
+summary(labs$PHAFSTMN.y) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   15.00   31.00   29.98   44.00   59.00    6522
+
+# Crear variable final
+labs <- labs %>%
+  mutate(PHAFSTMN_final = coalesce(PHAFSTMN.y, PHAFSTMN.x))
+# La función coalesce toma el primer valor no NA
+summary(labs$PHAFSTMN_final) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   14.00   30.00   29.38   44.00   59.00     631 
+
+# Borrar las intermedias
+labs <- labs %>%
+  select(-PHAFSTMN.x, -PHAFSTMN.y, -PHAFSTMN)
+
 ############ Duración del ayuno en horas ###############
 
 # PHAFSTHR - Duración total del "ayuno de alimentos", horas
 
-summary(labs$PHAFSTHR) # produce:
-#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#8.00   10.00   11.00   11.63   13.00   23.00    6904 
+summary(labs$PHAFSTHR_final) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.000   2.000   4.000   6.249  11.000  39.000     631 
 
-unique(labs$PHAFSTHR) # produce:
-#[1] NA 15 14 11 12 10 13  9 20 18 17 16 21  8 22 19 23
+unique(labs$PHAFSTHR_final) # produce:
+# [1]  3 15  2 14 NA 11  4 13  1  0 12 10  5 17  7  6  9 20 18 22  8 16 21
+# [24] 25 24 28 26 27 34 19 39 23 31 32 29 38 33 35
 
 ############ Duración del ayuno en minutos ################
 
 # PHAFSTMN - Duración total del "ayuno de alimentos", minutos
 
-summary(labs$PHAFSTMN) # produce:   
+summary(labs$PHAFSTMN_final) # produce:   
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#0.00   15.00   31.00   30.05   44.00   59.00    6904 
+#0.00   14.00   30.00   29.38   44.00   59.00     631 
 
-unique(labs$PHAFSTMN) # produce:
-#[1] NA 51 42 14 13  2  7 36 12 11 58 38 37 47 33 34 39 30  9 35 10 24
-#[23] 21 57  0 27 55 16 29  5 17 28 22 45 46 19  6 56 59 52 15 41 32 20
-#[45]  4 40 49 31 23 54  8  1 48 44 53 25  3 26 18 43 50
+unique(labs$PHAFSTMN_final) # produce:
+#[1] 47 14 51 35 42 21 NA 45 57 52 40 39  9  5 13  2 48 10  7 36 46  1 12
+#[24] 49 44 59 23 18 28 11 50 54 19  0 20 58 15 38  4 27 37 33 22 41 43 56
+#[47] 34 30 24 16 26  3 55 32 31 29 53 17 25  6  8
 
 ############### Seleccionar #################
 
@@ -183,5 +233,5 @@ unique(labs$PHAFSTMN) # produce:
 # Seleccionar los distintos tipos de dietas y nutrientes
 laboratorio <- labs |>
   select(SEQN, LBXIN, LBXSGL, LBXGH, LBXSGTSI, LBXTC, LBDLDL, LBDHDD, 
-         LBXTR, LBDNENO, LBDLYMNO, PHAFSTHR, PHAFSTMN) 
+         LBXTR, LBDNENO, LBDLYMNO, PHAFSTHR_final, PHAFSTMN_final) 
 head(laboratorio) # produce:

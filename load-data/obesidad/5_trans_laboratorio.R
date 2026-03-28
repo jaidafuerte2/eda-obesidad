@@ -40,8 +40,8 @@ df_obesidad <- df_obesidad %>%
     trigliceridemia = LBXTR,
     neutrofilos = LBDNENO,
     linfocitos = LBDLYMNO,
-    ayuno_horas = PHAFSTHR,
-    ayuno_minutos = PHAFSTMN
+    ayuno_horas = PHAFSTHR_final,
+    ayuno_minutos = PHAFSTMN_final
   )
 
 
@@ -220,8 +220,45 @@ unique(df_obesidad$linfocitos)[1:20] # produce:
 #############################
 
 summary(df_obesidad$ayuno_horas) # produce:
-#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#8.00   10.00   11.00   11.61   13.00   23.00    3303 
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.000   2.000   6.000   6.974  11.000  39.000      71 
 
 unique(df_obesidad$ayuno_horas) # produce:
-# [1] NA 15 14 11 10 12 13  9 18 17 16 21  8 22 19 20 23
+#[1]  3 15 14 11  4 13  1  0 10 12  2 17 NA  7  9  5 18 22  8  6 16 25 24
+#[24] 21 26 34 19 27 39 23 28 20 31 32 33 35 29
+
+#############################
+##
+## Duración del ayuno en
+## minutos
+##
+#############################
+
+summary(df_obesidad$ayuno_minutos) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   14.00   30.00   29.46   44.00   59.00      71 
+
+unique(df_obesidad$ayuno_minutos) # produce:
+#[1] 47 14 51 42 21 45 57 52  9  2 48  7 36 44 10 46 28 11 NA 50 19 58 38
+#[24] 40 27 37 33 15 22 35 41 13 34 39 30  5  1 24 26 12  3  0 55 16 32 31
+#[47] 29 53 17 25 56 23  6  8 18 20  4 54 43 49 59
+
+###########################
+##
+## Seleccionar y crear 
+## nuevo dataset
+##
+###########################
+
+# Seleccionar el código seqn y los resultados de laboratorio
+obesidad_laboratorio <- df_obesidad %>%
+  select(SEQN, insulinemia, glicemia, glicohemoglobina, ggt,
+         colesterolemia_total, colesterolemia_ldl, colesterolemia_hdl,
+         trigliceridemia, neutrofilos, linfocitos, ayuno_horas,
+         ayuno_minutos)
+
+# Crear un archivo .cvs con la dataset de laboratorio
+write.csv(obesidad_laboratorio,
+          "eda-obesidad/data/obesidad/5_obesidad_laboratorio.csv",
+          row.names = FALSE)
+
