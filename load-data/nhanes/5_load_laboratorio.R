@@ -69,12 +69,21 @@ unique(labs$LBXSGTSI)[1:20] # produce:
 # LBXTC - Total Cholesterol( mg/dL)
 
 summary(labs$LBXTC) # produce:
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-# 69.0   153.0   179.0   182.3   207.0   612.0      30 
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#69.0   151.0   175.0   179.5   204.0   813.0    2189 
 
 unique(labs$LBXTC)[1:20] # produce:
 #[1] 126 201 168 154 182 225 202 159 151 161 200 238 162 195 140 210 165
 #[18] 271 127 206
+
+# Saber cuántas observaciones llenas y cuántas vacías tiene una
+# variable
+c(
+  llenos = sum(!is.na(labs$LBXTC)),
+  vacios = sum(is.na(labs$LBXTC))
+) # produce:
+# llenos vacios 
+#   7624   2189
 
 ########### Colesterol LDL ################
 
@@ -82,11 +91,20 @@ unique(labs$LBXTC)[1:20] # produce:
 
 summary(labs$LBDLDL) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#14.0    82.0   104.0   106.8   128.0   375.0      66
+#14.0    81.0   103.0   106.2   127.0   375.0    6708 
 
 unique(labs$LBDLDL)[1:20] # produce:
 #[1]  56 101  97  67  82 119 159 105 110  78 103  89 151  92  70 142  71
 #[18] 137  94 183
+
+# Saber cuántas observaciones llenas y cuántas vacías tiene una
+# variable
+c(
+  llenos = sum(!is.na(labs$LBDLDL)),
+  vacios = sum(is.na(labs$LBDLDL))
+) # produce:
+#llenos vacios 
+#  3105   6708 
 
 ############ Colesterol HDL directo ##############
 
