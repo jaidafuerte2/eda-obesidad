@@ -10,6 +10,8 @@
 library(readr)
 library(dplyr)
 library(tidyverse)
+
+# Cargar todos los archivos que crean las datasets 
 source("eda-obesidad/load-data/nhanes/1_load_demografico.R")
 source("eda-obesidad/load-data/nhanes/2_load_examina.R")
 source("eda-obesidad/load-data/nhanes/3_load_dieta_tipo.R")
@@ -39,9 +41,23 @@ obesidad_nhanes <- demografico %>%
   left_join(cuestionario_dormir, by = "SEQN") %>%
   left_join(cuestionario_peso, by = "SEQN") %>%
   left_join(cuestionario_enfermedad, by = "SEQN")
+dim(obesidad_nhanes) # produce: [1] 10175   117
 
-dim(obesidad_nhanes) # produce: [1] 10175   113
+########### Crear dataset sin quitar los que no ayunaron #############
 
-write.csv(obesidad_nhanes, 
+obesidad_nhanes_clean <- obesidad_nhanes %>%
+  filter(
+    RIDAGEYR >= 18,
+    RIDEXPRG != 1 | is.na(RIDEXPRG),
+    !is.na(BMXBMI)
+  )
+dim(obesidad_nhanes) # produce:
+# [1] 10175   117
+dim(obesidad_nhanes_clean)
+#[1] 5782  117
+
+# Crear un archivo .cvs con la dataset incluso con la gente que NO
+# ayunó
+write.csv(obesidad_nhanes_clean, 
           "eda-obesidad/data/nhanes/obesidad_nhanes.csv", 
           row.names = FALSE)

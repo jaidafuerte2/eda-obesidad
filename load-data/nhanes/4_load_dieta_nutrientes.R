@@ -216,4 +216,4 @@ dieta_nutrientes <- diet |>
   select(SEQN, DR1TKCAL, DR1TPROT, DR1TCARB, DR1TSUGR, DR1TFIBE,
          DR1TTFAT, DR1TSFAT, DR1TMFAT, DR1TPFAT, DR1TCHOL, 
          DR1TP182, DR1TP205, DR1TP226) 
-head(dieta) # produce:
+head(dieta_nutrientes) # produce:

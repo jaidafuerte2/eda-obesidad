@@ -53,11 +53,19 @@ unique(examination$BPXDI4) # produce:
 
 examination <- examination %>%
   mutate(
-    BPXSY_mean = rowMeans(select(., BPXSY1:BPXSY4), na.rm = TRUE),
-    BPXDI_mean = rowMeans(select(., BPXDI1:BPXDI4), na.rm = TRUE)
+    BPXSY_mean = rowMeans(select(., BPXSY1, BPXSY2, BPXSY3, BPXSY4), 
+                          na.rm = TRUE),
+    BPXDI_mean = rowMeans(select(., BPXDI1, BPXDI2, BPXDI3, BPXDI4), 
+                          na.rm = TRUE)
   )
-class(examination$BPXSY_mean) # produce: numeric
-class(examination$BPXDI_mean) # produce: numeric
+
+summary(examination$BPXSY_mean) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#64.67  106.00  115.33  118.31  128.00  228.67    2282 
+
+summary(examination$BPXDI_mean) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   58.00   66.67   65.44   74.67  128.00    2282 
 
 ########## Índice de masa corporal ############
 

@@ -135,11 +135,35 @@ unique(labs$LBDLYMNO)[1:20] # produce:
 #[1] 1.0 1.4 1.6 1.3 1.8 3.2 1.7 2.7 2.5 2.3 0.9 0.8 2.1 3.3 2.4 2.2 2.9
 #[18] 1.9 2.0 1.5
 
+############ Duración del ayuno en horas ###############
+
+# PHAFSTHR - Duración total del "ayuno de alimentos", horas
+
+summary(labs$PHAFSTHR) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#8.00   10.00   11.00   11.63   13.00   23.00    6904 
+
+unique(labs$PHAFSTHR) # produce:
+#[1] NA 15 14 11 12 10 13  9 20 18 17 16 21  8 22 19 23
+
+############ Duración del ayuno en minutos ################
+
+# PHAFSTMN - Duración total del "ayuno de alimentos", minutos
+
+summary(labs$PHAFSTMN) # produce:   
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.00   15.00   31.00   30.05   44.00   59.00    6904 
+
+unique(labs$PHAFSTMN) # produce:
+#[1] NA 51 42 14 13  2  7 36 12 11 58 38 37 47 33 34 39 30  9 35 10 24
+#[23] 21 57  0 27 55 16 29  5 17 28 22 45 46 19  6 56 59 52 15 41 32 20
+#[45]  4 40 49 31 23 54  8  1 48 44 53 25  3 26 18 43 50
+
 ############### Seleccionar #################
 
 # Seleccionar los exámenes de laboratorio más importantes
 # Seleccionar los distintos tipos de dietas y nutrientes
 laboratorio <- labs |>
   select(SEQN, LBXIN, LBXSGL, LBXGH, LBXSGTSI, LBXTC, LBDLDL, LBDHDD, 
-         LBXTR, LBDNENO, LBDLYMNO) 
+         LBXTR, LBDNENO, LBDLYMNO, PHAFSTHR, PHAFSTMN) 
 head(laboratorio) # produce:

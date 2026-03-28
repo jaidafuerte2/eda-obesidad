@@ -95,7 +95,7 @@ table(diet$DRQSDT4, useNA = "ifany") # produce:
 
 ############ Dieta rica en fibra ##############
 
-# DRQSDT6 = Dieta rica en fibra
+# DRQSDT5 = Dieta rica en fibra
 
 summary(diet$DRQSDT6) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -106,19 +106,20 @@ unique(diet$DRQSDT6) # produce: [1] NA  6
 table(diet$DRQSDT6, useNA = "ifany") # produce:
 #6 <NA> 
 #4 9809 
+
 ######## Dieta para diabéticos  ###########
 
 # DRQSDT7 = Dieta para diabéticos
 
-summary(diet$DRQSDT6) # produce:
+summary(diet$DRQSDT7) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#   6       6       6       6       6       6    9809 
+#   7       7       7       7       7       7    9667  
 
-unique(diet$DRQSDT6) # produce: [1] NA  6
+unique(diet$DRQSDT7) # produce: [1] NA  7
 
-table(diet$DRQSDT6, useNA = "ifany") # produce:
-#6 <NA> 
-#4 9809
+table(diet$DRQSDT7, useNA = "ifany") # produce:
+#  7 <NA> 
+#146 9667 
 
 ########## Dieta baja en carbohidratos ##############
 

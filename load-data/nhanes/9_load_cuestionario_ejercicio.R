@@ -130,6 +130,21 @@ summary(questionnaire$PAQ640) # produce:
 unique(questionnaire$PAQ640) # produce: [1] NA  6  7  5  2  3  1  4
 # Donde los números de refieren a los números de días
 
+########### Minutos en un día a pie o bicicleta #################
+
+# PAD645 - Minutos a pie/en bicicleta para transporte
+
+# Se refiere a tiempo para transportarse a pie o en bicicleta
+
+summary(questionnaire$PAD645) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#10.00   20.00   30.00   71.96   60.00 9999.00    8132 
+
+unique(questionnaire$PAD645) # produce:
+#[1]   NA  120   30  720   20   37  180   45   15   10   40   60  360
+#[14]   90  240  300  420   25   27   35   13   50  480   12   11 9999
+#[27]   14   46   16   22  130  840  600  115   95   18
+
 ######### Actividades recreativas vigorosas #############
 
 # PAQ650 - Actividades recreativas vigorosas
@@ -282,7 +297,7 @@ unique(questionnaire$PAQ715) # produce:
 # importantes
 cuestionario_ejercicio <- questionnaire |>
   select(SEQN, PAQ605, PAQ610, PAD615, PAQ620, PAQ625, PAD630,
-         PAQ635, PAQ640, PAQ650, PAQ655, PAD660, PAQ665,
+         PAQ635, PAQ640, PAD645, PAQ650, PAQ655, PAD660, PAQ665,
          PAQ670, PAD675, PAD680, PAQ706, PAQ710, PAQ715) 
 
 head(cuestionario_ejercicio) # produce:

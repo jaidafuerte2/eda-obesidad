@@ -1,0 +1,60 @@
+¿CÓMO SE PROCESAN LOS DATOS DE NHANES?
+--------------------------------------
+
+1. Introducción
+----------------
+
+Los datos del nhanes 2014 vienen en varios datasets en formato .csv:
+
+- demographic
+- diet
+- examination
+- labs
+- questionaire
+
+Estos archivos están en el directorio eda-obesidad/data/nhanes
+
+2. Cargar datos importantes para obesidad.
+-------------------------------------------
+
+No usaré todas las variables del nhanes. Par separar coherentemente
+las secciones que usaré, creé 13 archivos .R en el directorio 
+eda-obesidad/load-data/nhanes: 1_load_demografico, 2_load_examina,
+3_load_dieta_tipo, 4_load_dietanutrientes, 5_load_laboratorio,
+6_load_cuestionario_presion_colesterol, 7_load_cuestionario_diabetes,
+8_load_cuestionario_dieta_lacteos, 9_load_cuestionario_ejercicio,
+10_load_cuestionario_aspirina, 11_load_cuestionario_dormir, 
+12_load_cuestionario_peso, 13_load_cuestionario_enfermedades.
+
+Antes de crear un archivo .csv con la dataset final debo filtrar
+a las embarazadas, los menores de 18 años y los que tienen valores
+faltantes de imc. En esta etapa todavía no retiro a los que ayunaron 
+menos de 8 horas.
+
+Después de filtrar a las embarzadas, menores de 18 y sin imc,
+estos 13 archivos se cargan desde load_obesidad_nhanes.R (dentro 
+del mismo directorio) y producen un dataset que se llama: 
+obesidad_nhanes.csv en el directorio eda-obesidad/data/nhanes
+
+NOTA: Tomar en cuenta que cuando se termine de limpiar la dataset, 
+se deben filtrar a los que no ayunaron al menos 8 horas para la toma
+de muestra de sangre y también se debería filtrar a los que usan 
+insulina.
+
+Estos 13 archivos se cargan desde load_obesidad_nhanes.R (dentro 
+del mismo directorio) y producen un dataset que se llama: 
+obesidad_nhanes.csv en el directorio eda-obesidad/data/nhanes
+
+3. Transformaciones del dataset obesidad_nhanes.csv
+----------------------------------------------------
+
+Después de crear la dataset obesidad_nhanes, toca transformar para
+que las variables tengan un poco de sentido. Para esto creé 13 
+archivos .R dentro del directorio eda-obesidad/load-data/obesidad:
+1_trans_demografico, 2_trans_examina, 3_trans_dieta_tipo, 
+4_trans_dieta_nutrientes, 5_trans_laboratorio, 
+6_trans_cuestionario_presion_colesterol, 7_trans_cuestionario_diabetes,
+8_trans_cuestionario_dieta_lacteos, 9_trans_cuestionario_ejercicio,
+10_trans_cuestionario_aspirina, 11_trans_cuestionario_dormir,
+12_trans_cuestionario_peso, 13_trans_cuestionario_enfermedades.
+

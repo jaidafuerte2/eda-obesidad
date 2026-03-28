@@ -67,12 +67,24 @@ unique(questionnaire$DID060) # produce:
 # Donde: 1-46 : puede ser años o meses, 666 = menos de un mes, 777 =
 # rechazado, 999 es no lo sé
 
+############## Meses o años usando insulina #################
+
+# DIQ060U - Unidad de medida (mes/año)
+
+summary(questionnaire$DIQ060U) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   2.000   2.000   1.908   2.000   2.000    9958 
+
+unique(questionnaire$DIQ060U) # produce: [1]  2 NA  1
+# Donde 1 es meses y 2 es años
 
 ############### Seleccionar #################
+
+names(questionnaire)
 
 # Seleccionar los exámenes las variables del cuestionario más 
 # importantes
 cuestionario_diabetes <- questionnaire |>
-  select(SEQN, DIQ010, DIQ160, DIQ050, DID060) 
+  select(SEQN, DIQ010, DIQ160, DIQ050, DID060, DIQ060U) 
 
 head(cuestionario_diabetes) # produce:
