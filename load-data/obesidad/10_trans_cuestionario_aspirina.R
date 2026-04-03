@@ -128,7 +128,7 @@ df_obesidad <- df_obesidad %>%
              NA, dosis_aspirina)
   )
 unique(df_obesidad$dosis_aspirina) # produce:
-[1]  81  NA 325  20 400 500 150  90  75 200 250 163
+#[1]  81  NA 325  20 400 500 150  90  75 200 250 163
 
 summary(df_obesidad$dosis_aspirina) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
