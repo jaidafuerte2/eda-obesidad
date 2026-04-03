@@ -6,6 +6,10 @@
 ##                             ##
 #################################
 
+# NOTA: Se deben cambiar los pesos autoinformados a kilos y centrímetros
+# por razones de consistencia. También hay que sacar imc autoinformado y
+# cambio de peso con el peso de hace un año.
+
 # Introducción
 
 library(readr)
@@ -52,6 +56,157 @@ df_obesidad <- df_obesidad %>%
 
 ############################
 ##
-## Cuántas horas duermes ?
+## Estatura autoinformada
+## (pulgadas)
 ##
 ############################
+
+unique(df_obesidad$estatura_auto) # produce:
+#[1]   69   71   70   67   64   61   60   62   66   74   63   75   72
+#[14]   68   65   NA   73   76   77 9999   59   58   57   55   54   56
+#[27]   79   78   81   80   53
+
+summary(df_obesidad$estatura_auto) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#53.0    63.0    66.0   164.6    69.0  9999.0      21 
+
+# Cambiar los valores raros 7777 y 9999 a valores faltantes
+df_obesidad <- df_obesidad %>%
+  mutate(
+    estatura_auto = 
+      ifelse(estatura_auto %in% c(9999, 7777), NA, estatura_auto)
+  )
+unique(df_obesidad$estatura_auto) # produce:
+#[1] 69 71 70 67 64 61 60 62 66 74 63 75 72 68 65 NA 73 76 77 59 58 57 55
+#[24] 54 56 79 78 81 80 53
+
+summary(df_obesidad$estatura_auto) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#53.00   63.00   66.00   66.37   69.00   81.00      78 
+
+############################
+##
+## Peso autoinformado
+## (libras)
+##
+############################
+
+unique(df_obesidad$peso_auto) # produce:
+#[1]  180  200  195  120  235  212  137  165  105  224  128 9999  175
+#[14]  205  170  240  230  226  280  215  130  245  233  135  167  156
+#[27]  185  171  220  169  168  160  133  184  106  217  161  238  250
+summary(df_obesidad$peso_auto) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#75.0   145.0   170.0   263.7   200.0  9999.0      28 
+
+# Cambiar los valores raros 7777 y 9999 a valores faltantes
+df_obesidad <- df_obesidad %>%
+  mutate(
+    peso_auto = 
+      ifelse(peso_auto %in% c(9999, 7777), NA, peso_auto)
+  )
+unique(df_obesidad$peso_auto) # produce:
+#[1] 180 200 195 120 235 212 137 165 105 224 128  NA 175 205 170 240 230
+#[18] 226 280 215 130 245 233 135 167 156 185 171 220 169 168 160 133 184
+#[35] 106 217 161 238 250 263 163 140 275 202 166 190 155 154 150 143 126
+
+summary(df_obesidad$peso_auto) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#75.0   145.0   170.0   177.2   200.0   493.0      80 
+
+############################
+##
+## Peso hace un anio 
+## autoinformado (libras)
+##
+############################
+
+unique(df_obesidad$peso_hace_un_anio) # produce:
+#[1]  210  160  195  150  240  212  137  165  110  222  123 9999  168
+#[14]  220  175  225  230  215  226  170  270  205  130  245  200  250
+#[27]  147  156  155  185  120  103  159  161  290  163   NA  285  180
+summary(df_obesidad$peso_hace_un_anio) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#75.0   143.0   170.0   311.6   202.0  9999.0      31
+
+df_obesidad <- df_obesidad %>%
+  mutate(
+    peso_hace_un_anio =
+      ifelse(peso_hace_un_anio %in% c(7777, 9999), 
+             NA, peso_hace_un_anio)
+  )
+
+
+unique(df_obesidad$peso_hace_un_anio) # produce:
+#[1] 210 160 195 150 240 212 137 165 110 222 123  NA 168 220 175 225 230
+#[18] 215 226 170 270 205 130 245 200 250 147 156 155 185 120 103 159 161
+#[35] 290 163 285 180 190 145 152 183 115 149 232 117 133 127 166 258 144
+summary(df_obesidad$peso_hace_un_anio) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#75.0   142.0   170.0   177.1   200.0   559.0     112 
+
+
+############################
+##
+## Fue un cambio de peso 
+## intencional?
+##
+############################
+
+unique(df_obesidad$cambio_peso) # produce: [1]  1 NA  2  9
+
+table(df_obesidad$cambio_peso) # produce:
+#  1   2   9 
+#724 406   1 
+
+df_obesidad <- df_obesidad %>%
+  mutate(
+    cambio_peso = case_when(
+      cambio_peso == 1 ~ "si",
+      cambio_peso == 2 ~ "no",
+      TRUE ~ NA_character_
+    ),
+    cambio_peso = as.factor(cambio_peso)
+  )
+unique(df_obesidad$cambio_peso) # produce:
+#[1] si   <NA> no  
+#Levels: no si
+
+class(df_obesidad$cambio_peso) # produce: [1] "factor"
+
+table(df_obesidad$cambio_peso)
+# no  si 
+#406 724 
+
+############################
+##
+## Intentó adelgazar el 
+## año pasado ?
+##
+############################
+
+unique(df_obesidad$intento_adelgazar) # produce: [1] NA  2  1  9
+
+table(df_obesidad$intento_adelgazar) # produce:
+#   1    2    9 
+#1848 3206    2 
+
+# Pasar los valores numéricos a factor
+df_obesidad <- df_obesidad %>%
+  mutate(
+    intento_adelgazar = case_when(
+      intento_adelgazar == 1 ~ "si",
+      intento_adelgazar == 2 ~ "no",
+      TRUE ~ NA_character_
+    ),
+    intento_adelgazar = as.factor(intento_adelgazar)
+  )
+
+unique(df_obesidad$intento_adelgazar) # produce:
+# [1] NA   "no" "si"
+
+table(df_obesidad$intento_adelgazar) # produce:
+#  no   si 
+#3206 1848 
+
+class(df_obesidad$intento_adelgazar) # produce: factor
