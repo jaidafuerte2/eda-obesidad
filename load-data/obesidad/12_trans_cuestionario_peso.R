@@ -8,7 +8,9 @@
 
 # NOTA: Se deben cambiar los pesos autoinformados a kilos y centrímetros
 # por razones de consistencia. También hay que sacar imc autoinformado y
-# cambio de peso con el peso de hace un año.
+# cambio de peso con el peso de hace un año. También es importante 
+# que las variables numéricas binarias tengan su correspondiente 
+#  versión factor para gráficos.
 
 # Introducción
 
@@ -210,3 +212,82 @@ table(df_obesidad$intento_adelgazar) # produce:
 #3206 1848 
 
 class(df_obesidad$intento_adelgazar) # produce: factor
+
+############################
+##
+## Comió menos para  
+##  adelgazar ?
+##
+############################
+
+unique(df_obesidad$comio_menos) # produce: [1] NA 10
+
+table(df_obesidad$comio_menos) # produce:
+#  10 
+#1540 
+
+# Pasar el valor númerico a binario
+df_obesidad <- df_obesidad %>%
+  mutate(
+    comio_menos = ifelse(!is.na(comio_menos), 1, 0)
+  )
+
+unique(df_obesidad$comio_menos) # produce: [1] 0 1
+
+table(df_obesidad$comio_menos) # produce:
+#   0    1 
+#4242 1540 
+
+###############################
+##
+## Cambió alimentos con menos
+## calorías para adelgazar ?
+##
+###############################
+
+unique(df_obesidad$cambio_alimentos_menos_calorias) # produce:
+# [1] NA 11
+
+table(df_obesidad$cambio_alimentos_menos_calorias) # produce:
+# 11 
+#808 
+
+# Cambiar los valores numéricos a binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    cambio_alimentos_menos_calorias =
+      ifelse(!is.na(cambio_alimentos_menos_calorias), 1, 0)
+  )
+
+unique(df_obesidad$cambio_alimentos_menos_calorias) # produce:
+#[1] 0 1
+
+table(df_obesidad$cambio_alimentos_menos_calorias) # produce:
+#   0    1 
+#4974  808 
+
+###############################
+##
+## Comió menos grasa para bajar 
+## de peso ?
+##
+###############################
+
+unique(df_obesidad$comio_menos_grasa) # produce: [1] NA 12
+
+table(df_obesidad$comio_menos_grasa) # produce:
+# 12 
+#738 
+
+
+df_obesidad <- df_obesidad %>%
+  mutate(
+    comio_menos_grasa =
+      ifelse(!is.na(comio_menos_grasa), 1, 0)
+  )
+
+unique(df_obesidad$comio_menos_grasa) # produce: [1] 0 1
+
+table(df_obesidad$comio_menos_grasa) # produce:
+#   0    1 
+#5044  738 

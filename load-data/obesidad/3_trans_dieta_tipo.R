@@ -118,6 +118,7 @@ unique(df_obesidad$uso_sal_mesa) # produce:
 table(df_obesidad$uso_sal_mesa) # produce:
 #casi_nunca  ocasional  frecuente 
 #      1777       1139        775 
+
 ###############################
 ##
 ## Hace dieta para bajar de 
