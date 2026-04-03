@@ -40,6 +40,10 @@ unique(questionnaire$RXQ520) # produce: [1] NA  2  1  9  7
 
 # RXD530 - Dosis de aspirina en miligramos (mg)
 
+# Nota:  Se refiere a la cantidad por unidad tomada NO a la dosis
+# total diaria. Esto es mas útil que dosis diaria,de hecho, mejor
+# no calcular dosis diaria.
+
 summary(questionnaire$RXD530) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #  20      81      81    1172      81   99999    9042 
@@ -54,6 +58,6 @@ unique(questionnaire$RXD530) # produce:
 # Seleccionar los exámenes las variables del cuestionario más 
 # importantes
 cuestionario_aspirina <- questionnaire |>
-  select(SEQN, RXQ515, RXQ520) 
+  select(SEQN, RXQ515, RXQ520, RXD530) 
 
 head(cuestionario_aspirina) # produce:

@@ -39,7 +39,7 @@ unique(questionnaire$DIQ160) # produce: [1] NA  2  1  9
 
 ################ Usa insulina #######################
 
-# DIQ050 - Tomando insulina ahora
+# DIQ050 - Usando insulina ahora
 
 summary(questionnaire$DIQ050) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -78,6 +78,17 @@ summary(questionnaire$DIQ060U) # produce:
 unique(questionnaire$DIQ060U) # produce: [1]  2 NA  1
 # Donde 1 es meses y 2 es años
 
+############### Tomar pastillas hipoglicemiantes ###############
+
+# DIQ070 - Tomar pastillas para diabéticos para bajar el nivel de 
+# azúcar en la sangre
+
+summary(questionnaire$DIQ070) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#1.000   1.000   2.000   1.556   2.000   9.000    8975 
+
+unique(questionnaire$DIQ070) # produce: [1]  1  2 NA  9
+
 ############### Seleccionar #################
 
 names(questionnaire)
@@ -85,6 +96,6 @@ names(questionnaire)
 # Seleccionar los exámenes las variables del cuestionario más 
 # importantes
 cuestionario_diabetes <- questionnaire |>
-  select(SEQN, DIQ010, DIQ160, DIQ050, DID060, DIQ060U) 
+  select(SEQN, DIQ010, DIQ160, DIQ050, DID060, DIQ060U, DIQ070) 
 
 head(cuestionario_diabetes) # produce:

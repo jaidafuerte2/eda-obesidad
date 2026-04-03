@@ -5,7 +5,9 @@
 ##                             ##
 #################################
 
-# Nota: no olvidar crear las variables de homa-ir y nos/mos
+# Nota: no olvidar crear las variables de homa-ir y nos/mos. Y tampoco
+# olvidar que hay que tener una base de datos sin los que no ayunaron
+# al menos 8 horas
 
 # Introducción
 

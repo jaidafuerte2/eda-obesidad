@@ -264,6 +264,9 @@ unique(questionnaire$PAQ706) # produce:
 # [1] NA  5  4  7  1  3  6  2 99  0
 # Donde 99 es no lo sé
 
+table(questionnaire$PAQ706) # produce:
+#0    1    2    3    4    5    6    7   99 
+#131   90  159  194  183  314  111 1799    8 
 ########### Horas viendo televisión o videos ############
 
 # PAQ710 - Horas viendo televisión o videos en los últimos 30 días
