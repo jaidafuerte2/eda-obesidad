@@ -58,6 +58,19 @@ summary(questionnaire$MCQ160A) # produce:
 unique(questionnaire$MCQ160A) # produce: [1]  1  2 NA  9
 # Donde 1 es sí, 2 es no y 9 es no sé
 
+######### Tipo de artritis ############
+
+# MCQ195 - ¿Qué tipo de artritis era?
+
+unique(questionnaire$MCQ195) # produce: [1]  9 NA  2  4  1  3  7
+
+table(questionnaire$MCQ195) # produce:
+#  1   2   3   4   7   9 
+#694 254  21 138   1 400 
+
+# Dónde 1 es degenerativa, 2 es reumatoide, 3 es psoriásica, 4 es otro
+# 7 es rechazado y 9 es nó lo sé
+
 ########## Edad a la que le diagnosticaron artritis ##########
 
 # MCQ180a - Edad a la que le diagnosticaron artritis
@@ -68,19 +81,6 @@ summary(questionnaire$MCQ180A) # produce:
 
 unique(questionnaire$MCQ180A)[1:20] # produce:
 #  [1] 62 NA 70 45 50 42 40 19 59 79 39 52 60 38  1 78 25 68 22 80
-
-################## ¿Qué tipo de artritis era? ####################
-
-# MCQ195 - ¿Qué tipo de artritis era?
-
-summary(questionnaire$MCQ195) # produce:
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#1.000   1.000   2.000   3.597   9.000   9.000    8667 
-
-unique(questionnaire$MCQ195) # produce: [1]  9 NA  2  4  1  3  7
-# Donde 1 es osteoartitis o artritis degenerativa, 2 es artritis
-# reumatoide, 3 es artritis psoriasica, 4 es otro tipo de artritis
-# 7 es rechazado y 9 es no lo sé
 
 ############ Insuficiencia cardíaca ##############
 

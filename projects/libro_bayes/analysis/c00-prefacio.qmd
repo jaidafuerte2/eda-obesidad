@@ -1,0 +1,34 @@
+---
+title: "Prefacio"
+format: html
+editor: visual
+---
+
+## ¿Qué es esto?
+
+Este es un libro que creé para explicar el análisis bayesiano aplicado a la obesidad y sus enfermedades asociadas. Se basa conceptualmente en el libro de Adam Fleischhacker ["A Business Analyst’s Introduction to Business Analytics (Second Edition)"](https://www.causact.com/), sin embargo no es una copia textual ni traducción; tampoco sigue exactamente los mismos capítulos y usa bibliotecas de R distintas (especialmente no uso causact ni numpyro). Además este libro usa algunas variables de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos de los años 2013 y 2014 [NHANES 2013-2014](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013)
+
+## ¿Qué haré ?
+
+Crearé un libro con quarto [quarto](https://quarto.org/) en formato web, basándome en lo aprendido del libro de Adam Fleischhacker ["A Business Analyst’s Introduction to Business Analytics (Second Edition)"](https://www.causact.com/) que se puede aplicar muy bien al contexto de la obesidad y sus enfermedades asociadas con las datasets de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos [NHANES 2013-2014](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013). Sin embargo este no es un resumen ni una traducción ni sigue los mismos capítulos del libro de Adam Fleischhacker y, aunque se usará R para los análisis bayesianos, no se usarán las bibliotecas causact ni numpyro.
+
+Al final de cada capítulo hay algunos ejercicios que pueden ayudarte a comprender mejor la teoría.
+
+## Específicamente ¿ qué crearé ?
+
+Este es un libro creado con [quarto](https://quarto.org/). Quarto es un sistema de creación de documentos como libros y presentaciones, ideal para incluir código de R y los resultados de los distintos análisis bayesianos que se hagan en un contexto relacionado con la obesidad y algunas variables importantes de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos [NHANES](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013).
+
+
+## ¿Cuáles son los objetivos de este libro?
+
+-   Aprender Bayes enseñando.
+
+-   Practicar R en el contexto del análisis bayesiano.
+
+-   Analizar algunas variables de la NHANES en contexto bayesiano.
+
+-   Utilizar esta práctica de análisis bayesiano para crear un libro completo sobre obesidad y enfermedades asociadas pero basado en datos.
+
+## ¿A quien está dirigido este libro?
+
+Yo creé este libro pensando en mí mismo que no tengo grandes conocimientos de matématicas ni estadística, así que creo que casi cualquiera podría seguir este libro sin conocimientos de estadística o matemáticas. Aunque tal vez ayude conocer un poco el lenguaje de progrmación R; creo que no es indispensable porque justamente R está pensado en usuarios que no saben programar, sin embargo un recurso que me gusta mucho son los ocho primero capítulo del libro R for Data Science (2e) de Hadley Wickham [R4DS](https://r4ds.hadley.nz/).

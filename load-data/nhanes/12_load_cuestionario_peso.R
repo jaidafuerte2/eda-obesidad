@@ -217,7 +217,7 @@ unique(questionnaire$MCQ080) # produce: [1]  1  2 NA  9
 
 ############### Seleccionar #################
 
-# Seleccionar los exámenes las variables del cuestionario más 
+# Seleccionar las variables del cuestionario más 
 # importantes
 cuestionario_peso <- questionnaire |>
   select(SEQN, WHD010, WHD020, WHD050, WHQ060, WHQ070, WHD080A,

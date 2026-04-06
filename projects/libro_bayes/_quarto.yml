@@ -1,0 +1,30 @@
+project: 
+  type: website
+  
+website: 
+  title: "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+  favicon: favicon.ico
+  sidebar: 
+    style: "docked"
+    contents: 
+      - index.qmd
+      # Nota: los comentarios van después de la almohadilla o numeral 
+      - analysis/c00-prefacio.qmd
+      - section: "Módulo 1: Pensar Como Analista Bayesiano"
+        href: analysis/m01.qmd
+        contents: 
+        - analysis/c01.qmd
+  page-footer: 
+    border: false
+    background: light
+    center: "Copyright, David Villafuerte MD." 
+    left: 
+      - icon: github
+        href: https://github.com/
+      - icon: bluesky 
+        href: https://bsky.app/ 
+    
+format: 
+  html: 
+    theme: cosmo
+    toc: true

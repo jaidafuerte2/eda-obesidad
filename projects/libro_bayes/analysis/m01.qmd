@@ -1,0 +1,7 @@
+---
+title: "Pensar Como Analista Bayesiano"
+format: html
+editor: visual
+---
+
+## Capítulos

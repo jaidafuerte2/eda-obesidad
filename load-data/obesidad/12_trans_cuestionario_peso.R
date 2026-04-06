@@ -52,8 +52,7 @@ df_obesidad <- df_obesidad %>%
     fumo_adelgazar = WHD080P,
     comio_vegetales = WHD080Q,
     comio_menos_azucar = WHD080S,
-    comio_menos_chatarra = WHD080T,
-    tiene_sobrepeso = MCQ080
+    comio_menos_chatarra = WHD080T
   )
 
 ############################
@@ -291,3 +290,274 @@ unique(df_obesidad$comio_menos_grasa) # produce: [1] 0 1
 table(df_obesidad$comio_menos_grasa) # produce:
 #   0    1 
 #5044  738 
+
+###############################
+##
+## Hizo ejercicio para  
+## adelgazar ?
+##
+###############################
+
+unique(df_obesidad$hizo_ejercicio) # produce: [1] NA 13
+
+table(df_obesidad$hizo_ejercicio) # produce:
+#  13 
+#1633 
+
+# Cambiar la variable numérica a binaria
+df_obesidad <- df_obesidad %>%
+  mutate(
+    hizo_ejercicio = ifelse(!is.na(hizo_ejercicio), 1, 0)
+  )
+unique(df_obesidad$hizo_ejercicio) # produce: [1] 0 1
+table(df_obesidad$hizo_ejercicio) # produce:
+#   0    1 
+#4149 1633 
+
+###############################
+##
+## Omitió comidas para  
+## adelgazar ?
+##
+###############################
+
+unique(df_obesidad$omitio_comidas) # produce: [1] NA 14
+
+table(df_obesidad$omitio_comidas) # produce:
+# 14 
+#349
+
+# Vambiar los valores numéricos a factor
+df_obesidad <- df_obesidad %>%
+  mutate(
+    omitio_comidas = ifelse(!is.na(omitio_comidas), 1, 0)
+  )
+
+unique(df_obesidad$omitio_comidas) # produce: [1] 0 1
+
+table(df_obesidad$omitio_comidas) # produce:
+#   0    1 
+#5433  349 
+
+###############################
+##
+## Comió alimento dietéticos  
+## para adelgazar ?
+##
+###############################
+
+unique(df_obesidad$comio_dieteticos) # produce: [1] NA 15
+
+table(df_obesidad$comio_dieteticos) # produce:
+# 15 
+#213 
+
+# Cambiar los valores numéricos a binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    comio_dieteticos = ifelse(!is.na(comio_dieteticos), 1, 0)
+  )
+
+unique(df_obesidad$comio_dieteticos) # produce: [1] 0 1
+
+table(df_obesidad$comio_dieteticos) # produce:
+#   0    1 
+#5569  213 
+
+###############################
+##
+## Comió alimento dietéticos  
+## para adelgazar ?
+##
+###############################
+
+unique(df_obesidad$unio_programa_adelgazar) # produce: [1] NA 17
+
+table(df_obesidad$unio_programa_adelgazar) # produce:
+# 17 
+#105 
+
+# Cambiar los valores numericos a binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    unio_programa_adelgazar =
+      ifelse(!is.na(unio_programa_adelgazar), 1, 0)
+  )
+
+unique(df_obesidad$unio_programa_adelgazar) # produce: [1] 0 1
+
+table(df_obesidad$unio_programa_adelgazar) # produce:
+#   0    1 
+#5677  105 
+
+#######################
+##
+## Tomó agua  
+## para adelgazar ?
+##
+#######################
+
+unique(df_obesidad$bebio_agua) # produce: [1] NA 34
+
+table(df_obesidad$bebio_agua) # produce:
+# 34 
+#929 
+
+# Cambiar los valores numéricos a valores binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    bebio_agua = ifelse(!is.na(bebio_agua), 1, 0)
+  )
+
+unique(df_obesidad$bebio_agua) # produce: [1] 0 1
+
+table(df_obesidad$bebio_agua) # produce:
+#   0    1 
+#4853  929 
+
+#######################
+##
+## Tomó agua  
+## para adelgazar ?
+##
+#######################
+
+unique(df_obesidad$comio_menos_carbs) # produce: [1] NA 41
+
+table(df_obesidad$comio_menos_carbs) # produce:
+# 41 
+#636
+
+# Cambiar los valores numéricos a binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    comio_menos_carbs = ifelse(!is.na(comio_menos_carbs), 1, 0)
+  )
+
+unique(df_obesidad$comio_menos_carbs) # produce: [1] 0 1
+
+table(df_obesidad$comio_menos_carbs) # produce:
+#   0    1 
+#5146  636 
+
+#######################
+##
+## Fumó  
+## para adelgazar ?
+##
+#######################
+
+unique(df_obesidad$fumo_adelgazar) # produce: [1] NA 42
+
+table(df_obesidad$fumo_adelgazar) # produce:
+#42 
+#17 
+
+# Cambiar los valores numéricos a binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    fumo_adelgazar = ifelse(!is.na(fumo_adelgazar), 1, 0)
+  )
+
+unique(df_obesidad$fumo_adelgazar) # produce: [1] 0 1
+
+table(df_obesidad$fumo_adelgazar) # produce:
+#   0    1 
+#5765   17
+
+#######################
+##
+## Comió vegetales 
+## para adelgazar ?
+##
+#######################
+
+unique(df_obesidad$comio_vegetales) # produce: [1] NA 43
+
+table(df_obesidad$comio_vegetales) # produce: 
+#  43 
+#1014 
+
+# Cambiar los valores numpericos a bianrios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    comio_vegetales = ifelse(!is.na(comio_vegetales), 1, 0)
+  )
+
+unique(df_obesidad$comio_vegetales) # produce: [1] 0 1
+
+table(df_obesidad$comio_vegetales) # produce:
+#   0    1 
+#4768 1014 
+
+#######################
+##
+## Comió menos azúcar 
+## para adelgazar ?
+##
+#######################
+
+unique(df_obesidad$comio_menos_azucar) # produce: [1] NA 45
+
+table(df_obesidad$comio_menos_azucar) # produce:
+# 45 
+#852
+
+# Cambiar los valores numéricos a binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    comio_menos_azucar = ifelse(!is.na(comio_menos_azucar), 1, 0)
+  )
+unique(df_obesidad$comio_menos_azucar) # produce: [1] 0 1
+
+table(df_obesidad$comio_menos_azucar) # produce:
+#   0    1 
+#4930  852 
+
+#######################
+##
+## Comió menos azúcar 
+## para adelgazar ?
+##
+#######################
+
+unique(df_obesidad$comio_menos_chatarra) # produce:
+
+table(df_obesidad$comio_menos_chatarra) # produce:
+
+# Cambiar los valores numéricos a binarios
+df_obesidad <- df_obesidad %>%
+  mutate(
+    comio_menos_chatarra = ifelse(!is.na(comio_menos_chatarra), 1, 0)
+  )
+
+
+unique(df_obesidad$comio_menos_chatarra) # produce: [1] 0 1
+
+table(df_obesidad$comio_menos_chatarra) # produce:
+#   0    1 
+#4880  902 
+
+###########################
+##
+## Seleccionar y crear 
+## nuevo dataset
+##
+###########################
+
+# Seleccionar el código seqn y las variables del cuestionario de
+# peso
+obesidad_cuestionario_peso <- df_obesidad %>%
+  select(SEQN, estatura_auto, peso_auto, peso_hace_un_anio, 
+         cambio_peso,intento_adelgazar, comio_menos,
+         cambio_alimentos_menos_calorias, comio_menos_grasa,
+         hizo_ejercicio, omitio_comidas, comio_dieteticos,
+         unio_programa_adelgazar, bebio_agua, comio_menos_carbs,
+         fumo_adelgazar, comio_vegetales, comio_menos_azucar,
+         comio_menos_chatarra
+         )
+
+# Crear un archivo .cvs con la dataset de cuestionario de peso
+write.csv(obesidad_cuestionario_peso,
+          "eda-obesidad/data/obesidad/12_obesidad_cuestionario_peso.csv",
+          row.names = FALSE)

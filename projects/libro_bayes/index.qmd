@@ -1,0 +1,15 @@
+---
+title: "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+format: html
+editor: visual
+---
+
+![](files/images/portada.png){fig-alt="Portada de la práctica del borrador del análisis de la tabla obesity latin" width="35%"}
+
+## Bienvenido
+
+Este es el sitio web del libro  "Bayes Para Entender la Obesidad", Este libro te enseñará a hacer análisis usando estadística bayesiana con R.
+
+En este libro enconstrarás un manual muy práctico de habilidades para elanálisis de datos bayesiano desde los temas más básicos como limpiar datos y crear gráficos, hasta crear modelos bayesianos en un contexto relacionado con la obesidad y sus enfermedades asociadas usando las datasets de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos [NHANES 2013-2014](https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013)
+
+Este sitio web es y siempre será gratuito, bajo la licencia CC [BY-NC-ND 3.0](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) .

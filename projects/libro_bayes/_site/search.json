@@ -1,0 +1,225 @@
+[
+  {
+    "objectID": "index.html#qué-es-esto",
+    "href": "index.html#qué-es-esto",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "¿Qué es esto?",
+    "text": "¿Qué es esto?",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "index.html#qué-haré",
+    "href": "index.html#qué-haré",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "¿Qué haré ?",
+    "text": "¿Qué haré ?\nCrearé un libro con quarto quarto en formato web, basándome en lo aprendido del libro de Adam Fleischhacker “A Business Analyst’s Introduction to Business Analytics (Second Edition)” que se puede aplicar muy bien al contexto de la obesidad y sus enfermedades asociadas con las datasets de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos NHANES 2013-2014. Sin embargo este no es un resumen ni una traducción ni sigue los mismos capítulos del libro de Adam Fleischhacker y, aunque se usará R para los análisis bayesianos, no se usarán las bibliotecas causact ni numpyro.\nAl final de cada capítulo hay algunos ejercicios que pueden ayudarte a comprender mejor la teoría.",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "index.html#específicamente-qué-crearé",
+    "href": "index.html#específicamente-qué-crearé",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "Específicamente ¿ qué crearé ?",
+    "text": "Específicamente ¿ qué crearé ?\nEste es un libro creado con quarto. Quarto es un sistema de creación de documentos como libros y presentaciones, ideal para incluir código de R y los resultados de los distintos análisis bayesianos que se hagan en un contexto relacionado con la obesidad y algunas variables importantes de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos NHANES en el contexto de la obesidad y sus enfermedades asociadas.",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "index.html#cuál-es-el-objetivo",
+    "href": "index.html#cuál-es-el-objetivo",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "¿Cuál es el objetivo?",
+    "text": "¿Cuál es el objetivo?\n\nPracticar quarto1 y la creación básica de una web con sidebar de contenidos\nPracticar R y la creación de gráficos con r4ds2 y el obesity latin de kaggle3.\nPracticar en quarto pub4 el despliegue de una web con quarto\nAdquirir experiencia para crear un blog de apariencia profesional con el obesity latin de kaggle",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "index.html#footnotes",
+    "href": "index.html#footnotes",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nPágina web de quarto https://quartopub.com/↩︎\nPágina web del libro r4ds https://r4ds.hadley.nz/↩︎\nPágina web para descargar el obesity latin de kaggle https://www.kaggle.com/datasets/muhramasaputra/obesity-based-on-eating-habits-and-physical-cond↩︎\nPágina web de quarto pub https://quarto.org/docs/publishing/quarto-pub.html↩︎",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c00-dedicatoria.html",
+    "href": "analysis/c00-dedicatoria.html",
+    "title": "Dedicatoria",
+    "section": "",
+    "text": "(λ ⚕)\n“Este libro está ded­i­cado con respeto, admiración y con­sid­eración al gran espíritu vivo en los pro­ce­sos recur­sivos”",
+    "crumbs": [
+      "Dedicatoria"
+    ]
+  },
+  {
+    "objectID": "index.html#cuáles-son-los-objetivos-de-este-libro",
+    "href": "index.html#cuáles-son-los-objetivos-de-este-libro",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "¿Cuáles son los objetivos de este libro?",
+    "text": "¿Cuáles son los objetivos de este libro?\n\nAprender Bayes enseñando.\nPracticar R en el contexto del análisis bayesiano.\nAnalizar algunas variables de la NHANES en contexto bayesiano.\nUtilizar esta práctica de análisis para crear un libro completo sobre obesidad y enfermedades asociadas pero basado en datos.",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "index.html#a-quien-está-dirigido-este-libro",
+    "href": "index.html#a-quien-está-dirigido-este-libro",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "¿A quien está dirigido este libro?",
+    "text": "¿A quien está dirigido este libro?\nYo creé este libro pensando en mí mismo que no tengo grandes conocimientos de matématicas ni estadística, así que creo que casi cualquiera podría seguir este libro sin conocimientos de estadística o matemáticas. Aunque tal vez ayude conocer un poco el lenguaje de progrmación R; creo que no es indispensable porque justamente R está pensado en usuarios que no saben programar, sin embargo un recurso que me gusta mucho son los ocho primero capítulo del libro R for Data Science (2e) de Hadley Wickham R4DS.",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c00-prefacio.html",
+    "href": "analysis/c00-prefacio.html",
+    "title": "Prefacio",
+    "section": "",
+    "text": "Este es un libro que creé para explicar el análisis bayesiano aplicado a la obesidad y sus enfermedades asociadas. Se basa conceptualmente en el libro de Adam Fleischhacker “A Business Analyst’s Introduction to Business Analytics (Second Edition)”, sin embargo no es una copia textual ni traducción; tampoco sigue exactamente los mismos capítulos y usa bibliotecas de R distintas (especialmente no uso causact ni numpyro). Además este libro usa algunas variables de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos de los años 2013 y 2014 NHANES 2013-2014",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00-prefacio.html#qué-es-esto",
+    "href": "analysis/c00-prefacio.html#qué-es-esto",
+    "title": "Prefacio",
+    "section": "",
+    "text": "Este es un libro que creé para explicar el análisis bayesiano aplicado a la obesidad y sus enfermedades asociadas. Se basa conceptualmente en el libro de Adam Fleischhacker “A Business Analyst’s Introduction to Business Analytics (Second Edition)”, sin embargo no es una copia textual ni traducción; tampoco sigue exactamente los mismos capítulos y usa bibliotecas de R distintas (especialmente no uso causact ni numpyro). Además este libro usa algunas variables de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos de los años 2013 y 2014 NHANES 2013-2014",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00-prefacio.html#qué-haré",
+    "href": "analysis/c00-prefacio.html#qué-haré",
+    "title": "Prefacio",
+    "section": "¿Qué haré ?",
+    "text": "¿Qué haré ?\nCrearé un libro con quarto quarto en formato web, basándome en lo aprendido del libro de Adam Fleischhacker “A Business Analyst’s Introduction to Business Analytics (Second Edition)” que se puede aplicar muy bien al contexto de la obesidad y sus enfermedades asociadas con las datasets de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos NHANES 2013-2014. Sin embargo este no es un resumen ni una traducción ni sigue los mismos capítulos del libro de Adam Fleischhacker y, aunque se usará R para los análisis bayesianos, no se usarán las bibliotecas causact ni numpyro.\nAl final de cada capítulo hay algunos ejercicios que pueden ayudarte a comprender mejor la teoría.",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00-prefacio.html#específicamente-qué-crearé",
+    "href": "analysis/c00-prefacio.html#específicamente-qué-crearé",
+    "title": "Prefacio",
+    "section": "Específicamente ¿ qué crearé ?",
+    "text": "Específicamente ¿ qué crearé ?\nEste es un libro creado con quarto. Quarto es un sistema de creación de documentos como libros y presentaciones, ideal para incluir código de R y los resultados de los distintos análisis bayesianos que se hagan en un contexto relacionado con la obesidad y algunas variables importantes de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos NHANES.",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00-prefacio.html#cuáles-son-los-objetivos-de-este-libro",
+    "href": "analysis/c00-prefacio.html#cuáles-son-los-objetivos-de-este-libro",
+    "title": "Prefacio",
+    "section": "¿Cuáles son los objetivos de este libro?",
+    "text": "¿Cuáles son los objetivos de este libro?\n\nAprender Bayes enseñando.\nPracticar R en el contexto del análisis bayesiano.\nAnalizar algunas variables de la NHANES en contexto bayesiano.\nUtilizar esta práctica de análisis bayesiano para crear un libro completo sobre obesidad y enfermedades asociadas pero basado en datos.",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00-prefacio.html#a-quien-está-dirigido-este-libro",
+    "href": "analysis/c00-prefacio.html#a-quien-está-dirigido-este-libro",
+    "title": "Prefacio",
+    "section": "¿A quien está dirigido este libro?",
+    "text": "¿A quien está dirigido este libro?\nYo creé este libro pensando en mí mismo que no tengo grandes conocimientos de matématicas ni estadística, así que creo que casi cualquiera podría seguir este libro sin conocimientos de estadística o matemáticas. Aunque tal vez ayude conocer un poco el lenguaje de progrmación R; creo que no es indispensable porque justamente R está pensado en usuarios que no saben programar, sin embargo un recurso que me gusta mucho son los ocho primero capítulo del libro R for Data Science (2e) de Hadley Wickham R4DS.",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "index.html#bienvenido",
+    "href": "index.html#bienvenido",
+    "title": "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre",
+    "section": "Bienvenido",
+    "text": "Bienvenido\nEste es el sitio web del libro “Bayes Para Entender la Obesidad”, Este libro te enseñará a hacer análisis usando estadística bayesiana con R.\nEn este libro enconstrarás un manual muy práctico de habilidades para elanálisis de datos bayesiano desde los temas más básicos como limpiar datos y crear gráficos, hasta crear modelos bayesianos en un contexto relacionado con la obesidad y sus enfermedades asociadas usando las datasets de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos NHANES 2013-2014\nEste sitio web es y siempre será gratuito, bajo la licencia CC BY-NC-ND 3.0 .",
+    "crumbs": [
+      "Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html",
+    "href": "analysis/c01.html",
+    "title": "1.- ¿Qué significa incertidumbre en medicina?",
+    "section": "",
+    "text": "Imagina esta escena clínica.\nUn paciente llega a consulta. Tiene sobrepeso, algo de fatiga y antecedentes familiares de diabetes. Solicitas exámenes:\n\nGlucosa: 112 mg/dL\nHbA1c: 5.9%\n\nAhora viene la pregunta incómoda:\n¿Tiene diabetes sí o no?\nLa formación tradicional nos empuja a responder como si esto fuera una pregunta binaria:\n\nSí\nNo\n\nPero en el fondo sabes que esa respuesta es… artificial.\n\n\nEn medicina, muchas veces actuamos como si:\nUn valor → implica una verdad absoluta\nEjemplos típicos:\n\nHbA1c ≥ 6.5% → diabetes\nIMC ≥ 30 → obesidad\nPA ≥ 140/90 → hipertensión\n\nEsto es útil… pero es una simplificación.\nPorque en la realidad:\n\nUn paciente con HbA1c de 6.4% no es radicalmente distinto de uno con 6.5%\nUn IMC de 29.9 vs 30 no cambia mágicamente el metabolismo\nLa presión arterial varía minuto a minuto\n\n👉 Es decir: la biología no funciona en categorías rígidas\n\n\n\nLa incertidumbre en medicina significa:\nNo estamos completamente seguros de lo que está pasando, aunque tengamos datos\nY esto ocurre por varias razones:\n\nVariabilidad biológica:\n\n\nEl cuerpo humano cambia constantemente\n\n\nErrores de medición:\n\n\nNingún examen es perfecto\n\n\nModelos simplificados:\n\n\nIMC ≠ grasa visceral Glucosa ≠ estado metabólico completo\n\n\nInformación incompleta:\n\n\nNo vemos todo: dieta, sueño, estrés, genética\n\n\n\n\nDos pacientes:\n\n\n\nPaciente\nGlucosa\nHbA1c\nIMC\n\n\n\n\nA\n126\n6.6%\n31\n\n\nB\n124\n6.4%\n30\n\n\n\nSegún criterios clásicos:\n\nPaciente A → “diabético”\nPaciente B → “no diabético”\n\nPero clínicamente…\n👉 ¿Realmente son tan diferentes?\nLa respuesta honesta es: no lo sabemos con certeza\n\n\n\nAquí aparece una idea clave:\nUn diagnóstico no es una verdad absoluta, es una decisión bajo incertidumbre\nEn lugar de pensar:\n\n“Tiene diabetes”\n\nPodríamos pensar:\n\n“Hay una alta probabilidad de que tenga alteración metabólica significativa”\n\nEsto cambia todo.\n\n\n\nEl pensamiento bayesiano propone algo más realista:\nLa probabilidad representa qué tan fuerte creemos en una hipótesis, dada la información disponible\nPor ejemplo:\nEn lugar de decir:\n\n“Este paciente es sano”\n\nDecimos:\n\n“Con la información actual, creemos que la probabilidad de enfermedad es baja, pero no cero”\n\n\n\n\nEnfoque tradicional\nEnfoque bayesiano\n\n\n\n\nDiagnóstico fijo\nProbabilidad\n\n\nBlanco o negro\nEscala de grises\n\n\nCerteza aparente\nIncertidumbre explícita\n\n\nReglas rígidas\nActualización continua\n\n\n\n\n\n\nEn el contexto del metabolismo y obesidad:\nEl IMC no distingue grasa visceral vs subcutánea Dos personas con el mismo IMC pueden tener: Riesgo cardiometabólico muy distinto Niveles de inflamación diferentes\n👉 Entonces:\nClasificar no es entender\nY ahí es donde entra Bayes.\n\n\n\nLa medicina no trata con certezas, sino con niveles de creencia basados en evidencia incompleta\nY aprender a manejar eso explícitamente es lo que te convierte en un mejor analista… y un mejor clínico.",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "1.- ¿Qué significa incertidumbre en medicina?"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#intuición-sin-código",
+    "href": "analysis/c01.html#intuición-sin-código",
+    "title": "1.- ¿Qué significa incertidumbre en medicina?",
+    "section": "",
+    "text": "Imagina esta escena clínica.\nUn paciente llega a consulta. Tiene sobrepeso, algo de fatiga y antecedentes familiares de diabetes. Solicitas exámenes:\n\nGlucosa: 112 mg/dL\nHbA1c: 5.9%\n\nAhora viene la pregunta incómoda:\n¿Tiene diabetes sí o no?\nLa formación tradicional nos empuja a responder como si esto fuera una pregunta binaria:\n\nSí\nNo\n\nPero en el fondo sabes que esa respuesta es… artificial.\n\n\nEn medicina, muchas veces actuamos como si:\nUn valor → implica una verdad absoluta\nEjemplos típicos:\n\nHbA1c ≥ 6.5% → diabetes\nIMC ≥ 30 → obesidad\nPA ≥ 140/90 → hipertensión\n\nEsto es útil… pero es una simplificación.\nPorque en la realidad:\n\nUn paciente con HbA1c de 6.4% no es radicalmente distinto de uno con 6.5%\nUn IMC de 29.9 vs 30 no cambia mágicamente el metabolismo\nLa presión arterial varía minuto a minuto\n\n👉 Es decir: la biología no funciona en categorías rígidas\n\n\n\nLa incertidumbre en medicina significa:\nNo estamos completamente seguros de lo que está pasando, aunque tengamos datos\nY esto ocurre por varias razones:\n\nVariabilidad biológica:\n\n\nEl cuerpo humano cambia constantemente\n\n\nErrores de medición:\n\n\nNingún examen es perfecto\n\n\nModelos simplificados:\n\n\nIMC ≠ grasa visceral Glucosa ≠ estado metabólico completo\n\n\nInformación incompleta:\n\n\nNo vemos todo: dieta, sueño, estrés, genética\n\n\n\n\nDos pacientes:\n\n\n\nPaciente\nGlucosa\nHbA1c\nIMC\n\n\n\n\nA\n126\n6.6%\n31\n\n\nB\n124\n6.4%\n30\n\n\n\nSegún criterios clásicos:\n\nPaciente A → “diabético”\nPaciente B → “no diabético”\n\nPero clínicamente…\n👉 ¿Realmente son tan diferentes?\nLa respuesta honesta es: no lo sabemos con certeza\n\n\n\nAquí aparece una idea clave:\nUn diagnóstico no es una verdad absoluta, es una decisión bajo incertidumbre\nEn lugar de pensar:\n\n“Tiene diabetes”\n\nPodríamos pensar:\n\n“Hay una alta probabilidad de que tenga alteración metabólica significativa”\n\nEsto cambia todo.\n\n\n\nEl pensamiento bayesiano propone algo más realista:\nLa probabilidad representa qué tan fuerte creemos en una hipótesis, dada la información disponible\nPor ejemplo:\nEn lugar de decir:\n\n“Este paciente es sano”\n\nDecimos:\n\n“Con la información actual, creemos que la probabilidad de enfermedad es baja, pero no cero”\n\n\n\n\nEnfoque tradicional\nEnfoque bayesiano\n\n\n\n\nDiagnóstico fijo\nProbabilidad\n\n\nBlanco o negro\nEscala de grises\n\n\nCerteza aparente\nIncertidumbre explícita\n\n\nReglas rígidas\nActualización continua\n\n\n\n\n\n\nEn el contexto del metabolismo y obesidad:\nEl IMC no distingue grasa visceral vs subcutánea Dos personas con el mismo IMC pueden tener: Riesgo cardiometabólico muy distinto Niveles de inflamación diferentes\n👉 Entonces:\nClasificar no es entender\nY ahí es donde entra Bayes.\n\n\n\nLa medicina no trata con certezas, sino con niveles de creencia basados en evidencia incompleta\nY aprender a manejar eso explícitamente es lo que te convierte en un mejor analista… y un mejor clínico.",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "1.- ¿Qué significa incertidumbre en medicina?"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#ejemplo-simple-simulación-en-r",
+    "href": "analysis/c01.html#ejemplo-simple-simulación-en-r",
+    "title": "1.- ¿Qué significa incertidumbre en medicina?",
+    "section": "2. Ejemplo simple (simulación en R)",
+    "text": "2. Ejemplo simple (simulación en R)\nVamos a simular algo muy sencillo:\n👉 Pacientes con niveles de glucosa y su “verdadero estado metabólico” (que en la vida real no vemos directamente)\n\nlibrary(tidyverse)\n\nset.seed(123)\n\n# Simulamos 200 pacientes\nn &lt;- 200\n\ndatos &lt;- tibble(\n  # Se crean 200 observaciones con una media de 105 y una desviación\n  # estándar de 15\n  glucosa = rnorm(n, mean = 105, sd = 15),\n  # \"verdadero estado\" (1 = alteración metabólica, 0 = normal)\n  # Se categoriza\n  estado_real = if_else(glucosa &gt; 110, 1, 0)\n)\n\n# Agregamos ruido (simulando incertidumbre real)\ndatos &lt;- datos %&gt;%\n  mutate(\n    # Un 10% se invierte simulando errores posibles de la vida real\n    # como: errores diagnósticos, medición imperfecta o variabilidad\n    # biológica\n    estado_observado = if_else(runif(n) &lt; 0.1, 1 - estado_real, estado_real)\n  )\n\n\nVisualización\n\n# Gráfico en el que se observarán barras azules por \n# debajo de 110 y barras rosadas por encima de 110 lo \n# que corresponde al 10% del error de la simulación \n# anterior con runif\nggplot(datos, aes(x = glucosa, fill = factor(estado_observado))) +\n  geom_histogram(binwidth = 5, alpha = 0.6, position = \"identity\") +\n  labs(\n    fill = \"Estado observado\",\n    title = \"Glucosa vs estado metabólico (con incertidumbre)\"\n  )\n\n\n\n\n\n\n\n\n\n\n¿Qué estamos viendo?\n\nNo hay una línea perfecta que separe sano vs enfermo\nHay superposición\nHay errores (simulados como en la vida real)\n\n👉 Esto refleja la realidad clínica:\nLos datos nunca son perfectos\n\n\nExperimento mental\nSi un paciente tiene glucosa de 112:\n\n¿Está enfermo?\n¿Está sano?\n\nLa simulación muestra:\n👉 Puede estar en ambos grupos",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "1.- ¿Qué significa incertidumbre en medicina?"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#ejemplo-aplicado-nhanes-ligero",
+    "href": "analysis/c01.html#ejemplo-aplicado-nhanes-ligero",
+    "title": "1.- ¿Qué significa incertidumbre en medicina?",
+    "section": "3. Ejemplo aplicado (NHANES ligero)",
+    "text": "3. Ejemplo aplicado (NHANES ligero)\nAhora conectemos con datos reales.\nSupongamos que observamos:\n\nGlucosa (LBXSGL)\nHbA1c (LBXGH)\nIMC (BMXBMI)\n\nEn NHANES verías algo como:\n\ndf_obesidad %&gt;%\n  select(LBXSGL, LBXGH, BMXBMI) %&gt;%\n  drop_na() %&gt;%\n  ggplot(aes(x = BMXBMI)) +\n  geom_histogram(binwidth = 1)\n\n\n\n\n\n\n\n\n\nLo importante aquí\n\nNo hay cortes naturales perfectos\nNo hay “dos poblaciones separadas” limpias\nTodo es continuo\n\n👉 Esto refuerza la idea:\nLa realidad biológica es probabilística, no categórica",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "1.- ¿Qué significa incertidumbre en medicina?"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#conclusión-del-capítulo",
+    "href": "analysis/c01.html#conclusión-del-capítulo",
+    "title": "1.- ¿Qué significa incertidumbre en medicina?",
+    "section": "4. Conclusión del capítulo",
+    "text": "4. Conclusión del capítulo\nEste capítulo no trata de modelos ni de fórmulas.\nTrata de algo más fundamental:\nCómo pensar",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "1.- ¿Qué significa incertidumbre en medicina?"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#ejercicios-capítulo-1",
+    "href": "analysis/c01.html#ejercicios-capítulo-1",
+    "title": "1.- ¿Qué significa incertidumbre en medicina?",
+    "section": "Ejercicios — Capítulo 1",
+    "text": "Ejercicios — Capítulo 1\n\nEjercicio 1 — El diagnóstico incómodo\nUn paciente tiene:\n\nGlucosa: 125 mg/dL\nHbA1c: 6.4%\nIMC: 31\n\n👉 Pregunta:\n\nSegún criterios clásicos, ¿es diabético?\n¿Qué tan seguro estás de esa respuesta? (alto, medio, bajo)\nReformula tu respuesta en términos probabilísticos\n\n💡 Objetivo: romper el pensamiento binario\n\n\nEjercicio 2 — Dos pacientes casi iguales\nPaciente A:\n\nHbA1c: 6.5%\n\nPaciente B:\n\nHbA1c: 6.4%\n\n👉 Pregunta:\n\n¿Son clínicamente diferentes?\n¿El sistema de clasificación los trata diferente?\n¿Qué problema conceptual estás viendo aquí?\n\n💡 Objetivo: detectar arbitrariedad de los puntos de corte\n\n\nEjercicio 3 — IMC como medida imperfecta\nDos pacientes:\n\nAmbos con IMC = 30\nUno con alta grasa visceral\nOtro con masa muscular alta\n\n👉 Pregunta:\n\n¿Tienen el mismo riesgo cardiometabólico?\n¿Qué tipo de incertidumbre estás enfrentando?\n¿Qué información te falta?\n\n💡 Objetivo: entender limitaciones de los datos\n\n\nEjercicio 4 — Pensamiento bayesiano básico\nUn paciente tiene:\n\nObesidad\nSedentarismo\nHistoria familiar de diabetes\n\n👉 Pregunta:\n\nAntes de ver exámenes, ¿crees que la probabilidad de diabetes es alta o baja?\n¿Qué estás usando aquí: datos o creencias previas?\n¿Por qué esto NO es “mala medicina”?\n\n💡 Objetivo: introducir la idea de prior (creencia previa)\n\n\nEjercicio 5 — Crear tu propia incertidumbre\n👉 Modifica el código de simulación:\n\nCambia el punto de corte de glucosa (ej: 100 en lugar de 110)\nCambia el error (ej: 20% en lugar de 10%)\n\n\n# cambia estos valores\n\nglucosa &gt; 100\nrunif(n) &lt; 0.2\n👉 Pregunta:\n\n¿Qué pasa con el solapamiento?\n¿Aumenta o disminuye la incertidumbre?\n¿Qué escenario se parece más a la vida real?\n\n💡 Objetivo: ver cómo nace la incertidumbre\n\n\nEjercicio 6 — El falso diagnóstico perfecto\n👉 Elimina el error:\nestado_observado = estado_real\n👉 Pregunta:\n\n¿Qué pasa con el gráfico?\n¿Existe aún incertidumbre?\n¿Este escenario es realista?\n\n💡 Objetivo: entender que la perfección no existe en medicina\n\n\nEjercicio 7 — Juega con la variabilidad\n👉 Cambia la desviación estándar:\nrnorm(n, mean = 105, sd = 5)\nrnorm(n, mean = 105, sd = 25)\n👉 Pregunta:\n\n¿Cómo cambia la superposición?\n¿Qué significa esto clínicamente?\n\n💡 Objetivo: entender variabilidad biológica\n\n\nEjercicio 8 — ¿Hay dos poblaciones?\n👉 Grafica la glucosa:\n\nggplot(df_obesidad, aes(x = LBXSGL)) +\n  geom_histogram(binwidth = 5)\n\n👉 Pregunta:\n\n¿Ves dos grupos claramente separados?\n¿Dónde pondrías el punto de corte?\n¿Qué tan arbitrario es?\n\n💡 Objetivo: ver la continuidad de la realidad\n\n\nEjercicio 9 — Variable categórica real\nSupongamos:\n\nHipertensión (sí/no)\nObesidad (sí/no)\n\n👉 Pregunta (sin modelo aún):\n\n¿Crees que están relacionadas?\n¿Cómo lo expresarías en términos de probabilidad?\n\nEjemplo esperado:\nP(obesidad | hipertensión)\n💡 Objetivo: empezar a pensar en probabilidades condicionales\n\n\nEjercicio 10 — Traducción mental\nConvierte estas frases:\n❌ “El paciente es diabético”\n👉 En versión bayesiana:\n❌ “El paciente está sano”\n👉 En versión bayesiana:\n❌ “El IMC indica obesidad”\n👉 En versión bayesiana:\n💡 Objetivo: reprogramar tu lenguaje clínico\n\n\nEjercicio 11 — Detecta el error\nUn colega dice:\n“Si la HbA1c es menor a 6.5%, no hay diabetes”\n👉 Pregunta:\n\n¿Qué está mal en esa afirmación?\n¿Qué tipo de pensamiento es?\n¿Cómo lo corregirías?\n\n\n\nEjercicio 12 — Tu propia práctica clínica\nPiensa en un paciente real que hayas visto recientemente.\n👉 Responde:\n\n¿Qué decisión tomaste?\n¿Qué incertidumbre había?\n¿La expresaste o la ignoraste?\n¿Cómo la expresarías ahora en términos\nprobabilísticos?",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "1.- ¿Qué significa incertidumbre en medicina?"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#ejercicio-4-pensamiento-bayesiano-básico",
+    "href": "analysis/c01.html#ejercicio-4-pensamiento-bayesiano-básico",
+    "title": "¿Qué significa incertidumbre en medicina?",
+    "section": "Ejercicio 4 — Pensamiento bayesiano básico",
+    "text": "Ejercicio 4 — Pensamiento bayesiano básico\nUn paciente tiene:\n\nObesidad\nSedentarismo\nHistoria familiar de diabetes\n\n👉 Pregunta:\n\nAntes de ver exámenes, ¿crees que la probabilidad de diabetes es alta o baja?\n¿Qué estás usando aquí: datos o creencias previas?\n¿Por qué esto NO es “mala medicina”?\n\n💡 Objetivo: introducir la idea de prior (creencia previa)"
+  }
+]
