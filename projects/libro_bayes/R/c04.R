@@ -59,7 +59,7 @@ ggplot(df_obesidad_sub, aes(x = BMXBMI)) +
     y = "Frecuencia"
   )
 
-# Histograma de l variable de glicemia
+# Histograma de la variable de glicemia
 ggplot(df_obesidad_sub, aes(x = LBXSGL)) +
   geom_histogram(bins = 30) +
   labs(

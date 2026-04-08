@@ -13,14 +13,14 @@ library(tidyverse)
 df_obesidad <- read_csv("../data/obesidad_nhanes.csv")
 ```
 
-## 1.  Intuición (sin código)
+## 1. Intuición (sin código)
 
 Imagina que estás en consulta y recibes a un paciente con resultados de laboratorio… pero:
 
-- la glicemia está en blanco
-- la presión arterial aparece dos veces con valores distintos
-- el sexo está codificado como “1” o “2”
-- el peso está en kg… pero alguien anotó uno en libras
+-   la glicemia está en blanco
+-   la presión arterial aparece dos veces con valores distintos
+-   el sexo está codificado como “1” o “2”
+-   el peso está en kg… pero alguien anotó uno en libras
 
 ¿Confiarías en ese “dataset clínico” para tomar decisiones?
 
@@ -30,10 +30,10 @@ Eso mismo ocurre cuando trabajamos con datos reales como **NHANES**.
 
 En la vida real, los datos:
 
-- tienen valores faltantes (NA)
-- pueden estar mal codificados
-- pueden tener múltiples mediciones
-- pueden contener errores
+-   tienen valores faltantes (NA)
+-   pueden estar mal codificados
+-   pueden tener múltiples mediciones
+-   pueden contener errores
 
 👉 Y aquí viene la idea clave del capítulo:
 
@@ -45,28 +45,27 @@ Limpiar datos no es “arreglarlos para que salgan bonitos”.
 
 Es:
 
-- entender qué representan
-- hacerlos consistentes
-- prepararlos para responder preguntas clínicas
+-   entender qué representan
+-   hacerlos consistentes
+-   prepararlos para responder preguntas clínicas
 
 ### ¿Qué es un dataset “tidy”?
 
 Un dataset “tidy” (ordenado) cumple tres reglas simples:
 
-1. Cada fila = un paciente
-2. Cada columna = una variable
-3. Cada celda = un valor
+1.  Cada fila = un paciente
+2.  Cada columna = una variable
+3.  Cada celda = un valor
 
-Cuando los datos están tidy:
-👉 es mucho más fácil analizarlos, graficarlos y modelarlos
+Cuando los datos están tidy: 👉 es mucho más fácil analizarlos, graficarlos y modelarlos
 
 ### Analogía clínica
 
 Piensa en esto como preparar un quirófano:
 
-- No operas con instrumentos desordenados
-- No trabajas con información incompleta
-- No mezclas datos confusos
+-   No operas con instrumentos desordenados
+-   No trabajas con información incompleta
+-   No mezclas datos confusos
 
 👉 Primero organizas todo… luego actúas
 
@@ -84,12 +83,11 @@ datos_sucios <- tibble(
 knitr::kable(datos_sucios)
 ```
 
-
 ### Problemas visibles
 
-- Hay valores faltantes (NA)
-- El sexo está codificado como número
-- No sabemos si hay errores
+-   Hay valores faltantes (NA)
+-   El sexo está codificado como número
+-   No sabemos si hay errores
 
 ### Paso 1: renombrar variables
 
@@ -139,11 +137,12 @@ datos_limpios <- datos_limpios %>%
 ```{r}
 knitr::kable(datos_limpios)
 ```
+
 Ahora tenemos un dataset:
 
-- entendible
-- consistente
-- listo para análisis
+-   entendible
+-   consistente
+-   listo para análisis
 
 ## 3. Ejemplo aplicado con NHANES
 
@@ -159,12 +158,12 @@ knitr::kable(df_obesidad[1:4,]) # produce:
 
 Crear un dataset limpio con:
 
-- edad
-- sexo
-- IMC
-- glicemia
-- presión arterial
-- aspirina
+-   edad
+-   sexo
+-   IMC
+-   glicemia
+-   presión arterial
+-   aspirina
 
 ### Paso 1: seleccionar variables
 
@@ -234,17 +233,16 @@ df_obesidad_sub %>%
 
 👉 Aquí empiezas a ver la realidad:
 
-- glicemia → muchos NA
-- aspirina → MUCHOS NA
+-   glicemia → muchos NA
+-   aspirina → MUCHOS NA
 
 **Punto clave**
 
-Los NA en NHANES no son errores necesariamente
-👉 muchas veces significan:
+Los NA en NHANES no son errores necesariamente 👉 muchas veces significan:
 
-- no se midió
-- no aplica
-- el paciente no respondió
+-   no se midió
+-   no aplica
+-   el paciente no respondió
 
 ### Paso 5: filtrar datos útiles
 
@@ -299,17 +297,17 @@ Este capítulo no trata de estadística…
 
 ### Lo que aprendiste realmente
 
-- Los datos clínicos reales son desordenados
-- No puedes analizarlos directamente
-- Necesitas limpiarlos primero
+-   Los datos clínicos reales son desordenados
+-   No puedes analizarlos directamente
+-   Necesitas limpiarlos primero
 
 ### Ejemplo clínico real
 
 Si analizas glicemia sin limpiar:
 
-- incluyes pacientes sin medición
-- mezclas datos incompletos
-- obtienes conclusiones erróneas
+-   incluyes pacientes sin medición
+-   mezclas datos incompletos
+-   obtienes conclusiones erróneas
 
 👉 Resultado:
 
@@ -319,35 +317,34 @@ Si analizas glicemia sin limpiar:
 
 En el contexto de la obesidad como problema hormonal:
 
-- IMC → adiposidad
-- glicemia → metabolismo
-- aspirina → inflamación
+-   IMC → adiposidad
+-   glicemia → metabolismo
+-   aspirina → inflamación
 
-Si estos datos están mal preparados:
-👉 no puedes entender la relación entre ellos
+Si estos datos están mal preparados: 👉 no puedes entender la relación entre ellos
 
 ### Idea más importante del capítulo
 
-*Antes de hacer análisis bayesiano…*
-*primero debes confiar en tus datos.*
+*Antes de hacer análisis bayesiano…* *primero debes confiar en tus datos.*
 
 ### Lo que viene después
 
 Ahora que sabes:
 
-- seleccionar variables
-- limpiar datos
-- manejar NA
-- crear variables clínicas
+-   seleccionar variables
+-   limpiar datos
+-   manejar NA
+-   crear variables clínicas
 
 👉 En el siguiente capítulo empezaremos a hacer algo más interesante:
 
 **explorar relaciones entre variables… y empezar a pensar en probabilidades.**
 
 ## Mini resumen mental
-- Datos crudos → no confiables
-- Datos limpios → analizables
-- Datos bien preparados → decisiones clínicas más seguras
+
+-   Datos crudos → no confiables
+-   Datos limpios → analizables
+-   Datos bien preparados → decisiones clínicas más seguras
 
 ## Ejercicios
 
@@ -355,8 +352,8 @@ Ahora que sabes:
 
 Cuenta los NA de solo estas variables:
 
-- glicemia
-- imc
+-   glicemia
+-   imc
 
 👉 pista:
 
@@ -388,25 +385,23 @@ Calcula la edad promedio
 
 Filtra solo pacientes con:
 
-- IMC ≥ 30
+-   IMC ≥ 30
 
-👉 pregunta clínica:
-¿Cuántos pacientes obesos tienes?
+👉 pregunta clínica: ¿Cuántos pacientes obesos tienes?
 
 ### Ejercicio 5
 
 Filtra pacientes con:
 
-- glicemia > 100
+-   glicemia \> 100
 
-👉 interpreta:
-¿posible alteración metabólica?
+👉 interpreta: ¿posible alteración metabólica?
 
 ### Ejercicio 6
 
 Filtra pacientes que:
 
-- NO tienen NA en glicemia
+-   NO tienen NA en glicemia
 
 👉 compara tamaño del dataset antes vs después
 
@@ -416,8 +411,8 @@ Crea una variable:
 
 **riesgo_metabolico**:
 
-- "Alto" si glicemia > 110
-- "Normal" si no
+-   "Alto" si glicemia \> 110
+-   "Normal" si no
 
 ### Ejercicio 8
 
@@ -425,9 +420,9 @@ Crea una variable:
 
 **grupo_imc**:
 
-- "Normal" (<25)
-- "Sobrepeso" (25–29.9)
-- "Obesidad" (≥30)
+-   "Normal" (\<25)
+-   "Sobrepeso" (25–29.9)
+-   "Obesidad" (≥30)
 
 ### Ejercicio 9
 
@@ -465,7 +460,7 @@ Crea una tabla:
 
 👉 proporción de pacientes con:
 
-- obesidad
-- glicemia alta
+-   obesidad
+-   glicemia alta
 
 (pista: count() o summarise())

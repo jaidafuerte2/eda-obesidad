@@ -408,5 +408,71 @@
       "Módulo 2: Entender la Incertidumbre",
       "3.- Preparando NHANES en R"
     ]
+  },
+  {
+    "objectID": "analysis/c04.html",
+    "href": "analysis/c04.html",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "",
+    "text": "Antes de hacer cualquier modelo, incluso antes de pensar en Bayes, hay una pregunta más básica:\n👉 ¿Qué dicen realmente los datos?\nLa visualización es la forma más directa de responderla.\n\n\nImagina que tienes 1,000 pacientes y quieres entender el IMC.\nTe doy dos opciones:\n\nOpción A: una tabla con 1,000 números\nOpción B: un gráfico donde ves cómo se distribuyen esos valores\n\n¿Cuál te permite entender mejor?\n👉 El gráfico.\n\n\n\n\nVer datos: mirar filas y columnas\nEntender datos: detectar patrones, extremos, relaciones\n\nLa visualización transforma números en intuición clínica.\n\n\n\nPorque los modelos (incluyendo los bayesianos) hacen supuestos.\nPero los datos reales:\n\nno son simétricos\ntienen valores extremos\ntienen ruido\npueden tener subgrupos ocultos\n\n👉 Si no los visualizas primero, puedes construir modelos equivocados.\n\n\n\nCuando miras un gráfico clínico, estás buscando:\n\n\n¿Cómo se comporta una variable?\nEjemplo:\n\nIMC concentrado en 25–30 → sobrepeso predominante\ncola larga → obesidad severa presente\n\n\n\n\n¿Todos los pacientes son similares?\nEjemplo:\n\nglicemia muy dispersa → metabolismo variable\n\n\n\n\nPacientes fuera de lo común\nEjemplo:\n\nglicemia &gt; 200 mg/dL → posible diabetes no controlada\n\n\n\n\n¿Cómo se conectan?\nEjemplo:\n\nIMC ↑ → glicemia ↑ 👉 posible relación metabólica\n\n\n\n\n\nVisualizar es pensar clínicamente con datos antes de hacer estadística.",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#intuición-sin-código",
+    "href": "analysis/c04.html#intuición-sin-código",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "",
+    "text": "Antes de hacer cualquier modelo, incluso antes de pensar en Bayes, hay una pregunta más básica:\n👉 ¿Qué dicen realmente los datos?\nLa visualización es la forma más directa de responderla.\n\n\nImagina que tienes 1,000 pacientes y quieres entender el IMC.\nTe doy dos opciones:\n\nOpción A: una tabla con 1,000 números\nOpción B: un gráfico donde ves cómo se distribuyen esos valores\n\n¿Cuál te permite entender mejor?\n👉 El gráfico.\n\n\n\n\nVer datos: mirar filas y columnas\nEntender datos: detectar patrones, extremos, relaciones\n\nLa visualización transforma números en intuición clínica.\n\n\n\nPorque los modelos (incluyendo los bayesianos) hacen supuestos.\nPero los datos reales:\n\nno son simétricos\ntienen valores extremos\ntienen ruido\npueden tener subgrupos ocultos\n\n👉 Si no los visualizas primero, puedes construir modelos equivocados.\n\n\n\nCuando miras un gráfico clínico, estás buscando:\n\n\n¿Cómo se comporta una variable?\nEjemplo:\n\nIMC concentrado en 25–30 → sobrepeso predominante\ncola larga → obesidad severa presente\n\n\n\n\n¿Todos los pacientes son similares?\nEjemplo:\n\nglicemia muy dispersa → metabolismo variable\n\n\n\n\nPacientes fuera de lo común\nEjemplo:\n\nglicemia &gt; 200 mg/dL → posible diabetes no controlada\n\n\n\n\n¿Cómo se conectan?\nEjemplo:\n\nIMC ↑ → glicemia ↑ 👉 posible relación metabólica\n\n\n\n\n\nVisualizar es pensar clínicamente con datos antes de hacer estadística.",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#ejemplo-simple-simulación-en-r",
+    "href": "analysis/c04.html#ejemplo-simple-simulación-en-r",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "2. Ejemplo simple (simulación en R)",
+    "text": "2. Ejemplo simple (simulación en R)\nVamos a construir intuición desde cero.\nSimulamos pacientes con IMC y glicemia.\n\nset.seed(123)\n\n# Simular pacientes con imc y glicemia\ndatos_sim &lt;- tibble(\n  imc = rnorm(200, mean = 28, sd = 5),\n  glicemia = 80 + imc * 1.5 + rnorm(200, 0, 10)\n)\n\n\n1. Distribución de IMC\n\n# Histograma de la variable imc\nggplot(datos_sim, aes(x = imc)) +\n  geom_histogram(bins = 30)\n\n\n\n\n\n\n\n\n👉 ¿Qué estás viendo?\n\nLa mayoría entre 25–30\nAlgunos valores altos → obesidad\n\n\n\n2. Relación IMC vs glicemia\n\n# Diagrama de dispersión que relaciona el imc con la glicemia\nggplot(datos_sim, aes(x = imc, y = glicemia)) +\n  geom_point()\n\n\n\n\n\n\n\n\n👉 Aquí aparece algo clave:\n\nA mayor IMC → mayor glicemia\nNo es perfecto → hay variabilidad",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#ejemplo-aplicado-con-nhanes",
+    "href": "analysis/c04.html#ejemplo-aplicado-con-nhanes",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "3. Ejemplo aplicado con NHANES",
+    "text": "3. Ejemplo aplicado con NHANES\nAhora trabajamos con datos reales.\nSupongamos que ya tienes un dataset limpio llamado nhanes_sub.\n\n0. Selccionar los datos\n\n# Seleccionar las variables importantes\ndf_obesidad_sub &lt;- df_obesidad %&gt;%\n  select(\n    RIDAGEYR,   # edad\n    RIAGENDR,   # sexo\n    BMXBMI,     # IMC\n    LBXSGL,     # glicemia\n    BPXSY_mean, # presión sistólica\n    BPXDI_mean, # presión diastólica\n    RXD530,     # dosis de aspirina\n    PAD680      # sedentarismo\n  )\n\n\n\n1. Distribución del IMC\n\n# Histograma del índice de masa corporal\nggplot(df_obesidad_sub, aes(x = BMXBMI)) +\n  geom_histogram(bins = 30) +\n  labs(\n    title = \"Distribución del IMC\",\n    x = \"IMC\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\nInterpretación\nAquí normalmente verás:\n\nPico en sobrepeso (25–30)\nCola hacia obesidad\nPocos con IMC bajo\n\n👉 Esto ya te dice:\nLa población no es homogénea Hay una carga importante de obesidad\n\n\n2. Glicemia (variabilidad metabólica)\n\n# Histograma de la variable de glicemia\nggplot(df_obesidad_sub, aes(x = LBXSGL)) +\n  geom_histogram(bins = 30) +\n  labs(\n    title = \"Distribución de glicemia\",\n    x = \"Glicemia (mg/dL)\",\n    y = \"Frecuencia\"\n  )\n\nWarning: Removed 286 rows containing non-finite outside the scale range\n(`stat_bin()`).\n\n\n\n\n\n\n\n\n\nQué observar\n\n¿Está concentrada o dispersa?\n¿Hay valores altos?\n¿Hay cola derecha?\n\n👉 Esto refleja:\n\nregulación metabólica\nposible resistencia a la insulina\n\n\n\n3. IMC vs glicemia\n\n# Diagrama de dispersión que relaciona el índice de masa corporal con\n# la glicemia\nggplot(df_obesidad_sub, aes(x = BMXBMI, y = LBXSGL)) +\n  geom_point(alpha = 0.1) +\n  labs(\n    title = \"IMC vs Glicemia\",\n    x = \"IMC\",\n    y = \"Glicemia\"\n  )\n\n\n\n\n\n\n\n\nQué buscar - tendencia ascendente - dispersión - puntos extremos\n👉 Este gráfico es oro clínico.\n\n\n4. Actividad física (sedentarismo)\n\n# Histograma de minutos de sedentarismo\nggplot(df_obesidad_sub, aes(x = PAD680)) +\n  geom_histogram(bins = 100) +\n  labs(\n    title = \"Minutos sedentarios\",\n    x = \"Minutos sedentarios\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\nInterpretación\n\nmuchos pacientes con alto sedentarismo\nposible relación con obesidad\n\n\n\n5. Boxplot: IMC por sexo\n\n# Pasar a factor la variable de género\ndf_obesidad_sub &lt;- df_obesidad_sub %&gt;%\n  mutate(\n    RIAGENDR = case_when(\n      RIAGENDR == 1 ~ \"male\",\n      RIAGENDR == 2 ~ \"female\",\n      TRUE ~ NA_character_\n    ),\n    RIAGENDR = as.factor(RIAGENDR)\n  )\n\n# Gráfico de caja que relaciona el género con el índce de masa \n# corporal\nggplot(df_obesidad_sub, aes(x = RIAGENDR, y = BMXBMI)) +\n  geom_boxplot() +\n  labs(\n    title = \"IMC por sexo\",\n    x = \"Sexo\",\n    y = \"IMC\"\n  )\n\n\n\n\n\n\n\n\nQué aporta este gráfico\nEl boxplot te muestra:\n\nmediana\ndispersión\nvalores extremos\n\n👉 Es una forma compacta de comparar grupos.\n\n\nMini introducción a ggplot2\nTodos los gráficos siguen la misma lógica:\n\n#ggplot(data, aes(x = ..., y = ...)) + \n#  geom_...\n\nComponentes:\n\ndata → dataset\naes() → qué variables usar\ngeom_ → tipo de gráfico\n\nEjemplos:\n\ngeom_histogram() → distribución\ngeom_point() → relación\ngeom_boxplot() → comparación",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#interpretación-clínica",
+    "href": "analysis/c04.html#interpretación-clínica",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "4. Interpretación clínica",
+    "text": "4. Interpretación clínica\nAhora viene lo más importante.\nLo que los gráficos realmente te dicen\nDespués de visualizar NHANES, deberías poder decir:\n\n1. La obesidad no es uniforme\n\nHay pacientes con IMC normal\nOtros con obesidad severa\n\n👉 No existe “el paciente promedio”\n\n\n2. El metabolismo es variable\n\nglicemias normales\nprediabetes\nvalores altos\n\n👉 La resistencia a la insulina no es binaria\n\n\n3. El estilo de vida importa\n\nalto sedentarismo\ngran variabilidad\n\n👉 Esto conecta con inflamación crónica\n\n\n4. Las relaciones existen (pero no son perfectas)\nIMC vs glicemia:\n\ntendencia positiva\nmucha dispersión\n\n👉 Esto es clave:\nNo todos los pacientes con obesidad tienen la misma glicemia → heterogeneidad metabólica\n\n\nConexión con pensamiento bayesiano\nAquí empieza Bayes, aunque no lo veas aún.\nCuando observas estos gráficos, tu mente empieza a pensar:\n\n“Creo que mayor IMC aumenta la glicemia…”\n“Pero no siempre…”\n“Hay incertidumbre…”\n\n👉 Eso es una creencia probabilística",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#mensaje-final-del-capítulo",
+    "href": "analysis/c04.html#mensaje-final-del-capítulo",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "Mensaje final del capítulo",
+    "text": "Mensaje final del capítulo\nAntes de modelar, antes de hacer inferencia, antes de hablar de Bayes:\nMira los datos.\nPorque:\n👉 Los datos no son limpios 👉 No son uniformes 👉 No siguen reglas perfectas\nPero sí cuentan una historia.",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
   }
 ]

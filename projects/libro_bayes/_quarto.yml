@@ -19,6 +19,7 @@ website:
         #href: analysis/m02.qmd
         contents: 
         - analysis/c03.qmd
+        - analysis/c04.qmd
   page-footer: 
     border: false
     background: light
