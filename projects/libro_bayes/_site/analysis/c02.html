@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2.- De Datos a Decisiones Clínicas – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">Módulo 1: Pensar Como Analista Bayesiano</a></li><li class="breadcrumb-item"><a href="../analysis/c02.html">2.- De Datos a Decisiones Clínicas</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 1: Pensar Como Analista Bayesiano</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">2.- De Datos a Decisiones Clínicas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 2: Entender la Incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+ <span class="menu-text">analysis/c03.qmd</span>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intuición-sin-código" id="toc-intuición-sin-código" class="nav-link active" data-scroll-target="#intuición-sin-código">1. Intuición (SIN código)</a>
+  <ul class="collapse">
+  <li><a href="#describir-datos-lo-que-vemos" id="toc-describir-datos-lo-que-vemos" class="nav-link" data-scroll-target="#describir-datos-lo-que-vemos">1. Describir datos (lo que “vemos”)</a></li>
+  <li><a href="#inferir-lo-que-creemos-que-significa" id="toc-inferir-lo-que-creemos-que-significa" class="nav-link" data-scroll-target="#inferir-lo-que-creemos-que-significa">2. Inferir (lo que “creemos que significa”)</a></li>
+  <li><a href="#tomar-decisiones-lo-que-haces" id="toc-tomar-decisiones-lo-que-haces" class="nav-link" data-scroll-target="#tomar-decisiones-lo-que-haces">3. Tomar decisiones (lo que “haces”)</a></li>
+  <li><a href="#entonces-qué-hace-un-analista-bayesiano" id="toc-entonces-qué-hace-un-analista-bayesiano" class="nav-link" data-scroll-target="#entonces-qué-hace-un-analista-bayesiano">Entonces… ¿qué hace un analista bayesiano?</a></li>
+  <li><a href="#ejemplo-clínico-sencillo" id="toc-ejemplo-clínico-sencillo" class="nav-link" data-scroll-target="#ejemplo-clínico-sencillo">Ejemplo clínico sencillo</a></li>
+  <li><a href="#idea-clave-del-capítulo" id="toc-idea-clave-del-capítulo" class="nav-link" data-scroll-target="#idea-clave-del-capítulo">Idea clave del capítulo</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <ul class="collapse">
+  <li><a href="#qué-estamos-viendo" id="toc-qué-estamos-viendo" class="nav-link" data-scroll-target="#qué-estamos-viendo">¿Qué estamos viendo?</a></li>
+  <li><a href="#aquí-aparece-el-punto-clave" id="toc-aquí-aparece-el-punto-clave" class="nav-link" data-scroll-target="#aquí-aparece-el-punto-clave">Aquí aparece el punto clave</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-aplicado-con-nhanes" id="toc-ejemplo-aplicado-con-nhanes" class="nav-link" data-scroll-target="#ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</a>
+  <ul class="collapse">
+  <li><a href="#preparación-de-datos" id="toc-preparación-de-datos" class="nav-link" data-scroll-target="#preparación-de-datos">Preparación de datos</a></li>
+  <li><a href="#relación-entre-imc-y-riesgo-metabólico" id="toc-relación-entre-imc-y-riesgo-metabólico" class="nav-link" data-scroll-target="#relación-entre-imc-y-riesgo-metabólico">Relación entre IMC y riesgo metabólico</a></li>
+  <li><a href="#interpretación-de-la-gráfica" id="toc-interpretación-de-la-gráfica" class="nav-link" data-scroll-target="#interpretación-de-la-gráfica">Interpretación de la gráfica</a></li>
+  <li><a href="#agregamos-presión-arterial" id="toc-agregamos-presión-arterial" class="nav-link" data-scroll-target="#agregamos-presión-arterial">Agregamos presión arterial</a></li>
+  <li><a href="#qué-vemos" id="toc-qué-vemos" class="nav-link" data-scroll-target="#qué-vemos">¿Qué vemos?</a></li>
+  </ul></li>
+  <li><a href="#interpretación-clínica" id="toc-interpretación-clínica" class="nav-link" data-scroll-target="#interpretación-clínica">4. Interpretación clínica</a>
+  <ul class="collapse">
+  <li><a href="#caso-clínico-integrado" id="toc-caso-clínico-integrado" class="nav-link" data-scroll-target="#caso-clínico-integrado">Caso clínico integrado</a></li>
+  <li><a href="#enfoque-tradicional-simplificado" id="toc-enfoque-tradicional-simplificado" class="nav-link" data-scroll-target="#enfoque-tradicional-simplificado">Enfoque tradicional (simplificado)</a></li>
+  <li><a href="#enfoque-bayesiano" id="toc-enfoque-bayesiano" class="nav-link" data-scroll-target="#enfoque-bayesiano">Enfoque bayesiano</a></li>
+  <li><a href="#decisión-clínica" id="toc-decisión-clínica" class="nav-link" data-scroll-target="#decisión-clínica">Decisión clínica</a></li>
+  <li><a href="#conexión-con-obesidad-visión-de-fondo" id="toc-conexión-con-obesidad-visión-de-fondo" class="nav-link" data-scroll-target="#conexión-con-obesidad-visión-de-fondo">Conexión con obesidad (visión de fondo)</a></li>
+  <li><a href="#lo-importante" id="toc-lo-importante" class="nav-link" data-scroll-target="#lo-importante">Lo importante</a></li>
+  </ul></li>
+  <li><a href="#mensaje-final-del-capítulo" id="toc-mensaje-final-del-capítulo" class="nav-link" data-scroll-target="#mensaje-final-del-capítulo">Mensaje final del capítulo</a></li>
+  <li><a href="#lo-que-viene-después" id="toc-lo-que-viene-después" class="nav-link" data-scroll-target="#lo-que-viene-después">Lo que viene después</a></li>
+  <li><a href="#ejercicios-capítulo-2" id="toc-ejercicios-capítulo-2" class="nav-link" data-scroll-target="#ejercicios-capítulo-2">Ejercicios — Capítulo 2</a>
+  <ul class="collapse">
+  <li><a href="#de-datos-a-decisiones-clínicas" id="toc-de-datos-a-decisiones-clínicas" class="nav-link" data-scroll-target="#de-datos-a-decisiones-clínicas">De datos a decisiones clínicas</a></li>
+  <li><a href="#ejercicio-1-describir-vs-inferir-vs-decidir" id="toc-ejercicio-1-describir-vs-inferir-vs-decidir" class="nav-link" data-scroll-target="#ejercicio-1-describir-vs-inferir-vs-decidir">Ejercicio 1 — Describir vs inferir vs decidir</a></li>
+  <li><a href="#ejercicio-2-tu-primer-prior-clínico" id="toc-ejercicio-2-tu-primer-prior-clínico" class="nav-link" data-scroll-target="#ejercicio-2-tu-primer-prior-clínico">Ejercicio 2 — Tu primer “prior clínico”</a></li>
+  <li><a href="#ejercicio-3-actualizar-creencias" id="toc-ejercicio-3-actualizar-creencias" class="nav-link" data-scroll-target="#ejercicio-3-actualizar-creencias">Ejercicio 3 — Actualizar creencias</a></li>
+  <li><a href="#ejercicio-4-ver-la-incertidumbre-en-datos-simulados" id="toc-ejercicio-4-ver-la-incertidumbre-en-datos-simulados" class="nav-link" data-scroll-target="#ejercicio-4-ver-la-incertidumbre-en-datos-simulados">Ejercicio 4 — Ver la incertidumbre en datos simulados</a></li>
+  </ul></li>
+  <li><a href="#ejercicio-5-nhanes-relación-imc-y-riesgo" id="toc-ejercicio-5-nhanes-relación-imc-y-riesgo" class="nav-link" data-scroll-target="#ejercicio-5-nhanes-relación-imc-y-riesgo">Ejercicio 5 — NHANES: relación IMC y riesgo</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-6-construyendo-una-decisión-clínica" id="toc-ejercicio-6-construyendo-una-decisión-clínica" class="nav-link" data-scroll-target="#ejercicio-6-construyendo-una-decisión-clínica">Ejercicio 6 — Construyendo una decisión clínica</a></li>
+  </ul></li>
+  <li><a href="#ejercicio-7-detectando-señales-vs-ruido" id="toc-ejercicio-7-detectando-señales-vs-ruido" class="nav-link" data-scroll-target="#ejercicio-7-detectando-señales-vs-ruido">Ejercicio 7 — Detectando señales vs ruido</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-final-muy-importante" id="toc-ejercicio-final-muy-importante" class="nav-link" data-scroll-target="#ejercicio-final-muy-importante">Ejercicio final (muy importante)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">Módulo 1: Pensar Como Analista Bayesiano</a></li><li class="breadcrumb-item"><a href="../analysis/c02.html">2.- De Datos a Decisiones Clínicas</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">2.- De Datos a Decisiones Clínicas</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="intuición-sin-código" class="level2">
+<h2 class="anchored" data-anchor-id="intuición-sin-código">1. Intuición (SIN código)</h2>
+<p>Imagina que tienes frente a ti a un paciente con obesidad.</p>
+<p>Tiene:</p>
+<ul>
+<li>IMC elevado</li>
+<li>glicemia en ayunas ligeramente alta</li>
+<li>presión arterial borderline</li>
+<li>vida sedentaria</li>
+</ul>
+<p>Ahora viene la pregunta clave:</p>
+<p>👉 <strong>¿Qué haces con esa información?</strong></p>
+<p>Aquí es donde empieza la diferencia entre tres niveles de pensamiento:</p>
+<section id="describir-datos-lo-que-vemos" class="level3">
+<h3 class="anchored" data-anchor-id="describir-datos-lo-que-vemos">1. Describir datos (lo que “vemos”)</h3>
+<p>Esto es lo más básico:</p>
+<ul>
+<li>“El paciente tiene IMC de 32”</li>
+<li>“La glicemia es de 110 mg/dL”</li>
+<li>“La presión está en 135/85”</li>
+</ul>
+<p>👉 Es fotografía, no interpretación.</p>
+</section>
+<section id="inferir-lo-que-creemos-que-significa" class="level3">
+<h3 class="anchored" data-anchor-id="inferir-lo-que-creemos-que-significa">2. Inferir (lo que “creemos que significa”)</h3>
+<p>Aquí ya estás usando tu experiencia clínica:</p>
+<ul>
+<li>“Probablemente hay resistencia a la insulina”</li>
+<li>“Este paciente tiene riesgo de progresar a diabetes”</li>
+<li>“La inflamación crónica puede estar presente”</li>
+</ul>
+<p>👉 Aquí aparece algo clave:</p>
+<p><strong>No estás seguro… estás estimando.</strong></p>
+</section>
+<section id="tomar-decisiones-lo-que-haces" class="level3">
+<h3 class="anchored" data-anchor-id="tomar-decisiones-lo-que-haces">3. Tomar decisiones (lo que “haces”)</h3>
+<p>Finalmente decides:</p>
+<ul>
+<li>¿Intervenir ya o esperar?</li>
+<li>¿Cambios en estilo de vida?</li>
+<li>¿Solicitar más pruebas?</li>
+<li>¿Iniciar tratamiento?</li>
+</ul>
+<p>👉 Y aquí ocurre algo importante:</p>
+<p><strong>Toda decisión clínica se toma con incertidumbre.</strong></p>
+</section>
+<section id="entonces-qué-hace-un-analista-bayesiano" class="level3">
+<h3 class="anchored" data-anchor-id="entonces-qué-hace-un-analista-bayesiano">Entonces… ¿qué hace un analista bayesiano?</h3>
+<p>Un analista bayesiano hace explícito este proceso que tú ya haces de forma intuitiva:</p>
+<section id="flujo-de-trabajo-bayesiano" class="level4">
+<h4 class="anchored" data-anchor-id="flujo-de-trabajo-bayesiano">Flujo de trabajo bayesiano</h4>
+<ol type="1">
+<li><strong>Creencias iniciales (priors)</strong> Lo que sabes antes de ver los datos (tu experiencia, literatura, fisiopatología)</li>
+<li><strong>Datos (evidencia)</strong> Lo que observas en el paciente</li>
+<li><strong>Actualización (posterior)</strong> Cómo cambian tus creencias después de ver los datos</li>
+<li><strong>Decisión</strong> Qué haces con esa nueva información</li>
+</ol>
+</section>
+</section>
+<section id="ejemplo-clínico-sencillo" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplo-clínico-sencillo">Ejemplo clínico sencillo</h3>
+<p>Antes de ver al paciente, tú ya crees que:</p>
+<p>La obesidad está relacionada con resistencia a la insulina La glicemia elevada aumenta riesgo cardiometabólico</p>
+<p>👉 Eso es tu <strong>prior</strong></p>
+<p>Luego ves:</p>
+<ul>
+<li>Glicemia = 110</li>
+<li>IMC = 32</li>
+</ul>
+<p>👉 Eso es la evidencia</p>
+<p>Entonces piensas:</p>
+<p>“Mi sospecha de alteración metabólica ahora es mayor”</p>
+<p>👉 Eso es el posterior</p>
+<p>Y decides:</p>
+<ul>
+<li>“Voy a intervenir en estilo de vida de forma activa”</li>
+</ul>
+<p>👉 Esa es la decisión</p>
+</section>
+<section id="idea-clave-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="idea-clave-del-capítulo">Idea clave del capítulo</h3>
+<p>👉 <strong>Los datos por sí solos no toman decisiones.</strong></p>
+<p>Necesitan:</p>
+<ul>
+<li>contexto</li>
+<li>interpretación</li>
+<li>experiencia</li>
+</ul>
+<p>Y eso es exactamente lo que formaliza el enfoque bayesiano.</p>
+</section>
+</section>
+<section id="ejemplo-simple-simulación-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
+<p>Vamos a simular algo muy sencillo:</p>
+<p>👉 Pacientes con distintos niveles de glicemia 👉 Queremos estimar si tienen alteración metabólica</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Número de paciente</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una simulación de glicemia de pacientes</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">glicemia =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">105</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">alteracion_metabolica =</span> <span class="fu">if_else</span>(glicemia <span class="sc">&gt;</span> <span class="dv">110</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de la glicemia coloreado por alteración metabólica</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>datos <span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> glicemia, <span class="at">fill =</span> <span class="fu">factor</span>(alteracion_metabolica))) <span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución de glicemia y alteración metabólica"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Alteración"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c02_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="qué-estamos-viendo" class="level3">
+<h3 class="anchored" data-anchor-id="qué-estamos-viendo">¿Qué estamos viendo?</h3>
+<p>Valores más altos de glicemia → más probabilidad de alteración Pero no es perfecto Hay superposición</p>
+<p>👉 Es decir:</p>
+<p><strong>No hay certeza absoluta.</strong></p>
+</section>
+<section id="aquí-aparece-el-punto-clave" class="level3">
+<h3 class="anchored" data-anchor-id="aquí-aparece-el-punto-clave">Aquí aparece el punto clave</h3>
+<p>Si un paciente tiene glicemia de 108:</p>
+<ul>
+<li>¿Está sano?</li>
+<li>¿Está enfermo?</li>
+</ul>
+<p>👉 No lo sabes con certeza.</p>
+<p>Pero puedes decir:</p>
+<p>👉 “Mi grado de creencia de que tenga alteración metabólica ha aumentado”</p>
+<p>Eso ya es pensamiento bayesiano.</p>
+</section>
+</section>
+<section id="ejemplo-aplicado-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</h2>
+<p>Ahora vamos a algo más real.</p>
+<p>Trabajaremos con variables clave:</p>
+<ul>
+<li>IMC (BMXBMI)</li>
+<li>glicemia (LBXSGL)</li>
+<li>HbA1c (LBXGH)</li>
+<li>presión arterial</li>
+<li>actividad física</li>
+</ul>
+<section id="preparación-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="preparación-de-datos">Preparación de datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear la variable riesgo metabólico con los valores de glucosa y </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># hemoglobina glicosilada del nhanes</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df_obesidad <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">riesgo_metabolico =</span> <span class="fu">if_else</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="co"># # Glucosa y hemoglobina glicosilada</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      LBXSGL <span class="sc">&gt;</span> <span class="dv">110</span> <span class="sc">|</span> LBXGH <span class="sc">&gt;</span> <span class="fl">5.7</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span>, <span class="dv">0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="relación-entre-imc-y-riesgo-metabólico" class="level3">
+<h3 class="anchored" data-anchor-id="relación-entre-imc-y-riesgo-metabólico">Relación entre IMC y riesgo metabólico</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de densidad del el índice de masa corporal coloreado por</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># rieso metabólico</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(BMXBMI), <span class="sc">!</span><span class="fu">is.na</span>(riesgo_metabolico)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> BMXBMI, <span class="at">fill =</span> <span class="fu">factor</span>(riesgo_metabolico))) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"IMC y riesgo metabólico"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Riesgo"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c02_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación-de-la-gráfica" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-de-la-gráfica">Interpretación de la gráfica</h3>
+<ul>
+<li>A mayor IMC → mayor probabilidad de riesgo</li>
+<li>Pero no todos los obesos tienen riesgo</li>
+<li>Y algunos con IMC menor sí lo tienen</li>
+</ul>
+<p>👉 Esto es fundamental:</p>
+<p><strong>La obesidad no es solo peso.</strong></p>
+</section>
+<section id="agregamos-presión-arterial" class="level3">
+<h3 class="anchored" data-anchor-id="agregamos-presión-arterial">Agregamos presión arterial</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de densidad de la presión sistólica media  coloreado por</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># riesgo metabólico</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(BPXSY_mean), <span class="sc">!</span><span class="fu">is.na</span>(riesgo_metabolico)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> BPXSY_mean, <span class="at">fill =</span> <span class="fu">factor</span>(riesgo_metabolico))) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Presión sistólica y riesgo metabólico"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Riesgo"</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c02_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="qué-vemos" class="level3">
+<h3 class="anchored" data-anchor-id="qué-vemos">¿Qué vemos?</h3>
+<p>Presión más alta → mayor riesgo Pero nuevamente… hay superposición</p>
+<p>👉 No hay reglas absolutas.</p>
+</section>
+</section>
+<section id="interpretación-clínica" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-clínica">4. Interpretación clínica</h2>
+<p>Ahora conectemos todo.</p>
+<section id="caso-clínico-integrado" class="level3">
+<h3 class="anchored" data-anchor-id="caso-clínico-integrado">Caso clínico integrado</h3>
+<p>Paciente:</p>
+<ul>
+<li>IMC: 31</li>
+<li>glicemia: 108</li>
+<li>HbA1c: 5.8</li>
+<li>presión: 138/88</li>
+<li>sedentario</li>
+</ul>
+</section>
+<section id="enfoque-tradicional-simplificado" class="level3">
+<h3 class="anchored" data-anchor-id="enfoque-tradicional-simplificado">Enfoque tradicional (simplificado)</h3>
+<p>“No es diabético → todo bien”</p>
+<p>👉 Error frecuente.</p>
+</section>
+<section id="enfoque-bayesiano" class="level3">
+<h3 class="anchored" data-anchor-id="enfoque-bayesiano">Enfoque bayesiano</h3>
+<p>Tú piensas:</p>
+<ul>
+<li>Antes del paciente → ya sabes que obesidad + sedentarismo → riesgo</li>
+<li>Ves los datos → glicemia borderline + HbA1c elevada</li>
+<li>Actualizas tu creencia → el riesgo ahora es alto</li>
+</ul>
+<p>👉 No necesitas un “diagnóstico binario”</p>
+</section>
+<section id="decisión-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="decisión-clínica">Decisión clínica</h3>
+<ul>
+<li>Intervenir estilo de vida</li>
+<li>Monitoreo cercano</li>
+<li>Educación metabólica</li>
+</ul>
+</section>
+<section id="conexión-con-obesidad-visión-de-fondo" class="level3">
+<h3 class="anchored" data-anchor-id="conexión-con-obesidad-visión-de-fondo">Conexión con obesidad (visión de fondo)</h3>
+<p>Desde el enfoque <em>Hormonal de la Obesidad</em>:</p>
+<p>👉 La obesidad no es solo exceso de grasa</p>
+<p>Es:</p>
+<ul>
+<li>disfunción hormonal</li>
+<li>resistencia a la insulina</li>
+<li>inflamación crónica</li>
+</ul>
+</section>
+<section id="lo-importante" class="level3">
+<h3 class="anchored" data-anchor-id="lo-importante">Lo importante</h3>
+<p>Los datos (IMC, glicemia, presión):</p>
+<p>👉 <strong>son señales indirectas del problema real</strong></p>
+<p>Y como toda señal:</p>
+<ul>
+<li>son imperfectas</li>
+<li>tienen ruido</li>
+<li>generan incertidumbre</li>
+</ul>
+</section>
+</section>
+<section id="mensaje-final-del-capítulo" class="level2">
+<h2 class="anchored" data-anchor-id="mensaje-final-del-capítulo">Mensaje final del capítulo</h2>
+<p>👉 <strong>Ser analista bayesiano es hacer explícito lo que ya haces como médico:</strong></p>
+<ul>
+<li>Partir de conocimiento previo</li>
+<li>Interpretar datos imperfectos</li>
+<li>Actualizar tu juicio</li>
+<li>Tomar decisiones bajo incertidumbre</li>
+</ul>
+</section>
+<section id="lo-que-viene-después" class="level2">
+<h2 class="anchored" data-anchor-id="lo-que-viene-después">Lo que viene después</h2>
+<p>En el siguiente capítulo vas a dar un paso clave:</p>
+<p>👉 Pasar de intuición a cuantificación</p>
+<ul>
+<li>¿Cómo representamos nuestras creencias?</li>
+<li>¿Cómo medimos la incertidumbre?</li>
+<li>¿Cómo empezamos a “formalizar” este proceso?</li>
+</ul>
+<p>Ahí empieza realmente el poder del enfoque bayesiano.</p>
+</section>
+<section id="ejercicios-capítulo-2" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios-capítulo-2">Ejercicios — Capítulo 2</h2>
+<section id="de-datos-a-decisiones-clínicas" class="level3">
+<h3 class="anchored" data-anchor-id="de-datos-a-decisiones-clínicas">De datos a decisiones clínicas</h3>
+</section>
+<section id="ejercicio-1-describir-vs-inferir-vs-decidir" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-describir-vs-inferir-vs-decidir">Ejercicio 1 — Describir vs inferir vs decidir</h3>
+<p>🎯 <strong>Objetivo</strong></p>
+<p>Diferenciar claramente los tres niveles del capítulo.</p>
+<p>📝 <strong>Instrucción</strong></p>
+<p>Dado este paciente:</p>
+<ul>
+<li>IMC: 33</li>
+<li>glicemia: 112</li>
+<li>HbA1c: 5.9</li>
+<li>presión arterial: 140/90</li>
+<li>sedentario</li>
+</ul>
+<p>Responde:</p>
+<ol type="1">
+<li>¿Qué puedes describir (solo datos)?</li>
+<li>¿Qué puedes inferir (interpretación)?</li>
+<li>¿Qué decisión clínica tomarías?</li>
+</ol>
+</section>
+<section id="ejercicio-2-tu-primer-prior-clínico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-tu-primer-prior-clínico">Ejercicio 2 — Tu primer “prior clínico”</h3>
+<p>🎯 <strong>Objetivo</strong></p>
+<p>Hacer explícitas tus creencias iniciales.</p>
+<p>📝 <strong>Instrucción</strong></p>
+<p>Antes de ver cualquier dato:</p>
+<p>Responde:</p>
+<p>👉 “En un paciente con obesidad, ¿qué tan probable crees que tenga alteración metabólica?”</p>
+<ul>
+<li>Baja</li>
+<li>Media</li>
+<li>Alta</li>
+</ul>
+<p>Luego justifica:</p>
+<ul>
+<li>¿En qué te basas?</li>
+<li>¿experiencia?</li>
+<li>¿fisiopatología?</li>
+<li>¿literatura?</li>
+</ul>
+</section>
+<section id="ejercicio-3-actualizar-creencias" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-actualizar-creencias">Ejercicio 3 — Actualizar creencias</h3>
+<p>🎯 <strong>Objetivo</strong></p>
+<p>Practicar el paso más importante: actualización</p>
+<p>📝 <strong>Instrucción</strong></p>
+<p>Partes de este prior:</p>
+<p>👉 “Probabilidad media de alteración metabólica”</p>
+<p>Ahora agregas datos uno por uno:</p>
+<ol type="1">
+<li>IMC = 31</li>
+<li>glicemia = 108</li>
+<li>HbA1c = 5.8</li>
+<li>Sedentarismo</li>
+</ol>
+<p><strong>Pregunta</strong></p>
+<p>Después de cada dato:</p>
+<p>👉 ¿tu creencia sube, baja o se mantiene?</p>
+</section>
+<section id="ejercicio-4-ver-la-incertidumbre-en-datos-simulados" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-ver-la-incertidumbre-en-datos-simulados">Ejercicio 4 — Ver la incertidumbre en datos simulados</h3>
+<p>🎯 <strong>Objetivo</strong></p>
+<p>Visualizar que no hay separaciones perfectas</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">glicemia =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">105</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alteracion =</span> <span class="fu">if_else</span>(glicemia <span class="sc">&gt;</span> <span class="dv">110</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>📝 <strong>Instrucciones</strong> 1. Haz un histograma de glicemia</p>
+<ol start="2" type="1">
+<li><p>Colorea por alteracion</p></li>
+<li><p>Observa la superposición</p></li>
+</ol>
+<p><strong>Preguntas</strong> - ¿Existe un punto donde puedas separar perfectamente sano/enfermo?</p>
+<ul>
+<li>¿Qué pasa con valores como 108 o 109?</li>
+</ul>
+</section>
+</section>
+<section id="ejercicio-5-nhanes-relación-imc-y-riesgo" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicio-5-nhanes-relación-imc-y-riesgo">Ejercicio 5 — NHANES: relación IMC y riesgo</h2>
+<p>🎯 <strong>Objetivo</strong></p>
+<p>Pasar de datos reales a interpretación</p>
+<p>📝 <strong>Instrucción</strong></p>
+<ol type="1">
+<li>Crea una variable:</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># riesgo_metabolico = if_else(LBXSGL &gt; 110 | LBXGH &gt; 5.7, 1, 0)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li><p>Grafica densidad de IMC por riesgo</p></li>
+<li><p>Elimina NA correctamente</p></li>
+</ol>
+<p><strong>Preguntas</strong></p>
+<ul>
+<li>¿Todos los pacientes con IMC alto tienen riesgo?</li>
+<li>¿Hay pacientes con IMC bajo con riesgo?</li>
+</ul>
+<section id="ejercicio-6-construyendo-una-decisión-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6-construyendo-una-decisión-clínica">Ejercicio 6 — Construyendo una decisión clínica</h3>
+<p>🎯 <strong>Objetivo</strong></p>
+<p>Conectar datos → decisión</p>
+<p>📝 <strong>Instrucción</strong></p>
+<p>Elige un paciente de NHANES (o imagínalo):</p>
+<p>Con variables:</p>
+<ul>
+<li>IMC</li>
+<li>glicemia</li>
+<li>HbA1c</li>
+<li>presión</li>
+<li>actividad física</li>
+</ul>
+<p><strong>Responde</strong></p>
+<ol type="1">
+<li>¿Qué dicen los datos?</li>
+<li>¿Qué crees que está pasando metabólicamente?</li>
+<li>¿Qué tan seguro estás? (alta/media/baja)</li>
+<li>¿Qué harías clínicamente?</li>
+</ol>
+</section>
+</section>
+<section id="ejercicio-7-detectando-señales-vs-ruido" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicio-7-detectando-señales-vs-ruido">Ejercicio 7 — Detectando señales vs ruido</h2>
+<p>🎯 <strong>Objetivo</strong></p>
+<p>Pensar como analista real</p>
+<p>📝 Instrucción</p>
+<p>Observa:</p>
+<ul>
+<li>glicemia</li>
+<li>presión arterial</li>
+</ul>
+<p>en relación con riesgo metabólico</p>
+<p><strong>Pregunta</strong></p>
+<p>👉 ¿Cuál variable parece:</p>
+<ul>
+<li>más informativa?</li>
+<li>más ruidosa?</li>
+</ul>
+<section id="ejercicio-final-muy-importante" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-final-muy-importante">Ejercicio final (muy importante)</h3>
+<p>🎯 <strong>Reflexión</strong></p>
+<p>Responde con tus palabras:</p>
+<p>👉 ¿Cuál es la diferencia entre:</p>
+<ul>
+<li>ver datos</li>
+<li>entender datos</li>
+<li>usar datos para decidir</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

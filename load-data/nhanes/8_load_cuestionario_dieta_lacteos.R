@@ -14,6 +14,11 @@ questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, DBQ197, DBQ223A, DBQ223B, DBQ223C, DBQ223D, DBQ223E,
+         DBQ223U, DBQ229)
+
 ############## Consumo de productos lácteos #################
 
 # DBQ197 - Consumo de productos lácteos en los últimos 30 días

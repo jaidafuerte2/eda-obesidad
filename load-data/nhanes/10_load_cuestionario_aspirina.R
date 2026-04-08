@@ -14,6 +14,10 @@ questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, RXQ515, RXQ520, RXD530) 
+
 ######## Toma aspirina en dosis baja por prescripción #########
 
 # RXQ515 - ¿Siguió las indicaciones y tomó aspirina en dosis bajas?

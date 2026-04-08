@@ -14,6 +14,10 @@ questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, SLD010H, SLQ060) 
+
 ############ ¿Cuántas horas duermes? ################
 
 # SLD010H - ¿Cuántas horas duermes?

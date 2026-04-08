@@ -14,6 +14,10 @@ questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, DIQ010, DIQ160, DIQ050, DID060, DIQ060U, DIQ070) 
+
 ############ El médico le dijo que tiene diabetes #############
 
 # DIQ010 - El médico le dijo que tiene diabetes

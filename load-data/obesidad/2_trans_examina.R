@@ -21,6 +21,11 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, BPXSY_mean, BPXDI_mean, BMXBMI, BMXWAIST, BMDAVSAD, 
+         BMXWT, BMXHT, RIAGENDR)
+
 ###################################
 ##
 ## Renombrar variables a español
@@ -94,7 +99,8 @@ summary(df_obesidad$imc) # produce:
 ########################
 ##
 ## Circunferencia de la
-##    Cintura
+## Cintura (perímetro
+## abdominal)
 ##
 ########################
 
@@ -156,6 +162,92 @@ summary(df_obesidad$talla) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #135.4   159.7   166.8   167.1   174.3   202.6 
 
+#####################                          ###################
+#####################  Crear Nuevas Variables  ###################
+#####################                          ###################
+
+########################
+##
+## IMC categórica
+##
+########################
+
+# Crear una variable categórica de imc
+df_obesidad$imc_cat <- cut(
+  df_obesidad$imc,
+  breaks = c(-Inf, 18.5, 25, 30, 35, 40, Inf),
+  labels = c("bajo_peso", "normal", "sobrepeso", "obesidad_1",
+             "obesidad_2", "obesidad_3")
+)
+class(df_obesidad$imc_cat) # produce: [1] "factor"
+
+unique(df_obesidad$imc_cat) # produce:
+#[1] sobrepeso  normal     obesidad_3 obesidad_2 obesidad_1 bajo_peso 
+#6 Levels: bajo_peso normal sobrepeso obesidad_1 ... obesidad_3
+
+table(df_obesidad$imc_cat) # produce:
+#bajo_peso     normal  sobrepeso obesidad_1 obesidad_2 obesidad_3 
+#      121       1737       1827       1152        516        429
+
+# Cambiar de tipo de factor a factor ordenado
+df_obesidad$imc_cat <- factor(
+  df_obesidad$imc_cat,
+  levels = c("bajo_peso", "normal", "obesidad_1", "obesidad_2", 
+             "obesidad_3"),
+  ordered = TRUE
+)
+# Comprobar que imc_cat es un factor ordenado 
+is.ordered(df_obesidad$imc_cat) # produce: TRUE
+
+########################
+##
+## Circunferencia de 
+## cintura categórica
+##
+########################
+
+# Crear la variable circunferencia de la cintura categórica, en 
+# relación con el riesgo CARDIOMETÁBOLICO. Mide: resistencia a la
+# insulina, dislipidemia, hipertensión, diabetes tipo 2. Es decir:
+# Grasa visceral -> inflamación -> resistencia a la insulina
+# -> riesgo cardiovascular
+df_obesidad <- df_obesidad %>%
+  mutate(
+    circ_cintura_cat = case_when(
+      # HOMBRES
+      RIAGENDR == 1 & 
+        circunferencia_cintura < 94 ~ "normal",
+      RIAGENDR == 1 & circunferencia_cintura >= 94 & 
+        circunferencia_cintura < 102 ~ "riesgo_aumentado",
+      RIAGENDR == 1 & circunferencia_cintura >= 102 ~ "riesgo_alto",
+      
+      # MUJERES
+      RIAGENDR == 2 & circunferencia_cintura < 80 ~ "normal",
+      RIAGENDR == 2 & circunferencia_cintura >= 80 & 
+        circunferencia_cintura < 88 ~ "riesgo_aumentado",
+      RIAGENDR == 2 & circunferencia_cintura >= 88 ~ "riesgo_alto",
+      
+      TRUE ~ NA_character_
+    ),
+    # Cambiar el tipo de factor a factor ordenado
+    circ_cintura_cat = factor(
+      circ_cintura_cat,
+      levels = c("normal", "riesgo_aumentado", "riesgo_alto"),
+      ordered = TRUE
+    )
+  )
+class(df_obesidad$circ_cintura_cat) # produce: [1] "ordered" "factor" 
+
+unique(df_obesidad$circ_cintura_cat) # produce:
+#[1] riesgo_aumentado riesgo_alto      <NA>             normal          
+#Levels: normal < riesgo_aumentado < riesgo_alto
+
+table(df_obesidad$circ_cintura_cat) # produce:
+#normal riesgo_aumentado      riesgo_alto 
+#  1477             1023             3013 
+
+is.ordered(df_obesidad$circ_cintura_cat) # produce: TRUE
+
 ###########################
 ##
 ## Seleccionar y crear 
@@ -167,7 +259,8 @@ summary(df_obesidad$talla) # produce:
 # examen
 obesidad_examina <- df_obesidad %>%
   select(SEQN, presion_sistolica, presion_diastolica, imc,
-         circunferencia_cintura, diametro_abdominal, peso, talla)
+         circunferencia_cintura, diametro_abdominal, peso, talla,
+         imc_cat, circ_cintura_cat)
 #glimpse(obesidad_examina[1:4,]) # produce:
 #Rows: 4
 #Columns: 8
@@ -181,3 +274,4 @@ obesidad_examina <- df_obesidad %>%
 write.csv(obesidad_examina,
           "eda-obesidad/data/obesidad/2_obesidad_examina.csv",
           row.names = FALSE)
+

@@ -10,10 +10,17 @@ library(readr)
 library(dplyr)
 library(tidyverse)
 
-# Cargar la dataset diet
+# Cargar la dataset dieta nutrientes
 diet <- read_csv("eda-obesidad/data/nhanes/diet.csv",
                  guess_max = 10000,
                  show_col_types = FALSE)
+
+# Seleccionar sólo las varaibles que voy a usar
+diet <- diet |>
+  select(SEQN, DR1TKCAL, DR1TPROT, DR1TCARB, DR1TSUGR, DR1TFIBE,
+         DR1TTFAT, DR1TSFAT, DR1TMFAT, DR1TPFAT, DR1TCHOL, 
+         DR1TP182, DR1TP205, DR1TP226) 
+#glimpse(diet)
 
 ############ Calorías ##############
 

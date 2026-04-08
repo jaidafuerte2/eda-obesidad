@@ -17,6 +17,17 @@ demographic <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar sólo las variables que voy a usar
+demographic <- demographic %>%
+  select(SEQN,RIAGENDR, RIDAGEYR, RIDEXPRG)
+#glimpse(demographic) # produce:
+#Rows: 10,175
+#Columns: 4
+#$ SEQN     <dbl> 73557, 73558, 73559, 73560, 73561, 73562, 73563, 73564…
+#$ RIAGENDR <dbl> 1, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, …
+#$ RIDAGEYR <dbl> 69, 54, 72, 9, 73, 56, 0, 61, 42, 56, 65, 26, 0, 9, 76…
+#$ RIDEXPRG <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 2, NA, NA,…
+
 ######### SEQN ############
 
 class(demographic$SEQN) # produce: [1] "integer"

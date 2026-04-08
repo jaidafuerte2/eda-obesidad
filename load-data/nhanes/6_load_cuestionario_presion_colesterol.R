@@ -14,6 +14,10 @@ questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, BPQ030, BPQ050A, BPQ080, BPQ100D) 
+
 ####### Le dijeron que tenía presión arterial alta #######
 
 # BPQ030 - Le dijeron que tenía presión arterial alta - 2+ veces

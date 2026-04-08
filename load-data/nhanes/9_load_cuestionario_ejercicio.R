@@ -14,6 +14,12 @@ questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, PAQ605, PAQ610, PAD615, PAQ620, PAQ625, PAD630,
+         PAQ635, PAQ640, PAD645, PAQ650, PAQ655, PAD660, PAQ665,
+         PAQ670, PAD675, PAD680, PAQ706, PAQ710, PAQ715) 
+
 ############### Actividad laboral vigorosa ##################
 
 # PAQ605 - Actividad laboral vigorosa

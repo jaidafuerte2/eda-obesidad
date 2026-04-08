@@ -14,6 +14,12 @@ questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, MCQ080, MCQ082, MCQ086, MCQ160A, MCQ180A, MCQ195,
+         MCQ160B, MCQ180B, MCQ160C, MCQ180C, MCQ160E, MCQ180E,
+         MCQ160F, MCQ180F, MCQ160M, MCQ170M, MCQ180M) 
+
 ##### ¿Alguna vez el médico le dijo que tenía sobrepeso? #####
 
 # MCQ080 - ¿Alguna vez el médico le dijo que tenía sobrepeso?

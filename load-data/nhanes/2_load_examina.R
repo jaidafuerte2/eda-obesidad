@@ -15,6 +15,12 @@ examination <- read_csv("eda-obesidad/data/nhanes/examination.csv",
                         guess_max = 10000,
                         show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+examination <- examination |>
+  select(SEQN, BMXWT, BMXHT, BMXBMI, BMXWAIST, BMDAVSAD, BPXSY1,  
+         BPXSY2, BPXSY3, BPXSY4, BPXDI1, BPXDI2, BPXDI3, BPXDI4) 
+#glimpse(examination) # produce:
+
 ########### Presión Arterial #############
 
 # BPXDI = Presión sistólica (mm hg)
@@ -143,3 +149,4 @@ head(examina) # produce:
 #4 73560  32.2 137.3   17.1     61.0     14.9   47.77778     40.250
 #5 73561  52.0 162.4   19.7       NA       NA   75.22222     67.625
 #6 73562 105.0 158.7   41.7    123.1     29.1   80.44444     70.500
+

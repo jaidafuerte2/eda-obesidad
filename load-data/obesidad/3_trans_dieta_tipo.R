@@ -25,6 +25,26 @@ df_obesidad <- read_csv(
 
 ###################################
 ##
+## Mutar algunas variables para
+## usarlas como categóricas
+##
+###################################
+df_obesidad <- df_obesidad %>%
+  mutate(
+    sigues_dieta_cat = DRQSDIET,
+    dieta_baja_calorias_cat = DRQSDT1,
+    dieta_baja_grasas_colesterol_cat = DRQSDT2,
+    dieta_baja_sal_cat = DRQSDT3,
+    dieta_baja_azucar_cat = DRQSDT4,
+    dieta_alta_fibra_cat = DRQSDT6,
+    dieta_diabeticos_cat = DRQSDT7,
+    dieta_baja_carbos_cat = DRQSDT9,
+    dieta_alta_proteina_cat = DRQSDT10,
+    dieta_sin_gluten_cat = DRQSDT11
+  )
+
+###################################
+##
 ## Renombrar variables a español
 ##
 ###################################
@@ -45,6 +65,10 @@ df_obesidad <- df_obesidad %>%
     dieta_alta_proteina = DRQSDT10,
     dieta_sin_gluten = DRQSDT11
   )
+
+#####################                          ###################
+#####################    Versiones Binarias    ###################
+#####################                          ################### 
 
 ########################
 ##
@@ -372,6 +396,150 @@ summary(df_obesidad$dieta_sin_gluten) # produce:
 table(df_obesidad$dieta_sin_gluten) # produce: 
 #   0    1 
 #5758   24  
+
+#####################                          ###################
+#####################  Versiones Categóricas   ###################
+#####################                          ################### 
+
+###############################
+##
+## ¿Sigues una dieta especial?
+##
+###############################
+
+unique(df_obesidad$sigues_dieta_cat) # produce: [1]  2  1 NA  9
+
+table(df_obesidad$sigues_dieta_cat) # produce:
+#  1    2    9 
+#865 4387   35
+
+# Cambiar la variable numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    sigues_dieta_cat = case_when(
+      sigues_dieta_cat == 1 ~ "si",
+      sigues_dieta_cat == 2 ~ "no",
+      sigues_dieta_cat %in% c(7, 9) ~ "desconocido",
+      TRUE ~ NA_character_
+    ),
+    
+    sigues_dieta_cat = factor(
+      sigues_dieta_cat,
+      levels = c("no", "si", "desconocido")
+    )
+  )
+
+unique(df_obesidad$sigues_dieta_cat) # produce: 
+#[1] no          si          <NA>        desconocido
+#Levels: no si desconocido
+
+table(df_obesidad$sigues_dieta_cat) # produce:
+#  no          si desconocido 
+#4387         865          35 
+
+###############################
+##
+## ¿Sigues dieta baja en 
+## calorías (categorica)
+##
+###############################
+
+unique(df_obesidad$dieta_baja_calorias_cat) # produce:[1] NA  1
+
+table(df_obesidad$dieta_baja_calorias_cat) # produce:
+#  1 
+#432 
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    dieta_baja_calorias_cat = if_else(
+      dieta_baja_calorias_cat == 1, "si", "no"
+    ),
+    
+    dieta_baja_calorias_cat = factor(
+      dieta_baja_calorias_cat,
+      levels = c("no", "si")
+    )
+  )
+
+unique(df_obesidad$dieta_baja_calorias_cat) # produce:
+#[1] <NA> si  
+#Levels: no si
+
+table(df_obesidad$dieta_baja_calorias_cat) # produce:
+#no  si 
+# 0 432 
+
+###############################
+##
+## ¿Sigues dieta baja en 
+## grasas y colesterol 
+## (categorica) ?
+##
+###############################
+
+unique(df_obesidad$dieta_baja_grasas_colesterol_cat) # produce:
+# [1] NA  2
+table(df_obesidad$dieta_baja_grasas_colesterol_cat) # produce:
+#   2 
+# 122 
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    dieta_baja_grasas_colesterol_cat = if_else(
+      dieta_baja_grasas_colesterol_cat == 2, "si", "no"
+    ),
+    
+    dieta_baja_grasas_colesterol_cat = factor(
+      dieta_baja_grasas_colesterol_cat,
+      levels = c("no", "si")
+    )
+  )
+
+
+unique(df_obesidad$dieta_baja_grasas_colesterol_cat) # produce:
+#[1] <NA> si  
+#Levels: no si
+
+table(df_obesidad$dieta_baja_grasas_colesterol_cat) # produce:
+#no  si 
+# 0 122
+
+###############################
+##
+## ¿Sigues dieta baja en 
+## sal (categorica) ?
+##
+###############################
+
+unique(df_obesidad$dieta_baja_sal_cat) # produce: [1] NA  3
+
+table(df_obesidad$dieta_baja_sal_cat) # produce: 
+#  3 
+#117 
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    dieta_baja_sal_cat = if_else(
+      dieta_baja_sal_cat == 3, "si", "no"
+    ),
+    
+    dieta_baja_sal_catt = factor(
+      dieta_baja_sal_cat,
+      levels = c("no", "si")
+    )
+  )
+
+
+
+unique(df_obesidad$dieta_baja_sal_cat) # produce: [1] NA   "si" 
+
+table(df_obesidad$dieta_baja_sal_cat) # produce: 
+# si 
+#117 
 
 ###########################
 ##

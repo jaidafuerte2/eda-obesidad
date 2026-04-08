@@ -221,5 +221,192 @@
     "title": "¿Qué significa incertidumbre en medicina?",
     "section": "Ejercicio 4 — Pensamiento bayesiano básico",
     "text": "Ejercicio 4 — Pensamiento bayesiano básico\nUn paciente tiene:\n\nObesidad\nSedentarismo\nHistoria familiar de diabetes\n\n👉 Pregunta:\n\nAntes de ver exámenes, ¿crees que la probabilidad de diabetes es alta o baja?\n¿Qué estás usando aquí: datos o creencias previas?\n¿Por qué esto NO es “mala medicina”?\n\n💡 Objetivo: introducir la idea de prior (creencia previa)"
+  },
+  {
+    "objectID": "analysis/c02.html",
+    "href": "analysis/c02.html",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "",
+    "text": "Imagina que tienes frente a ti a un paciente con obesidad.\nTiene:\n\nIMC elevado\nglicemia en ayunas ligeramente alta\npresión arterial borderline\nvida sedentaria\n\nAhora viene la pregunta clave:\n👉 ¿Qué haces con esa información?\nAquí es donde empieza la diferencia entre tres niveles de pensamiento:\n\n\nEsto es lo más básico:\n\n“El paciente tiene IMC de 32”\n“La glicemia es de 110 mg/dL”\n“La presión está en 135/85”\n\n👉 Es fotografía, no interpretación.\n\n\n\nAquí ya estás usando tu experiencia clínica:\n\n“Probablemente hay resistencia a la insulina”\n“Este paciente tiene riesgo de progresar a diabetes”\n“La inflamación crónica puede estar presente”\n\n👉 Aquí aparece algo clave:\nNo estás seguro… estás estimando.\n\n\n\nFinalmente decides:\n\n¿Intervenir ya o esperar?\n¿Cambios en estilo de vida?\n¿Solicitar más pruebas?\n¿Iniciar tratamiento?\n\n👉 Y aquí ocurre algo importante:\nToda decisión clínica se toma con incertidumbre.\n\n\n\nUn analista bayesiano hace explícito este proceso que tú ya haces de forma intuitiva:\n\n\n\nCreencias iniciales (priors) Lo que sabes antes de ver los datos (tu experiencia, literatura, fisiopatología)\nDatos (evidencia) Lo que observas en el paciente\nActualización (posterior) Cómo cambian tus creencias después de ver los datos\nDecisión Qué haces con esa nueva información\n\n\n\n\n\nAntes de ver al paciente, tú ya crees que:\nLa obesidad está relacionada con resistencia a la insulina La glicemia elevada aumenta riesgo cardiometabólico\n👉 Eso es tu prior\nLuego ves:\n\nGlicemia = 110\nIMC = 32\n\n👉 Eso es la evidencia\nEntonces piensas:\n“Mi sospecha de alteración metabólica ahora es mayor”\n👉 Eso es el posterior\nY decides:\n\n“Voy a intervenir en estilo de vida de forma activa”\n\n👉 Esa es la decisión\n\n\n\n👉 Los datos por sí solos no toman decisiones.\nNecesitan:\n\ncontexto\ninterpretación\nexperiencia\n\nY eso es exactamente lo que formaliza el enfoque bayesiano.",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#intuición-sin-código",
+    "href": "analysis/c02.html#intuición-sin-código",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "",
+    "text": "Imagina que tienes frente a ti a un paciente con obesidad.\nTiene:\n\nIMC elevado\nglicemia en ayunas ligeramente alta\npresión arterial borderline\nvida sedentaria\n\nAhora viene la pregunta clave:\n👉 ¿Qué haces con esa información?\nAquí es donde empieza la diferencia entre tres niveles de pensamiento:\n\n\nEsto es lo más básico:\n\n“El paciente tiene IMC de 32”\n“La glicemia es de 110 mg/dL”\n“La presión está en 135/85”\n\n👉 Es fotografía, no interpretación.\n\n\n\nAquí ya estás usando tu experiencia clínica:\n\n“Probablemente hay resistencia a la insulina”\n“Este paciente tiene riesgo de progresar a diabetes”\n“La inflamación crónica puede estar presente”\n\n👉 Aquí aparece algo clave:\nNo estás seguro… estás estimando.\n\n\n\nFinalmente decides:\n\n¿Intervenir ya o esperar?\n¿Cambios en estilo de vida?\n¿Solicitar más pruebas?\n¿Iniciar tratamiento?\n\n👉 Y aquí ocurre algo importante:\nToda decisión clínica se toma con incertidumbre.\n\n\n\nUn analista bayesiano hace explícito este proceso que tú ya haces de forma intuitiva:\n\n\n\nCreencias iniciales (priors) Lo que sabes antes de ver los datos (tu experiencia, literatura, fisiopatología)\nDatos (evidencia) Lo que observas en el paciente\nActualización (posterior) Cómo cambian tus creencias después de ver los datos\nDecisión Qué haces con esa nueva información\n\n\n\n\n\nAntes de ver al paciente, tú ya crees que:\nLa obesidad está relacionada con resistencia a la insulina La glicemia elevada aumenta riesgo cardiometabólico\n👉 Eso es tu prior\nLuego ves:\n\nGlicemia = 110\nIMC = 32\n\n👉 Eso es la evidencia\nEntonces piensas:\n“Mi sospecha de alteración metabólica ahora es mayor”\n👉 Eso es el posterior\nY decides:\n\n“Voy a intervenir en estilo de vida de forma activa”\n\n👉 Esa es la decisión\n\n\n\n👉 Los datos por sí solos no toman decisiones.\nNecesitan:\n\ncontexto\ninterpretación\nexperiencia\n\nY eso es exactamente lo que formaliza el enfoque bayesiano.",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#ejemplo-simple-simulación-en-r",
+    "href": "analysis/c02.html#ejemplo-simple-simulación-en-r",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "2. Ejemplo simple (simulación en R)",
+    "text": "2. Ejemplo simple (simulación en R)\nVamos a simular algo muy sencillo:\n👉 Pacientes con distintos niveles de glicemia 👉 Queremos estimar si tienen alteración metabólica\n\nset.seed(123)\n\n# Número de paciente\nn &lt;- 200\n\n# Crear una simulación de glicemia de pacientes\ndatos &lt;- tibble(\n  glicemia = rnorm(n, mean = 105, sd = 15),\n  alteracion_metabolica = if_else(glicemia &gt; 110, 1, 0)\n)\n\n# Histograma de la glicemia coloreado por alteración metabólica\ndatos %&gt;%\n  ggplot(aes(x = glicemia, fill = factor(alteracion_metabolica))) +\n  geom_histogram(bins = 30, alpha = 0.6, position = \"identity\") +\n  labs(\n    title = \"Distribución de glicemia y alteración metabólica\",\n    fill = \"Alteración\"\n  )\n\n\n\n\n\n\n\n\n\n¿Qué estamos viendo?\nValores más altos de glicemia → más probabilidad de alteración Pero no es perfecto Hay superposición\n👉 Es decir:\nNo hay certeza absoluta.\n\n\nAquí aparece el punto clave\nSi un paciente tiene glicemia de 108:\n\n¿Está sano?\n¿Está enfermo?\n\n👉 No lo sabes con certeza.\nPero puedes decir:\n👉 “Mi grado de creencia de que tenga alteración metabólica ha aumentado”\nEso ya es pensamiento bayesiano.",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#ejemplo-aplicado-con-nhanes",
+    "href": "analysis/c02.html#ejemplo-aplicado-con-nhanes",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "3. Ejemplo aplicado con NHANES",
+    "text": "3. Ejemplo aplicado con NHANES\nAhora vamos a algo más real.\nTrabajaremos con variables clave:\n\nIMC (BMXBMI)\nglicemia (LBXSGL)\nHbA1c (LBXGH)\npresión arterial\nactividad física\n\n\nPreparación de datos\n\n# Crear la variable riesgo metabólico con los valores de glucosa y \n# hemoglobina glicosilada del nhanes\ndf_obesidad &lt;- df_obesidad %&gt;%\n  mutate(\n    riesgo_metabolico = if_else(\n      # # Glucosa y hemoglobina glicosilada\n      LBXSGL &gt; 110 | LBXGH &gt; 5.7,\n      1, 0\n    )\n  )\n\n\n\nRelación entre IMC y riesgo metabólico\n\n# Gráfico de densidad del el índice de masa corporal coloreado por\n# rieso metabólico\ndf_obesidad %&gt;%\n  filter(!is.na(BMXBMI), !is.na(riesgo_metabolico)) %&gt;%\n  ggplot(aes(x = BMXBMI, fill = factor(riesgo_metabolico))) +\n  geom_density(alpha = 0.5) +\n  labs(\n    title = \"IMC y riesgo metabólico\",\n    fill = \"Riesgo\"\n  )\n\n\n\n\n\n\n\n\n\n\nInterpretación de la gráfica\n\nA mayor IMC → mayor probabilidad de riesgo\nPero no todos los obesos tienen riesgo\nY algunos con IMC menor sí lo tienen\n\n👉 Esto es fundamental:\nLa obesidad no es solo peso.\n\n\nAgregamos presión arterial\n\n# Gráfico de densidad de la presión sistólica media  coloreado por\n# riesgo metabólico\ndf_obesidad %&gt;%\n  filter(!is.na(BPXSY_mean), !is.na(riesgo_metabolico)) %&gt;%\n  ggplot(aes(x = BPXSY_mean, fill = factor(riesgo_metabolico))) +\n  geom_density(alpha = 0.5) +\n  labs(\n    title = \"Presión sistólica y riesgo metabólico\",\n    fill = \"Riesgo\"\n  )\n\n\n\n\n\n\n\n\n\n\n¿Qué vemos?\nPresión más alta → mayor riesgo Pero nuevamente… hay superposición\n👉 No hay reglas absolutas.",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#interpretación-clínica",
+    "href": "analysis/c02.html#interpretación-clínica",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "4. Interpretación clínica",
+    "text": "4. Interpretación clínica\nAhora conectemos todo.\n\nCaso clínico integrado\nPaciente:\n\nIMC: 31\nglicemia: 108\nHbA1c: 5.8\npresión: 138/88\nsedentario\n\n\n\nEnfoque tradicional (simplificado)\n“No es diabético → todo bien”\n👉 Error frecuente.\n\n\nEnfoque bayesiano\nTú piensas:\n\nAntes del paciente → ya sabes que obesidad + sedentarismo → riesgo\nVes los datos → glicemia borderline + HbA1c elevada\nActualizas tu creencia → el riesgo ahora es alto\n\n👉 No necesitas un “diagnóstico binario”\n\n\nDecisión clínica\n\nIntervenir estilo de vida\nMonitoreo cercano\nEducación metabólica\n\n\n\nConexión con obesidad (visión de fondo)\nDesde el enfoque Hormonal de la Obesidad:\n👉 La obesidad no es solo exceso de grasa\nEs:\n\ndisfunción hormonal\nresistencia a la insulina\ninflamación crónica\n\n\n\nLo importante\nLos datos (IMC, glicemia, presión):\n👉 son señales indirectas del problema real\nY como toda señal:\n\nson imperfectas\ntienen ruido\ngeneran incertidumbre",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#mensaje-final-del-capítulo",
+    "href": "analysis/c02.html#mensaje-final-del-capítulo",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "Mensaje final del capítulo",
+    "text": "Mensaje final del capítulo\n👉 Ser analista bayesiano es hacer explícito lo que ya haces como médico:\n\nPartir de conocimiento previo\nInterpretar datos imperfectos\nActualizar tu juicio\nTomar decisiones bajo incertidumbre",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#lo-que-viene-después",
+    "href": "analysis/c02.html#lo-que-viene-después",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "Lo que viene después",
+    "text": "Lo que viene después\nEn el siguiente capítulo vas a dar un paso clave:\n👉 Pasar de intuición a cuantificación\n\n¿Cómo representamos nuestras creencias?\n¿Cómo medimos la incertidumbre?\n¿Cómo empezamos a “formalizar” este proceso?\n\nAhí empieza realmente el poder del enfoque bayesiano.",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#ejercicios-capítulo-2",
+    "href": "analysis/c02.html#ejercicios-capítulo-2",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "Ejercicios — Capítulo 2",
+    "text": "Ejercicios — Capítulo 2\n\nDe datos a decisiones clínicas\n\n\nEjercicio 1 — Describir vs inferir vs decidir\n🎯 Objetivo\nDiferenciar claramente los tres niveles del capítulo.\n📝 Instrucción\nDado este paciente:\n\nIMC: 33\nglicemia: 112\nHbA1c: 5.9\npresión arterial: 140/90\nsedentario\n\nResponde:\n\n¿Qué puedes describir (solo datos)?\n¿Qué puedes inferir (interpretación)?\n¿Qué decisión clínica tomarías?\n\n\n\nEjercicio 2 — Tu primer “prior clínico”\n🎯 Objetivo\nHacer explícitas tus creencias iniciales.\n📝 Instrucción\nAntes de ver cualquier dato:\nResponde:\n👉 “En un paciente con obesidad, ¿qué tan probable crees que tenga alteración metabólica?”\n\nBaja\nMedia\nAlta\n\nLuego justifica:\n\n¿En qué te basas?\n¿experiencia?\n¿fisiopatología?\n¿literatura?\n\n\n\nEjercicio 3 — Actualizar creencias\n🎯 Objetivo\nPracticar el paso más importante: actualización\n📝 Instrucción\nPartes de este prior:\n👉 “Probabilidad media de alteración metabólica”\nAhora agregas datos uno por uno:\n\nIMC = 31\nglicemia = 108\nHbA1c = 5.8\nSedentarismo\n\nPregunta\nDespués de cada dato:\n👉 ¿tu creencia sube, baja o se mantiene?\n\n\nEjercicio 4 — Ver la incertidumbre en datos simulados\n🎯 Objetivo\nVisualizar que no hay separaciones perfectas\n\nset.seed(123)\n\nn &lt;- 300\n\ndatos &lt;- tibble(\n  glicemia = rnorm(n, mean = 105, sd = 15),\n  alteracion = if_else(glicemia &gt; 110, 1, 0)\n)\n\n📝 Instrucciones 1. Haz un histograma de glicemia\n\nColorea por alteracion\nObserva la superposición\n\nPreguntas - ¿Existe un punto donde puedas separar perfectamente sano/enfermo?\n\n¿Qué pasa con valores como 108 o 109?",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#ejercicio-5-nhanes-relación-imc-y-riesgo",
+    "href": "analysis/c02.html#ejercicio-5-nhanes-relación-imc-y-riesgo",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "Ejercicio 5 — NHANES: relación IMC y riesgo",
+    "text": "Ejercicio 5 — NHANES: relación IMC y riesgo\n🎯 Objetivo\nPasar de datos reales a interpretación\n📝 Instrucción\n\nCrea una variable:\n\n\n# riesgo_metabolico = if_else(LBXSGL &gt; 110 | LBXGH &gt; 5.7, 1, 0)\n\n\nGrafica densidad de IMC por riesgo\nElimina NA correctamente\n\nPreguntas\n\n¿Todos los pacientes con IMC alto tienen riesgo?\n¿Hay pacientes con IMC bajo con riesgo?\n\n\nEjercicio 6 — Construyendo una decisión clínica\n🎯 Objetivo\nConectar datos → decisión\n📝 Instrucción\nElige un paciente de NHANES (o imagínalo):\nCon variables:\n\nIMC\nglicemia\nHbA1c\npresión\nactividad física\n\nResponde\n\n¿Qué dicen los datos?\n¿Qué crees que está pasando metabólicamente?\n¿Qué tan seguro estás? (alta/media/baja)\n¿Qué harías clínicamente?",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#ejercicio-7-detectando-señales-vs-ruido",
+    "href": "analysis/c02.html#ejercicio-7-detectando-señales-vs-ruido",
+    "title": "2.- De Datos a Decisiones Clínicas",
+    "section": "Ejercicio 7 — Detectando señales vs ruido",
+    "text": "Ejercicio 7 — Detectando señales vs ruido\n🎯 Objetivo\nPensar como analista real\n📝 Instrucción\nObserva:\n\nglicemia\npresión arterial\n\nen relación con riesgo metabólico\nPregunta\n👉 ¿Cuál variable parece:\n\nmás informativa?\nmás ruidosa?\n\n\nEjercicio final (muy importante)\n🎯 Reflexión\nResponde con tus palabras:\n👉 ¿Cuál es la diferencia entre:\n\nver datos\nentender datos\nusar datos para decidir",
+    "crumbs": [
+      "Módulo 1: Pensar Como Analista Bayesiano",
+      "2.- De Datos a Decisiones Clínicas"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html",
+    "href": "analysis/c03.html",
+    "title": "3.- Preparando NHANES en R",
+    "section": "",
+    "text": "Imagina que estás en consulta y recibes a un paciente con resultados de laboratorio… pero:\n\nla glicemia está en blanco\nla presión arterial aparece dos veces con valores distintos\nel sexo está codificado como “1” o “2”\nel peso está en kg… pero alguien anotó uno en libras\n\n¿Confiarías en ese “dataset clínico” para tomar decisiones?\nEso mismo ocurre cuando trabajamos con datos reales como NHANES.\n\n\nEn la vida real, los datos:\n\ntienen valores faltantes (NA)\npueden estar mal codificados\npueden tener múltiples mediciones\npueden contener errores\n\n👉 Y aquí viene la idea clave del capítulo:\nUn mal análisis casi siempre empieza con datos mal preparados.\n\n\n\nLimpiar datos no es “arreglarlos para que salgan bonitos”.\nEs:\n\nentender qué representan\nhacerlos consistentes\nprepararlos para responder preguntas clínicas\n\n\n\n\nUn dataset “tidy” (ordenado) cumple tres reglas simples:\n\nCada fila = un paciente\nCada columna = una variable\nCada celda = un valor\n\nCuando los datos están tidy: 👉 es mucho más fácil analizarlos, graficarlos y modelarlos\n\n\n\nPiensa en esto como preparar un quirófano:\n\nNo operas con instrumentos desordenados\nNo trabajas con información incompleta\nNo mezclas datos confusos\n\n👉 Primero organizas todo… luego actúas",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "3.- Preparando NHANES en R"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#intuición-sin-código",
+    "href": "analysis/c03.html#intuición-sin-código",
+    "title": "3.- Preparando NHANES en R",
+    "section": "",
+    "text": "Imagina que estás en consulta y recibes a un paciente con resultados de laboratorio… pero:\n\nla glicemia está en blanco\nla presión arterial aparece dos veces con valores distintos\nel sexo está codificado como “1” o “2”\nel peso está en kg… pero alguien anotó uno en libras\n\n¿Confiarías en ese “dataset clínico” para tomar decisiones?\nEso mismo ocurre cuando trabajamos con datos reales como NHANES.\n\n\nEn la vida real, los datos:\n\ntienen valores faltantes (NA)\npueden estar mal codificados\npueden tener múltiples mediciones\npueden contener errores\n\n👉 Y aquí viene la idea clave del capítulo:\nUn mal análisis casi siempre empieza con datos mal preparados.\n\n\n\nLimpiar datos no es “arreglarlos para que salgan bonitos”.\nEs:\n\nentender qué representan\nhacerlos consistentes\nprepararlos para responder preguntas clínicas\n\n\n\n\nUn dataset “tidy” (ordenado) cumple tres reglas simples:\n\nCada fila = un paciente\nCada columna = una variable\nCada celda = un valor\n\nCuando los datos están tidy: 👉 es mucho más fácil analizarlos, graficarlos y modelarlos\n\n\n\nPiensa en esto como preparar un quirófano:\n\nNo operas con instrumentos desordenados\nNo trabajas con información incompleta\nNo mezclas datos confusos\n\n👉 Primero organizas todo… luego actúas",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "3.- Preparando NHANES en R"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#ejemplo-simple-simulación-en-r",
+    "href": "analysis/c03.html#ejemplo-simple-simulación-en-r",
+    "title": "3.- Preparando NHANES en R",
+    "section": "2. Ejemplo simple (simulación en R)",
+    "text": "2. Ejemplo simple (simulación en R)\nVamos a crear un pequeño dataset “sucio” para entender el problema.\n\n# Simulamos datos \"desordenados\"\ndatos_sucios &lt;- tibble(\n  edad = c(45, 52, NA, 60, 38),\n  sexo = c(1, 2, 1, 2, NA),\n  glucosa = c(90, 110, 105, NA, 95)\n) # produce:\nknitr::kable(datos_sucios)\n\n\n\n\nedad\nsexo\nglucosa\n\n\n\n\n45\n1\n90\n\n\n52\n2\n110\n\n\nNA\n1\n105\n\n\n60\n2\nNA\n\n\n38\nNA\n95\n\n\n\n\n\n\nProblemas visibles\n\nHay valores faltantes (NA)\nEl sexo está codificado como número\nNo sabemos si hay errores\n\n\n\nPaso 1: renombrar variables\n\n# Renombrar las variables para que se entiendan mejor\ndatos_limpios &lt;- datos_sucios %&gt;%\n  rename(\n    edad_anios = edad,\n    glicemia = glucosa\n  )\nknitr::kable(datos_limpios) # produce:\n\n\n\n\nedad_anios\nsexo\nglicemia\n\n\n\n\n45\n1\n90\n\n\n52\n2\n110\n\n\nNA\n1\n105\n\n\n60\n2\nNA\n\n\n38\nNA\n95\n\n\n\n\n\n👉 Ahora los nombres son más claros clínicamente\n\n\nPaso 2: recodificar variables\n\n# Recodificar los valores de la variable sexo\ndatos_limpios &lt;- datos_limpios %&gt;%\n  mutate(\n    sexo = case_when(\n      sexo == 1 ~ \"Hombre\",\n      sexo == 2 ~ \"Mujer\",\n      TRUE ~ NA_character_\n    )\n  )\nunique(datos_limpios$sexo) # produce: [1] \"Hombre\" \"Mujer\"  NA \n\n👉 Ya podemos interpretar fácilmente el sexo\n\n\nPaso 3: eliminar valores faltantes\n\n# Eliminar los vaores faltantes aunque no siempre se debe hacer así\ndatos_limpios &lt;- datos_limpios %&gt;%\n  filter(!is.na(edad_anios), !is.na(glicemia))\n\n👉 Nos quedamos solo con pacientes con datos útiles\n\n\nResultado final\n\nknitr::kable(datos_limpios)\n\n\n\n\nedad_anios\nsexo\nglicemia\n\n\n\n\n45\n1\n90\n\n\n52\n2\n110\n\n\n38\nNA\n95\n\n\n\n\n\nAhora tenemos un dataset:\n\nentendible\nconsistente\nlisto para análisis",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "3.- Preparando NHANES en R"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#ejemplo-aplicado-con-nhanes",
+    "href": "analysis/c03.html#ejemplo-aplicado-con-nhanes",
+    "title": "3.- Preparando NHANES en R",
+    "section": "3. Ejemplo aplicado con NHANES",
+    "text": "3. Ejemplo aplicado con NHANES\nAhora vamos a trabajar con datos reales.\nSupongamos que ya tienes cargado tu dataset NHANES (df_obesidad) como:\n\nknitr::kable(df_obesidad[1:4,]) # produce:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSEQN\nRIAGENDR\nRIDAGEYR\nRIDEXPRG\nBMXWT\nBMXHT\nBMXBMI\nBMXWAIST\nBMDAVSAD\nBPXSY_mean\nBPXDI_mean\nDRQSDIET\nDBD100\nDRQSDT1\nDRQSDT2\nDRQSDT3\nDRQSDT4\nDRQSDT6\nDRQSDT7\nDRQSDT9\nDRQSDT10\nDRQSDT11\nDR1TKCAL\nDR1TPROT\nDR1TCARB\nDR1TSUGR\nDR1TFIBE\nDR1TTFAT\nDR1TSFAT\nDR1TMFAT\nDR1TPFAT\nDR1TCHOL\nDR1TP182\nDR1TP205\nDR1TP226\nLBXIN\nLBXSGL\nLBXGH\nLBXSGTSI\nLBXTC\nLBDLDL\nLBDHDD\nLBXTR\nLBDNENO\nLBDLYMNO\nPHAFSTHR_final\nPHAFSTMN_final\nBPQ030\nBPQ050A\nBPQ080\nBPQ100D\nDIQ010\nDIQ160\nDIQ050\nDID060\nDIQ060U\nDIQ070\nDBQ197\nDBQ223A\nDBQ223B\nDBQ223C\nDBQ223D\nDBQ223E\nDBQ223U\nDBQ229\nPAQ605\nPAQ610\nPAD615\nPAQ620\nPAQ625\nPAD630\nPAQ635\nPAQ640\nPAD645\nPAQ650\nPAQ655\nPAD660\nPAQ665\nPAQ670\nPAD675\nPAD680\nPAQ706\nPAQ710\nPAQ715\nRXQ515\nRXQ520\nRXD530\nSLD010H\nSLQ060\nWHD010\nWHD020\nWHD050\nWHQ060\nWHQ070\nWHD080A\nWHD080B\nWHD080C\nWHD080D\nWHD080E\nWHD080F\nWHD080H\nWHD080M\nWHD080O\nWHD080P\nWHD080Q\nWHD080S\nWHD080T\nMCQ080\nMCQ082\nMCQ086\nMCQ160A\nMCQ180A\nMCQ195\nMCQ160B\nMCQ180B\nMCQ160C\nMCQ180C\nMCQ160E\nMCQ180E\nMCQ160F\nMCQ180F\nMCQ160M\nMCQ170M\nMCQ180M\n\n\n\n\n73557\n1\n69\nNA\n78.3\n171.3\n26.7\n100.0\n20.6\n112.6667\n74.00000\n2\n2\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n1574\n43.63\n239.59\n176.47\n10.8\n52.81\n17.819\n18.493\n8.829\n209\n7.932\n0.001\n0.010\nNA\n554\n13.9\n16\n167\nNA\n65\nNA\n2.0\n2.0\n3\n47\n1\n2\n1\n1\n1\nNA\n1\n5\n2\n1\n1\n10\nNA\nNA\nNA\nNA\nNA\n2\n2\nNA\nNA\n2\nNA\nNA\n2\nNA\nNA\n2\nNA\nNA\n2\nNA\nNA\n600\nNA\n2\n8\n1\nNA\n81\n7\n2\n69\n180\n210\n1\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n1\n2\n2\n1\n62\n9\n2\nNA\n2\nNA\n2\nNA\n1\n62\n2\nNA\nNA\n\n\n73558\n1\n54\nNA\n89.5\n176.8\n28.6\n107.6\n24.4\n157.3333\n61.33333\n2\n2\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n5062\n338.13\n423.78\n44.99\n16.7\n124.29\n53.408\n35.481\n20.505\n2584\n15.483\n1.003\n1.139\nNA\n219\n9.1\n15\n170\nNA\n50\nNA\n7.4\n3.4\n3\n14\n1\nNA\n1\n1\n1\nNA\n1\n1\n2\n2\n3\n10\nNA\nNA\nNA\nNA\nNA\n1\n2\nNA\nNA\n1\n1\n10\n2\nNA\nNA\n2\nNA\nNA\n2\nNA\nNA\n540\nNA\n4\n8\n3\nNA\n81\n9\n2\n71\n200\n160\nNA\n2\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n2\n2\n2\n2\nNA\nNA\n2\nNA\n2\nNA\n2\nNA\n2\nNA\n2\nNA\nNA\n\n\n73559\n1\n72\nNA\n88.9\n175.3\n28.9\n109.2\n25.6\n142.0000\n82.00000\n1\n1\nNA\nNA\nNA\nNA\nNA\n7\nNA\nNA\nNA\n1743\n64.61\n224.39\n102.90\n9.9\n65.97\n25.263\n20.902\n12.953\n88\n11.705\n0.001\n0.002\n5.83\n183\n8.9\n13\n126\n56\n60\n51\n4.9\n1.0\n15\n51\n1\n1\n1\n1\n1\nNA\n1\n16\n2\n2\n3\nNA\n11\nNA\n13\nNA\nNA\n1\n2\nNA\nNA\n1\n7\n30\n2\nNA\nNA\n2\nNA\nNA\n1\n1\n180\n300\nNA\n4\n0\nNA\n2\nNA\n8\n2\n70\n195\n195\nNA\n2\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n2\n2\n2\n2\nNA\nNA\n2\nNA\n2\nNA\n2\nNA\n2\nNA\n2\nNA\nNA\n\n\n73561\n2\n73\nNA\n52.0\n162.4\n19.7\nNA\nNA\n137.3333\n86.66667\n1\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n1421\n55.24\n178.20\n87.78\n12.3\n55.36\n4.479\n26.216\n1.263\n41\n1.048\n0.000\n0.000\n6.12\n104\n4.9\n31\n201\n101\n85\n75\n4.5\n1.4\n14\n42\n2\n1\n2\nNA\n2\n2\n2\nNA\nNA\nNA\n3\nNA\n11\nNA\nNA\nNA\nNA\n1\n2\nNA\nNA\n1\n2\n30\n2\nNA\nNA\n2\nNA\nNA\n2\nNA\nNA\n480\nNA\n1\n1\n1\nNA\n81\n9\n2\n67\n120\n150\n2\n2\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\nNA\n2\n2\n2\n1\n70\n9\n2\nNA\n2\nNA\n2\nNA\n2\nNA\n1\n1\n50\n\n\n\n\n\n\nObjetivo\nCrear un dataset limpio con:\n\nedad\nsexo\nIMC\nglicemia\npresión arterial\naspirina\n\n\n\nPaso 1: seleccionar variables\n\n# Seleccionar las variables importantes\ndf_obesidad_sub &lt;- df_obesidad %&gt;%\n  select(\n    RIDAGEYR,   # edad\n    RIAGENDR,   # sexo\n    BMXBMI,     # IMC\n    LBXSGL,     # glicemia\n    BPXSY_mean, # presión sistólica\n    BPXDI_mean, # presión diastólica\n    RXD530      # dosis de aspirina\n  )\nknitr::kable(df_obesidad_sub[1:4,]) # produce:\n\n\n\n\nRIDAGEYR\nRIAGENDR\nBMXBMI\nLBXSGL\nBPXSY_mean\nBPXDI_mean\nRXD530\n\n\n\n\n69\n1\n26.7\n554\n112.6667\n74.00000\n81\n\n\n54\n1\n28.6\n219\n157.3333\n61.33333\n81\n\n\n72\n1\n28.9\n183\n142.0000\n82.00000\nNA\n\n\n73\n2\n19.7\n104\n137.3333\n86.66667\n81\n\n\n\n\n\n👉 Estamos reduciendo complejidad (muy importante)\n\n\nPaso 2: renombrar variables\n\n# Renombrar variables\ndf_obesidad_sub &lt;- df_obesidad_sub %&gt;%\n  rename(\n    edad = RIDAGEYR,\n    sexo = RIAGENDR,\n    imc = BMXBMI,\n    glicemia = LBXSGL,\n    pas = BPXSY_mean,\n    pad = BPXDI_mean,\n    aspirina = RXD530\n  )\nknitr::kable(df_obesidad_sub[1:4,]) # produce:\n\n\n\n\nedad\nsexo\nimc\nglicemia\npas\npad\naspirina\n\n\n\n\n69\n1\n26.7\n554\n112.6667\n74.00000\n81\n\n\n54\n1\n28.6\n219\n157.3333\n61.33333\n81\n\n\n72\n1\n28.9\n183\n142.0000\n82.00000\nNA\n\n\n73\n2\n19.7\n104\n137.3333\n86.66667\n81\n\n\n\n\n\n👉 Ahora el dataset es “legible clínicamente”\n\n\nPaso 3: recodificar variables categóricas\n\ndf_obesidad_sub &lt;- df_obesidad_sub %&gt;%\n  mutate(\n    sexo = case_when(\n      sexo == 1 ~ \"Hombre\",\n      sexo == 2 ~ \"Mujer\",\n      TRUE ~ NA_character_\n    )\n  )\nunique(df_obesidad_sub$sexo) # produce: [1] \"Hombre\" \"Mujer\" \n\n\n\nPaso 4: explorar valores faltantes\n\n# Conocer los valores faltantes de cada variable\ndf_obesidad_sub %&gt;%\n  summarise(across(everything(), ~ sum(is.na(.)))) # produce:\n# A tibble: 1 × 7\n#   edad  sexo   imc glicemia   pas   pad aspirina\n#  &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;\n#1     0     0     0      286   186   186     4699\n\n👉 Aquí empiezas a ver la realidad:\n\nglicemia → muchos NA\naspirina → MUCHOS NA\n\nPunto clave\nLos NA en NHANES no son errores necesariamente 👉 muchas veces significan:\n\nno se midió\nno aplica\nel paciente no respondió\n\n\n\nPaso 5: filtrar datos útiles\n\n# Filtrar datos útiles, eliminar los valores faltantes de edad, imc\n# y glicemia\ndf_obesidad_clean &lt;- df_obesidad_sub %&gt;%\n  filter(\n    !is.na(edad),\n    !is.na(imc),\n    !is.na(glicemia)\n  )\n\n👉 No siempre debes eliminar NA… pero aquí lo hacemos para simplificar\n\n\nPaso 6: crear variables útiles\n\n# Crear variables útiles\ndf_obesidad_clean &lt;- df_obesidad_clean %&gt;%\n  mutate(\n    obesidad = if_else(imc &gt;= 30, \"Sí\", \"No\"),\n    glicemia_alta = if_else(glicemia &gt; 100, \"Sí\", \"No\")\n  )\nknitr::kable(df_obesidad_clean[1:4,]) # produce:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nedad\nsexo\nimc\nglicemia\npas\npad\naspirina\nobesidad\nglicemia_alta\n\n\n\n\n69\n1\n26.7\n554\n112.6667\n74.00000\n81\nNo\nSí\n\n\n54\n1\n28.6\n219\n157.3333\n61.33333\n81\nNo\nSí\n\n\n72\n1\n28.9\n183\n142.0000\n82.00000\nNA\nNo\nSí\n\n\n73\n2\n19.7\n104\n137.3333\n86.66667\n81\nNo\nSí\n\n\n\n\n\n👉 Ya empezamos a pensar clínicamente\n\n\nPaso 7: vistazo rápido\n\nsummary(df_obesidad_clean) # produce:\n\n      edad            sexo            imc           glicemia    \n Min.   :18.00   Min.   :1.000   Min.   :14.10   Min.   : 49.0  \n 1st Qu.:32.00   1st Qu.:1.000   1st Qu.:23.90   1st Qu.: 87.0  \n Median :47.00   Median :2.000   Median :27.70   Median : 94.0  \n Mean   :47.63   Mean   :1.518   Mean   :28.95   Mean   :104.3  \n 3rd Qu.:63.00   3rd Qu.:2.000   3rd Qu.:32.40   3rd Qu.:106.0  \n Max.   :80.00   Max.   :2.000   Max.   :77.50   Max.   :577.0  \n                                                                \n      pas              pad            aspirina       obesidad        \n Min.   : 64.67   Min.   :  0.00   Min.   :   20   Length:5496       \n 1st Qu.:110.00   1st Qu.: 62.67   1st Qu.:   81   Class :character  \n Median :119.33   Median : 70.00   Median :   81   Mode  :character  \n Mean   :122.64   Mean   : 69.22   Mean   : 1268                     \n 3rd Qu.:132.00   3rd Qu.: 76.67   3rd Qu.:   81                     \n Max.   :228.67   Max.   :128.00   Max.   :99999                     \n NA's   :166      NA's   :166      NA's   :4457                      \n glicemia_alta     \n Length:5496       \n Class :character  \n Mode  :character  \n                   \n                   \n                   \n                   \n\n\n\n\nVisualización simple\n\n# Visualización simple\nggplot(df_obesidad_clean, aes(x = imc)) +\n  geom_histogram(bins = 30) # produce:\n\n\n\n\n\n\n\n\n👉 Ya puedes empezar a “ver” el problema",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "3.- Preparando NHANES en R"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#interpretación-clínica",
+    "href": "analysis/c03.html#interpretación-clínica",
+    "title": "3.- Preparando NHANES en R",
+    "section": "4. Interpretación clínica",
+    "text": "4. Interpretación clínica\nEste capítulo no trata de estadística…\n👉 Trata de confianza en los datos\n\nLo que aprendiste realmente\n\nLos datos clínicos reales son desordenados\nNo puedes analizarlos directamente\nNecesitas limpiarlos primero\n\n\n\nEjemplo clínico real\nSi analizas glicemia sin limpiar:\n\nincluyes pacientes sin medición\nmezclas datos incompletos\nobtienes conclusiones erróneas\n\n👉 Resultado:\ndecisiones clínicas equivocadas\n\n\nConexión con obesidad\nEn el contexto de la obesidad como problema hormonal:\n\nIMC → adiposidad\nglicemia → metabolismo\naspirina → inflamación\n\nSi estos datos están mal preparados: 👉 no puedes entender la relación entre ellos\n\n\nIdea más importante del capítulo\nAntes de hacer análisis bayesiano… primero debes confiar en tus datos.\n\n\nLo que viene después\nAhora que sabes:\n\nseleccionar variables\nlimpiar datos\nmanejar NA\ncrear variables clínicas\n\n👉 En el siguiente capítulo empezaremos a hacer algo más interesante:\nexplorar relaciones entre variables… y empezar a pensar en probabilidades.",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "3.- Preparando NHANES en R"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#mini-resumen-mental",
+    "href": "analysis/c03.html#mini-resumen-mental",
+    "title": "3.- Preparando NHANES en R",
+    "section": "Mini resumen mental",
+    "text": "Mini resumen mental\n\nDatos crudos → no confiables\nDatos limpios → analizables\nDatos bien preparados → decisiones clínicas más seguras",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "3.- Preparando NHANES en R"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#ejercicios",
+    "href": "analysis/c03.html#ejercicios",
+    "title": "3.- Preparando NHANES en R",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nCuenta los NA de solo estas variables:\n\nglicemia\nimc\n\n👉 pista:\n\n# across(c(glicemia, imc), ...)\n\n\n\nEjercicio 2\nCuenta cuántos pacientes hay en total\n👉 usa:\n\n# summarise(n = n())\n\n\n\nEjercicio 3\nCalcula la edad promedio\n👉 pista:\n\n# mean(edad, na.rm = TRUE)\n\n\n\nEjercicio 4\nFiltra solo pacientes con:\n\nIMC ≥ 30\n\n👉 pregunta clínica: ¿Cuántos pacientes obesos tienes?\n\n\nEjercicio 5\nFiltra pacientes con:\n\nglicemia &gt; 100\n\n👉 interpreta: ¿posible alteración metabólica?\n\n\nEjercicio 6\nFiltra pacientes que:\n\nNO tienen NA en glicemia\n\n👉 compara tamaño del dataset antes vs después\n\n\nEjercicio 7\nCrea una variable:\nriesgo_metabolico:\n\n“Alto” si glicemia &gt; 110\n“Normal” si no\n\n\n\nEjercicio 8\nCrea una variable:\ngrupo_imc:\n\n“Normal” (&lt;25)\n“Sobrepeso” (25–29.9)\n“Obesidad” (≥30)\n\n\n\nEjercicio 9\nCalcula:\n👉 glicemia promedio por sexo\n(pista: group_by(sexo))\n\n\nEjercicio 10\nCalcula:\n👉 IMC promedio en pacientes con glicemia alta vs normal\n\n\nEjercicio 11\nResponde:\n👉 ¿Los pacientes con obesidad tienen mayor glicemia promedio?\n(no necesitas modelo aún, solo resumen)\n\n\nEjercicio 12\nExplora:\n👉 ¿Cuántos pacientes con obesidad tienen datos faltantes de glicemia?\n(pista: combina filter() + is.na())\n\n\nEjercicio 13\nCrea una tabla:\n👉 proporción de pacientes con:\n\nobesidad\nglicemia alta\n\n(pista: count() o summarise())",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "3.- Preparando NHANES en R"
+    ]
   }
 ]

@@ -15,6 +15,12 @@ diet <- read_csv("eda-obesidad/data/nhanes/diet.csv",
                  guess_max = 10000,
                  show_col_types = FALSE)
 
+# Seleccionar sólo las variables que voy a usar
+diet <- diet |>
+  select(SEQN, DRQSDIET, DBD100, DRQSDT1, DRQSDT2, DRQSDT3, DRQSDT4,
+         DRQSDT6, DRQSDT7, DRQSDT9, DRQSDT10, DRQSDT11)
+#glimpse(diet) # produce:
+
 ############ Sigues alguna dieta #################
 
 # DRQSDIET - ¿Sigues una dieta especial?
@@ -170,3 +176,5 @@ dieta_tipo <- diet |>
   select(SEQN, DRQSDIET, DBD100, DRQSDT1, DRQSDT2, DRQSDT3, DRQSDT4,
          DRQSDT6, DRQSDT7, DRQSDT9, DRQSDT10, DRQSDT11) 
 head(dieta_tipo) # produce:
+
+

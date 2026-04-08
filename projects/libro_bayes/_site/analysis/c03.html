@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3.- Preparando NHANES en R – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c03.html">Módulo 2: Entender la Incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c03.html">3.- Preparando NHANES en R</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 1: Pensar Como Analista Bayesiano</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- De Datos a Decisiones Clínicas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 2: Entender la Incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">3.- Preparando NHANES en R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intuición-sin-código" id="toc-intuición-sin-código" class="nav-link active" data-scroll-target="#intuición-sin-código">1. Intuición (sin código)</a>
+  <ul class="collapse">
+  <li><a href="#la-realidad-los-datos-clínicos-son-imperfectos" id="toc-la-realidad-los-datos-clínicos-son-imperfectos" class="nav-link" data-scroll-target="#la-realidad-los-datos-clínicos-son-imperfectos">La realidad: los datos clínicos son imperfectos</a></li>
+  <li><a href="#qué-significa-limpiar-datos" id="toc-qué-significa-limpiar-datos" class="nav-link" data-scroll-target="#qué-significa-limpiar-datos">¿Qué significa “limpiar datos”?</a></li>
+  <li><a href="#qué-es-un-dataset-tidy" id="toc-qué-es-un-dataset-tidy" class="nav-link" data-scroll-target="#qué-es-un-dataset-tidy">¿Qué es un dataset “tidy”?</a></li>
+  <li><a href="#analogía-clínica" id="toc-analogía-clínica" class="nav-link" data-scroll-target="#analogía-clínica">Analogía clínica</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <ul class="collapse">
+  <li><a href="#problemas-visibles" id="toc-problemas-visibles" class="nav-link" data-scroll-target="#problemas-visibles">Problemas visibles</a></li>
+  <li><a href="#paso-1-renombrar-variables" id="toc-paso-1-renombrar-variables" class="nav-link" data-scroll-target="#paso-1-renombrar-variables">Paso 1: renombrar variables</a></li>
+  <li><a href="#paso-2-recodificar-variables" id="toc-paso-2-recodificar-variables" class="nav-link" data-scroll-target="#paso-2-recodificar-variables">Paso 2: recodificar variables</a></li>
+  <li><a href="#paso-3-eliminar-valores-faltantes" id="toc-paso-3-eliminar-valores-faltantes" class="nav-link" data-scroll-target="#paso-3-eliminar-valores-faltantes">Paso 3: eliminar valores faltantes</a></li>
+  <li><a href="#resultado-final" id="toc-resultado-final" class="nav-link" data-scroll-target="#resultado-final">Resultado final</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-aplicado-con-nhanes" id="toc-ejemplo-aplicado-con-nhanes" class="nav-link" data-scroll-target="#ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</a>
+  <ul class="collapse">
+  <li><a href="#objetivo" id="toc-objetivo" class="nav-link" data-scroll-target="#objetivo">Objetivo</a></li>
+  <li><a href="#paso-1-seleccionar-variables" id="toc-paso-1-seleccionar-variables" class="nav-link" data-scroll-target="#paso-1-seleccionar-variables">Paso 1: seleccionar variables</a></li>
+  <li><a href="#paso-2-renombrar-variables" id="toc-paso-2-renombrar-variables" class="nav-link" data-scroll-target="#paso-2-renombrar-variables">Paso 2: renombrar variables</a></li>
+  <li><a href="#paso-3-recodificar-variables-categóricas" id="toc-paso-3-recodificar-variables-categóricas" class="nav-link" data-scroll-target="#paso-3-recodificar-variables-categóricas">Paso 3: recodificar variables categóricas</a></li>
+  <li><a href="#paso-4-explorar-valores-faltantes" id="toc-paso-4-explorar-valores-faltantes" class="nav-link" data-scroll-target="#paso-4-explorar-valores-faltantes">Paso 4: explorar valores faltantes</a></li>
+  <li><a href="#paso-5-filtrar-datos-útiles" id="toc-paso-5-filtrar-datos-útiles" class="nav-link" data-scroll-target="#paso-5-filtrar-datos-útiles">Paso 5: filtrar datos útiles</a></li>
+  <li><a href="#paso-6-crear-variables-útiles" id="toc-paso-6-crear-variables-útiles" class="nav-link" data-scroll-target="#paso-6-crear-variables-útiles">Paso 6: crear variables útiles</a></li>
+  <li><a href="#paso-7-vistazo-rápido" id="toc-paso-7-vistazo-rápido" class="nav-link" data-scroll-target="#paso-7-vistazo-rápido">Paso 7: vistazo rápido</a></li>
+  <li><a href="#visualización-simple" id="toc-visualización-simple" class="nav-link" data-scroll-target="#visualización-simple">Visualización simple</a></li>
+  </ul></li>
+  <li><a href="#interpretación-clínica" id="toc-interpretación-clínica" class="nav-link" data-scroll-target="#interpretación-clínica">4. Interpretación clínica</a>
+  <ul class="collapse">
+  <li><a href="#lo-que-aprendiste-realmente" id="toc-lo-que-aprendiste-realmente" class="nav-link" data-scroll-target="#lo-que-aprendiste-realmente">Lo que aprendiste realmente</a></li>
+  <li><a href="#ejemplo-clínico-real" id="toc-ejemplo-clínico-real" class="nav-link" data-scroll-target="#ejemplo-clínico-real">Ejemplo clínico real</a></li>
+  <li><a href="#conexión-con-obesidad" id="toc-conexión-con-obesidad" class="nav-link" data-scroll-target="#conexión-con-obesidad">Conexión con obesidad</a></li>
+  <li><a href="#idea-más-importante-del-capítulo" id="toc-idea-más-importante-del-capítulo" class="nav-link" data-scroll-target="#idea-más-importante-del-capítulo">Idea más importante del capítulo</a></li>
+  <li><a href="#lo-que-viene-después" id="toc-lo-que-viene-después" class="nav-link" data-scroll-target="#lo-que-viene-después">Lo que viene después</a></li>
+  </ul></li>
+  <li><a href="#mini-resumen-mental" id="toc-mini-resumen-mental" class="nav-link" data-scroll-target="#mini-resumen-mental">Mini resumen mental</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  <li><a href="#ejercicio-6" id="toc-ejercicio-6" class="nav-link" data-scroll-target="#ejercicio-6">Ejercicio 6</a></li>
+  <li><a href="#ejercicio-7" id="toc-ejercicio-7" class="nav-link" data-scroll-target="#ejercicio-7">Ejercicio 7</a></li>
+  <li><a href="#ejercicio-8" id="toc-ejercicio-8" class="nav-link" data-scroll-target="#ejercicio-8">Ejercicio 8</a></li>
+  <li><a href="#ejercicio-9" id="toc-ejercicio-9" class="nav-link" data-scroll-target="#ejercicio-9">Ejercicio 9</a></li>
+  <li><a href="#ejercicio-10" id="toc-ejercicio-10" class="nav-link" data-scroll-target="#ejercicio-10">Ejercicio 10</a></li>
+  <li><a href="#ejercicio-11" id="toc-ejercicio-11" class="nav-link" data-scroll-target="#ejercicio-11">Ejercicio 11</a></li>
+  <li><a href="#ejercicio-12" id="toc-ejercicio-12" class="nav-link" data-scroll-target="#ejercicio-12">Ejercicio 12</a></li>
+  <li><a href="#ejercicio-13" id="toc-ejercicio-13" class="nav-link" data-scroll-target="#ejercicio-13">Ejercicio 13</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c03.html">Módulo 2: Entender la Incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c03.html">3.- Preparando NHANES en R</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">3.- Preparando NHANES en R</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="intuición-sin-código" class="level2">
+<h2 class="anchored" data-anchor-id="intuición-sin-código">1. Intuición (sin código)</h2>
+<p>Imagina que estás en consulta y recibes a un paciente con resultados de laboratorio… pero:</p>
+<ul>
+<li>la glicemia está en blanco</li>
+<li>la presión arterial aparece dos veces con valores distintos</li>
+<li>el sexo está codificado como “1” o “2”</li>
+<li>el peso está en kg… pero alguien anotó uno en libras</li>
+</ul>
+<p>¿Confiarías en ese “dataset clínico” para tomar decisiones?</p>
+<p>Eso mismo ocurre cuando trabajamos con datos reales como <strong>NHANES</strong>.</p>
+<section id="la-realidad-los-datos-clínicos-son-imperfectos" class="level3">
+<h3 class="anchored" data-anchor-id="la-realidad-los-datos-clínicos-son-imperfectos">La realidad: los datos clínicos son imperfectos</h3>
+<p>En la vida real, los datos:</p>
+<ul>
+<li>tienen valores faltantes (NA)</li>
+<li>pueden estar mal codificados</li>
+<li>pueden tener múltiples mediciones</li>
+<li>pueden contener errores</li>
+</ul>
+<p>👉 Y aquí viene la idea clave del capítulo:</p>
+<p><strong>Un mal análisis casi siempre empieza con datos mal preparados.</strong></p>
+</section>
+<section id="qué-significa-limpiar-datos" class="level3">
+<h3 class="anchored" data-anchor-id="qué-significa-limpiar-datos">¿Qué significa “limpiar datos”?</h3>
+<p>Limpiar datos no es “arreglarlos para que salgan bonitos”.</p>
+<p>Es:</p>
+<ul>
+<li>entender qué representan</li>
+<li>hacerlos consistentes</li>
+<li>prepararlos para responder preguntas clínicas</li>
+</ul>
+</section>
+<section id="qué-es-un-dataset-tidy" class="level3">
+<h3 class="anchored" data-anchor-id="qué-es-un-dataset-tidy">¿Qué es un dataset “tidy”?</h3>
+<p>Un dataset “tidy” (ordenado) cumple tres reglas simples:</p>
+<ol type="1">
+<li>Cada fila = un paciente</li>
+<li>Cada columna = una variable</li>
+<li>Cada celda = un valor</li>
+</ol>
+<p>Cuando los datos están tidy: 👉 es mucho más fácil analizarlos, graficarlos y modelarlos</p>
+</section>
+<section id="analogía-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="analogía-clínica">Analogía clínica</h3>
+<p>Piensa en esto como preparar un quirófano:</p>
+<ul>
+<li>No operas con instrumentos desordenados</li>
+<li>No trabajas con información incompleta</li>
+<li>No mezclas datos confusos</li>
+</ul>
+<p>👉 Primero organizas todo… luego actúas</p>
+</section>
+</section>
+<section id="ejemplo-simple-simulación-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
+<p>Vamos a crear un pequeño dataset “sucio” para entender el problema.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulamos datos "desordenados"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>datos_sucios <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">edad =</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">52</span>, <span class="cn">NA</span>, <span class="dv">60</span>, <span class="dv">38</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sexo =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">glucosa =</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">110</span>, <span class="dv">105</span>, <span class="cn">NA</span>, <span class="dv">95</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>) <span class="co"># produce:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(datos_sucios)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">edad</th>
+<th style="text-align: right;">sexo</th>
+<th style="text-align: right;">glucosa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">110</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">105</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">95</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="problemas-visibles" class="level3">
+<h3 class="anchored" data-anchor-id="problemas-visibles">Problemas visibles</h3>
+<ul>
+<li>Hay valores faltantes (NA)</li>
+<li>El sexo está codificado como número</li>
+<li>No sabemos si hay errores</li>
+</ul>
+</section>
+<section id="paso-1-renombrar-variables" class="level3">
+<h3 class="anchored" data-anchor-id="paso-1-renombrar-variables">Paso 1: renombrar variables</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Renombrar las variables para que se entiendan mejor</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>datos_limpios <span class="ot">&lt;-</span> datos_sucios <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">edad_anios =</span> edad,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">glicemia =</span> glucosa</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(datos_limpios) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">edad_anios</th>
+<th style="text-align: right;">sexo</th>
+<th style="text-align: right;">glicemia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">110</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">105</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">95</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>👉 Ahora los nombres son más claros clínicamente</p>
+</section>
+<section id="paso-2-recodificar-variables" class="level3">
+<h3 class="anchored" data-anchor-id="paso-2-recodificar-variables">Paso 2: recodificar variables</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recodificar los valores de la variable sexo</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>datos_limpios <span class="ot">&lt;-</span> datos_limpios <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">sexo =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      sexo <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Hombre"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      sexo <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Mujer"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(datos_limpios<span class="sc">$</span>sexo) <span class="co"># produce: [1] "Hombre" "Mujer"  NA </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>👉 Ya podemos interpretar fácilmente el sexo</p>
+</section>
+<section id="paso-3-eliminar-valores-faltantes" class="level3">
+<h3 class="anchored" data-anchor-id="paso-3-eliminar-valores-faltantes">Paso 3: eliminar valores faltantes</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Eliminar los vaores faltantes aunque no siempre se debe hacer así</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>datos_limpios <span class="ot">&lt;-</span> datos_limpios <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(edad_anios), <span class="sc">!</span><span class="fu">is.na</span>(glicemia))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>👉 Nos quedamos solo con pacientes con datos útiles</p>
+</section>
+<section id="resultado-final" class="level3">
+<h3 class="anchored" data-anchor-id="resultado-final">Resultado final</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(datos_limpios)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">edad_anios</th>
+<th style="text-align: right;">sexo</th>
+<th style="text-align: right;">glicemia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">110</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">95</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Ahora tenemos un dataset:</p>
+<ul>
+<li>entendible</li>
+<li>consistente</li>
+<li>listo para análisis</li>
+</ul>
+</section>
+</section>
+<section id="ejemplo-aplicado-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</h2>
+<p>Ahora vamos a trabajar con datos reales.</p>
+<p>Supongamos que ya tienes cargado tu dataset NHANES (df_obesidad) como:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(df_obesidad[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,]) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">SEQN</th>
+<th style="text-align: right;">RIAGENDR</th>
+<th style="text-align: right;">RIDAGEYR</th>
+<th style="text-align: right;">RIDEXPRG</th>
+<th style="text-align: right;">BMXWT</th>
+<th style="text-align: right;">BMXHT</th>
+<th style="text-align: right;">BMXBMI</th>
+<th style="text-align: right;">BMXWAIST</th>
+<th style="text-align: right;">BMDAVSAD</th>
+<th style="text-align: right;">BPXSY_mean</th>
+<th style="text-align: right;">BPXDI_mean</th>
+<th style="text-align: right;">DRQSDIET</th>
+<th style="text-align: right;">DBD100</th>
+<th style="text-align: right;">DRQSDT1</th>
+<th style="text-align: right;">DRQSDT2</th>
+<th style="text-align: right;">DRQSDT3</th>
+<th style="text-align: right;">DRQSDT4</th>
+<th style="text-align: left;">DRQSDT6</th>
+<th style="text-align: right;">DRQSDT7</th>
+<th style="text-align: right;">DRQSDT9</th>
+<th style="text-align: right;">DRQSDT10</th>
+<th style="text-align: right;">DRQSDT11</th>
+<th style="text-align: right;">DR1TKCAL</th>
+<th style="text-align: right;">DR1TPROT</th>
+<th style="text-align: right;">DR1TCARB</th>
+<th style="text-align: right;">DR1TSUGR</th>
+<th style="text-align: right;">DR1TFIBE</th>
+<th style="text-align: right;">DR1TTFAT</th>
+<th style="text-align: right;">DR1TSFAT</th>
+<th style="text-align: right;">DR1TMFAT</th>
+<th style="text-align: right;">DR1TPFAT</th>
+<th style="text-align: right;">DR1TCHOL</th>
+<th style="text-align: right;">DR1TP182</th>
+<th style="text-align: right;">DR1TP205</th>
+<th style="text-align: right;">DR1TP226</th>
+<th style="text-align: right;">LBXIN</th>
+<th style="text-align: right;">LBXSGL</th>
+<th style="text-align: right;">LBXGH</th>
+<th style="text-align: right;">LBXSGTSI</th>
+<th style="text-align: right;">LBXTC</th>
+<th style="text-align: right;">LBDLDL</th>
+<th style="text-align: right;">LBDHDD</th>
+<th style="text-align: right;">LBXTR</th>
+<th style="text-align: right;">LBDNENO</th>
+<th style="text-align: right;">LBDLYMNO</th>
+<th style="text-align: right;">PHAFSTHR_final</th>
+<th style="text-align: right;">PHAFSTMN_final</th>
+<th style="text-align: right;">BPQ030</th>
+<th style="text-align: right;">BPQ050A</th>
+<th style="text-align: right;">BPQ080</th>
+<th style="text-align: right;">BPQ100D</th>
+<th style="text-align: right;">DIQ010</th>
+<th style="text-align: right;">DIQ160</th>
+<th style="text-align: right;">DIQ050</th>
+<th style="text-align: right;">DID060</th>
+<th style="text-align: right;">DIQ060U</th>
+<th style="text-align: right;">DIQ070</th>
+<th style="text-align: right;">DBQ197</th>
+<th style="text-align: right;">DBQ223A</th>
+<th style="text-align: right;">DBQ223B</th>
+<th style="text-align: right;">DBQ223C</th>
+<th style="text-align: right;">DBQ223D</th>
+<th style="text-align: right;">DBQ223E</th>
+<th style="text-align: right;">DBQ223U</th>
+<th style="text-align: right;">DBQ229</th>
+<th style="text-align: right;">PAQ605</th>
+<th style="text-align: right;">PAQ610</th>
+<th style="text-align: right;">PAD615</th>
+<th style="text-align: right;">PAQ620</th>
+<th style="text-align: right;">PAQ625</th>
+<th style="text-align: right;">PAD630</th>
+<th style="text-align: right;">PAQ635</th>
+<th style="text-align: right;">PAQ640</th>
+<th style="text-align: right;">PAD645</th>
+<th style="text-align: right;">PAQ650</th>
+<th style="text-align: right;">PAQ655</th>
+<th style="text-align: right;">PAD660</th>
+<th style="text-align: right;">PAQ665</th>
+<th style="text-align: right;">PAQ670</th>
+<th style="text-align: right;">PAD675</th>
+<th style="text-align: right;">PAD680</th>
+<th style="text-align: left;">PAQ706</th>
+<th style="text-align: right;">PAQ710</th>
+<th style="text-align: right;">PAQ715</th>
+<th style="text-align: right;">RXQ515</th>
+<th style="text-align: right;">RXQ520</th>
+<th style="text-align: right;">RXD530</th>
+<th style="text-align: right;">SLD010H</th>
+<th style="text-align: right;">SLQ060</th>
+<th style="text-align: right;">WHD010</th>
+<th style="text-align: right;">WHD020</th>
+<th style="text-align: right;">WHD050</th>
+<th style="text-align: right;">WHQ060</th>
+<th style="text-align: right;">WHQ070</th>
+<th style="text-align: right;">WHD080A</th>
+<th style="text-align: right;">WHD080B</th>
+<th style="text-align: right;">WHD080C</th>
+<th style="text-align: right;">WHD080D</th>
+<th style="text-align: right;">WHD080E</th>
+<th style="text-align: right;">WHD080F</th>
+<th style="text-align: right;">WHD080H</th>
+<th style="text-align: right;">WHD080M</th>
+<th style="text-align: right;">WHD080O</th>
+<th style="text-align: right;">WHD080P</th>
+<th style="text-align: right;">WHD080Q</th>
+<th style="text-align: right;">WHD080S</th>
+<th style="text-align: right;">WHD080T</th>
+<th style="text-align: right;">MCQ080</th>
+<th style="text-align: right;">MCQ082</th>
+<th style="text-align: right;">MCQ086</th>
+<th style="text-align: right;">MCQ160A</th>
+<th style="text-align: right;">MCQ180A</th>
+<th style="text-align: right;">MCQ195</th>
+<th style="text-align: right;">MCQ160B</th>
+<th style="text-align: right;">MCQ180B</th>
+<th style="text-align: right;">MCQ160C</th>
+<th style="text-align: right;">MCQ180C</th>
+<th style="text-align: right;">MCQ160E</th>
+<th style="text-align: right;">MCQ180E</th>
+<th style="text-align: right;">MCQ160F</th>
+<th style="text-align: right;">MCQ180F</th>
+<th style="text-align: right;">MCQ160M</th>
+<th style="text-align: right;">MCQ170M</th>
+<th style="text-align: right;">MCQ180M</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">73557</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">78.3</td>
+<td style="text-align: right;">171.3</td>
+<td style="text-align: right;">26.7</td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: right;">20.6</td>
+<td style="text-align: right;">112.6667</td>
+<td style="text-align: right;">74.00000</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1574</td>
+<td style="text-align: right;">43.63</td>
+<td style="text-align: right;">239.59</td>
+<td style="text-align: right;">176.47</td>
+<td style="text-align: right;">10.8</td>
+<td style="text-align: right;">52.81</td>
+<td style="text-align: right;">17.819</td>
+<td style="text-align: right;">18.493</td>
+<td style="text-align: right;">8.829</td>
+<td style="text-align: right;">209</td>
+<td style="text-align: right;">7.932</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">554</td>
+<td style="text-align: right;">13.9</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">167</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">600</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">180</td>
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">73558</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">89.5</td>
+<td style="text-align: right;">176.8</td>
+<td style="text-align: right;">28.6</td>
+<td style="text-align: right;">107.6</td>
+<td style="text-align: right;">24.4</td>
+<td style="text-align: right;">157.3333</td>
+<td style="text-align: right;">61.33333</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">5062</td>
+<td style="text-align: right;">338.13</td>
+<td style="text-align: right;">423.78</td>
+<td style="text-align: right;">44.99</td>
+<td style="text-align: right;">16.7</td>
+<td style="text-align: right;">124.29</td>
+<td style="text-align: right;">53.408</td>
+<td style="text-align: right;">35.481</td>
+<td style="text-align: right;">20.505</td>
+<td style="text-align: right;">2584</td>
+<td style="text-align: right;">15.483</td>
+<td style="text-align: right;">1.003</td>
+<td style="text-align: right;">1.139</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">219</td>
+<td style="text-align: right;">9.1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">170</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">7.4</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">540</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">73559</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">88.9</td>
+<td style="text-align: right;">175.3</td>
+<td style="text-align: right;">28.9</td>
+<td style="text-align: right;">109.2</td>
+<td style="text-align: right;">25.6</td>
+<td style="text-align: right;">142.0000</td>
+<td style="text-align: right;">82.00000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1743</td>
+<td style="text-align: right;">64.61</td>
+<td style="text-align: right;">224.39</td>
+<td style="text-align: right;">102.90</td>
+<td style="text-align: right;">9.9</td>
+<td style="text-align: right;">65.97</td>
+<td style="text-align: right;">25.263</td>
+<td style="text-align: right;">20.902</td>
+<td style="text-align: right;">12.953</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">11.705</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">5.83</td>
+<td style="text-align: right;">183</td>
+<td style="text-align: right;">8.9</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">180</td>
+<td style="text-align: right;">300</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">73561</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">52.0</td>
+<td style="text-align: right;">162.4</td>
+<td style="text-align: right;">19.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">137.3333</td>
+<td style="text-align: right;">86.66667</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1421</td>
+<td style="text-align: right;">55.24</td>
+<td style="text-align: right;">178.20</td>
+<td style="text-align: right;">87.78</td>
+<td style="text-align: right;">12.3</td>
+<td style="text-align: right;">55.36</td>
+<td style="text-align: right;">4.479</td>
+<td style="text-align: right;">26.216</td>
+<td style="text-align: right;">1.263</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">1.048</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">6.12</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">4.9</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">1.4</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">50</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="objetivo" class="level3">
+<h3 class="anchored" data-anchor-id="objetivo">Objetivo</h3>
+<p>Crear un dataset limpio con:</p>
+<ul>
+<li>edad</li>
+<li>sexo</li>
+<li>IMC</li>
+<li>glicemia</li>
+<li>presión arterial</li>
+<li>aspirina</li>
+</ul>
+</section>
+<section id="paso-1-seleccionar-variables" class="level3">
+<h3 class="anchored" data-anchor-id="paso-1-seleccionar-variables">Paso 1: seleccionar variables</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seleccionar las variables importantes</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_sub <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    RIDAGEYR,   <span class="co"># edad</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    RIAGENDR,   <span class="co"># sexo</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    BMXBMI,     <span class="co"># IMC</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    LBXSGL,     <span class="co"># glicemia</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    BPXSY_mean, <span class="co"># presión sistólica</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    BPXDI_mean, <span class="co"># presión diastólica</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    RXD530      <span class="co"># dosis de aspirina</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(df_obesidad_sub[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,]) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">RIDAGEYR</th>
+<th style="text-align: right;">RIAGENDR</th>
+<th style="text-align: right;">BMXBMI</th>
+<th style="text-align: right;">LBXSGL</th>
+<th style="text-align: right;">BPXSY_mean</th>
+<th style="text-align: right;">BPXDI_mean</th>
+<th style="text-align: right;">RXD530</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">26.7</td>
+<td style="text-align: right;">554</td>
+<td style="text-align: right;">112.6667</td>
+<td style="text-align: right;">74.00000</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">28.6</td>
+<td style="text-align: right;">219</td>
+<td style="text-align: right;">157.3333</td>
+<td style="text-align: right;">61.33333</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">28.9</td>
+<td style="text-align: right;">183</td>
+<td style="text-align: right;">142.0000</td>
+<td style="text-align: right;">82.00000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">19.7</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">137.3333</td>
+<td style="text-align: right;">86.66667</td>
+<td style="text-align: right;">81</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>👉 Estamos reduciendo complejidad (muy importante)</p>
+</section>
+<section id="paso-2-renombrar-variables" class="level3">
+<h3 class="anchored" data-anchor-id="paso-2-renombrar-variables">Paso 2: renombrar variables</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Renombrar variables</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_sub <span class="ot">&lt;-</span> df_obesidad_sub <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">edad =</span> RIDAGEYR,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sexo =</span> RIAGENDR,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">imc =</span> BMXBMI,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">glicemia =</span> LBXSGL,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pas =</span> BPXSY_mean,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">pad =</span> BPXDI_mean,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">aspirina =</span> RXD530</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(df_obesidad_sub[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,]) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">edad</th>
+<th style="text-align: right;">sexo</th>
+<th style="text-align: right;">imc</th>
+<th style="text-align: right;">glicemia</th>
+<th style="text-align: right;">pas</th>
+<th style="text-align: right;">pad</th>
+<th style="text-align: right;">aspirina</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">26.7</td>
+<td style="text-align: right;">554</td>
+<td style="text-align: right;">112.6667</td>
+<td style="text-align: right;">74.00000</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">28.6</td>
+<td style="text-align: right;">219</td>
+<td style="text-align: right;">157.3333</td>
+<td style="text-align: right;">61.33333</td>
+<td style="text-align: right;">81</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">28.9</td>
+<td style="text-align: right;">183</td>
+<td style="text-align: right;">142.0000</td>
+<td style="text-align: right;">82.00000</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">19.7</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">137.3333</td>
+<td style="text-align: right;">86.66667</td>
+<td style="text-align: right;">81</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>👉 Ahora el dataset es “legible clínicamente”</p>
+</section>
+<section id="paso-3-recodificar-variables-categóricas" class="level3">
+<h3 class="anchored" data-anchor-id="paso-3-recodificar-variables-categóricas">Paso 3: recodificar variables categóricas</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_obesidad_sub <span class="ot">&lt;-</span> df_obesidad_sub <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sexo =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      sexo <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Hombre"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      sexo <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Mujer"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df_obesidad_sub<span class="sc">$</span>sexo) <span class="co"># produce: [1] "Hombre" "Mujer" </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="paso-4-explorar-valores-faltantes" class="level3">
+<h3 class="anchored" data-anchor-id="paso-4-explorar-valores-faltantes">Paso 4: explorar valores faltantes</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conocer los valores faltantes de cada variable</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_sub <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.)))) <span class="co"># produce:</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A tibble: 1 × 7</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   edad  sexo   imc glicemia   pas   pad aspirina</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#1     0     0     0      286   186   186     4699</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>👉 Aquí empiezas a ver la realidad:</p>
+<ul>
+<li>glicemia → muchos NA</li>
+<li>aspirina → MUCHOS NA</li>
+</ul>
+<p><strong>Punto clave</strong></p>
+<p>Los NA en NHANES no son errores necesariamente 👉 muchas veces significan:</p>
+<ul>
+<li>no se midió</li>
+<li>no aplica</li>
+<li>el paciente no respondió</li>
+</ul>
+</section>
+<section id="paso-5-filtrar-datos-útiles" class="level3">
+<h3 class="anchored" data-anchor-id="paso-5-filtrar-datos-útiles">Paso 5: filtrar datos útiles</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtrar datos útiles, eliminar los valores faltantes de edad, imc</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># y glicemia</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df_obesidad_clean <span class="ot">&lt;-</span> df_obesidad_sub <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(edad),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(imc),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(glicemia)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>👉 No siempre debes eliminar NA… pero aquí lo hacemos para simplificar</p>
+</section>
+<section id="paso-6-crear-variables-útiles" class="level3">
+<h3 class="anchored" data-anchor-id="paso-6-crear-variables-útiles">Paso 6: crear variables útiles</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear variables útiles</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_clean <span class="ot">&lt;-</span> df_obesidad_clean <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">obesidad =</span> <span class="fu">if_else</span>(imc <span class="sc">&gt;=</span> <span class="dv">30</span>, <span class="st">"Sí"</span>, <span class="st">"No"</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">glicemia_alta =</span> <span class="fu">if_else</span>(glicemia <span class="sc">&gt;</span> <span class="dv">100</span>, <span class="st">"Sí"</span>, <span class="st">"No"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(df_obesidad_clean[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,]) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">edad</th>
+<th style="text-align: right;">sexo</th>
+<th style="text-align: right;">imc</th>
+<th style="text-align: right;">glicemia</th>
+<th style="text-align: right;">pas</th>
+<th style="text-align: right;">pad</th>
+<th style="text-align: right;">aspirina</th>
+<th style="text-align: left;">obesidad</th>
+<th style="text-align: left;">glicemia_alta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">26.7</td>
+<td style="text-align: right;">554</td>
+<td style="text-align: right;">112.6667</td>
+<td style="text-align: right;">74.00000</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">28.6</td>
+<td style="text-align: right;">219</td>
+<td style="text-align: right;">157.3333</td>
+<td style="text-align: right;">61.33333</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">28.9</td>
+<td style="text-align: right;">183</td>
+<td style="text-align: right;">142.0000</td>
+<td style="text-align: right;">82.00000</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">19.7</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">137.3333</td>
+<td style="text-align: right;">86.66667</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>👉 Ya empezamos a pensar clínicamente</p>
+</section>
+<section id="paso-7-vistazo-rápido" class="level3">
+<h3 class="anchored" data-anchor-id="paso-7-vistazo-rápido">Paso 7: vistazo rápido</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df_obesidad_clean) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      edad            sexo            imc           glicemia    
+ Min.   :18.00   Min.   :1.000   Min.   :14.10   Min.   : 49.0  
+ 1st Qu.:32.00   1st Qu.:1.000   1st Qu.:23.90   1st Qu.: 87.0  
+ Median :47.00   Median :2.000   Median :27.70   Median : 94.0  
+ Mean   :47.63   Mean   :1.518   Mean   :28.95   Mean   :104.3  
+ 3rd Qu.:63.00   3rd Qu.:2.000   3rd Qu.:32.40   3rd Qu.:106.0  
+ Max.   :80.00   Max.   :2.000   Max.   :77.50   Max.   :577.0  
+                                                                
+      pas              pad            aspirina       obesidad        
+ Min.   : 64.67   Min.   :  0.00   Min.   :   20   Length:5496       
+ 1st Qu.:110.00   1st Qu.: 62.67   1st Qu.:   81   Class :character  
+ Median :119.33   Median : 70.00   Median :   81   Mode  :character  
+ Mean   :122.64   Mean   : 69.22   Mean   : 1268                     
+ 3rd Qu.:132.00   3rd Qu.: 76.67   3rd Qu.:   81                     
+ Max.   :228.67   Max.   :128.00   Max.   :99999                     
+ NA's   :166      NA's   :166      NA's   :4457                      
+ glicemia_alta     
+ Length:5496       
+ Class :character  
+ Mode  :character  
+                   
+                   
+                   
+                   </code></pre>
+</div>
+</div>
+</section>
+<section id="visualización-simple" class="level3">
+<h3 class="anchored" data-anchor-id="visualización-simple">Visualización simple</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualización simple</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_obesidad_clean, <span class="fu">aes</span>(<span class="at">x =</span> imc)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c03_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>👉 Ya puedes empezar a “ver” el problema</p>
+</section>
+</section>
+<section id="interpretación-clínica" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-clínica">4. Interpretación clínica</h2>
+<p>Este capítulo no trata de estadística…</p>
+<p>👉 Trata de <strong>confianza en los datos</strong></p>
+<section id="lo-que-aprendiste-realmente" class="level3">
+<h3 class="anchored" data-anchor-id="lo-que-aprendiste-realmente">Lo que aprendiste realmente</h3>
+<ul>
+<li>Los datos clínicos reales son desordenados</li>
+<li>No puedes analizarlos directamente</li>
+<li>Necesitas limpiarlos primero</li>
+</ul>
+</section>
+<section id="ejemplo-clínico-real" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplo-clínico-real">Ejemplo clínico real</h3>
+<p>Si analizas glicemia sin limpiar:</p>
+<ul>
+<li>incluyes pacientes sin medición</li>
+<li>mezclas datos incompletos</li>
+<li>obtienes conclusiones erróneas</li>
+</ul>
+<p>👉 Resultado:</p>
+<p><strong>decisiones clínicas equivocadas</strong></p>
+</section>
+<section id="conexión-con-obesidad" class="level3">
+<h3 class="anchored" data-anchor-id="conexión-con-obesidad">Conexión con obesidad</h3>
+<p>En el contexto de la obesidad como problema hormonal:</p>
+<ul>
+<li>IMC → adiposidad</li>
+<li>glicemia → metabolismo</li>
+<li>aspirina → inflamación</li>
+</ul>
+<p>Si estos datos están mal preparados: 👉 no puedes entender la relación entre ellos</p>
+</section>
+<section id="idea-más-importante-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="idea-más-importante-del-capítulo">Idea más importante del capítulo</h3>
+<p><em>Antes de hacer análisis bayesiano…</em> <em>primero debes confiar en tus datos.</em></p>
+</section>
+<section id="lo-que-viene-después" class="level3">
+<h3 class="anchored" data-anchor-id="lo-que-viene-después">Lo que viene después</h3>
+<p>Ahora que sabes:</p>
+<ul>
+<li>seleccionar variables</li>
+<li>limpiar datos</li>
+<li>manejar NA</li>
+<li>crear variables clínicas</li>
+</ul>
+<p>👉 En el siguiente capítulo empezaremos a hacer algo más interesante:</p>
+<p><strong>explorar relaciones entre variables… y empezar a pensar en probabilidades.</strong></p>
+</section>
+</section>
+<section id="mini-resumen-mental" class="level2">
+<h2 class="anchored" data-anchor-id="mini-resumen-mental">Mini resumen mental</h2>
+<ul>
+<li>Datos crudos → no confiables</li>
+<li>Datos limpios → analizables</li>
+<li>Datos bien preparados → decisiones clínicas más seguras</li>
+</ul>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Cuenta los NA de solo estas variables:</p>
+<ul>
+<li>glicemia</li>
+<li>imc</li>
+</ul>
+<p>👉 pista:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># across(c(glicemia, imc), ...)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Cuenta cuántos pacientes hay en total</p>
+<p>👉 usa:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summarise(n = n())</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Calcula la edad promedio</p>
+<p>👉 pista:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(edad, na.rm = TRUE)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Filtra solo pacientes con:</p>
+<ul>
+<li>IMC ≥ 30</li>
+</ul>
+<p>👉 pregunta clínica: ¿Cuántos pacientes obesos tienes?</p>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Filtra pacientes con:</p>
+<ul>
+<li>glicemia &gt; 100</li>
+</ul>
+<p>👉 interpreta: ¿posible alteración metabólica?</p>
+</section>
+<section id="ejercicio-6" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6">Ejercicio 6</h3>
+<p>Filtra pacientes que:</p>
+<ul>
+<li>NO tienen NA en glicemia</li>
+</ul>
+<p>👉 compara tamaño del dataset antes vs después</p>
+</section>
+<section id="ejercicio-7" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7">Ejercicio 7</h3>
+<p>Crea una variable:</p>
+<p><strong>riesgo_metabolico</strong>:</p>
+<ul>
+<li>“Alto” si glicemia &gt; 110</li>
+<li>“Normal” si no</li>
+</ul>
+</section>
+<section id="ejercicio-8" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-8">Ejercicio 8</h3>
+<p>Crea una variable:</p>
+<p><strong>grupo_imc</strong>:</p>
+<ul>
+<li>“Normal” (&lt;25)</li>
+<li>“Sobrepeso” (25–29.9)</li>
+<li>“Obesidad” (≥30)</li>
+</ul>
+</section>
+<section id="ejercicio-9" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-9">Ejercicio 9</h3>
+<p>Calcula:</p>
+<p>👉 glicemia promedio por sexo</p>
+<p>(pista: group_by(sexo))</p>
+</section>
+<section id="ejercicio-10" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-10">Ejercicio 10</h3>
+<p>Calcula:</p>
+<p>👉 IMC promedio en pacientes con glicemia alta vs normal</p>
+</section>
+<section id="ejercicio-11" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-11">Ejercicio 11</h3>
+<p>Responde:</p>
+<p>👉 ¿Los pacientes con obesidad tienen mayor glicemia promedio?</p>
+<p>(no necesitas modelo aún, solo resumen)</p>
+</section>
+<section id="ejercicio-12" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-12">Ejercicio 12</h3>
+<p>Explora:</p>
+<p>👉 ¿Cuántos pacientes con obesidad tienen datos faltantes de glicemia?</p>
+<p>(pista: combina filter() + is.na())</p>
+</section>
+<section id="ejercicio-13" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-13">Ejercicio 13</h3>
+<p>Crea una tabla:</p>
+<p>👉 proporción de pacientes con:</p>
+<ul>
+<li>obesidad</li>
+<li>glicemia alta</li>
+</ul>
+<p>(pista: count() o summarise())</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

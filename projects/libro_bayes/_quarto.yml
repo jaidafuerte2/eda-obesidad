@@ -11,9 +11,14 @@ website:
       # Nota: los comentarios van después de la almohadilla o numeral 
       - analysis/c00-prefacio.qmd
       - section: "Módulo 1: Pensar Como Analista Bayesiano"
-        href: analysis/m01.qmd
+        #href: analysis/m01.qmd
         contents: 
         - analysis/c01.qmd
+        - analysis/c02.qmd
+      - section: "Módulo 2: Entender la Incertidumbre"
+        #href: analysis/m02.qmd
+        contents: 
+        - analysis/c03.qmd
   page-footer: 
     border: false
     background: light

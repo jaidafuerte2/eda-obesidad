@@ -363,9 +363,9 @@ Un paciente tiene:
 
 👉 Pregunta:
 
-- ¿Qué pasa con el gráfico? 
-- ¿Existe aún incertidumbre? 
-- ¿Este escenario es realista?
+-   ¿Qué pasa con el gráfico?
+-   ¿Existe aún incertidumbre?
+-   ¿Este escenario es realista?
 
 💡 Objetivo: entender que la perfección no existe en medicina
 
@@ -379,8 +379,8 @@ Un paciente tiene:
 
 👉 Pregunta:
 
-1. ¿Cómo cambia la superposición?
-2. ¿Qué significa esto clínicamente?
+1.  ¿Cómo cambia la superposición?
+2.  ¿Qué significa esto clínicamente?
 
 💡 Objetivo: entender variabilidad biológica
 
@@ -395,12 +395,11 @@ ggplot(df_obesidad, aes(x = LBXSGL)) +
   geom_histogram(binwidth = 5)
 ```
 
-
 👉 Pregunta:
 
-1. ¿Ves dos grupos claramente separados?
-2. ¿Dónde pondrías el punto de corte?
-3. ¿Qué tan arbitrario es?
+1.  ¿Ves dos grupos claramente separados?
+2.  ¿Dónde pondrías el punto de corte?
+3.  ¿Qué tan arbitrario es?
 
 💡 Objetivo: ver la continuidad de la realidad
 
@@ -408,17 +407,17 @@ ggplot(df_obesidad, aes(x = LBXSGL)) +
 
 Supongamos:
 
-- Hipertensión (sí/no)
-- Obesidad (sí/no)
+-   Hipertensión (sí/no)
+-   Obesidad (sí/no)
 
 👉 Pregunta (sin modelo aún):
 
-1. ¿Crees que están relacionadas?
-2. ¿Cómo lo expresarías en términos de probabilidad?
+1.  ¿Crees que están relacionadas?
+2.  ¿Cómo lo expresarías en términos de probabilidad?
 
 Ejemplo esperado:
 
-P(obesidad | hipertensión)
+P(obesidad \| hipertensión)
 
 💡 Objetivo: empezar a pensar en probabilidades condicionales
 
@@ -448,9 +447,9 @@ Un colega dice:
 
 👉 Pregunta:
 
-1. ¿Qué está mal en esa afirmación?
-2. ¿Qué tipo de pensamiento es?
-3. ¿Cómo lo corregirías?
+1.  ¿Qué está mal en esa afirmación?
+2.  ¿Qué tipo de pensamiento es?
+3.  ¿Cómo lo corregirías?
 
 ### Ejercicio 12 — Tu propia práctica clínica
 
@@ -458,8 +457,8 @@ Piensa en un paciente real que hayas visto recientemente.
 
 👉 Responde:
 
-1. ¿Qué decisión tomaste?
-2. ¿Qué incertidumbre había?
-3. ¿La expresaste o la ignoraste?
-4. ¿Cómo la expresarías ahora en términos 
-5. probabilísticos?
+1.  ¿Qué decisión tomaste?
+2.  ¿Qué incertidumbre había?
+3.  ¿La expresaste o la ignoraste?
+4.  ¿Cómo la expresarías ahora en términos
+5.  probabilísticos?

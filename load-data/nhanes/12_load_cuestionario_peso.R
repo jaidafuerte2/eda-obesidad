@@ -13,6 +13,11 @@ library(tidyverse)
 questionnaire <- read_csv("eda-obesidad/data/nhanes/questionnaire.csv",
                           guess_max = 10000,
                           show_col_types = FALSE)
+# Selccionar sólo las variables que voy a usar
+questionnaire <- questionnaire |>
+  select(SEQN, WHD010, WHD020, WHD050, WHQ060, WHQ070, WHD080A,
+         WHD080B, WHD080C, WHD080D, WHD080E, WHD080F, WHD080H,
+         WHD080M, WHD080O, WHD080P, WHD080Q, WHD080S, WHD080T)
 
 ############# Estatura Autoinformada #################  
 
@@ -202,18 +207,6 @@ summary(questionnaire$WHD080T) # produce:
 #  46      46      46      46      46      46    9179 
 
 unique(questionnaire$WHD080T) # produce: [1] NA 46
-
-##### ¿Alguna vez el médico le dijo que tenía sobrepeso? #####
-
-# MCQ080 - ¿Alguna vez el médico le dijo que tenía sobrepeso?
-
-summary(questionnaire$MCQ080) # produce:
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#1.000   1.000   2.000   1.669   2.000   9.000    3711
-
-unique(questionnaire$MCQ080) # produce: [1]  1  2 NA  9
-# Donde 1 es sí, 2 es no y 9 es no sé
-
 
 ############### Seleccionar #################
 

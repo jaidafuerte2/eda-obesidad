@@ -15,6 +15,13 @@ labs <- read_csv("eda-obesidad/data/nhanes/labs.csv",
                  guess_max = 10000,
                  show_col_types = FALSE)
 
+# Selccionar sólo las variables que voy a usar
+labs <- labs |>
+  select(SEQN, LBXIN, LBXSGL, LBXGH, LBXSGTSI, LBXTC, LBDLDL, LBDHDD, 
+         LBXTR, LBDNENO, LBDLYMNO, PHAFSTHR.x, PHAFSTHR.y, PHAFSTHR,
+         PHAFSTMN.x, PHAFSTMN.y, PHAFSTMN) 
+#glimpse(labs) # produce:
+
 ############# Insulina en ayunas ################
 
 # LBXIN - Insulin (uU/mL)

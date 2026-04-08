@@ -1,0 +1,471 @@
+---
+title: "3.- Preparando NHANES en R"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+
+df_obesidad <- read_csv("../data/obesidad_nhanes.csv")
+```
+
+## 1.  Intuición (sin código)
+
+Imagina que estás en consulta y recibes a un paciente con resultados de laboratorio… pero:
+
+- la glicemia está en blanco
+- la presión arterial aparece dos veces con valores distintos
+- el sexo está codificado como “1” o “2”
+- el peso está en kg… pero alguien anotó uno en libras
+
+¿Confiarías en ese “dataset clínico” para tomar decisiones?
+
+Eso mismo ocurre cuando trabajamos con datos reales como **NHANES**.
+
+### La realidad: los datos clínicos son imperfectos
+
+En la vida real, los datos:
+
+- tienen valores faltantes (NA)
+- pueden estar mal codificados
+- pueden tener múltiples mediciones
+- pueden contener errores
+
+👉 Y aquí viene la idea clave del capítulo:
+
+**Un mal análisis casi siempre empieza con datos mal preparados.**
+
+### ¿Qué significa “limpiar datos”?
+
+Limpiar datos no es “arreglarlos para que salgan bonitos”.
+
+Es:
+
+- entender qué representan
+- hacerlos consistentes
+- prepararlos para responder preguntas clínicas
+
+### ¿Qué es un dataset “tidy”?
+
+Un dataset “tidy” (ordenado) cumple tres reglas simples:
+
+1. Cada fila = un paciente
+2. Cada columna = una variable
+3. Cada celda = un valor
+
+Cuando los datos están tidy:
+👉 es mucho más fácil analizarlos, graficarlos y modelarlos
+
+### Analogía clínica
+
+Piensa en esto como preparar un quirófano:
+
+- No operas con instrumentos desordenados
+- No trabajas con información incompleta
+- No mezclas datos confusos
+
+👉 Primero organizas todo… luego actúas
+
+## 2. Ejemplo simple (simulación en R)
+
+Vamos a crear un pequeño dataset “sucio” para entender el problema.
+
+```{r}
+# Simulamos datos "desordenados"
+datos_sucios <- tibble(
+  edad = c(45, 52, NA, 60, 38),
+  sexo = c(1, 2, 1, 2, NA),
+  glucosa = c(90, 110, 105, NA, 95)
+) # produce:
+knitr::kable(datos_sucios)
+```
+
+
+### Problemas visibles
+
+- Hay valores faltantes (NA)
+- El sexo está codificado como número
+- No sabemos si hay errores
+
+### Paso 1: renombrar variables
+
+```{r}
+# Renombrar las variables para que se entiendan mejor
+datos_limpios <- datos_sucios %>%
+  rename(
+    edad_anios = edad,
+    glicemia = glucosa
+  )
+knitr::kable(datos_limpios) # produce:
+```
+
+👉 Ahora los nombres son más claros clínicamente
+
+### Paso 2: recodificar variables
+
+```{r}
+#| eval: false
+
+# Recodificar los valores de la variable sexo
+datos_limpios <- datos_limpios %>%
+  mutate(
+    sexo = case_when(
+      sexo == 1 ~ "Hombre",
+      sexo == 2 ~ "Mujer",
+      TRUE ~ NA_character_
+    )
+  )
+unique(datos_limpios$sexo) # produce: [1] "Hombre" "Mujer"  NA 
+```
+
+👉 Ya podemos interpretar fácilmente el sexo
+
+### Paso 3: eliminar valores faltantes
+
+```{r}
+# Eliminar los vaores faltantes aunque no siempre se debe hacer así
+datos_limpios <- datos_limpios %>%
+  filter(!is.na(edad_anios), !is.na(glicemia))
+```
+
+👉 Nos quedamos solo con pacientes con datos útiles
+
+### Resultado final
+
+```{r}
+knitr::kable(datos_limpios)
+```
+Ahora tenemos un dataset:
+
+- entendible
+- consistente
+- listo para análisis
+
+## 3. Ejemplo aplicado con NHANES
+
+Ahora vamos a trabajar con datos reales.
+
+Supongamos que ya tienes cargado tu dataset NHANES (df_obesidad) como:
+
+```{r}
+knitr::kable(df_obesidad[1:4,]) # produce:
+```
+
+### Objetivo
+
+Crear un dataset limpio con:
+
+- edad
+- sexo
+- IMC
+- glicemia
+- presión arterial
+- aspirina
+
+### Paso 1: seleccionar variables
+
+```{r}
+# Seleccionar las variables importantes
+df_obesidad_sub <- df_obesidad %>%
+  select(
+    RIDAGEYR,   # edad
+    RIAGENDR,   # sexo
+    BMXBMI,     # IMC
+    LBXSGL,     # glicemia
+    BPXSY_mean, # presión sistólica
+    BPXDI_mean, # presión diastólica
+    RXD530      # dosis de aspirina
+  )
+knitr::kable(df_obesidad_sub[1:4,]) # produce:
+```
+
+👉 Estamos reduciendo complejidad (muy importante)
+
+### Paso 2: renombrar variables
+
+```{r}
+# Renombrar variables
+df_obesidad_sub <- df_obesidad_sub %>%
+  rename(
+    edad = RIDAGEYR,
+    sexo = RIAGENDR,
+    imc = BMXBMI,
+    glicemia = LBXSGL,
+    pas = BPXSY_mean,
+    pad = BPXDI_mean,
+    aspirina = RXD530
+  )
+knitr::kable(df_obesidad_sub[1:4,]) # produce:
+```
+
+👉 Ahora el dataset es “legible clínicamente”
+
+### Paso 3: recodificar variables categóricas
+
+```{r}
+#| eval: false
+df_obesidad_sub <- df_obesidad_sub %>%
+  mutate(
+    sexo = case_when(
+      sexo == 1 ~ "Hombre",
+      sexo == 2 ~ "Mujer",
+      TRUE ~ NA_character_
+    )
+  )
+unique(df_obesidad_sub$sexo) # produce: [1] "Hombre" "Mujer" 
+```
+
+### Paso 4: explorar valores faltantes
+
+```{r}
+#| eval: false
+# Conocer los valores faltantes de cada variable
+df_obesidad_sub %>%
+  summarise(across(everything(), ~ sum(is.na(.)))) # produce:
+# A tibble: 1 × 7
+#   edad  sexo   imc glicemia   pas   pad aspirina
+#  <int> <int> <int>    <int> <int> <int>    <int>
+#1     0     0     0      286   186   186     4699
+```
+
+👉 Aquí empiezas a ver la realidad:
+
+- glicemia → muchos NA
+- aspirina → MUCHOS NA
+
+**Punto clave**
+
+Los NA en NHANES no son errores necesariamente
+👉 muchas veces significan:
+
+- no se midió
+- no aplica
+- el paciente no respondió
+
+### Paso 5: filtrar datos útiles
+
+```{r}
+# Filtrar datos útiles, eliminar los valores faltantes de edad, imc
+# y glicemia
+df_obesidad_clean <- df_obesidad_sub %>%
+  filter(
+    !is.na(edad),
+    !is.na(imc),
+    !is.na(glicemia)
+  )
+```
+
+👉 No siempre debes eliminar NA… pero aquí lo hacemos para simplificar
+
+### Paso 6: crear variables útiles
+
+```{r}
+# Crear variables útiles
+df_obesidad_clean <- df_obesidad_clean %>%
+  mutate(
+    obesidad = if_else(imc >= 30, "Sí", "No"),
+    glicemia_alta = if_else(glicemia > 100, "Sí", "No")
+  )
+knitr::kable(df_obesidad_clean[1:4,]) # produce:
+```
+
+👉 Ya empezamos a pensar clínicamente
+
+### Paso 7: vistazo rápido
+
+```{r}
+summary(df_obesidad_clean) # produce:
+```
+
+### Visualización simple
+
+```{r}
+# Visualización simple
+ggplot(df_obesidad_clean, aes(x = imc)) +
+  geom_histogram(bins = 30) # produce:
+```
+
+👉 Ya puedes empezar a “ver” el problema
+
+## 4. Interpretación clínica
+
+Este capítulo no trata de estadística…
+
+👉 Trata de **confianza en los datos**
+
+### Lo que aprendiste realmente
+
+- Los datos clínicos reales son desordenados
+- No puedes analizarlos directamente
+- Necesitas limpiarlos primero
+
+### Ejemplo clínico real
+
+Si analizas glicemia sin limpiar:
+
+- incluyes pacientes sin medición
+- mezclas datos incompletos
+- obtienes conclusiones erróneas
+
+👉 Resultado:
+
+**decisiones clínicas equivocadas**
+
+### Conexión con obesidad
+
+En el contexto de la obesidad como problema hormonal:
+
+- IMC → adiposidad
+- glicemia → metabolismo
+- aspirina → inflamación
+
+Si estos datos están mal preparados:
+👉 no puedes entender la relación entre ellos
+
+### Idea más importante del capítulo
+
+*Antes de hacer análisis bayesiano…*
+*primero debes confiar en tus datos.*
+
+### Lo que viene después
+
+Ahora que sabes:
+
+- seleccionar variables
+- limpiar datos
+- manejar NA
+- crear variables clínicas
+
+👉 En el siguiente capítulo empezaremos a hacer algo más interesante:
+
+**explorar relaciones entre variables… y empezar a pensar en probabilidades.**
+
+## Mini resumen mental
+- Datos crudos → no confiables
+- Datos limpios → analizables
+- Datos bien preparados → decisiones clínicas más seguras
+
+## Ejercicios
+
+### Ejercicio 1
+
+Cuenta los NA de solo estas variables:
+
+- glicemia
+- imc
+
+👉 pista:
+
+```{r}
+# across(c(glicemia, imc), ...)
+```
+
+### Ejercicio 2
+
+Cuenta cuántos pacientes hay en total
+
+👉 usa:
+
+```{r}
+# summarise(n = n())
+```
+
+### Ejercicio 3
+
+Calcula la edad promedio
+
+👉 pista:
+
+```{r}
+# mean(edad, na.rm = TRUE)
+```
+
+### Ejercicio 4
+
+Filtra solo pacientes con:
+
+- IMC ≥ 30
+
+👉 pregunta clínica:
+¿Cuántos pacientes obesos tienes?
+
+### Ejercicio 5
+
+Filtra pacientes con:
+
+- glicemia > 100
+
+👉 interpreta:
+¿posible alteración metabólica?
+
+### Ejercicio 6
+
+Filtra pacientes que:
+
+- NO tienen NA en glicemia
+
+👉 compara tamaño del dataset antes vs después
+
+### Ejercicio 7
+
+Crea una variable:
+
+**riesgo_metabolico**:
+
+- "Alto" si glicemia > 110
+- "Normal" si no
+
+### Ejercicio 8
+
+Crea una variable:
+
+**grupo_imc**:
+
+- "Normal" (<25)
+- "Sobrepeso" (25–29.9)
+- "Obesidad" (≥30)
+
+### Ejercicio 9
+
+Calcula:
+
+👉 glicemia promedio por sexo
+
+(pista: group_by(sexo))
+
+### Ejercicio 10
+
+Calcula:
+
+👉 IMC promedio en pacientes con glicemia alta vs normal
+
+### Ejercicio 11
+
+Responde:
+
+👉 ¿Los pacientes con obesidad tienen mayor glicemia promedio?
+
+(no necesitas modelo aún, solo resumen)
+
+### Ejercicio 12
+
+Explora:
+
+👉 ¿Cuántos pacientes con obesidad tienen datos faltantes de glicemia?
+
+(pista: combina filter() + is.na())
+
+### Ejercicio 13
+
+Crea una tabla:
+
+👉 proporción de pacientes con:
+
+- obesidad
+- glicemia alta
+
+(pista: count() o summarise())

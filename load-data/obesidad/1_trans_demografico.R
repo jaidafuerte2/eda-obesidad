@@ -18,6 +18,10 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar sólo las variables que voy a usar
+obesidad_demografico <- df_obesidad |>
+  select(SEQN, RIAGENDR, RIDAGEYR, RIDEXPRG) 
+
 ###################################
 ##
 ## Renombrar variables a español
@@ -42,6 +46,10 @@ df_obesidad <- df_obesidad |>
 class(df_obesidad$genero) # produce: "numeric"
 
 unique(df_obesidad$genero) # produce: [1] 1 2
+
+table(df_obesidad$genero) # produce:
+#hombre  mujer 
+#  2791   2991
 
 df_obesidad <- df_obesidad %>%
   mutate(
