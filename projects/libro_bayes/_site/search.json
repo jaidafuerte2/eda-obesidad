@@ -474,5 +474,27 @@
       "Módulo 2: Entender la Incertidumbre",
       "4.- Visualización para Entender Datos"
     ]
+  },
+  {
+    "objectID": "analysis/c04.html#ejercicios",
+    "href": "analysis/c04.html#ejercicios",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nGrafica la distribución de edad (RIDAGEYR)\n\n¿Es homogénea?\n\n\n\nEjercicio 2\nHaz un scatter (diagrama de dispersión + línea suvizada) de edad vs IMC\n\n¿ves relación?\n\n\n\nEjercicio 3\nFiltra solo pacientes con IMC &gt; 30\n\n¿cómo cambia la glicemia?\n\n\n\nEjercicio 4\nDivide por sexo y compara glicemia (boxplot)\n\n\nEjercicio 5\nBusca valores extremos en glicemia\n\n¿qué tan frecuentes son?\n\n\n\nEjercicio 6\nVer glicemia por categorías de IMC\n\ndf_obesidad_sub %&gt;%\n  mutate(\n    categoria_imc = case_when(\n      BMXBMI &lt; 25 ~ \"normal\",\n      BMXBMI &lt; 30 ~ \"sobrepeso\",\n      TRUE ~ \"obesidad\"\n    )\n  ) %&gt;%\n  ggplot(aes(x = categoria_imc, y = LBXSGL)) +\n  geom_boxplot()\n\n\n\n\n\n\n\n\n👉 ¿Realmente cambia la glicemia entre grupos?\n\n\nEjercicio 7\nScatter con suavizado (clave)\n\nggplot(df_obesidad_sub, aes(x = BMXBMI, y = LBXSGL)) +\n  geom_point(alpha = 0.1) +\n  geom_smooth()\n\n\n\n\n\n\n\n\n👉 Esto revela tendencias débiles\n\n\nEjercicio 8\nDistribución de IMC solo en glicemia alta\n\ndf_obesidad_sub %&gt;%\n  filter(LBXSGL &gt; 110) %&gt;%\n  ggplot(aes(x = BMXBMI)) +\n  geom_histogram(bins = 30)\n\n\n\n\n\n\n\n\n👉 ¿predomina obesidad?\n\n\nEjercicio 9\nEdad vs glicemia\n\nggplot(df_obesidad_sub, aes(x = RIDAGEYR, y = LBXSGL)) +\n  geom_point(alpha = 0.3) +\n  geom_smooth()\n\n\n\n\n\n\n\n\n👉 ¿la glicemia aumenta con edad?\n\n\nEjercicio 10\nSedentarismo vs IMC\n\nggplot(df_obesidad_sub, aes(x = PAD680, y = BMXBMI)) +\n  geom_point(alpha = 0.3) +\n  geom_smooth()\n\n\n\n\n\n\n\n\n👉 ¿más sedentarismo → más IMC?",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#ejercicio-7",
+    "href": "analysis/c04.html#ejercicio-7",
+    "title": "4.- Visualización para Entender Datos",
+    "section": "Ejercicio 7",
+    "text": "Ejercicio 7\nScatter con suavizado (clave)\n\nggplot(df_obesidad_sub, aes(x = BMXBMI, y = LBXSGL)) +\n  geom_point(alpha = 0.1) +\n  geom_smooth()\n\n\n\n\n\n\n\n\n👉 Esto revela tendencias débiles\n\nEjercicio 8\nDistribución de IMC solo en glicemia alta\n\ndf_obesidad_sub %&gt;%\n  filter(LBXSGL &gt; 110) %&gt;%\n  ggplot(aes(x = BMXBMI)) +\n  geom_histogram(bins = 30)\n\n\n\n\n\n\n\n\n👉 ¿predomina obesidad?\n\n\nEjercicio 9\nEdad vs glicemia\n\nggplot(df_obesidad_sub, aes(x = RIDAGEYR, y = LBXSGL)) +\n  geom_point(alpha = 0.3) +\n  geom_smooth()\n\n\n\n\n\n\n\n\n👉 ¿la glicemia aumenta con edad?\n\n\nEjercicio 10\nSedentarismo vs IMC\n\nggplot(df_obesidad_sub, aes(x = PAD680, y = BMXBMI)) +\n  geom_point(alpha = 0.3) +\n  geom_smooth()\n\n\n\n\n\n\n\n\n👉 ¿más sedentarismo → más IMC?",
+    "crumbs": [
+      "Módulo 2: Entender la Incertidumbre",
+      "4.- Visualización para Entender Datos"
+    ]
   }
 ]

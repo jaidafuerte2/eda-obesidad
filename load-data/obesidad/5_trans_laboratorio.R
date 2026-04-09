@@ -7,7 +7,7 @@
 
 # Nota: no olvidar crear las variables de homa-ir y nos/mos. Y tampoco
 # olvidar que hay que tener una base de datos sin los que no ayunaron
-# al menos 8 horas
+# al menos 8 horas. Tampoco olvidar hígado graso
 
 # Introducción
 
@@ -244,6 +244,34 @@ unique(df_obesidad$ayuno_minutos) # produce:
 #[1] 47 14 51 42 21 45 57 52  9  2 48  7 36 44 10 46 28 11 NA 50 19 58 38
 #[24] 40 27 37 33 15 22 35 41 13 34 39 30  5  1 24 26 12  3  0 55 16 32 31
 #[47] 29 53 17 25 56 23  6  8 18 20  4 54 43 49 59
+
+##########################                              ####################
+########################## Crear variables importantes  ####################
+##########################                              ####################
+
+#############################
+##
+## HOMA-IR : Índice de 
+## resistencia a la insulina
+##
+#############################
+
+# Sacar el índice de resistencia a la insulina (homa-ir) 
+df_obesidad <- df_obesidad %>%
+  mutate(
+    homa_ir = case_when(
+      is.na(glicemia) | is.na(insulinemia) ~ NA_real_,
+      TRUE ~ (glicemia * insulinemia) / 405
+    )
+  )
+unique(df_obesidad$homa_ir)[1:20] # produce:
+#[1]        NA  2.634296  1.571556  3.939185  0.770000  1.329506  3.868025  2.534519
+#[9]  1.561284  5.426296 14.692123 20.165358  4.356716  0.672000  1.626469  1.704198
+#[17]  1.037062  2.888444  1.648963  7.243852
+
+summary(df_obesidad$homa_ir) # produce:
+#  Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+#0.0239   1.3089   2.2250   3.7666   3.8902 266.2515     3169 
 
 ###########################
 ##

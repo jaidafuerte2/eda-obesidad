@@ -380,3 +380,111 @@ Porque:
 👉 No siguen reglas perfectas
 
 Pero sí cuentan una historia.
+
+## Ejercicios
+
+### Ejercicio 1
+
+Grafica la distribución de edad (RIDAGEYR)
+
+- ¿Es homogénea?
+
+### Ejercicio 2
+
+Haz un scatter (diagrama de dispersión + línea suvizada) de edad vs IMC
+
+- ¿ves relación?
+
+### Ejercicio 3
+
+Filtra solo pacientes con IMC > 30
+
+- ¿cómo cambia la glicemia?
+
+### Ejercicio 4
+
+Divide por sexo y compara glicemia (boxplot)
+
+### Ejercicio 5
+
+Busca valores extremos en glicemia
+
+- ¿qué tan frecuentes son?
+
+### Ejercicio 6
+
+Ver glicemia por categorías de IMC
+
+```{r}
+#| warning: false
+
+df_obesidad_sub %>%
+  mutate(
+    categoria_imc = case_when(
+      BMXBMI < 25 ~ "normal",
+      BMXBMI < 30 ~ "sobrepeso",
+      TRUE ~ "obesidad"
+    )
+  ) %>%
+  ggplot(aes(x = categoria_imc, y = LBXSGL)) +
+  geom_boxplot()
+```
+
+👉 ¿Realmente cambia la glicemia entre grupos?
+
+### Ejercicio 7
+
+Scatter con suavizado (clave)
+
+```{r}
+#| message: false
+#| warning: false
+
+ggplot(df_obesidad_sub, aes(x = BMXBMI, y = LBXSGL)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth()
+```
+
+👉 Esto revela tendencias débiles
+
+### Ejercicio 8
+
+Distribución de IMC solo en glicemia alta 
+
+```{r}
+df_obesidad_sub %>%
+  filter(LBXSGL > 110) %>%
+  ggplot(aes(x = BMXBMI)) +
+  geom_histogram(bins = 30)
+```
+
+👉 ¿predomina obesidad?
+
+### Ejercicio 9
+
+Edad vs glicemia
+
+```{r}
+#| message: false
+#| warning: false
+
+ggplot(df_obesidad_sub, aes(x = RIDAGEYR, y = LBXSGL)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth()
+```
+
+👉 ¿la glicemia aumenta con edad?
+
+### Ejercicio 10
+
+Sedentarismo vs IMC
+
+```{r}
+#| warning: false
+#| message: false
+ggplot(df_obesidad_sub, aes(x = PAD680, y = BMXBMI)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth()
+```
+
+👉 ¿más sedentarismo → más IMC?

@@ -22,6 +22,12 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar sólo las variables que voy a usar
+df_obesidad <- df_obesidad %>%
+  select(SEQN, DR1TKCAL, DR1TPROT, DR1TCARB, DR1TSUGR, DR1TFIBE, 
+         DR1TTFAT, DR1TSFAT, DR1TMFAT, DR1TPFAT, DR1TCHOL, 
+         DR1TP182, DR1TP205, DR1TP226)
+
 ###################################
 ##
 ## Renombrar variables a español
@@ -241,6 +247,73 @@ unique(df_obesidad$omega_3_dha)[1:20] # produce:
 #[1] 0.010 1.139 0.002 0.000 0.063 0.011 0.004 0.056 0.012 0.009 0.014
 #[12] 0.181 0.001 0.040 0.028 0.015 0.128 0.246 0.087 0.035
 
+##########################                              ####################
+########################## Crear variables importantes  ####################
+##########################                              ####################
+
+####################
+##
+## Omega 3 total
+##
+####################
+
+# Crear una nueva variable con el total de omega 3 incluido dha y epa
+df_obesidad <- df_obesidad %>%
+  mutate(
+    omega_3_total = omega_3_dha + omega_3_epa
+  )
+unique(df_obesidad$omega_3_total)[1:20] # produce:
+#[1] 0.011 2.142 0.003 0.000 0.068 0.018 0.004 0.060 0.027 0.002 0.014 0.022 0.252 0.010
+#[15] 0.051 0.030 0.025 0.007 0.152 0.543
+
+summary(df_obesidad$omega_3_total) # produce:
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.0000  0.0090  0.0240  0.1059  0.0720  6.7650     533 
+
+####################
+##
+## Relación Omega 6
+## con Omega 3
+##
+####################
+
+# Crear una nueva variable que relacione el consumo de omega 6 con el total de
+# omega 3
+df_obesidad <- df_obesidad %>%
+  mutate(
+    ratio_omega = case_when(
+      is.na(omega_3_total) | omega_3_total == 0 ~ NA_real_,
+      TRUE ~ omega_6 / omega_3_total
+    )
+  )
+unique(df_obesidad$ratio_omega)[1:20] # produce:
+#[1]  721.090909    7.228291 3901.666667          NA  309.352941 1872.722222 5488.750000
+#[8]  455.666667 2584.000000 1698.222222 7011.500000  187.000000  988.954545   69.265873
+#[15]  535.700000 1426.117647  352.233333  541.480000 2713.571429  103.710526
+
+summary(df_obesidad$ratio_omega) # produce:
+# Min.   1st Qu.    Median      Mean   3rd Qu.      Max.      NA's 
+#0.687   199.449   541.556  1254.570  1293.867 61795.000       795 
+
+#################################
+##
+## Transformación log de 
+## Relación Omega 6 con Omega 3
+##
+#################################
+
+# En escala original, esta variable de relación de omegas es difícil de 
+# modelar así que hay que hacer una tranformación log
+df_obesidad <- df_obesidad %>%
+  mutate(
+    log_ratio_omega = log(ratio_omega + 1) # + 1: porque log(0) no existe
+    # también se podría usar una versión más simple:
+    #log_ratio_omega = log(ratio_omega)
+  )
+summary(df_obesidad$log_ratio_omega) # produce:
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.523   5.301   6.296   6.183   7.166  11.032     795 
+
 ###########################
 ##
 ## Seleccionar y crear 
@@ -253,7 +326,7 @@ obesidad_dieta_nutrientes <- df_obesidad %>%
   select(SEQN, calorias, proteinas, carbohidratos, azucares, 
          fibra, grasas, grasas_saturadas, grasas_monoinsaturadas,
          grasas_poliinsaturadas, colesterol, omega_6, omega_3_epa,
-         omega_3_dha)
+         omega_3_dha, omega_3_total, ratio_omega, log_ratio_omega)
 
 # Crear un archivo .cvs con la dataset de dieta - nutrientes
 write.csv(obesidad_dieta_nutrientes,

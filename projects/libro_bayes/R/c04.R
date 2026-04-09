@@ -147,7 +147,8 @@ ggplot(df_obesidad_sub, aes(x = RIDAGEYR)) +
 
 df_obesidad_sub %>%
   ggplot(aes(x = RIDAGEYR, y = BMXBMI)) +
-  geom_point(alpha = 0.1)
+  geom_point(alpha = 0.1) +
+  geom_smooth()
 
 # ¿ves relación? Casi nada
 
