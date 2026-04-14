@@ -15,11 +15,17 @@ website:
         contents: 
         - analysis/c01.qmd
         - analysis/c02.qmd
-      - section: "Módulo 2: Entender la Incertidumbre"
+      - section: "Módulo 2: Herramientas en R (mínimo necesario)"
         #href: analysis/m02.qmd
         contents: 
         - analysis/c03.qmd
         - analysis/c04.qmd
+      - section: "Módulo 3: Entender la Incertidumbre"
+        #href: analysis/m03.qmd
+        contents:
+        - analysis/c05.qmd
+        - analysis/c06.qmd
+        - analysis/c07.qmd
   page-footer: 
     border: false
     background: light

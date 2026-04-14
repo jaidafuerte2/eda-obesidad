@@ -21,6 +21,12 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, PAQ605, PAQ610, PAD615, PAQ620, PAQ625, PAD630,
+         PAQ635, PAQ640, PAD645, PAQ650, PAQ655, PAD660, PAQ665,
+         PAQ670, PAD675, PAD680, PAQ706, PAQ710, PAQ715)
+
 ###################################
 ##
 ## Renombrar variables a español
@@ -481,12 +487,13 @@ summary(df_obesidad$minutos_ejercicio_moderado) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #0.00   30.00   60.00   63.95   60.00  900.00    3383
 
-#############################
+###################################
 ##
 ## Minutos de actividad     
-## física sedentaria
+## física sedentaria (en un día
+## normal)
 ##
-#############################
+###################################
 
 unique(df_obesidad$minutos_actividad_sedentaria) # produce:
 #[1]  600  540  300  480  360   60   30  120  240  720 1080  420  180
@@ -533,7 +540,7 @@ table(df_obesidad$dias_ejercicio_60) # produce:
 #############################
 ##
 ## Horas viendo televisión     
-## o videos
+## o videos (últimos 30 días)
 ##
 #############################
 
@@ -558,12 +565,12 @@ summary(df_obesidad$horas_tv_videos) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #0.00    1.00    2.00    2.65    4.00    8.00       3
 
-#############################
+#################################
 ##
-## Horas uso de la      
-## computadora
+## Horas uso de la coputadora      
+## (últimos 30 días)
 ##
-#############################
+#################################
 
 unique(df_obesidad$horas_computadora) # produce: [1] 8 0 1 5 3 2 4
 

@@ -18,7 +18,7 @@ labs <- read_csv("eda-obesidad/data/nhanes/labs.csv",
 # Selccionar sólo las variables que voy a usar
 labs <- labs |>
   select(SEQN, LBXIN, LBXSGL, LBXGH, LBXSGTSI, LBXTC, LBDLDL, LBDHDD, 
-         LBXTR, LBDNENO, LBDLYMNO, PHAFSTHR.x, PHAFSTHR.y, PHAFSTHR,
+         LBXTR, LBXNEPCT, LBXLYPCT, PHAFSTHR.x, PHAFSTHR.y, PHAFSTHR,
          PHAFSTMN.x, PHAFSTMN.y, PHAFSTMN) 
 #glimpse(labs) # produce:
 
@@ -138,27 +138,27 @@ unique(labs$LBXTR)[1:20] # produce:
 
 ############# Neutrófilos ################
 
-# LBDNENO - Segmented neutrophils num (1000 cell/uL)
+# LBXNEPCT - Porcentaje de neutrófilos segmentados (%)
 
-summary(labs$LBDNENO) # produce:
+summary(labs$LBXNEPCT) # produce:
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#0.400   2.800   3.700   3.971   4.700  22.400      13 
+#16.40   50.60   57.00   56.54   62.80   85.90      13 
 
-unique(labs$LBDNENO)[1:20] # produce:
-#[1] 4.9 4.5 3.0 4.2 2.7 3.7 2.8 7.1 3.8 2.4 1.7 5.0 7.8 4.7 3.6 5.4 5.2
-#[18] 4.8 5.5 4.4
+unique(labs$LBXNEPCT)[1:20] # produce:
+#[1] 68.2 68.7 58.3 70.1 53.2 46.7 49.3 60.7 65.5 58.8 56.3 51.2 57.5
+#[14] 54.3 67.6 64.3 68.6 45.8 51.9 52.0
 
 ############### Lonfocitos #################
 
-# LBDLYMNO - Número de linfocitos (1000 células/µL)
+# LBXLYPCT - Porcentaje de linfocitos (%)
 
-summary(labs$LBDLYMNO) # produce: 
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#0.400   1.600   2.000   2.088   2.400  12.000      13 
+summary(labs$LBXLYPCT) # produce: 
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#2.60   26.30   32.60   33.67   39.70   88.00    1294 
 
-unique(labs$LBDLYMNO)[1:20] # produce:
-#[1] 1.0 1.4 1.6 1.3 1.8 3.2 1.7 2.7 2.5 2.3 0.9 0.8 2.1 3.3 2.4 2.2 2.9
-#[18] 1.9 2.0 1.5
+unique(labs$LBXLYPCT)[1:20] # produce:
+#[1] 42.2 27.3 13.9 29.6 20.5 17.4   NA 30.2 31.3 22.0 20.9 32.9 25.6
+#[14] 64.1 35.0 40.6 32.7 30.8 31.6 39.6
 
 ###############################
 ##
@@ -240,5 +240,5 @@ unique(labs$PHAFSTMN_final) # produce:
 # Seleccionar los distintos tipos de dietas y nutrientes
 laboratorio <- labs |>
   select(SEQN, LBXIN, LBXSGL, LBXGH, LBXSGTSI, LBXTC, LBDLDL, LBDHDD, 
-         LBXTR, LBDNENO, LBDLYMNO, PHAFSTHR_final, PHAFSTMN_final) 
+         LBXTR, LBXNEPCT, LBXLYPCT, PHAFSTHR_final, PHAFSTMN_final) 
 head(laboratorio) # produce:

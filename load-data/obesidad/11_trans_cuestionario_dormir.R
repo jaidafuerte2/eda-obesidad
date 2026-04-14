@@ -6,6 +6,10 @@
 ##                             ##
 #################################
 
+# NOTA: Ahora que voy a usar la variable sueño, creo que sería
+# conveniente la variable ingresos (para relacionar pobreza y 
+# obesidad).
+
 # Introducción
 
 library(readr)
@@ -18,6 +22,10 @@ df_obesidad <- read_csv(
   guess_max = 10000,
   show_col_types = FALSE
 )
+
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, SLD010H, SLQ060)
 
 ###################################
 ##
@@ -33,11 +41,12 @@ df_obesidad <- df_obesidad %>%
     trastorno_suenio = SLQ060
   )
 
-############################
+##############################
 ##
-## Cuántas horas duermes ?
+## Cuántas horas duermes
+## normalmente por la noche?
 ##
-############################
+##############################
 
 unique(df_obesidad$horas_suenio) # produce:
 #  [1]  7  9  8  5  6 10  4  3 12  2 99 11 NA
@@ -89,6 +98,37 @@ table(df_obesidad$trastorno_suenio) # produce:
 #  no   si 
 #5223  549
 
+#########################                              ############
+#########################  Crear variables importantes ############
+#########################                              ############
+
+##############################
+##
+## Cuántas horas duermes
+## normalmente por la noche?
+## (Categórica)
+##
+##############################
+
+df_obesidad <- df_obesidad %>%
+  mutate(
+    horas_suenio_cat = case_when(
+      horas_suenio < 6 ~ "corto",
+      horas_suenio >= 6 & horas_suenio <= 8 ~ "normal",
+      horas_suenio > 8 ~ "largo",
+      TRUE ~ NA_character_
+    ),
+    horas_suenio_cat = factor(horas_suenio_cat, ordered = TRUE,
+                       levels = c("corto", "normal", "largo"))
+  )
+unique(df_obesidad$horas_suenio_cat) # produce:
+#[1] normal largo  corto  <NA>  
+#Levels: corto < normal < largo
+
+table(df_obesidad$horas_suenio_cat) # produce:
+#corto normal  largo 
+#  792   4483    499 
+
 ###########################
 ##
 ## Seleccionar y crear 
@@ -99,7 +139,7 @@ table(df_obesidad$trastorno_suenio) # produce:
 # Seleccionar el código seqn y las variables del cuestionario de
 # actividad física
 obesidad_cuestionario_dormir <- df_obesidad %>%
-  select(SEQN, horas_suenio, trastorno_suenio)
+  select(SEQN, horas_suenio, trastorno_suenio, horas_suenio_cat)
 
 # Crear un archivo .cvs con la dataset de laboratorio
 write.csv(obesidad_cuestionario_dormir,

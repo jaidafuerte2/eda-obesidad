@@ -22,6 +22,10 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, DIQ010, DIQ160, DIQ050, DID060, DIQ060U, DIQ070)
+
 ###################################
 ##
 ## Renombrar variables a español
@@ -251,6 +255,56 @@ summary(df_obesidad$toma_hipoglicemiantes) # produce:
 # no   si NA's 
 #592  528 4662 
 
+##########################                              ####################
+########################## Crear variables importantes  ####################
+##########################                              ####################
+
+###############################
+##
+## Pasar a meses el tiempo 
+## de uso de insulina
+##
+###############################
+
+# Pasar siempre a meses el tiempo de uso de insulina
+df_obesidad <- df_obesidad %>%
+  mutate(
+    tiempo_insulina_meses = case_when(
+      medida_tiempo_uso_insulina == "meses" ~ tiempo_usa_insulina,
+      medida_tiempo_uso_insulina == "anios" ~ tiempo_usa_insulina * 12,
+      TRUE ~ NA_real_
+    )
+  )
+unique(df_obesidad$tiempo_insulina_meses) # produce:
+#[1]  60  12 192  NA 204   6 336  96  36 348 108 120 168 180  18  24  48
+#[18] 372 144 360 240  84 156  11 216   3  72 276   5 552 252 132   1 516
+#[35]   2 228 312   7 480 300   8
+
+summary(df_obesidad$tiempo_insulina_meses) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+# 1.0    24.0    72.0   108.6   153.0   552.0    5588 
+
+###############################
+##
+## Tranformación log de meses  
+## usando insulina
+##
+###############################
+
+# Tranformación log de los meses usando insulina
+df_obesidad <- df_obesidad %>%
+  mutate(
+    log_tiempo_insulina = log(tiempo_insulina_meses + 1)
+  )
+unique(df_obesidad$log_tiempo_insulina)[1:20] # produce:
+#[1] 4.110874 2.564949 5.262690       NA 5.323010 1.945910 5.820083
+#[8] 4.574711 3.610918 5.855072 4.691348 4.795791 5.129899 5.198497
+#[15] 2.944439 3.218876 3.891820 5.921578 4.976734 5.888878
+
+summary(df_obesidad$log_tiempo_insulina) # produce:
+#  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.6931  3.2189  4.2905  4.1696  5.0364  6.3154    5588
+
 ###########################
 ##
 ## Seleccionar y crear 
@@ -263,7 +317,8 @@ summary(df_obesidad$toma_hipoglicemiantes) # produce:
 obesidad_cuestionario_diabetes <- df_obesidad %>%
   select(SEQN, tiene_diabetes, tiene_prediabetes, usa_insulina,
          tiempo_usa_insulina, medida_tiempo_uso_insulina, 
-         toma_hipoglicemiantes)
+         toma_hipoglicemiantes, tiempo_insulina_meses,
+         log_tiempo_insulina)
 
 # Crear un archivo .cvs con la dataset de laboratorio
 write.csv(obesidad_cuestionario_diabetes,

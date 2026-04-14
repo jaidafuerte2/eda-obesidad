@@ -13,7 +13,6 @@ library(tidyverse)
 df_obesidad <- read_csv("../data/obesidad_nhanes.csv")
 ```
 
-
 ## 1. Intuición (SIN código)
 
 Antes de hacer cualquier modelo, incluso antes de pensar en Bayes, hay una pregunta más básica:
@@ -28,8 +27,8 @@ Imagina que tienes 1,000 pacientes y quieres entender el IMC.
 
 Te doy dos opciones:
 
-- Opción A: una tabla con 1,000 números
--  Opción B: un gráfico donde ves cómo se distribuyen esos valores
+-   Opción A: una tabla con 1,000 números
+-   Opción B: un gráfico donde ves cómo se distribuyen esos valores
 
 ¿Cuál te permite entender mejor?
 
@@ -37,8 +36,8 @@ Te doy dos opciones:
 
 ### Ver datos vs entender datos
 
-- **Ver datos**: mirar filas y columnas
-- **Entender datos**: detectar patrones, extremos, relaciones
+-   **Ver datos**: mirar filas y columnas
+-   **Entender datos**: detectar patrones, extremos, relaciones
 
 La visualización transforma números en **intuición clínica**.
 
@@ -48,10 +47,10 @@ Porque los modelos (incluyendo los bayesianos) hacen supuestos.
 
 Pero los datos reales:
 
-- no son simétricos
-- tienen valores extremos
-- tienen ruido
-- pueden tener subgrupos ocultos
+-   no son simétricos
+-   tienen valores extremos
+-   tienen ruido
+-   pueden tener subgrupos ocultos
 
 👉 Si no los visualizas primero, puedes construir modelos equivocados.
 
@@ -65,8 +64,8 @@ Cuando miras un gráfico clínico, estás buscando:
 
 Ejemplo:
 
-- IMC concentrado en 25–30 → sobrepeso predominante
-- cola larga → obesidad severa presente
+-   IMC concentrado en 25–30 → sobrepeso predominante
+-   cola larga → obesidad severa presente
 
 #### 2. Heterogeneidad
 
@@ -74,7 +73,7 @@ Ejemplo:
 
 Ejemplo:
 
-- glicemia muy dispersa → metabolismo variable
+-   glicemia muy dispersa → metabolismo variable
 
 #### 3. Valores extremos
 
@@ -82,7 +81,7 @@ Pacientes fuera de lo común
 
 Ejemplo:
 
-- glicemia > 200 mg/dL → posible diabetes no controlada
+-   glicemia \> 200 mg/dL → posible diabetes no controlada
 
 #### 4. Relaciones entre variables
 
@@ -90,8 +89,7 @@ Ejemplo:
 
 Ejemplo:
 
-- IMC ↑ → glicemia ↑
-👉 posible relación metabólica
+-   IMC ↑ → glicemia ↑ 👉 posible relación metabólica
 
 ### Idea clave del capítulo
 
@@ -124,8 +122,8 @@ ggplot(datos_sim, aes(x = imc)) +
 
 👉 ¿Qué estás viendo?
 
-- La mayoría entre 25–30
-- Algunos valores altos → obesidad
+-   La mayoría entre 25–30
+-   Algunos valores altos → obesidad
 
 ### 2. Relación IMC vs glicemia
 
@@ -137,8 +135,8 @@ ggplot(datos_sim, aes(x = imc, y = glicemia)) +
 
 👉 Aquí aparece algo clave:
 
-- A mayor IMC → mayor glicemia
-- No es perfecto → hay variabilidad
+-   A mayor IMC → mayor glicemia
+-   No es perfecto → hay variabilidad
 
 ## 3. Ejemplo aplicado con NHANES
 
@@ -146,7 +144,7 @@ Ahora trabajamos con datos reales.
 
 Supongamos que ya tienes un dataset limpio llamado nhanes_sub.
 
-### 0. Selccionar los datos 
+### 0. Selccionar los datos
 
 ```{r}
 # Seleccionar las variables importantes
@@ -163,7 +161,6 @@ df_obesidad_sub <- df_obesidad %>%
   )
 
 ```
-
 
 ### 1. Distribución del IMC
 
@@ -182,14 +179,13 @@ ggplot(df_obesidad_sub, aes(x = BMXBMI)) +
 
 Aquí normalmente verás:
 
-- Pico en sobrepeso (25–30)
-- Cola hacia obesidad
-- Pocos con IMC bajo
+-   Pico en sobrepeso (25–30)
+-   Cola hacia obesidad
+-   Pocos con IMC bajo
 
 👉 Esto ya te dice:
 
-*La población no es homogénea*
-*Hay una carga importante de obesidad*
+*La población no es homogénea* *Hay una carga importante de obesidad*
 
 ### 2. Glicemia (variabilidad metabólica)
 
@@ -206,14 +202,14 @@ ggplot(df_obesidad_sub, aes(x = LBXSGL)) +
 
 **Qué observar**
 
-- ¿Está concentrada o dispersa?
-- ¿Hay valores altos?
-- ¿Hay cola derecha?
+-   ¿Está concentrada o dispersa?
+-   ¿Hay valores altos?
+-   ¿Hay cola derecha?
 
 👉 Esto refleja:
 
-- regulación metabólica
-- posible resistencia a la insulina
+-   regulación metabólica
+-   posible resistencia a la insulina
 
 ### 3. IMC vs glicemia
 
@@ -231,10 +227,7 @@ ggplot(df_obesidad_sub, aes(x = BMXBMI, y = LBXSGL)) +
   )
 ```
 
-**Qué buscar**
-- tendencia ascendente
-- dispersión
-- puntos extremos
+**Qué buscar** - tendencia ascendente - dispersión - puntos extremos
 
 👉 Este gráfico es oro clínico.
 
@@ -255,8 +248,8 @@ ggplot(df_obesidad_sub, aes(x = PAD680)) +
 
 **Interpretación**
 
-- muchos pacientes con alto sedentarismo
-- posible relación con obesidad
+-   muchos pacientes con alto sedentarismo
+-   posible relación con obesidad
 
 ### 5. Boxplot: IMC por sexo
 
@@ -287,9 +280,9 @@ ggplot(df_obesidad_sub, aes(x = RIAGENDR, y = BMXBMI)) +
 
 El boxplot te muestra:
 
-- mediana
-- dispersión
-- valores extremos
+-   mediana
+-   dispersión
+-   valores extremos
 
 👉 Es una forma compacta de comparar grupos.
 
@@ -304,15 +297,15 @@ Todos los gráficos siguen la misma lógica:
 
 **Componentes:**
 
-- data → dataset
-- aes() → qué variables usar
-- geom_ → tipo de gráfico
+-   data → dataset
+-   aes() → qué variables usar
+-   geom\_ → tipo de gráfico
 
 Ejemplos:
 
-- geom_histogram() → distribución
-- geom_point() → relación
-- geom_boxplot() → comparación
+-   geom_histogram() → distribución
+-   geom_point() → relación
+-   geom_boxplot() → comparación
 
 ## 4. Interpretación clínica
 
@@ -323,23 +316,24 @@ Ahora viene lo más importante.
 Después de visualizar NHANES, deberías poder decir:
 
 ### 1. La obesidad no es uniforme
-- Hay pacientes con IMC normal
-- Otros con obesidad severa
+
+-   Hay pacientes con IMC normal
+-   Otros con obesidad severa
 
 👉 No existe “el paciente promedio”
 
 ### 2. El metabolismo es variable
 
-- glicemias normales
-- prediabetes
-- valores altos
+-   glicemias normales
+-   prediabetes
+-   valores altos
 
 👉 La resistencia a la insulina no es binaria
 
 ### 3. El estilo de vida importa
 
-- alto sedentarismo
-- gran variabilidad
+-   alto sedentarismo
+-   gran variabilidad
 
 👉 Esto conecta con inflamación crónica
 
@@ -347,13 +341,12 @@ Después de visualizar NHANES, deberías poder decir:
 
 IMC vs glicemia:
 
-- tendencia positiva
-- mucha dispersión
+-   tendencia positiva
+-   mucha dispersión
 
 👉 Esto es clave:
 
-No todos los pacientes con obesidad tienen la misma glicemia
-→ heterogeneidad metabólica
+No todos los pacientes con obesidad tienen la misma glicemia → heterogeneidad metabólica
 
 ### Conexión con pensamiento bayesiano
 
@@ -361,9 +354,9 @@ Aquí empieza Bayes, aunque no lo veas aún.
 
 Cuando observas estos gráficos, tu mente empieza a pensar:
 
-- “Creo que mayor IMC aumenta la glicemia…”
-- “Pero no siempre…”
-- “Hay incertidumbre…”
+-   “Creo que mayor IMC aumenta la glicemia…”
+-   “Pero no siempre…”
+-   “Hay incertidumbre…”
 
 👉 Eso es una **creencia probabilística**
 
@@ -375,9 +368,7 @@ Antes de modelar, antes de hacer inferencia, antes de hablar de Bayes:
 
 Porque:
 
-👉 Los datos no son limpios
-👉 No son uniformes
-👉 No siguen reglas perfectas
+👉 Los datos no son limpios 👉 No son uniformes 👉 No siguen reglas perfectas
 
 Pero sí cuentan una historia.
 
@@ -387,19 +378,19 @@ Pero sí cuentan una historia.
 
 Grafica la distribución de edad (RIDAGEYR)
 
-- ¿Es homogénea?
+-   ¿Es homogénea?
 
 ### Ejercicio 2
 
 Haz un scatter (diagrama de dispersión + línea suvizada) de edad vs IMC
 
-- ¿ves relación?
+-   ¿ves relación?
 
 ### Ejercicio 3
 
-Filtra solo pacientes con IMC > 30
+Filtra solo pacientes con IMC \> 30
 
-- ¿cómo cambia la glicemia?
+-   ¿cómo cambia la glicemia?
 
 ### Ejercicio 4
 
@@ -409,7 +400,7 @@ Divide por sexo y compara glicemia (boxplot)
 
 Busca valores extremos en glicemia
 
-- ¿qué tan frecuentes son?
+-   ¿qué tan frecuentes son?
 
 ### Ejercicio 6
 
@@ -449,7 +440,7 @@ ggplot(df_obesidad_sub, aes(x = BMXBMI, y = LBXSGL)) +
 
 ### Ejercicio 8
 
-Distribución de IMC solo en glicemia alta 
+Distribución de IMC solo en glicemia alta
 
 ```{r}
 df_obesidad_sub %>%

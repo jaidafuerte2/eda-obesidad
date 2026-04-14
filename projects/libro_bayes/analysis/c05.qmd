@@ -1,0 +1,492 @@
+---
+title: "5.- Probabilidad como Creencia"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+
+df_obesidad <- read_csv("../data/obesidad_nhanes.csv")
+```
+
+## 1. Intuición (SIN código)
+
+Imagina que estás en consulta.
+
+Llega un paciente con:
+
+-   IMC elevado
+-   glicemia en ayunas de 115 mg/dL
+-   HbA1c de 6.1%
+
+No dices:
+
+-   “Este paciente **tiene diabetes al 100%**”
+
+Tampoco dices:
+
+-   “Este paciente **no tiene diabetes**”
+
+Lo que realmente piensas es algo como:
+
+-   “Este paciente tiene **alta probabilidad** de tener alteración metabólica”
+
+#### Aquí está la clave
+
+La probabilidad **no es solo contar cosas que ya pasaron**.
+
+También es:
+
+**Tu grado de creencia dada la información disponible**
+
+### Dos formas de entender la probabilidad
+
+#### 1. Probabilidad como frecuencia (forma clásica)
+
+Es la que aprendemos primero.
+
+Ejemplo:
+
+-   “El 10% de los adultos tiene diabetes”
+
+Esto significa:
+
+*Si tomas 100 personas, aproximadamente 10 tendrán diabetes.*
+
+✔️ Es objetiva
+
+✔️ Se basa en datos repetidos
+
+Pero tiene un problema en clínica:
+
+👉 **Tu paciente no es un promedio**
+
+#### 2. Probabilidad como creencia (enfoque bayesiano)
+
+Ahora cambia el enfoque:
+
+*“Dado lo que sé de este paciente… ¿qué tan probable es que tenga diabetes?”*
+
+Esto depende de:
+
+-   lo que ya sabías antes (experiencia, prevalencia)
+-   la nueva información (glicemia, HbA1c, IMC)
+
+✔️ Es dinámica
+
+✔️ Se actualiza
+
+✔️ Es personalizada
+
+### Ejemplo clínico clave
+
+Piensa en esto:
+
+Antes de ver al paciente, tú ya tienes una idea:
+
+*“En mi población, la probabilidad de diabetes es moderada”*
+
+Eso es una **creencia inicial** (aunque no la llames así).
+
+Luego ves:
+
+-   glicemia elevada
+-   HbA1c alta
+
+Y tu pensamiento cambia:
+
+*“Ahora estoy más convencido de que tiene diabetes”*
+
+👉 Acabas de hacer **Bayes sin saberlo**
+
+### La idea central del capítulo
+
+La probabilidad no es fija.
+
+Es algo que:
+
+1.  Empieza como una creencia inicial
+2.  Se actualiza con nueva información
+3.  Nunca llega a certeza absoluta
+
+### Certeza vs Probabilidad
+
+En medicina casi nunca hay certeza.
+
+| Situación               | ¿Hay certeza? |
+|-------------------------|---------------|
+| Diagnóstico clínico     | ❌            |
+| IMC elevado             | ❌            |
+| Inflamación crónica     | ❌            |
+| Riesgo cardiometabólico | ❌            |
+
+👉 Todo es probabilístico
+
+### Conexión con obesidad
+
+Según La Teoría Hormonal de la Obesidad:
+
+-   La obesidad no **es binaria**
+-   No es: “obeso vs no obeso”
+
+Es un **continuo metabólico**:
+
+-   resistencia a la insulina
+-   inflamación
+-   disfunción hormonal
+
+👉 Entonces:
+
+*No existe “certeza de enfermedad” Solo grados de probabilidad*
+
+## 2. Ejemplo simple (simulación en R)
+
+Vamos a simular algo muy sencillo.
+
+Queremos representar nuestra “creencia” sobre si un paciente tiene diabetes.
+
+```{r}
+set.seed(123)
+
+# Creamos 100 pacientes simulados
+pacientes <- tibble(
+  id = 1:100,
+  prob_diabetes = runif(100, 0.1, 0.7)  # creencias iniciales
+) 
+# Donde 100 es el número de observaciones , 0.1 es la probabilidad
+# mínima y 0.7 es la probabilidad máxima
+#unique(pacientes$prob_diabetes)[1:20] # produce:
+#[1] 0.4599934 0.2996941 0.3931678 0.6726843 0.3897414 0.6342101
+#[7] 0.6486629 0.4652410 0.3464139 0.1882568 0.6611799 0.2807373
+#[13] 0.1364323 0.6686362 0.5323578 0.1853766 0.4295708 0.6724547
+#[19] 0.4512900 0.3427062
+
+# Visualizamos la incertidumbre
+ggplot(pacientes, aes(x = prob_diabetes)) +
+  geom_histogram(bins = 15, fill = "steelblue", color = "white") +
+  labs(
+    title = "Creencias iniciales sobre probabilidad de diabetes",
+    x = "Probabilidad",
+    y = "Número de pacientes"
+  )
+```
+
+### ¿Qué significa esto?
+
+Cada paciente tiene una probabilidad distinta:
+
+-   algunos: 10%
+-   otros: 50%
+-   otros: 70%
+
+👉 No hay certeza
+
+👉 Hay incertidumbre distribuida
+
+### Ahora agregamos información nueva
+
+Simulemos que medimos glicemia:
+
+```{r}
+# Simulemos que medimos glicemia:
+# Donde 100 es número de pacientes, 1 es un intento y prob_diabetes 
+# es la probabilidad de diabetes
+pacientes <- pacientes %>%
+  mutate(
+    glicemia_alta = rbinom(100, 1, prob_diabetes)
+  )
+#unique(pacientes$glicemia_alta) # produce: [1] 0 1
+#table(pacientes$glicemia_alta) # produce:
+#0  1 
+#57 43 
+```
+
+Ahora actualizamos nuestra creencia:
+
+```{r}
+# Ahora actualizamos nuestra creencia:
+pacientes <- pacientes %>%
+  mutate(
+    prob_actualizada = if_else(glicemia_alta == 1,
+                               prob_diabetes + 0.2,
+                               prob_diabetes - 0.1)
+  )
+```
+
+Visualizamos:
+
+```{r}
+# Visualizamos nuestra creencia actualizada 
+ggplot(pacientes, aes(x = prob_actualizada)) +
+  geom_histogram(bins = 15, fill = "darkred", color = "white") +
+  labs(
+    title = "Probabilidades actualizadas con nueva información",
+    x = "Probabilidad",
+    y = "Número de pacientes"
+  )
+```
+
+### Interpretación
+
+-   Si la glicemia es alta → aumenta la probabilidad
+-   Si no → disminuye
+
+👉 Esto es **actualizar creencias**
+
+## 3. Ejemplo aplicado con NHANES
+
+Ahora usemos datos reales.
+
+Trabajaremos con:
+
+-   glicemia: LBXSGL
+-   HbA1c: LBXGH
+-   IMC: BMXBMI
+
+### Paso 1: explorar glicemia
+
+```{r}
+# Explorar glicemia
+df_obesidad %>%
+  filter(!is.na(LBXSGL)) %>%
+  ggplot(aes(x = LBXSGL)) +
+  geom_density(fill = "skyblue") +
+  labs(
+    title = "Distribución de glicemia en NHANES",
+    x = "Glicemia (mg/dL)",
+    y = "Densidad"
+  )
+```
+
+#### ¿Qué ves?\*
+
+No hay dos grupos claros:
+
+-   “sanos”
+-   “enfermos”
+
+👉 Hay un continuo
+
+### Paso 2: relacionar con IMC
+
+```{r}
+#| message: false
+# Relacionar glicemia con índice de masa corporal 
+df_obesidad %>%
+  filter(!is.na(LBXSGL), !is.na(BMXBMI)) %>%
+  ggplot(aes(x = BMXBMI, y = LBXSGL)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth() +
+  labs(
+    title = "IMC vs Glicemia",
+    x = "IMC",
+    y = "Glicemia"
+  )
+```
+
+#### Interpretación visual
+
+-   A mayor IMC → tendencia a mayor glicemia
+-   Pero con mucha variabilidad
+
+👉 Esto es incertidumbre real
+
+### Paso 3: HbA1c
+
+```{r}
+# Distribución de Hemoglobina glicosilada
+df_obesidad %>%
+  filter(!is.na(LBXGH)) %>%
+  ggplot(aes(x = LBXGH)) +
+  geom_density(fill = "orange") +
+  labs(
+    title = "Distribución de HbA1c",
+    x = "HbA1c (%)",
+    y = "Densidad"
+  )
+```
+
+#### Clave clínica
+
+No hay una línea mágica donde:
+
+-   antes = sano
+-   después = enfermo
+
+👉 Todo es probabilístico
+
+## 4. Interpretación clínica
+
+### 1. Ya piensas en probabilidades
+
+Como médico, tú ya haces esto:
+
+-   “probable prediabetes”
+-   “alto riesgo cardiovascular”
+-   “posible resistencia a la insulina”
+
+👉 Eso es pensamiento bayesiano
+
+### 2. Siempre actualizas creencias
+
+Cada dato nuevo cambia tu juicio:
+
+-   síntomas
+-   laboratorio
+-   evolución
+
+👉 Nunca partes de cero
+
+👉 Siempre ajustas
+
+### 3. La certeza es una ilusión
+
+Incluso con:
+
+-   HbA1c elevada
+-   IMC alto
+
+👉 No hay 100% certeza
+
+Solo:
+
+*mayor o menor grado de creencia*
+
+### 4. Obesidad = incertidumbre
+
+Desde el enfoque de La Teoría Hormonal de la Obesidad:
+
+-   la enfermedad metabólica es progresiva
+-   no tiene límites claros
+-   depende de múltiples factores
+
+👉 Entonces:
+
+*Diagnosticar obesidad o riesgo metabólico* *es evaluar probabilidades, no certezas*
+
+## Idea final del capítulo
+
+*La probabilidad no es solo contar lo que pasó.* *Es expresar qué tan convencido estás…* *con la información que tienes hoy.*
+
+### Lo más importante que debes llevarte
+
+-   La probabilidad es una creencia informada
+-   Siempre hay incertidumbre
+-   El conocimiento médico es dinámico
+-   Diagnosticar es actualizar creencias
+
+En el siguiente capítulo, vamos a dar el siguiente paso natural:
+
+👉 cómo representar esas creencias de forma explícita
+
+👉 cómo empezar a construir priors de manera intuitiva
+
+Y ahí es donde el pensamiento bayesiano empieza a volverse realmente poderoso.
+
+## Ejercicios
+
+### Ejercicio 1
+
+Cambia el número de pacientes a 1000.
+
+👉 Pregunta:
+
+-   ¿La distribución de glicemia_alta se parece más a prob_diabetes?
+
+### Ejercicio 2
+
+Crea una tabla:
+
+```{r}
+# table(glicemia_alta)
+```
+
+👉 Pregunta:
+
+-   ¿Qué proporción salió con glicemia alta?
+-   ¿Tiene sentido con las probabilidades iniciales?
+
+### Ejercicio 3
+
+Modifica la actualización:
+
+```{r}
+# + 0.4  y  - 0.2
+```
+
+👉 Pregunta:
+
+-   ¿Qué pasa con la distribución final?
+-   ¿Se vuelve más “extrema”?
+
+### Ejercicio 4
+
+Asegura que las probabilidades no pasen de 0 o 1:
+
+👉 pista:
+
+```{r}
+# pmin(pmax(prob_actualizada, 0), 1)
+```
+
+👉 Pregunta:
+
+-   ¿Por qué esto es importante clínicamente?
+
+### Ejercicio 5
+
+Crea una segunda evidencia:
+
+```{r}
+# hba1c_alta = rbinom(100, 1, prob_diabetes)
+```
+
+Ahora actualiza dos veces:
+
+```{r}
+# prob_actualizada_2
+```
+
+👉 Pregunta:
+
+-   ¿Qué pasa cuando tienes más evidencia?
+
+### Ejercicio 6
+
+Divide pacientes en dos grupos:
+
+-   IMC alto
+-   IMC normal
+
+Asigna mayor *prob_diabetes* a los de IMC alto.
+
+👉 Pregunta:
+
+-   ¿Cómo cambia la simulación?
+
+### Ejercicio 7
+
+Compara:
+
+-   prob_diabetes (antes)
+-   prob_actualizada (después)
+
+Haz dos histogramas.
+
+👉 Pregunta:
+
+-   ¿Cómo cambia tu “creencia colectiva”?
+
+### Ejercicio 8 (clínico puro)
+
+Responde sin código:
+
+*Un paciente con IMC alto pero glicemia normal* *vs* *Un paciente con IMC normal pero glicemia alta*
+
+👉 ¿A cuál le das mayor probabilidad de alteración metabólica?
+
+👉 Explica tu razonamiento (eso es Bayes)

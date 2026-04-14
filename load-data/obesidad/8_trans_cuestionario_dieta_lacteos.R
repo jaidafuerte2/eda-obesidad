@@ -24,6 +24,11 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, DBQ197, DBQ223A, DBQ223B, DBQ223C, DBQ223D, 
+         DBQ223E, DBQ223U, DBQ229)
+
 ###################################
 ##
 ## Renombrar variables a español
@@ -294,6 +299,10 @@ table(df_obesidad$bebedor_de_leche) # produce:
 #  si variado      no 
 #2154    1907    1392 
 
+#########################                              ############
+#########################  Crear variables importantes ############
+#########################                              ############
+
 ###############################
 ##
 ## Consumo de leches con poca
@@ -303,20 +312,219 @@ table(df_obesidad$bebedor_de_leche) # produce:
 
 # Agrupar a los bebedores de leche al 1%, 2% y sin grasa en una 
 # sola variable de leche baja en grasa
-#df_obesidad <- df_obesidad %>%
-#  mutate(
-#    leche_baja_grasa = ifelse(bebe_leche_2_grasa == 1 | 
-#                                bebe_leche_1_grasa == 1 | 
-#                                bebe_leche_sin_grasa == 1, 
-#                              1, 0),
-#  )
-#class(df_obesidad$leche_baja_grasa) # produce: numeric
+df_obesidad <- df_obesidad %>%
+  mutate(
+    leche_baja_grasa = ifelse(bebe_leche_2_grasa == 1 | 
+                                bebe_leche_1_grasa == 1 | 
+                                bebe_leche_sin_grasa == 1, 
+                              1, 0),
+  )
+class(df_obesidad$leche_baja_grasa) # produce: numeric
 
-#unique(df_obesidad$leche_baja_grasa) # produce: [1] 0 1 
+unique(df_obesidad$leche_baja_grasa) # produce: [1] 0 1 
 
-#table(df_obesidad$leche_baja_grasa) # produce:
+table(df_obesidad$leche_baja_grasa) # produce:
 #   0    1 
 #2841 2941 
+
+######################                          ##################
+###################### Crear variables binarias ##################
+######################                          ##################
+
+###########################
+##
+## bebe leche entera?
+## (categorica)
+##
+###########################
+
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    bebe_leche_entera_cat = if_else(
+      bebe_leche_entera == 1, "si", "no"
+    ),
+    
+    bebe_leche_entera_cat = factor(
+      bebe_leche_entera_cat,
+      levels = c("no", "si")
+    )
+  )
+table(df_obesidad$bebe_leche_entera_cat) # produce:
+#  no   si 
+#4366 1416 
+
+unique(df_obesidad$bebe_leche_entera_cat) # produce:
+#[1] si no
+#Levels: no si
+
+###########################
+##
+## bebe leche con 2% de 
+## grasa ?(categorica)
+##
+###########################
+
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    bebe_leche_2_grasa_cat = if_else(
+      bebe_leche_2_grasa == 1, "si", "no"
+    ),
+    
+    bebe_leche_2_grasa_cat = factor(
+      bebe_leche_2_grasa_cat,
+      levels = c("no", "si")
+    )
+  )
+table(df_obesidad$bebe_leche_2_grasa_cat) # produce:
+#  no   si 
+#3766 2016 
+
+unique(df_obesidad$bebe_leche_2_grasa_cat) # produce:
+#[1] si no
+#Levels: no si
+
+###########################
+##
+## bebe leche con 1% de 
+## grasa ?(categorica)
+##
+###########################
+
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    bebe_leche_1_grasa_cat = if_else(
+      bebe_leche_1_grasa == 1, "si", "no"
+    ),
+    
+    bebe_leche_1_grasa_cat = factor(
+      bebe_leche_1_grasa_cat,
+      levels = c("no", "si")
+    )
+  )
+table(df_obesidad$bebe_leche_1_grasa_cat) # produce:
+#  no   si 
+#5289  493 
+
+unique(df_obesidad$bebe_leche_1_grasa_cat) # produce:
+#[1] si no
+#Levels: no si
+
+###########################
+##
+## bebe leche sin 
+## grasa ?(categorica)
+##
+###########################
+
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    bebe_leche_sin_grasa_cat = if_else(
+      bebe_leche_sin_grasa == 1, "si", "no"
+    ),
+    
+    bebe_leche_sin_grasa_cat = factor(
+      bebe_leche_sin_grasa_cat,
+      levels = c("no", "si")
+    )
+  )
+table(df_obesidad$bebe_leche_sin_grasa_cat) # produce:
+#  no   si 
+#5266  516 
+
+unique(df_obesidad$bebe_leche_sin_grasa_cat) # produce:
+#[1] si no
+#Levels: no si
+
+###########################
+##
+## bebe leche de soja ?
+## (categorica)
+##
+###########################
+
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    bebe_leche_soja_cat = if_else(
+      bebe_leche_soja == 1, "si", "no"
+    ),
+    
+    bebe_leche_soja_cat = factor(
+      bebe_leche_soja_cat,
+      levels = c("no", "si")
+    )
+  )
+table(df_obesidad$bebe_leche_soja_cat) # produce:
+#  no   si 
+#5618  164 
+
+unique(df_obesidad$bebe_leche_soja_cat) # produce:
+#[1] si no
+#Levels: no si
+
+###########################
+##
+## bebe otras leches ?
+## (categorica)
+##
+###########################
+
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    bebe_otras_leches_cat = if_else(
+      bebe_otras_leches == 1, "si", "no"
+    ),
+    
+    bebe_otras_leches_cat = factor(
+      bebe_otras_leches_cat,
+      levels = c("no", "si")
+    )
+  )
+table(df_obesidad$bebe_otras_leches_cat) # produce:
+#  no   si 
+#5401  381 
+
+unique(df_obesidad$bebe_otras_leches_cat) # produce:
+#[1] si no
+#Levels: no si
+
+###########################
+##
+## Bebe leche baja en grasa
+## (categórica)
+##
+###########################
+
+# Cambiar la variable de numérica a categórica
+df_obesidad <- df_obesidad %>%
+  mutate(
+    leche_baja_grasa_cat = if_else(
+      leche_baja_grasa == 1, "si", "no"
+    ),
+    
+    leche_baja_grasa_cat = factor(
+      leche_baja_grasa_cat,
+      levels = c("no", "si")
+    )
+  )
+table(df_obesidad$leche_baja_grasa_cat) # produce:
+#  no   si 
+#2841 2941
+
+unique(df_obesidad$leche_baja_grasa_cat) # produce:
+#[1] si no
+#Levels: no si
 
 ###########################
 ##
@@ -330,7 +538,11 @@ table(df_obesidad$bebedor_de_leche) # produce:
 obesidad_cuestionario_dieta_lacteos <- df_obesidad %>%
   select(SEQN, consumo_lacteos, bebe_leche_entera, bebe_leche_2_grasa,
          bebe_leche_1_grasa, bebe_leche_sin_grasa, bebe_leche_soja,
-         bebe_otras_leches, bebedor_de_leche)
+         bebe_otras_leches, bebedor_de_leche, leche_baja_grasa,
+         bebe_leche_entera_cat, bebe_leche_2_grasa_cat,
+         bebe_leche_1_grasa_cat, bebe_leche_sin_grasa_cat,
+         bebe_leche_soja_cat, bebe_otras_leches_cat,
+         leche_baja_grasa_cat)
 
 # Crear un archivo .cvs con la dataset de laboratorio
 write.csv(obesidad_cuestionario_dieta_lacteos,

@@ -25,6 +25,7 @@ source("eda-obesidad/load-data/obesidad/10_trans_cuestionario_aspirina.R")
 source("eda-obesidad/load-data/obesidad/11_trans_cuestionario_dormir.R")
 source("eda-obesidad/load-data/obesidad/12_trans_cuestionario_peso.R")
 source("eda-obesidad/load-data/obesidad/13_trans_cuestionario_enfermedad.R")
+source("eda-obesidad/load-data/obesidad/14_trans_cuestionario_ingresos.R")
 
 
 # Unir todas las datasets en una sola
@@ -40,7 +41,8 @@ obesidad <- obesidad_demografico %>%
   left_join(obesidad_cuestionario_aspirina, by = "SEQN") %>%
   left_join(obesidad_cuestionario_dormir, by = "SEQN") %>%
   left_join(obesidad_cuestionario_peso, by = "SEQN") %>%
-  left_join(obesidad_cuestionario_enfermedad, by = "SEQN")
+  left_join(obesidad_cuestionario_enfermedad, by = "SEQN") %>%
+  left_join(obesidad_cuestionario_ingresos, by = "SEQN")
 dim(obesidad) # produce: [1] 5782  124
 
 # Crear un archivo .cvs con la dataset incluso con la gente que NO

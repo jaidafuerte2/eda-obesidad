@@ -25,6 +25,7 @@ source("eda-obesidad/load-data/nhanes/10_load_cuestionario_aspirina.R")
 source("eda-obesidad/load-data/nhanes/11_load_cuestionario_dormir.R")
 source("eda-obesidad/load-data/nhanes/12_load_cuestionario_peso.R")
 source("eda-obesidad/load-data/nhanes/13_load_cuestionario_enfermedad.R")
+source("eda-obesidad/load-data/nhanes/14_load_cuestionario_ingresos.R")
 
 
 # Unir todas las datasets en una sola
@@ -40,11 +41,14 @@ obesidad_nhanes <- demografico %>%
   left_join(cuestionario_aspirina, by = "SEQN") %>%
   left_join(cuestionario_dormir, by = "SEQN") %>%
   left_join(cuestionario_peso, by = "SEQN") %>%
-  left_join(cuestionario_enfermedad, by = "SEQN")
+  left_join(cuestionario_enfermedad, by = "SEQN") %>%
+  left_join(cuestionario_ingresos, by = "SEQN")
 dim(obesidad_nhanes) # produce: [1] 10175   117
 
 ########### Crear dataset sin quitar los que no ayunaron #############
 
+# Filtrar a los mayores o iguales a 18 años, las que no están 
+# embarazadas y los que no tienen índice de masa corporal
 obesidad_nhanes_clean <- obesidad_nhanes %>%
   filter(
     RIDAGEYR >= 18,
@@ -55,6 +59,7 @@ dim(obesidad_nhanes) # produce:
 # [1] 10175   117
 dim(obesidad_nhanes_clean)
 #[1] 5782  117
+
 
 # Crear un archivo .cvs con la dataset incluso con la gente que NO
 # ayunó

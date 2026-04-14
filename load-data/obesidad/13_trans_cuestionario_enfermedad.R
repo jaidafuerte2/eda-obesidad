@@ -19,6 +19,12 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, MCQ080, MCQ082, MCQ086, MCQ160A, MCQ195, MCQ180A,
+         MCQ160B, MCQ180B, MCQ160C, MCQ180C, MCQ160E, MCQ180E,
+         MCQ160F, MCQ180F, MCQ160M, MCQ170M, MCQ180M)
+
 ###################################
 ##
 ## Renombrar variables a español

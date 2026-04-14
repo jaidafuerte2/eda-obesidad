@@ -2,7 +2,7 @@
 ##                             ##
 ## Transformaciones Básicas    ##
 ## del dataset cuestionario    ##
-## de dieta - lácteos          ##
+## de aspirina                 ##
 ##                             ##
 #################################
 
@@ -24,6 +24,10 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, RXQ515, RXQ520, RXD530)
+
 ###################################
 ##
 ## Renombrar variables a español
@@ -42,6 +46,7 @@ df_obesidad <- df_obesidad %>%
 ############################
 ##
 ## Aspirina prescrita
+## dosis bajas
 ##
 ############################
 
@@ -75,6 +80,7 @@ table(df_obesidad$toma_aspirina_prescrita) # produce:
 ############################
 ##
 ## Aspirina automedicada
+## (dosis bajas)
 ##
 ############################
 
@@ -134,6 +140,33 @@ summary(df_obesidad$dosis_aspirina) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #20.0    81.0    81.0   114.5    81.0   500.0    4711 
 
+############################
+##
+## Dosis de Aspirina 
+## (Categórica)
+##
+############################
+
+# Categorizar la variable de dosis de aspirina
+df_obesidad <- df_obesidad %>%
+  mutate(
+    aspirina_cat = case_when(
+      is.na(dosis_aspirina) ~ "no_usa",
+      dosis_aspirina <= 100 ~ "baja_dosis",
+      dosis_aspirina > 100 ~ "alta_dosis"
+    ),
+    aspirina_cat = factor(aspirina_cat,
+                          levels = c("no_usa", "baja_dosis", "alta_dosis"),
+                          ordered = TRUE)
+  )
+unique(df_obesidad$aspirina_cat) # produce:
+#[1] baja_dosis no_usa     alta_dosis
+#Levels: no_usa < baja_dosis < alta_dosis
+
+table(df_obesidad$aspirina_cat) # produce:
+#no_usa baja_dosis alta_dosis 
+#  4711        926        145 
+
 ###########################
 ##
 ## Seleccionar y crear 
@@ -145,7 +178,7 @@ summary(df_obesidad$dosis_aspirina) # produce:
 # actividad física
 obesidad_cuestionario_aspirina <- df_obesidad %>%
   select(SEQN, toma_aspirina_prescrita, toma_aspirina_auto,
-         dosis_aspirina)
+         dosis_aspirina, aspirina_cat)
 
 # Crear un archivo .cvs con la dataset de laboratorio
 write.csv(obesidad_cuestionario_aspirina,

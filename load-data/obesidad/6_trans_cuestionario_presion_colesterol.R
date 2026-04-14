@@ -6,8 +6,6 @@
 ##                             ##
 #################################
 
-# Nota: no olvidar crear las variables de homa-ir y nos/mos
-
 # Introducción
 
 library(readr)
@@ -20,6 +18,10 @@ df_obesidad <- read_csv(
   guess_max = 10000,
   show_col_types = FALSE
 )
+
+# Seleccionar las variables más importantes
+df_obesidad <- df_obesidad %>%
+  select(SEQN, BPQ030, BPQ050A, BPQ080, BPQ100D)
 
 ###################################
 ##

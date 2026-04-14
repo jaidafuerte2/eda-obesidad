@@ -42,7 +42,8 @@ df_obesidad <- df_obesidad |>
     circunferencia_cintura = BMXWAIST,
     diametro_abdominal = BMDAVSAD,
     peso = BMXWT,
-    talla = BMXHT
+    talla = BMXHT,
+    genero = RIAGENDR
   )
 
 ########################
@@ -215,17 +216,17 @@ df_obesidad <- df_obesidad %>%
   mutate(
     circ_cintura_cat = case_when(
       # HOMBRES
-      RIAGENDR == 1 & 
+      genero == 1 & 
         circunferencia_cintura < 94 ~ "normal",
-      RIAGENDR == 1 & circunferencia_cintura >= 94 & 
+      genero == 1 & circunferencia_cintura >= 94 & 
         circunferencia_cintura < 102 ~ "riesgo_aumentado",
-      RIAGENDR == 1 & circunferencia_cintura >= 102 ~ "riesgo_alto",
+      genero == 1 & circunferencia_cintura >= 102 ~ "riesgo_alto",
       
       # MUJERES
-      RIAGENDR == 2 & circunferencia_cintura < 80 ~ "normal",
-      RIAGENDR == 2 & circunferencia_cintura >= 80 & 
+      genero == 2 & circunferencia_cintura < 80 ~ "normal",
+      genero == 2 & circunferencia_cintura >= 80 & 
         circunferencia_cintura < 88 ~ "riesgo_aumentado",
-      RIAGENDR == 2 & circunferencia_cintura >= 88 ~ "riesgo_alto",
+      genero == 2 & circunferencia_cintura >= 88 ~ "riesgo_alto",
       
       TRUE ~ NA_character_
     ),
