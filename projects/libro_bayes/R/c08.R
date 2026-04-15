@@ -125,13 +125,41 @@ df_joint <- df_joint %>%
   )
 
 # Diagrama de dispersión que relaciona la actividad recreativa 
-# vigorosa con el índice de masa corporal
+# vigorosa con el índice de masa corporal en trabajo
 df_joint %>%
   filter(
-    min_vigorosa_semana <= 500,
+    #min_vigorosa_semana <= 500,
     BMXBMI <= 45
   ) %>%
   ggplot(aes(x = BMXBMI, y = min_vigorosa_semana)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "loess") +
+  labs(
+    title = "IMC vs Ejercicio",
+    x = "IMC",
+    y = "Ejercicio"
+  )
+
+
+# Crear la variable de minutos de actividad física vigorosa 
+# recreativa por semana
+df_joint <- df_joint %>%
+  mutate(
+    PAQ610 = if_else(PAQ655 %in% c(77, 99), NA_real_, as.numeric(PAQ655)),
+    PAD615 = if_else(PAD660 %in% c(7777, 9999), NA_real_, as.numeric(PAD660))
+  ) %>%
+  mutate(
+    min_vigorosa_semana_trabajo = PAQ655 * PAD660
+  )
+
+# Diagrama de dispersión que relaciona la actividad recreativa 
+# vigorosa con el índice de masa corporal
+df_joint %>%
+  filter(
+    #min_vigorosa_semana_trabajo <= 500,
+    BMXBMI <= 45
+  ) %>%
+  ggplot(aes(x = BMXBMI, y = min_vigorosa_semana_trabajo)) +
   geom_point(alpha = 0.3) +
   geom_smooth(method = "lm") +
   labs(
