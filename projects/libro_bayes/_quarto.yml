@@ -26,6 +26,12 @@ website:
         - analysis/c05.qmd
         - analysis/c06.qmd
         - analysis/c07.qmd
+      - section: "Módulo 4: Pensamiento causal"
+        #href: analysis/m04.qmd
+        contents:
+        - analysis/c08.qmd
+        - analysis/c09.qmd
+        - analysis/c10.qmd
   page-footer: 
     border: false
     background: light

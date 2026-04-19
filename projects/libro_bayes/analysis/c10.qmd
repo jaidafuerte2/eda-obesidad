@@ -1,0 +1,164 @@
+---
+title: "10.- Aspirina como Proxy de Inflamación"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(dagitty)
+library(ggdag)
+
+df_obesidad <- read_csv("../data/obesidad_nhanes.csv")
+```
+
+## 1. Intuición
+
+En medicina muchas veces queremos estudiar cosas que no podemos observar de forma directa.
+
+Por ejemplo:
+
+- No podemos “ver” la resistencia a la insulina
+- No podemos medir fácilmente la inflamación crónica de bajo grado
+- No podemos saber exactamente cuánto daño metabólico acumulado tiene una persona
+
+Lo que hacemos entonces es usar señales indirectas.
+
+A esas señales indirectas las llamamos variables proxy.
+
+Una variable proxy es una variable observable que usamos como aproximación de otra variable que es más difícil de medir.
+
+Por ejemplo:
+
+- El perímetro abdominal puede ser un proxy de grasa visceral
+- La hemoglobina glicosilada puede ser un proxy del promedio de glucosa de los últimos meses
+- La proteína C reactiva puede ser un proxy de inflamación
+- La dosis de aspirina puede ser un proxy de inflamación o de enfermedad cardiovascular previa
+
+La idea central es simple:
+
+*No observamos directamente la inflamación crónica, pero podemos observar cosas que suelen aparecer cuando hay inflamación.*
+
+Sin embargo, los proxies tienen una limitación importante:
+
+*Nunca son una copia perfecta de la variable real.*
+
+La aspirina es un buen ejemplo.
+
+Muchas personas usan aspirina porque:
+
+- tienen dolor o inflamación
+- tienen artritis
+- tienen riesgo cardiovascular
+- han tenido un infarto previo
+- un médico les indicó aspirina preventiva
+- la toman por automedicación
+
+Eso significa que la aspirina puede estar relacionada con inflamación, pero también con edad, enfermedad cardiovascular, diabetes, obesidad o decisiones médicas previas.
+
+Entonces, cuando vemos que una persona usa más aspirina, no necesariamente significa que “tiene más inflamación”.
+
+Puede significar muchas cosas al mismo tiempo.
+
+Ese es precisamente el reto del pensamiento causal.
+
+### Variable observada vs variable latente
+
+Una variable observada es algo que podemos medir directamente.
+
+Por ejemplo:
+
+- IMC
+- glucosa
+- neutrófilos
+- dosis de aspirina
+
+Una variable latente es algo que existe, pero no observamos de manera directa.
+
+Por ejemplo:
+
+- inflamación crónica
+- riesgo cardiometabólico global
+- resistencia a la insulina
+- estrés fisiológico acumulado
+
+Podemos pensar en la inflamación crónica como una especie de “fuego interno” que no vemos directamente, pero del que observamos humo.
+
+Ese humo puede ser:
+
+- neutrófilos elevados
+- GGT elevada
+- glucosa alta
+- obesidad abdominal
+- uso de aspirina
+
+La aspirina no es el fuego.
+
+La aspirina es una posible señal de que alguien podría tener más fuego.
+
+### ¿Por qué usar proxies?
+
+Porque en datos reales no siempre tenemos las variables ideales.
+
+En NHANES no existe una variable perfecta llamada “nivel de inflamación crónica”.
+
+Entonces debemos construir aproximaciones razonables.
+
+La ventaja de los proxies es que permiten estudiar fenómenos complejos.
+
+La desventaja es que pueden introducir ruido, confusión y errores de interpretación.
+
+### Asociación no es causalidad
+
+Supongamos que encontramos que las personas que usan más aspirina tienen más glucosa.
+
+¿Eso significa que la aspirina eleva la glucosa?
+
+No necesariamente.
+
+Puede ocurrir que:
+
+- las personas con obesidad tienen más inflamación
+- las personas con más inflamación usan más aspirina
+- las personas con obesidad también tienen más glucosa
+
+Entonces la obesidad podría ser la verdadera causa de ambas cosas.
+
+Ese fenómeno se llama confusión.
+
+La confusión ocurre cuando una tercera variable influye tanto en la exposición como en el resultado.
+
+En este caso:
+
+- obesidad → más inflamación
+- obesidad → más aspirina
+- obesidad → más glucosa
+
+Por eso no basta con ver correlaciones.
+
+Necesitamos pensar en historias causales.
+
+### Un DAG simple para pensar el problema
+
+Podemos imaginar una historia causal así:
+
+- La obesidad aumenta la inflamación
+- La inflamación aumenta la probabilidad de usar aspirina
+- La inflamación también aumenta neutrófilos, GGT y glucosa
+- La edad aumenta la probabilidad de usar aspirina y también aumenta el riesgo cardiometabólico
+
+La relación puede representarse de forma simplificada así:
+
+- obesidad → inflamación
+- inflamación → aspirina
+- inflamación → neutrófilos
+- inflamación → glucosa
+- edad → aspirina
+- edad → glucosa
+
+La inflamación está en el centro del sistema, pero no la observamos directamente.
+
+La aspirina es solo una de las pistas que tenemos.

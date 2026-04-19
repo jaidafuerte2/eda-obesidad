@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9.- Tu Modelo Causal de Obesidad – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c08.html">Módulo 4: Pensamiento causal</a></li><li class="breadcrumb-item"><a href="../analysis/c09.html">9.- Tu Modelo Causal de Obesidad</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 1: Pensar Como Analista Bayesiano</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- De Datos a Decisiones Clínicas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 2: Herramientas en R (mínimo necesario)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Preparando NHANES en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Visualización para Entender Datos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 3: Entender la Incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidad como Creencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Distribuciones en la vida real</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Distribuciones conjuntas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 4: Pensamiento causal</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Introducción a DAGs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">9.- Tu Modelo Causal de Obesidad</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10.- Aspirina como Proxy de Inflamación</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#objetivo-del-capítulo" id="toc-objetivo-del-capítulo" class="nav-link active" data-scroll-target="#objetivo-del-capítulo">Objetivo del capítulo</a></li>
+  <li><a href="#intuición" id="toc-intuición" class="nav-link" data-scroll-target="#intuición">1. Intuición</a>
+  <ul class="collapse">
+  <li><a href="#por-qué-necesitamos-un-modelo-causal" id="toc-por-qué-necesitamos-un-modelo-causal" class="nav-link" data-scroll-target="#por-qué-necesitamos-un-modelo-causal">¿Por qué necesitamos un modelo causal?</a></li>
+  </ul></li>
+  <li><a href="#qué-es-un-dag" id="toc-qué-es-un-dag" class="nav-link" data-scroll-target="#qué-es-un-dag">¿Qué es un DAG?</a>
+  <ul class="collapse">
+  <li><a href="#pensar-en-obesidad-como-un-sistema" id="toc-pensar-en-obesidad-como-un-sistema" class="nav-link" data-scroll-target="#pensar-en-obesidad-como-un-sistema">Pensar en obesidad como un sistema</a></li>
+  <li><a href="#causa-directa-y-causa-indirecta" id="toc-causa-directa-y-causa-indirecta" class="nav-link" data-scroll-target="#causa-directa-y-causa-indirecta">Causa directa y causa indirecta</a></li>
+  <li><a href="#mediadores" id="toc-mediadores" class="nav-link" data-scroll-target="#mediadores">Mediadores</a></li>
+  <li><a href="#posibles-confusores" id="toc-posibles-confusores" class="nav-link" data-scroll-target="#posibles-confusores">Posibles confusores</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <ul class="collapse">
+  <li><a href="#representar-el-ejemplo-con-un-dag" id="toc-representar-el-ejemplo-con-un-dag" class="nav-link" data-scroll-target="#representar-el-ejemplo-con-un-dag">Representar el ejemplo con un DAG</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-aplicado-con-nhanes" id="toc-ejemplo-aplicado-con-nhanes" class="nav-link" data-scroll-target="#ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</a>
+  <ul class="collapse">
+  <li><a href="#paso-1-seleccionar-variables" id="toc-paso-1-seleccionar-variables" class="nav-link" data-scroll-target="#paso-1-seleccionar-variables">Paso 1 — Seleccionar variables</a></li>
+  <li><a href="#paso-2-crear-una-tabla-simplificada" id="toc-paso-2-crear-una-tabla-simplificada" class="nav-link" data-scroll-target="#paso-2-crear-una-tabla-simplificada">Paso 2 — Crear una tabla simplificada</a></li>
+  <li><a href="#paso-3-construir-un-dag-clínico" id="toc-paso-3-construir-un-dag-clínico" class="nav-link" data-scroll-target="#paso-3-construir-un-dag-clínico">Paso 3 — Construir un DAG clínico</a></li>
+  <li><a href="#cómo-leer-este-dag" id="toc-cómo-leer-este-dag" class="nav-link" data-scroll-target="#cómo-leer-este-dag">Cómo leer este DAG</a></li>
+  </ul></li>
+  <li><a href="#relación-entre-insulina-y-adiposidad" id="toc-relación-entre-insulina-y-adiposidad" class="nav-link" data-scroll-target="#relación-entre-insulina-y-adiposidad">Relación entre insulina y adiposidad</a>
+  <ul class="collapse">
+  <li><a href="#relación-entre-grasa-visceral-e-inflamación" id="toc-relación-entre-grasa-visceral-e-inflamación" class="nav-link" data-scroll-target="#relación-entre-grasa-visceral-e-inflamación">Relación entre grasa visceral e inflamación</a></li>
+  <li><a href="#dónde-entra-la-aspirina" id="toc-dónde-entra-la-aspirina" class="nav-link" data-scroll-target="#dónde-entra-la-aspirina">¿Dónde entra la aspirina?</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  <li><a href="#ejercicio-6" id="toc-ejercicio-6" class="nav-link" data-scroll-target="#ejercicio-6">Ejercicio 6</a></li>
+  <li><a href="#ejercicio-7" id="toc-ejercicio-7" class="nav-link" data-scroll-target="#ejercicio-7">Ejercicio 7</a></li>
+  <li><a href="#ejercicio-8" id="toc-ejercicio-8" class="nav-link" data-scroll-target="#ejercicio-8">Ejercicio 8</a></li>
+  <li><a href="#ejercicio-9" id="toc-ejercicio-9" class="nav-link" data-scroll-target="#ejercicio-9">Ejercicio 9</a></li>
+  <li><a href="#ejercicio-10" id="toc-ejercicio-10" class="nav-link" data-scroll-target="#ejercicio-10">Ejercicio 10</a></li>
+  <li><a href="#ejercicio-11" id="toc-ejercicio-11" class="nav-link" data-scroll-target="#ejercicio-11">Ejercicio 11</a></li>
+  <li><a href="#ejercicio-12" id="toc-ejercicio-12" class="nav-link" data-scroll-target="#ejercicio-12">Ejercicio 12</a></li>
+  <li><a href="#ejercicio-13" id="toc-ejercicio-13" class="nav-link" data-scroll-target="#ejercicio-13">Ejercicio 13</a></li>
+  <li><a href="#ejercicio-14" id="toc-ejercicio-14" class="nav-link" data-scroll-target="#ejercicio-14">Ejercicio 14</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c08.html">Módulo 4: Pensamiento causal</a></li><li class="breadcrumb-item"><a href="../analysis/c09.html">9.- Tu Modelo Causal de Obesidad</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">9.- Tu Modelo Causal de Obesidad</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="objetivo-del-capítulo" class="level2">
+<h2 class="anchored" data-anchor-id="objetivo-del-capítulo">Objetivo del capítulo</h2>
+<p>En este capítulo vas a construir un modelo causal explícito de la obesidad.</p>
+<p>La idea no es pensar en la obesidad como una sola variable aislada, sino como el resultado de un sistema completo donde intervienen:</p>
+<ul>
+<li>inflamación</li>
+<li>insulina</li>
+<li>grasa visceral</li>
+<li>dieta</li>
+<li>actividad física</li>
+<li>sedentarismo</li>
+<li>metabolismo</li>
+</ul>
+<p>Vamos a usar DAGs (Directed Acyclic Graphs, o grafos dirigidos acíclicos) para representar estas relaciones.</p>
+<p>No necesitas matemáticas avanzadas para entenderlos. Un DAG es simplemente un dibujo que nos ayuda a pensar mejor.</p>
+</section>
+<section id="intuición" class="level2">
+<h2 class="anchored" data-anchor-id="intuición">1. Intuición</h2>
+<section id="por-qué-necesitamos-un-modelo-causal" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-necesitamos-un-modelo-causal">¿Por qué necesitamos un modelo causal?</h3>
+<p>Cuando una persona tiene obesidad, es muy tentador buscar una sola explicación:</p>
+<ul>
+<li>“come mucho”</li>
+<li>“no hace ejercicio”</li>
+<li>“tiene genética”</li>
+<li>“tiene ansiedad”</li>
+<li>“come azúcar”</li>
+</ul>
+<p>El problema es que casi nunca existe una sola causa.</p>
+<p>La obesidad suele ser el resultado de muchas causas que se influyen entre sí.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>Una mala dieta puede aumentar la insulina.</li>
+<li>La insulina alta puede favorecer el almacenamiento de grasa visceral.</li>
+<li>La grasa visceral puede aumentar la inflamación.</li>
+<li>La inflamación puede empeorar la resistencia a la insulina.</li>
+<li>La resistencia a la insulina puede aumentar todavía más la insulina.</li>
+<li>El cansancio o el sedentarismo pueden empeorar todo el sistema.</li>
+</ul>
+<p>Es decir: no estamos viendo una cadena simple.</p>
+<p>Estamos viendo una red.</p>
+</section>
+</section>
+<section id="qué-es-un-dag" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-un-dag">¿Qué es un DAG?</h2>
+<p>Un DAG es un mapa causal.</p>
+<p>Cada variable es un nodo.</p>
+<p>Cada flecha representa una posible relación causal.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>dieta → insulina</li>
+<li>insulina → grasa visceral</li>
+<li>grasa visceral → inflamación</li>
+</ul>
+<p>La flecha no significa solamente que dos variables están relacionadas.</p>
+<p>La flecha significa que creemos que una puede influir sobre la otra.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>Ver que personas con más obesidad tienen más insulina no necesariamente implica que la obesidad cause la insulina alta.</li>
+<li>También podría ser que la insulina alta favorezca el aumento de grasa.</li>
+<li>O que ambas cosas se retroalimenten.</li>
+</ul>
+<p>Los DAGs nos obligan a ser explícitos sobre qué creemos que está causando qué.</p>
+<section id="pensar-en-obesidad-como-un-sistema" class="level3">
+<h3 class="anchored" data-anchor-id="pensar-en-obesidad-como-un-sistema">Pensar en obesidad como un sistema</h3>
+<p>Durante muchos años, la obesidad fue explicada casi exclusivamente como:</p>
+<p><em>exceso de calorías consumidas menos calorías gastadas</em></p>
+<p>Ese modelo puede ser útil en algunos contextos, pero es demasiado simple.</p>
+<p>Desde una visión más fisiopatológica, la obesidad también puede entenderse como el resultado de:</p>
+<ul>
+<li>hiperinsulinemia</li>
+<li>resistencia a la insulina</li>
+<li>inflamación crónica</li>
+<li>grasa visceral</li>
+<li>sedentarismo</li>
+<li>mala calidad de dieta</li>
+<li>alteraciones hormonales</li>
+</ul>
+<p>No todas las calorías tienen el mismo efecto hormonal.</p>
+<p>No todos los pacientes responden igual a la misma dieta.</p>
+<p>Y no todos los pacientes con obesidad tienen el mismo perfil metabólico.</p>
+<p>Por eso necesitamos un modelo más rico.</p>
+</section>
+<section id="causa-directa-y-causa-indirecta" class="level3">
+<h3 class="anchored" data-anchor-id="causa-directa-y-causa-indirecta">Causa directa y causa indirecta</h3>
+<p>Una causa directa afecta una variable sin pasar por otra intermedia.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>insulina → grasa visceral</li>
+</ul>
+<p>Aquí estamos diciendo que la insulina puede favorecer directamente el almacenamiento de grasa.</p>
+<p>Una causa indirecta actúa a través de otra variable.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>sedentarismo → insulina → grasa visceral</li>
+</ul>
+<p>Aquí el sedentarismo no necesariamente aumenta la grasa visceral por sí solo.</p>
+<p>Puede hacerlo porque favorece resistencia a la insulina, y eso a su vez favorece la acumulación de grasa.</p>
+</section>
+<section id="mediadores" class="level3">
+<h3 class="anchored" data-anchor-id="mediadores">Mediadores</h3>
+<p>Un mediador es una variable que está en el medio de una cadena causal.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>dieta → insulina → cintura abdominal</li>
+</ul>
+<p>En este caso:</p>
+<ul>
+<li>la dieta sería la causa inicial</li>
+<li>la cintura abdominal sería el resultado final</li>
+<li>la insulina sería el mediador</li>
+</ul>
+<p>Esto es importante porque a veces una variable parece “causar” otra, pero en realidad lo hace a través de un mecanismo intermedio.</p>
+</section>
+<section id="posibles-confusores" class="level3">
+<h3 class="anchored" data-anchor-id="posibles-confusores">Posibles confusores</h3>
+<p>Un confusor es una variable que influye tanto sobre la causa como sobre el resultado.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>edad puede influir sobre actividad física</li>
+<li>edad también puede influir sobre obesidad</li>
+</ul>
+<p>Entonces, si vemos que personas menos activas tienen más obesidad, parte de esa relación podría explicarse porque también son mayores.</p>
+<p>No significa que la actividad física no importe.</p>
+<p>Significa que necesitamos pensar cuidadosamente qué otras variables podrían estar influyendo.</p>
+</section>
+</section>
+<section id="ejemplo-simple-simulación-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
+<p>Vamos a crear un ejemplo sencillo donde:</p>
+<ul>
+<li>una peor dieta aumenta la insulina</li>
+<li>la insulina aumenta la cintura abdominal</li>
+<li>la cintura abdominal aumenta la inflamación</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 300 Pacientes</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulación de dieta -&gt; insulina -&gt; cintura -&gt; inflamación </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df_sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">calidad_dieta =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Una mejor dieta (mayor dieta) será igual a una menor insulina</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">insulina =</span> <span class="dv">15</span> <span class="sc">-</span> <span class="dv">3</span> <span class="sc">*</span> calidad_dieta <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Más insulina dará lugar a una mayor cintura</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cintura =</span> <span class="dv">80</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> insulina <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">5</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Mayor cintura da lugar a mayor inflamación</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">inflamacion =</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.08</span> <span class="sc">*</span> cintura <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>En esta simulación:</p>
+<ul>
+<li>valores altos de calidad_dieta representan mejor alimentación</li>
+<li>peor alimentación produce mayor insulina</li>
+<li>mayor insulina produce más cintura abdominal</li>
+<li>mayor cintura produce más inflamación</li>
+</ul>
+<p>Podemos visualizar algunas relaciones.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona insulina con cintura</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_sim, <span class="fu">aes</span>(<span class="at">x =</span> insulina, <span class="at">y =</span> cintura)) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mayor insulina, mayor cintura abdominal"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Insulina"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Circunferencia de cintura"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Y también:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona cintura con inflamación</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_sim, <span class="fu">aes</span>(<span class="at">x =</span> cintura, <span class="at">y =</span> inflamacion)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mayor cintura abdominal, mayor inflamación"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Circunferencia de cintura"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Inflamación"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este ejemplo es simple, pero ya nos muestra una idea importante:</p>
+<p>Las variables forman una historia.</p>
+<p>No aparecen de manera aislada.</p>
+<section id="representar-el-ejemplo-con-un-dag" class="level3">
+<h3 class="anchored" data-anchor-id="representar-el-ejemplo-con-un-dag">Representar el ejemplo con un DAG</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Representar el ejemplo de la simulación con un DAG</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dag_simple <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="st">dag {</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">  calidad_dieta -&gt; insulina</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">  insulina -&gt; cintura</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="st">  cintura -&gt; inflamacion</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="st">'</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggdag</span>(dag_simple, <span class="at">text =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co"># text = False impide que se pongan</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                                  <span class="co"># los nombres de los nodos</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dag</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="ejemplo-aplicado-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</h2>
+<p>Ahora vamos a construir un DAG más realista usando variables de NHANES.</p>
+<section id="paso-1-seleccionar-variables" class="level3">
+<h3 class="anchored" data-anchor-id="paso-1-seleccionar-variables">Paso 1 — Seleccionar variables</h3>
+<p>Vamos a trabajar con estas variables:</p>
+<p><strong>Inflamación</strong></p>
+<ul>
+<li>LBDNENO = neutrófilos</li>
+<li>LBDLYMNO = linfocitos</li>
+<li>LBXSGTSI = GGT</li>
+<li>RXD530 = aspirina</li>
+</ul>
+<p><strong>Metabolismo</strong></p>
+<ul>
+<li>LBXIN = insulina</li>
+<li>LBXSGL = glucosa</li>
+<li>LBXGH = HbA1c</li>
+<li>Adiposidad</li>
+<li>BMXBMI = IMC</li>
+<li>BMXWAIST = cintura</li>
+<li>BMDAVSAD = diámetro abdominal sagital</li>
+</ul>
+<p><strong>Estilo de vida</strong></p>
+<ul>
+<li>PAD680 = actividad física vigorosa</li>
+<li>variables DRQSDT = indicadores dietéticos</li>
+</ul>
+</section>
+<section id="paso-2-crear-una-tabla-simplificada" class="level3">
+<h3 class="anchored" data-anchor-id="paso-2-crear-una-tabla-simplificada">Paso 2 — Crear una tabla simplificada</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una tabla simplificada con las variables seleccionadas</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>nhanes_dag <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>( <span class="co"># transmute crea una nueva tabla con sólo las variables</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>             <span class="co"># que se indican en transmute</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">imc =</span> BMXBMI,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cintura =</span> BMXWAIST,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">diametro_abdominal =</span> BMDAVSAD,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">insulina =</span> LBXIN,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">glucosa =</span> LBXSGL,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">hba1c =</span> LBXGH,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">neutrofilos =</span> LBDNENO,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">linfocitos =</span> LBDLYMNO,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">ggt =</span> LBXSGTSI,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">aspirina =</span> RXD530,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">actividad_vigorosa =</span> PAD680</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="paso-3-construir-un-dag-clínico" class="level3">
+<h3 class="anchored" data-anchor-id="paso-3-construir-un-dag-clínico">Paso 3 — Construir un DAG clínico</h3>
+<p>Ahora vamos a crear una primera versión del modelo causal.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una primera versión del modelo causal </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dag_obesidad <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">'</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">dag {</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">  dieta -&gt; insulina</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">  dieta -&gt; inflamacion</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">  actividad_fisica -&gt; insulina</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">  actividad_fisica -&gt; inflamacion</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="st">  sedentarismo -&gt; insulina</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="st">  sedentarismo -&gt; inflamacion</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">  insulina -&gt; cintura</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">  insulina -&gt; diametro_abdominal</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">  insulina -&gt; imc</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="st">  cintura -&gt; inflamacion</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="st">  diametro_abdominal -&gt; inflamacion</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="st">  imc -&gt; inflamacion</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="st">  inflamacion -&gt; resistencia_insulina</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="st">  resistencia_insulina -&gt; insulina</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="st">  glucosa &lt;- insulina</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="st">  hba1c &lt;- glucosa</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="st">  aspirina -&gt; inflamacion</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="st">  edad -&gt; actividad_fisica</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="st">  edad -&gt; imc</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="st">'</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar el modelo causal</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="fu">ggdag</span>(dag_obesidad, <span class="at">use_labels =</span> <span class="st">"name"</span>) <span class="sc">+</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_dag</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cómo-leer-este-dag" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-leer-este-dag">Cómo leer este DAG</h3>
+<p>Este modelo dice que:</p>
+<ul>
+<li>La dieta puede influir tanto sobre inflamación como sobre insulina.</li>
+<li>La actividad física puede mejorar la sensibilidad a la insulina y disminuir inflamación.</li>
+<li>El sedentarismo puede empeorar ambos procesos.</li>
+<li>La insulina puede favorecer el aumento de grasa visceral.</li>
+<li>La grasa visceral puede aumentar la inflamación.</li>
+<li>La inflamación puede empeorar la resistencia a la insulina.</li>
+<li>La resistencia a la insulina puede producir todavía más insulina.</li>
+</ul>
+<p>Aunque un DAG no permite dibujar ciclos cerrados perfectos, aquí estamos representando la idea fisiopatológica de un círculo vicioso:</p>
+<ol type="1">
+<li>insulina alta</li>
+<li>más grasa visceral</li>
+<li>más inflamación</li>
+<li>más resistencia a la insulina</li>
+<li>todavía más insulina</li>
+</ol>
+</section>
+</section>
+<section id="relación-entre-insulina-y-adiposidad" class="level1">
+<h1>Relación entre insulina y adiposidad</h1>
+<p>Podemos explorar esta relación con NHANES.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona la insulina con la cintura</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>my_nhanes_dag <span class="ot">&lt;-</span> nhanes_dag <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    insulina <span class="sc">&lt;=</span> <span class="dv">200</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    cintura <span class="sc">&lt;</span> <span class="dv">200</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(my_nhanes_dag, <span class="fu">aes</span>(<span class="at">x =</span> insulina, <span class="at">y =</span> cintura)) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Insulina e incremento de cintura abdominal"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Insulina"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Circunferencia de cintura"</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>También:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaiona la insulina con el diametro </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># abdominal</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>my_nhanes_dag <span class="ot">&lt;-</span> nhanes_dag <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    insulina <span class="sc">&lt;=</span> <span class="dv">200</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    diametro_abdominal <span class="sc">&lt;=</span> <span class="dv">40</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(my_nhanes_dag, <span class="fu">aes</span>(<span class="at">x =</span> insulina, <span class="at">y =</span> diametro_abdominal)) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Insulina y diámetro abdominal"</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Insulina"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Diámetro abdominal sagital"</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="relación-entre-grasa-visceral-e-inflamación" class="level3">
+<h3 class="anchored" data-anchor-id="relación-entre-grasa-visceral-e-inflamación">Relación entre grasa visceral e inflamación</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona la cintura con la ggt</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>my_nhanes_dag <span class="ot">&lt;-</span> nhanes_dag <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    ggt <span class="sc">&lt;=</span> <span class="dv">500</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(my_nhanes_dag, <span class="fu">aes</span>(<span class="at">x =</span> cintura, <span class="at">y =</span> ggt)) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Cintura abdominal y GGT"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Circunferencia de cintura"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"GGT"</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Y también:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona el diámetro abdominal con</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># los neutrófilos</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>my_nhanes_dag <span class="ot">&lt;-</span> nhanes_dag <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    neutrofilos <span class="sc">&lt;=</span> <span class="dv">20</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(my_nhanes_dag, <span class="fu">aes</span>(<span class="at">x =</span> diametro_abdominal, <span class="at">y =</span> neutrofilos)) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Diámetro abdominal y neutrófilos"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Diámetro abdominal sagital"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Neutrófilos"</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="dónde-entra-la-aspirina" class="level3">
+<h3 class="anchored" data-anchor-id="dónde-entra-la-aspirina">¿Dónde entra la aspirina?</h3>
+<p>En este libro estamos usando la aspirina como una aproximación imperfecta de intervención antiinflamatoria.</p>
+<p>No significa que la aspirina cause menor obesidad directamente.</p>
+<p>Más bien, podría representar personas que:</p>
+<ul>
+<li>tienen enfermedad cardiovascular</li>
+<li>reciben tratamiento antiinflamatorio</li>
+<li>tienen un perfil de riesgo metabólico distinto</li>
+</ul>
+<p>Por eso, la aspirina puede actuar como una variable interesante dentro del DAG.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Haz un boxplot comparando neutrófilos según uso de aspirina.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>my_nhanes_dag <span class="ot">&lt;-</span> nhanes_dag <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    aspirina <span class="sc">&lt;=</span> <span class="dv">500</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">aspirina_cat =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(aspirina) <span class="sc">~</span> <span class="st">"no_usa"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>      aspirina <span class="sc">&lt;=</span> <span class="dv">100</span> <span class="sc">~</span> <span class="st">"baja_dosis"</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>      aspirina <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">~</span> <span class="st">"alta_dosis"</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(my_nhanes_dag, <span class="fu">aes</span>(<span class="at">x =</span> aspirina_cat, <span class="at">y =</span> neutrofilos)) <span class="sc">+</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Neutrófilos según uso de aspirina"</span>,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Uso de aspirina"</span>,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Neutrófilos"</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c09_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Para cada una de las siguientes parejas de variables, escribe una posible historia causal.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>insulina → cintura</li>
+<li>cintura → inflamación</li>
+<li>actividad física → insulina</li>
+<li>sedentarismo → HbA1c</li>
+<li>dieta → glucosa</li>
+<li>glucosa → HbA1c</li>
+</ul>
+<p>Para cada una responde:</p>
+<ol type="1">
+<li>¿Cuál crees que es la causa?</li>
+<li>¿Cuál crees que es el resultado?</li>
+<li>¿Cuál podría ser el mecanismo intermedio?</li>
+</ol>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Decide si cada variable actúa principalmente como:</p>
+<ul>
+<li>causa</li>
+<li>mediador</li>
+<li>resultado</li>
+<li>posible confusor</li>
+</ul>
+<p>Variables:</p>
+<ul>
+<li>edad</li>
+<li>insulina</li>
+<li>cintura abdominal</li>
+<li>actividad física</li>
+<li>inflamación</li>
+<li>HbA1c</li>
+<li>dieta</li>
+<li>aspirina</li>
+<li>sedentarismo</li>
+</ul>
+<p>No existe una única respuesta correcta.</p>
+<p>Lo importante es justificar tu razonamiento.</p>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Explica por qué estas dos historias no significan lo mismo:</p>
+<p>Historia A:</p>
+<ul>
+<li>actividad física → insulina → cintura</li>
+</ul>
+<p>Historia B:</p>
+<ul>
+<li>cintura → actividad física</li>
+</ul>
+<p>Pregunta:</p>
+<p>¿Cómo cambiaría tu interpretación clínica en cada caso?</p>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Dibuja un DAG simple con estas variables:</p>
+<ul>
+<li>dieta</li>
+<li>insulina</li>
+<li>cintura</li>
+<li>inflamación</li>
+</ul>
+<p>Debes incluir al menos:</p>
+<ul>
+<li>una causa directa</li>
+<li>una causa indirecta</li>
+<li>un mediador</li>
+</ul>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Amplía el DAG anterior agregando:</p>
+<ul>
+<li>actividad física</li>
+<li>sedentarismo</li>
+<li>edad</li>
+<li>HbA1c</li>
+</ul>
+<p>Pregunta:</p>
+<ol type="1">
+<li>¿Qué variables parecen más “centrales”?</li>
+<li>¿Qué variables parecen más “finales”?</li>
+<li>¿Qué variables parecen estar en el medio de la historia?</li>
+</ol>
+</section>
+<section id="ejercicio-6" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6">Ejercicio 6</h3>
+<p>Construye un DAG alternativo donde el sueño tenga un papel importante.</p>
+<p>Por ejemplo, puedes pensar algo como:</p>
+<ul>
+<li>mal sueño → más apetito</li>
+<li>mal sueño → menos actividad física</li>
+<li>mal sueño → más inflamación</li>
+<li>mal sueño → peor sensibilidad a la insulina</li>
+</ul>
+<p>Pregunta:</p>
+<p>¿Cómo cambia tu modelo causal cuando agregas sueño?</p>
+</section>
+<section id="ejercicio-7" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7">Ejercicio 7</h3>
+<p>Crea una tabla simplificada de NHANES usando transmute() con estas variables:</p>
+<p>imc = BMXBMI cintura = BMXWAIST insulina = LBXIN glucosa = LBXSGL hba1c = LBXGH neutrofilos = LBDNENO ggt = LBXSGTSI actividad = PAD680</p>
+<p>Pregunta:</p>
+<p>¿Por qué transmute() puede ser útil cuando quieres trabajar solo con pocas variables?</p>
+</section>
+<section id="ejercicio-8" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-8">Ejercicio 8</h3>
+<p>Haz un gráfico de dispersión entre:</p>
+<ul>
+<li>insulina y cintura</li>
+<li>insulina y diámetro abdominal</li>
+<li>cintura y neutrófilos</li>
+<li>cintura y GGT</li>
+</ul>
+<p>Usa:</p>
+<p><code>geom_point(alpha = 0.3)</code></p>
+<p><code>geom_smooth(method = "lm", se = FALSE)</code></p>
+<p>Pregunta:</p>
+<ol type="1">
+<li>¿Qué relación parece más fuerte?</li>
+<li>¿Cuál parece más débil?</li>
+<li>¿Qué variable parece comportarse como mejor proxy de inflamación?</li>
+</ol>
+</section>
+<section id="ejercicio-9" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-9">Ejercicio 9</h3>
+<p>Haz un boxplot comparando neutrófilos según uso de aspirina.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>my_nhanes_dag <span class="ot">&lt;-</span> nhanes_dag <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    aspirina <span class="sc">&lt;=</span> <span class="dv">500</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">aspirina_cat =</span> <span class="fu">case_when</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(aspirina) <span class="sc">~</span> <span class="st">"no_usa"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>      aspirina <span class="sc">&lt;=</span> <span class="dv">100</span> <span class="sc">~</span> <span class="st">"baja_dosis"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>      aspirina <span class="sc">&gt;</span> <span class="dv">100</span> <span class="sc">~</span> <span class="st">"alta_dosis"</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(my_nhanes_dag, <span class="fu">aes</span>(<span class="at">x =</span> aspirina_cat, <span class="at">y =</span> neutrofilos)) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Pregunta:</p>
+<ol type="1">
+<li>¿Qué grupo parece tener mayor inflamación?</li>
+<li>¿Crees que la aspirina está disminuyendo inflamación?</li>
+<li>¿O crees que las personas que usan aspirina ya tienen más enfermedad y riesgo metabólico?</li>
+</ol>
+</section>
+<section id="ejercicio-10" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-10">Ejercicio 10</h3>
+<p>Haz un gráfico de HbA1c contra glucosa.</p>
+<p>Pregunta:</p>
+<ol type="1">
+<li>¿La pendiente es positiva?</li>
+<li>¿Tiene sentido fisiopatológico?</li>
+<li>¿Cuál de las dos variables parece más “final” dentro del proceso metabólico?</li>
+</ol>
+</section>
+<section id="ejercicio-11" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-11">Ejercicio 11</h3>
+<p>Imagina dos pacientes:</p>
+<p>Paciente A:</p>
+<ul>
+<li>IMC = 32</li>
+<li>cintura muy alta</li>
+<li>insulina alta</li>
+<li>neutrófilos altos</li>
+<li>HbA1c alta</li>
+</ul>
+<p>Paciente B:</p>
+<ul>
+<li>IMC = 32</li>
+<li>cintura moderada</li>
+<li>insulina normal</li>
+<li>neutrófilos normales</li>
+<li>HbA1c normal</li>
+</ul>
+<p>Pregunta:</p>
+<ol type="1">
+<li>¿Cuál parece tener más riesgo metabólico?</li>
+<li>¿Por qué el IMC por sí solo no es suficiente?</li>
+<li>¿Qué papel parece tener la grasa visceral?</li>
+</ol>
+</section>
+<section id="ejercicio-12" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-12">Ejercicio 12</h3>
+<p>Piensa en una persona sedentaria que empieza a caminar 45 minutos al día.</p>
+<p>Describe una posible cadena causal de cambios.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>más actividad física</li>
+<li>menor insulina</li>
+<li>menos grasa visceral</li>
+<li>menos inflamación</li>
+<li>mejor glucosa</li>
+</ul>
+<p>Tu respuesta puede escribirse como lista o como DAG.</p>
+</section>
+<section id="ejercicio-13" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-13">Ejercicio 13</h3>
+<p>Haz tu propia versión completa del modelo causal de obesidad.</p>
+<p>Debes incluir al menos:</p>
+<ul>
+<li>dieta</li>
+<li>actividad física</li>
+<li>sedentarismo</li>
+<li>inflamación</li>
+<li>insulina</li>
+<li>cintura</li>
+<li>HbA1c</li>
+<li>edad</li>
+<li>sueño</li>
+<li>estrés</li>
+</ul>
+<p>Pregunta:</p>
+<ol type="1">
+<li>¿Qué variable parece iniciar más relaciones?</li>
+<li>¿Qué variable parece acumular más consecuencias?</li>
+<li>¿Cuál podría ser el mejor objetivo de intervención clínica?</li>
+</ol>
+</section>
+<section id="ejercicio-14" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-14">Ejercicio 14</h3>
+<p>Escribe un párrafo corto respondiendo esta pregunta:</p>
+<p><em>¿Por qué la obesidad no puede explicarse solamente como “comer mucho y moverse poco”?</em></p>
+<p>Tu respuesta debe incluir al menos tres de estas ideas:</p>
+<ul>
+<li>insulina</li>
+<li>inflamación</li>
+<li>grasa visceral</li>
+<li>resistencia a la insulina</li>
+<li>actividad física</li>
+<li>sueño</li>
+<li>dieta</li>
+<li>hormonas</li>
+<li>sedentarismo</li>
+</ul>
+<p>La meta es que expliques la obesidad como un sistema, no como una sola causa.</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

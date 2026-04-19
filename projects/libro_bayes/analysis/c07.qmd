@@ -17,10 +17,10 @@ df_obesidad <- read_csv("../data/obesidad_nhanes.csv")
 
 Hasta ahora has visto variables por separado:
 
-- IMC
-- insulina
-- triglicéridos
-- circunferencia de cintura
+-   IMC
+-   insulina
+-   triglicéridos
+-   circunferencia de cintura
 
 Cada una te dice algo… pero **la medicina real no funciona así**.
 
@@ -40,15 +40,15 @@ Imagina que quieres evaluar riesgo metabólico.
 
 Si miras solo IMC:
 
-- 28 → sobrepeso
-- 32 → obesidad
+-   28 → sobrepeso
+-   32 → obesidad
 
 Pero eso no es suficiente.
 
 Ahora agrega insulina:
 
 | IMC | Insulina | Interpretación                            |
-| --- | -------- | ----------------------------------------- |
+|-----|----------|-------------------------------------------|
 | 28  | baja     | probablemente sano                        |
 | 28  | alta     | posible resistencia a la insulina         |
 | 32  | baja     | obesidad pero metabólicamente más estable |
@@ -60,8 +60,8 @@ Ahora agrega insulina:
 
 #### Análisis separado
 
-- IMC promedio
-- Insulina promedio
+-   IMC promedio
+-   Insulina promedio
 
 Esto responde:
 
@@ -69,7 +69,7 @@ Esto responde:
 
 #### Análisis conjunto
 
-- IMC + insulina al mismo tiempo
+-   IMC + insulina al mismo tiempo
 
 Esto responde:
 
@@ -85,7 +85,7 @@ Cuando analizamos dos variables juntas, buscamos:
 
 Ejemplo:
 
-- A mayor IMC → mayor insulina
+-   A mayor IMC → mayor insulina
 
 👉 Esto sugiere resistencia a la insulina
 
@@ -93,9 +93,9 @@ Ejemplo:
 
 No siempre es una línea perfecta:
 
-- Puede haber grupos
-- Puede haber curvas
-- Puede haber subpoblaciones
+-   Puede haber grupos
+-   Puede haber curvas
+-   Puede haber subpoblaciones
 
 #### 3. Dependencia
 
@@ -103,8 +103,8 @@ Pregunta clave:
 
 *¿Saber si una variable me ayuda a predecir la otra?*
 
-- Si sí → están relacionadas
-- Si no → son independientes
+-   Si sí → están relacionadas
+-   Si no → son independientes
 
 ### Idea clave del capítulo
 
@@ -112,10 +112,10 @@ Pregunta clave:
 
 Esto conecta directamente con La Teoría Hormonal de la Obesidad:
 
-- La obesidad no es solo calorías
-- Es **hormonal (insulina)**
-- Es **inflamatoria**
-- Es **multifactorial**
+-   La obesidad no es solo calorías
+-   Es **hormonal (insulina)**
+-   Es **inflamatoria**
+-   Es **multifactorial**
 
 👉 Y eso solo se ve cuando analizas variables juntas.
 
@@ -123,8 +123,8 @@ Esto conecta directamente con La Teoría Hormonal de la Obesidad:
 
 Vamos a crear un ejemplo sencillo:
 
-- IMC
-- Insulina (relacionada con IMC)
+-   IMC
+-   Insulina (relacionada con IMC)
 
 ```{r}
 set.seed(123)
@@ -159,16 +159,18 @@ ggplot(df_sim, aes(x = imc, y = insulina)) +
 ```
 
 #### ¿Qué estás viendo?
-- Cada punto = un paciente
-- Eje X = IMC
-- Eje Y = insulina
+
+-   Cada punto = un paciente
+-   Eje X = IMC
+-   Eje Y = insulina
 
 👉 La línea suavizada muestra la tendencia general.
 
 ### Interpretación
-- A mayor IMC → mayor insulina
-- No es perfecto → hay variabilidad
-- Pero hay un patrón claro
+
+-   A mayor IMC → mayor insulina
+-   No es perfecto → hay variabilidad
+-   Pero hay un patrón claro
 
 👉 Esto es una **distribución conjunta visual**
 
@@ -216,9 +218,10 @@ df_joint %>%
 ```
 
 #### Qué buscar
-- ¿La línea sube? → asociación positiva
-- ¿Hay dispersión? → variabilidad biológica
-- ¿Hay zonas con más densidad? → subgrupos
+
+-   ¿La línea sube? → asociación positiva
+-   ¿Hay dispersión? → variabilidad biológica
+-   ¿Hay zonas con más densidad? → subgrupos
 
 ### Estratificación por sexo
 
@@ -246,8 +249,8 @@ df_joint %>%
 
 👉 Esto permite ver:
 
-- ¿El patrón es igual en hombres y mujeres?
-- ¿Hay diferencias clínicas relevantes?
+-   ¿El patrón es igual en hombres y mujeres?
+-   ¿Hay diferencias clínicas relevantes?
 
 ### Cintura + triglicéridos
 
@@ -282,8 +285,8 @@ df_joint %>%
 
 Esto es clave para:
 
-- síndrome metabólico
-- riesgo cardiovascular
+-   síndrome metabólico
+-   riesgo cardiovascular
 
 ## 4. Interpretación clínica
 
@@ -291,13 +294,13 @@ Esto es clave para:
 
 Un paciente con:
 
-- IMC alto
-- pero insulina normal
+-   IMC alto
+-   pero insulina normal
 
 NO es igual que:
 
-- IMC alto
-- insulina elevada
+-   IMC alto
+-   insulina elevada
 
 👉 El segundo tiene mayor disfunción metabólica.
 
@@ -305,28 +308,28 @@ NO es igual que:
 
 Cuando ves:
 
-- IMC ↑
-- Insulina ↑
+-   IMC ↑
+-   Insulina ↑
 
 👉 Estás viendo **resistencia a la insulina en acción**
 
 Esto encaja perfectamente con La Teoría Hormonal de la Obesidad:
 
-- La insulina no solo responde al peso
-- También lo dirige
+-   La insulina no solo responde al peso
+-   También lo dirige
 
 ### 3. Riesgo cardiometabólico
 
 Cuando observas:
 
-- Cintura ↑
-- Triglicéridos ↑
+-   Cintura ↑
+-   Triglicéridos ↑
 
 👉 Estás viendo:
 
-- grasa visceral
-- dislipidemia
-- inflamación
+-   grasa visceral
+-   dislipidemia
+-   inflamación
 
 ### 4. La importancia de la variabilidad
 
@@ -334,8 +337,8 @@ No todos los puntos siguen la línea.
 
 Eso significa:
 
-- Hay otros factores influyendo
-- (dieta, genética, actividad, sueño)
+-   Hay otros factores influyendo
+-   (dieta, genética, actividad, sueño)
 
 👉 Esto es incertidumbre real.
 
@@ -347,10 +350,10 @@ Eso significa:
 
 Aunque aún no usamos modelos formales, ya estás pensando como bayesiano:
 
-- No miras variables aisladas
-- Integras información
-- Aceptas incertidumbre
-- Buscas patrones, no certezas absolutas
+-   No miras variables aisladas
+-   Integras información
+-   Aceptas incertidumbre
+-   Buscas patrones, no certezas absolutas
 
 ### Lo que viene
 
@@ -379,9 +382,10 @@ df_joint %>%
 ```
 
 #### Preguntas
-- ¿En qué rango de IMC la pendiente es más fuerte?
-- ¿Dónde empieza a cambiar?
-- ¿Hay zonas con más densidad de puntos?
+
+-   ¿En qué rango de IMC la pendiente es más fuerte?
+-   ¿Dónde empieza a cambiar?
+-   ¿Hay zonas con más densidad de puntos?
 
 ### Ejercicio 2 — Cambiar el lente
 
@@ -406,8 +410,8 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Qué información pierdes?
-- ¿Cuál describe mejor la realidad clínica?
+-   ¿Qué información pierdes?
+-   ¿Cuál describe mejor la realidad clínica?
 
 ### Ejercicio 3 — Estratificación clínica
 
@@ -432,9 +436,9 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Las curvas son iguales en hombres y mujeres?
-- ¿Dónde hay más dispersión?
-- ¿Qué hipótesis clínica puedes generar?
+-   ¿Las curvas son iguales en hombres y mujeres?
+-   ¿Dónde hay más dispersión?
+-   ¿Qué hipótesis clínica puedes generar?
 
 ### Ejercicio 4 — Detectar extremos
 
@@ -461,8 +465,8 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Cuántos pacientes hay?
-- ¿Tiene sentido la forma de la curva?
+-   ¿Cuántos pacientes hay?
+-   ¿Tiene sentido la forma de la curva?
 
 ### Ejercicio 5 — Nueva relación clínica
 
@@ -483,30 +487,30 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Dónde aumenta más rápido el riesgo?
-- ¿Dónde se “aplana”?
-- ¿Qué explicación clínica propones?
+-   ¿Dónde aumenta más rápido el riesgo?
+-   ¿Dónde se “aplana”?
+-   ¿Qué explicación clínica propones?
 
 ### Ejercicio 6 — Pensamiento bayesiano
 
 👉 Elige un paciente:
 
-- IMC = 32
-- Insulina = 8
+-   IMC = 32
+-   Insulina = 8
 
 #### Preguntas
 
-- ¿Dónde cae en la gráfica?
-- ¿Es típico o atípico?
-- ¿Cómo cambiaría tu creencia sobre su riesgo?
+-   ¿Dónde cae en la gráfica?
+-   ¿Es típico o atípico?
+-   ¿Cómo cambiaría tu creencia sobre su riesgo?
 
 ### Ejercicio 7 — Crear hipótesis
 
 👉 Observa cualquier gráfico y responde:
 
-- ¿Qué patrón ves?
-- ¿Qué explicación biológica propones?
-- ¿Qué variable falta?
+-   ¿Qué patrón ves?
+-   ¿Qué explicación biológica propones?
+-   ¿Qué variable falta?
 
 ### Ejercicio 8 — Densidad oculta
 
@@ -527,9 +531,9 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Dónde se concentran más pacientes?
-- ¿Coincide con donde la curva cambia?
-- ¿Los extremos tienen suficiente información?
+-   ¿Dónde se concentran más pacientes?
+-   ¿Coincide con donde la curva cambia?
+-   ¿Los extremos tienen suficiente información?
 
 ### Ejercicio 9 — Filtrar por edad
 
@@ -549,9 +553,9 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Cambia la relación en mayores de 50?
-- ¿La curva se aplana antes?
-- ¿Qué rol juega la edad?
+-   ¿Cambia la relación en mayores de 50?
+-   ¿La curva se aplana antes?
+-   ¿Qué rol juega la edad?
 
 ### Ejercicio 10 — Subgrupos metabólicos
 
@@ -586,8 +590,8 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Los pacientes con triglicéridos altos tienen más insulina?
-- ¿Cambia la forma de la curva?
+-   ¿Los pacientes con triglicéridos altos tienen más insulina?
+-   ¿Cambia la forma de la curva?
 
 ### Ejercicio 11 — Buscar pacientes “raros”
 
@@ -603,14 +607,14 @@ df_joint %>%
 
 #### Preguntas
 
-- ¿Existen obesos con baja insulina?
-- ¿Qué explicaciones clínicas propones?
+-   ¿Existen obesos con baja insulina?
+-   ¿Qué explicaciones clínicas propones?
 
 ### Ejercicio 12 — Comparar dos relaciones
 
 Haz dos gráficos:
 
-1. IMC vs insulina
+1.  IMC vs insulina
 
 ```{r}
 #| message: false
@@ -626,8 +630,7 @@ df_joint %>%
   geom_smooth(method = "loess", se = FALSE)
 ```
 
-
-2. cintura vs triglicéridos
+2.  cintura vs triglicéridos
 
 ```{r}
 df_joint %>%
@@ -640,12 +643,11 @@ df_joint %>%
   geom_smooth(method = "loess", se = FALSE)
 ```
 
-
 #### Preguntas
 
-- ¿Cuál relación es más fuerte?
-- ¿Cuál es más clínica?
-- ¿Cuál usarías en consulta?
+-   ¿Cuál relación es más fuerte?
+-   ¿Cuál es más clínica?
+-   ¿Cuál usarías en consulta?
 
 ### Ejercicio 13 — Tu primer insight real
 
@@ -653,7 +655,7 @@ df_joint %>%
 
 Responde:
 
-- ¿Qué patrón ves?
-- ¿Dónde cambia la pendiente?
-- ¿Qué significa clínicamente?
-- ¿Qué variable falta?
+-   ¿Qué patrón ves?
+-   ¿Dónde cambia la pendiente?
+-   ¿Qué significa clínicamente?
+-   ¿Qué variable falta?

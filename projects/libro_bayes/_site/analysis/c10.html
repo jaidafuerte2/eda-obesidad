@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Prefacio – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<title>10.- Aspirina como Proxy de Inflamación – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -82,7 +82,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c00-prefacio.html">Prefacio</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c08.html">Módulo 4: Pensamiento causal</a></li><li class="breadcrumb-item"><a href="../analysis/c10.html">10.- Aspirina como Proxy de Inflamación</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -115,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link active">
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Prefacio</span></a>
   </div>
 </li>
@@ -209,6 +209,18 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">8.- Introducción a DAGs</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9.- Tu Modelo Causal de Obesidad</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">10.- Aspirina como Proxy de Inflamación</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -221,20 +233,22 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#qué-es-esto" id="toc-qué-es-esto" class="nav-link active" data-scroll-target="#qué-es-esto">¿Qué es esto?</a></li>
-  <li><a href="#qué-haré" id="toc-qué-haré" class="nav-link" data-scroll-target="#qué-haré">¿Qué haré ?</a></li>
-  <li><a href="#específicamente-qué-crearé" id="toc-específicamente-qué-crearé" class="nav-link" data-scroll-target="#específicamente-qué-crearé">Específicamente ¿ qué crearé ?</a></li>
-  <li><a href="#cuáles-son-los-objetivos-de-este-libro" id="toc-cuáles-son-los-objetivos-de-este-libro" class="nav-link" data-scroll-target="#cuáles-son-los-objetivos-de-este-libro">¿Cuáles son los objetivos de este libro?</a></li>
-  <li><a href="#a-quien-está-dirigido-este-libro" id="toc-a-quien-está-dirigido-este-libro" class="nav-link" data-scroll-target="#a-quien-está-dirigido-este-libro">¿A quien está dirigido este libro?</a></li>
+  <li><a href="#intuición" id="toc-intuición" class="nav-link active" data-scroll-target="#intuición">1. Intuición</a>
+  <ul class="collapse">
+  <li><a href="#variable-observada-vs-variable-latente" id="toc-variable-observada-vs-variable-latente" class="nav-link" data-scroll-target="#variable-observada-vs-variable-latente">Variable observada vs variable latente</a></li>
+  <li><a href="#por-qué-usar-proxies" id="toc-por-qué-usar-proxies" class="nav-link" data-scroll-target="#por-qué-usar-proxies">¿Por qué usar proxies?</a></li>
+  <li><a href="#asociación-no-es-causalidad" id="toc-asociación-no-es-causalidad" class="nav-link" data-scroll-target="#asociación-no-es-causalidad">Asociación no es causalidad</a></li>
+  <li><a href="#un-dag-simple-para-pensar-el-problema" id="toc-un-dag-simple-para-pensar-el-problema" class="nav-link" data-scroll-target="#un-dag-simple-para-pensar-el-problema">Un DAG simple para pensar el problema</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c08.html">Módulo 4: Pensamiento causal</a></li><li class="breadcrumb-item"><a href="../analysis/c10.html">10.- Aspirina como Proxy de Inflamación</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Prefacio</h1>
+<h1 class="title">10.- Aspirina como Proxy de Inflamación</h1>
 </div>
 
 
@@ -251,33 +265,127 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="qué-es-esto" class="level2">
-<h2 class="anchored" data-anchor-id="qué-es-esto">¿Qué es esto?</h2>
-<p>Este es un libro que creé para explicar el análisis bayesiano aplicado a la obesidad y sus enfermedades asociadas. Se basa conceptualmente en el libro de Adam Fleischhacker <a href="https://www.causact.com/">“A Business Analyst’s Introduction to Business Analytics (Second Edition)”</a>, sin embargo no es una copia textual ni traducción; tampoco sigue exactamente los mismos capítulos y usa bibliotecas de R distintas (especialmente no uso causact ni numpyro). Además este libro usa algunas variables de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos de los años 2013 y 2014 <a href="https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013">NHANES 2013-2014</a></p>
-</section>
-<section id="qué-haré" class="level2">
-<h2 class="anchored" data-anchor-id="qué-haré">¿Qué haré ?</h2>
-<p>Crearé un libro con quarto <a href="https://quarto.org/">quarto</a> en formato web, basándome en lo aprendido del libro de Adam Fleischhacker <a href="https://www.causact.com/">“A Business Analyst’s Introduction to Business Analytics (Second Edition)”</a> que se puede aplicar muy bien al contexto de la obesidad y sus enfermedades asociadas con las datasets de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos <a href="https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013">NHANES 2013-2014</a>. Sin embargo este no es un resumen ni una traducción ni sigue los mismos capítulos del libro de Adam Fleischhacker y, aunque se usará R para los análisis bayesianos, no se usarán las bibliotecas causact ni numpyro.</p>
-<p>Al final de cada capítulo hay algunos ejercicios que pueden ayudarte a comprender mejor la teoría.</p>
-</section>
-<section id="específicamente-qué-crearé" class="level2">
-<h2 class="anchored" data-anchor-id="específicamente-qué-crearé">Específicamente ¿ qué crearé ?</h2>
-<p>Este es un libro creado con <a href="https://quarto.org/">quarto</a>. Quarto es un sistema de creación de documentos como libros y presentaciones, ideal para incluir código de R y los resultados de los distintos análisis bayesianos que se hagan en un contexto relacionado con la obesidad y algunas variables importantes de la Encuesta Nacional de Salud y Nutrición de los Estados Unidos <a href="https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2013">NHANES</a>.</p>
-</section>
-<section id="cuáles-son-los-objetivos-de-este-libro" class="level2">
-<h2 class="anchored" data-anchor-id="cuáles-son-los-objetivos-de-este-libro">¿Cuáles son los objetivos de este libro?</h2>
+<section id="intuición" class="level2">
+<h2 class="anchored" data-anchor-id="intuición">1. Intuición</h2>
+<p>En medicina muchas veces queremos estudiar cosas que no podemos observar de forma directa.</p>
+<p>Por ejemplo:</p>
 <ul>
-<li><p>Aprender Bayes enseñando.</p></li>
-<li><p>Practicar R en el contexto del análisis bayesiano.</p></li>
-<li><p>Analizar algunas variables de la NHANES en contexto bayesiano.</p></li>
-<li><p>Utilizar esta práctica de análisis bayesiano para crear un libro completo sobre obesidad y enfermedades asociadas pero basado en datos.</p></li>
+<li>No podemos “ver” la resistencia a la insulina</li>
+<li>No podemos medir fácilmente la inflamación crónica de bajo grado</li>
+<li>No podemos saber exactamente cuánto daño metabólico acumulado tiene una persona</li>
 </ul>
+<p>Lo que hacemos entonces es usar señales indirectas.</p>
+<p>A esas señales indirectas las llamamos variables proxy.</p>
+<p>Una variable proxy es una variable observable que usamos como aproximación de otra variable que es más difícil de medir.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>El perímetro abdominal puede ser un proxy de grasa visceral</li>
+<li>La hemoglobina glicosilada puede ser un proxy del promedio de glucosa de los últimos meses</li>
+<li>La proteína C reactiva puede ser un proxy de inflamación</li>
+<li>La dosis de aspirina puede ser un proxy de inflamación o de enfermedad cardiovascular previa</li>
+</ul>
+<p>La idea central es simple:</p>
+<p><em>No observamos directamente la inflamación crónica, pero podemos observar cosas que suelen aparecer cuando hay inflamación.</em></p>
+<p>Sin embargo, los proxies tienen una limitación importante:</p>
+<p><em>Nunca son una copia perfecta de la variable real.</em></p>
+<p>La aspirina es un buen ejemplo.</p>
+<p>Muchas personas usan aspirina porque:</p>
+<ul>
+<li>tienen dolor o inflamación</li>
+<li>tienen artritis</li>
+<li>tienen riesgo cardiovascular</li>
+<li>han tenido un infarto previo</li>
+<li>un médico les indicó aspirina preventiva</li>
+<li>la toman por automedicación</li>
+</ul>
+<p>Eso significa que la aspirina puede estar relacionada con inflamación, pero también con edad, enfermedad cardiovascular, diabetes, obesidad o decisiones médicas previas.</p>
+<p>Entonces, cuando vemos que una persona usa más aspirina, no necesariamente significa que “tiene más inflamación”.</p>
+<p>Puede significar muchas cosas al mismo tiempo.</p>
+<p>Ese es precisamente el reto del pensamiento causal.</p>
+<section id="variable-observada-vs-variable-latente" class="level3">
+<h3 class="anchored" data-anchor-id="variable-observada-vs-variable-latente">Variable observada vs variable latente</h3>
+<p>Una variable observada es algo que podemos medir directamente.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>IMC</li>
+<li>glucosa</li>
+<li>neutrófilos</li>
+<li>dosis de aspirina</li>
+</ul>
+<p>Una variable latente es algo que existe, pero no observamos de manera directa.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>inflamación crónica</li>
+<li>riesgo cardiometabólico global</li>
+<li>resistencia a la insulina</li>
+<li>estrés fisiológico acumulado</li>
+</ul>
+<p>Podemos pensar en la inflamación crónica como una especie de “fuego interno” que no vemos directamente, pero del que observamos humo.</p>
+<p>Ese humo puede ser:</p>
+<ul>
+<li>neutrófilos elevados</li>
+<li>GGT elevada</li>
+<li>glucosa alta</li>
+<li>obesidad abdominal</li>
+<li>uso de aspirina</li>
+</ul>
+<p>La aspirina no es el fuego.</p>
+<p>La aspirina es una posible señal de que alguien podría tener más fuego.</p>
 </section>
-<section id="a-quien-está-dirigido-este-libro" class="level2">
-<h2 class="anchored" data-anchor-id="a-quien-está-dirigido-este-libro">¿A quien está dirigido este libro?</h2>
-<p>Yo creé este libro pensando en mí mismo que no tengo grandes conocimientos de matématicas ni estadística, así que creo que casi cualquiera podría seguir este libro sin conocimientos de estadística o matemáticas. Aunque tal vez ayude conocer un poco el lenguaje de progrmación R; creo que no es indispensable porque justamente R está pensado en usuarios que no saben programar, sin embargo un recurso que me gusta mucho son los ocho primero capítulo del libro R for Data Science (2e) de Hadley Wickham <a href="https://r4ds.hadley.nz/">R4DS</a>.</p>
+<section id="por-qué-usar-proxies" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-usar-proxies">¿Por qué usar proxies?</h3>
+<p>Porque en datos reales no siempre tenemos las variables ideales.</p>
+<p>En NHANES no existe una variable perfecta llamada “nivel de inflamación crónica”.</p>
+<p>Entonces debemos construir aproximaciones razonables.</p>
+<p>La ventaja de los proxies es que permiten estudiar fenómenos complejos.</p>
+<p>La desventaja es que pueden introducir ruido, confusión y errores de interpretación.</p>
+</section>
+<section id="asociación-no-es-causalidad" class="level3">
+<h3 class="anchored" data-anchor-id="asociación-no-es-causalidad">Asociación no es causalidad</h3>
+<p>Supongamos que encontramos que las personas que usan más aspirina tienen más glucosa.</p>
+<p>¿Eso significa que la aspirina eleva la glucosa?</p>
+<p>No necesariamente.</p>
+<p>Puede ocurrir que:</p>
+<ul>
+<li>las personas con obesidad tienen más inflamación</li>
+<li>las personas con más inflamación usan más aspirina</li>
+<li>las personas con obesidad también tienen más glucosa</li>
+</ul>
+<p>Entonces la obesidad podría ser la verdadera causa de ambas cosas.</p>
+<p>Ese fenómeno se llama confusión.</p>
+<p>La confusión ocurre cuando una tercera variable influye tanto en la exposición como en el resultado.</p>
+<p>En este caso:</p>
+<ul>
+<li>obesidad → más inflamación</li>
+<li>obesidad → más aspirina</li>
+<li>obesidad → más glucosa</li>
+</ul>
+<p>Por eso no basta con ver correlaciones.</p>
+<p>Necesitamos pensar en historias causales.</p>
+</section>
+<section id="un-dag-simple-para-pensar-el-problema" class="level3">
+<h3 class="anchored" data-anchor-id="un-dag-simple-para-pensar-el-problema">Un DAG simple para pensar el problema</h3>
+<p>Podemos imaginar una historia causal así:</p>
+<ul>
+<li>La obesidad aumenta la inflamación</li>
+<li>La inflamación aumenta la probabilidad de usar aspirina</li>
+<li>La inflamación también aumenta neutrófilos, GGT y glucosa</li>
+<li>La edad aumenta la probabilidad de usar aspirina y también aumenta el riesgo cardiometabólico</li>
+</ul>
+<p>La relación puede representarse de forma simplificada así:</p>
+<ul>
+<li>obesidad → inflamación</li>
+<li>inflamación → aspirina</li>
+<li>inflamación → neutrófilos</li>
+<li>inflamación → glucosa</li>
+<li>edad → aspirina</li>
+<li>edad → glucosa</li>
+</ul>
+<p>La inflamación está en el centro del sistema, pero no la observamos directamente.</p>
+<p>La aspirina es solo una de las pistas que tenemos.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

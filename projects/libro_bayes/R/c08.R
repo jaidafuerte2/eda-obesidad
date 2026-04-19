@@ -60,12 +60,12 @@ df_joint <- df_obesidad %>%
 # con la glicemia
 df_joint %>%
   filter(
-    LBXSGL <= 300,
-    BMXBMI <= 50
+    LBXSGL <= 500,
+    BMXBMI <= 60
   ) %>%
   ggplot(aes(x = BMXBMI, y = LBXSGL)) +
     geom_point(alpha = 0.3) +
-    geom_smooth() +
+    geom_smooth(method = "lm") +
     labs(
       title = "IMC vs Glicemia",
       x = "IMC",
@@ -81,7 +81,7 @@ df_joint %>%
   ) %>%
   ggplot(aes(x = BMXBMI, y = BPXSY_mean)) +
   geom_point(alpha = 0.3) +
-  geom_smooth() +
+  geom_smooth(method = "lm") +
   labs(
     title = "IMC vs Presión Arterial",
     x = "IMC",
@@ -97,7 +97,7 @@ df_joint %>%
   ) %>%
   ggplot(aes(x = BMXBMI, y = PAD680)) +
   geom_point(alpha = 0.3) +
-  geom_smooth(method = "loess") +
+  geom_smooth(method = "lm") +
   labs(
     title = "IMC vs Sedentarismo",
     x = "IMC",
@@ -324,7 +324,7 @@ dag {
   imc -> presion
 }
 ")
-plot(dag)
+#plot(dag)
 
 # Después responde:
   
@@ -405,7 +405,7 @@ dag <- dagitty("
 }
 " 
 )
-plot(dag)
+#plot(dag)
 
 # Después responde:
   
@@ -476,7 +476,7 @@ dag {
   imc -> presion
 }
 ")
-plot(mi_dag)
+#plot(mi_dag)
 
 # Ahora agrega una nueva variable, por ejemplo:
   
@@ -496,7 +496,7 @@ dag {
   imc -> inflamacion
 }
 ")
-plot(mi_dag)
+#plot(mi_dag)
 
 # Pregunta:
   
@@ -529,7 +529,7 @@ dag <- dagitty(
   }
   "
 )
-plot(dag)
+#plot(dag)
   
 #  Objetivo final:
   

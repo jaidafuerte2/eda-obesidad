@@ -610,7 +610,8 @@ summary(df_obesidad$horas_computadora) # produce:
 # realiza una persona por semana
 df_obesidad <- df_obesidad %>%
   mutate(
-    min_vigorosa_laboral_semana = PAQ610 * PAD615
+    min_vigorosa_laboral_semana = dias_trabajo_vigoroso * 
+      minutos_trabajo_vigoroso
   )
 unique(df_obesidad$min_vigorosa_laboral_semana)[1:20] # produce: 
 #[1]   NA 1200 2400   90  480   60  120  720 1080  210  180  360  600
@@ -619,28 +620,6 @@ unique(df_obesidad$min_vigorosa_laboral_semana)[1:20] # produce:
 summary(df_obesidad$min_vigorosa_laboral_semana)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #10.0   150.0   480.0   881.7  1200.0 69993.0    4736 
-
-############################
-##
-## Minutos de actividades 
-## laborales moderdas
-## por semana
-##
-############################
-
-# Conocer cuantos minutos de actividad física vigorosa laboral 
-# realiza una persona por semana
-df_obesidad <- df_obesidad %>%
-  mutate(
-    min_moderada_laboral_semana = PAQ625 * PAD630
-  )
-unique(df_obesidad$min_moderada_laboral_semana)[1:20] # produce: 
-#[1]   NA   10  210   60 2400  360  240  600 1800 1200 1440  120  150
-#[14]  100  180  480  300 1260   45  900
-
-summary(df_obesidad$min_moderada_laboral_semana)
-#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#10.0   150.0   420.0   757.8  1065.0 59994.0    3875 
 
 ############################
 ##
@@ -654,7 +633,8 @@ summary(df_obesidad$min_moderada_laboral_semana)
 # realiza una persona por semana
 df_obesidad <- df_obesidad %>%
   mutate(
-    min_vigorosa_recrea_semana = PAQ655 * PAD660
+    min_vigorosa_recrea_semana = dias_ejercicio_vigoroso * 
+      minutos_ejercicio_vigoroso
   )
 unique(df_obesidad$min_vigorosa_recrea_semana)[1:20] # produce: 
 #[1]   NA   80 1080  240  420  360  300   60  200  180  600   90   75
@@ -664,6 +644,56 @@ summary(df_obesidad$min_vigorosa_recrea_semana) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #10.0   120.0   180.0   265.9   339.5  2400.0    4439 
 
+#############################
+##
+## Minutos totales de 
+## actividades  vigorosas
+##
+#############################
+
+# Conocer cuantos minutos de actividad física vigorosa total 
+# realiza una persona por semana
+df_obesidad <- df_obesidad %>%
+  mutate(
+    min_vigorosa_total = 
+      # Se usa coalesce para evitar perder observaciones por NA's en
+      # alguna de las dos variables
+      coalesce(min_vigorosa_laboral_semana, 0) + 
+      coalesce(min_vigorosa_recrea_semana, 0)
+  )
+unique(df_obesidad$min_vigorosa_total)[1:20] # produce: 
+#[1]    0 1200 2400   90   80 1560   60  240  420  120  360  720  300
+#[14] 1080  200  210  180  600   75  450
+
+summary(df_obesidad$min_vigorosa_total) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.0     0.0     0.0   221.3   150.0 69993.0 
+
+############################
+##
+## Minutos de actividades 
+## laborales moderdas
+## por semana
+##
+############################
+
+# Conocer cuantos minutos de actividad física moderada laboral 
+# realiza una persona por semana
+df_obesidad <- df_obesidad %>%
+  mutate(
+    min_moderada_laboral_semana = dias_trabajo_moderado * 
+      minutos_trabajo_moderado
+  )
+unique(df_obesidad$min_moderada_laboral_semana)[1:20] # produce: 
+#[1]   NA   10  210   60 2400  360  240  600 1800 1200 1440  120  150
+#[14]  100  180  480  300 1260   45  900
+
+summary(df_obesidad$min_moderada_laboral_semana)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#10.0   150.0   420.0   757.8  1065.0 59994.0    3875 
+
+
+
 ############################
 ##
 ## Minutos de actividades 
@@ -672,11 +702,12 @@ summary(df_obesidad$min_vigorosa_recrea_semana) # produce:
 ##
 ############################
 
-# Conocer cuantos minutos de actividad física vigorosa recrativa 
+# Conocer cuantos minutos de actividad física moderada recreativa 
 # realiza una persona por semana
 df_obesidad <- df_obesidad %>%
   mutate(
-    min_moderada_recrea_semana = PAQ670 * PAD675
+    min_moderada_recrea_semana = dias_ejercicio_moderado * 
+      minutos_ejercicio_moderado
   )
 unique(df_obesidad$min_moderada_recrea_semana)[1:20] # produce: 
 #[1]  NA 180 120  60 420 540 240 840  40 360 150  30  90 600  50 100 210
@@ -711,30 +742,28 @@ summary(df_obesidad$min_moderada_total) # produce:
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #0.0     0.0    80.0   340.2   360.0 60834.0 
 
-#############################
+############################
 ##
-## Minutos totales de 
-## actividades  vigorosas
+## Minutos movilizándose a 
+## pie o cicleando por
+## semana
 ##
-#############################
+############################
 
-# Conocer cuantos minutos de actividad física vigorosa total 
-# realiza una persona por semana
+# Conocer cuantos minutos pasa una persona movilizándose a pie o
+# cicleando a la semana
 df_obesidad <- df_obesidad %>%
   mutate(
-    min_vigorosa_total = 
-      # Se usa coalesce para evitar perder observaciones por NA's en
-      # alguna de las dos variables
-      coalesce(min_vigorosa_laboral_semana, 0) + 
-      coalesce(min_vigorosa_recrea_semana, 0)
+    min_caminar_ciclear_total = dias_caminar_ciclear * 
+      minutos_caminar_ciclear
   )
-unique(df_obesidad$min_vigorosa_total)[1:20] # produce: 
-#[1]    0 1200 2400   90   80 1560   60  240  420  120  360  720  300
-#[14] 1080  200  210  180  600   75  450
+unique(df_obesidad$min_caminar_ciclear_total)[1:20] # produce: 
+#[1]  NA 180 120  60 420 540 240 840  40 360 150  30  90 600  50 100 210
+#[18]  25 160 200
 
-summary(df_obesidad$min_vigorosa_total) # produce:
-#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0.0     0.0     0.0   221.3   150.0 69993.0 
+summary(df_obesidad$min_caminar_ciclear_total) # produce:
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#0.0    90.0   135.0   217.7   240.0  4500.0    3383
 
 ###########################
 ##
@@ -753,9 +782,14 @@ obesidad_cuestionario_ejercicio <- df_obesidad %>%
          dias_ejercicio_vigoroso, minutos_ejercicio_vigoroso,
          ejercicio_moderado, dias_ejercicio_moderado,
          minutos_ejercicio_moderado, minutos_actividad_sedentaria,
-         dias_ejercicio_60, horas_tv_videos, horas_computadora)
+         dias_ejercicio_60, horas_tv_videos, horas_computadora,
+         # Nuevas variables
+         min_vigorosa_laboral_semana, min_vigorosa_recrea_semana,
+         min_vigorosa_total, min_moderada_laboral_semana,
+         min_moderada_recrea_semana, min_moderada_total,
+         min_caminar_ciclear_total)
 
 # Crear un archivo .cvs con la dataset de laboratorio
-write.csv(obesidad_cuestionario_dieta_lacteos,
+write.csv(obesidad_cuestionario_ejercicio,
           "eda-obesidad/data/obesidad/9_obesidad_cuestionario_ejercicio.csv",
           row.names = FALSE)

@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6.- Distribuciones en la vida real – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c05.html">Módulo 3: Entender la Incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c06.html">6.- Distribuciones en la vida real</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 1: Pensar Como Analista Bayesiano</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- De Datos a Decisiones Clínicas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 2: Herramientas en R (mínimo necesario)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Preparando NHANES en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Visualización para Entender Datos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 3: Entender la Incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidad como Creencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">6.- Distribuciones en la vida real</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Distribuciones conjuntas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intuición-sin-código" id="toc-intuición-sin-código" class="nav-link active" data-scroll-target="#intuición-sin-código">1. Intuición (SIN código)</a>
+  <ul class="collapse">
+  <li><a href="#qué-es-una-distribución" id="toc-qué-es-una-distribución" class="nav-link" data-scroll-target="#qué-es-una-distribución">¿Qué es una distribución?</a></li>
+  <li><a href="#analogía-clínica" id="toc-analogía-clínica" class="nav-link" data-scroll-target="#analogía-clínica">Analogía clínica</a></li>
+  <li><a href="#valor-individual-vs-población" id="toc-valor-individual-vs-población" class="nav-link" data-scroll-target="#valor-individual-vs-población">Valor individual vs población</a></li>
+  <li><a href="#valores-comunes-vs-extremos" id="toc-valores-comunes-vs-extremos" class="nav-link" data-scroll-target="#valores-comunes-vs-extremos">Valores comunes vs extremos</a></li>
+  <li><a href="#dispersión-variabilidad" id="toc-dispersión-variabilidad" class="nav-link" data-scroll-target="#dispersión-variabilidad">Dispersión (variabilidad)</a></li>
+  <li><a href="#forma-de-la-distribución" id="toc-forma-de-la-distribución" class="nav-link" data-scroll-target="#forma-de-la-distribución">Forma de la distribución</a></li>
+  <li><a href="#punto-clave-clínico" id="toc-punto-clave-clínico" class="nav-link" data-scroll-target="#punto-clave-clínico">Punto clave clínico</a></li>
+  <li><a href="#idea-central-del-capítulo" id="toc-idea-central-del-capítulo" class="nav-link" data-scroll-target="#idea-central-del-capítulo">Idea central del capítulo</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <ul class="collapse">
+  <li><a href="#histograma" id="toc-histograma" class="nav-link" data-scroll-target="#histograma">Histograma</a></li>
+  <li><a href="#densidad-forma-suave" id="toc-densidad-forma-suave" class="nav-link" data-scroll-target="#densidad-forma-suave">Densidad (forma suave)</a></li>
+  <li><a href="#qué-estamos-viendo" id="toc-qué-estamos-viendo" class="nav-link" data-scroll-target="#qué-estamos-viendo">¿Qué estamos viendo?</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-aplicado-con-nhanes" id="toc-ejemplo-aplicado-con-nhanes" class="nav-link" data-scroll-target="#ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</a>
+  <ul class="collapse">
+  <li><a href="#preparar-datos" id="toc-preparar-datos" class="nav-link" data-scroll-target="#preparar-datos">Preparar datos</a></li>
+  <li><a href="#distribución-de-glicemia" id="toc-distribución-de-glicemia" class="nav-link" data-scroll-target="#distribución-de-glicemia">1. Distribución de glicemia</a></li>
+  <li><a href="#distribución-de-imc" id="toc-distribución-de-imc" class="nav-link" data-scroll-target="#distribución-de-imc">2. Distribución de IMC</a></li>
+  <li><a href="#presión-arterial-sistólica" id="toc-presión-arterial-sistólica" class="nav-link" data-scroll-target="#presión-arterial-sistólica">3. Presión arterial sistólica</a></li>
+  <li><a href="#comparación-por-edad-opcional" id="toc-comparación-por-edad-opcional" class="nav-link" data-scroll-target="#comparación-por-edad-opcional">4. Comparación por edad (opcional)</a></li>
+  </ul></li>
+  <li><a href="#interpretación-clínica" id="toc-interpretación-clínica" class="nav-link" data-scroll-target="#interpretación-clínica">4. Interpretación clínica</a>
+  <ul class="collapse">
+  <li><a href="#no-existe-el-paciente-promedio" id="toc-no-existe-el-paciente-promedio" class="nav-link" data-scroll-target="#no-existe-el-paciente-promedio">1. No existe el paciente “promedio”</a></li>
+  <li><a href="#la-enfermedad-no-es-binaria" id="toc-la-enfermedad-no-es-binaria" class="nav-link" data-scroll-target="#la-enfermedad-no-es-binaria">2. La enfermedad no es binaria</a></li>
+  <li><a href="#obesidad-como-fenómeno-poblacional" id="toc-obesidad-como-fenómeno-poblacional" class="nav-link" data-scroll-target="#obesidad-como-fenómeno-poblacional">3. Obesidad como fenómeno poblacional</a></li>
+  <li><a href="#riesgo-cardiovascular" id="toc-riesgo-cardiovascular" class="nav-link" data-scroll-target="#riesgo-cardiovascular">4. Riesgo cardiovascular</a></li>
+  </ul></li>
+  <li><a href="#conexión-con-bayes" id="toc-conexión-con-bayes" class="nav-link" data-scroll-target="#conexión-con-bayes">5. Conexión con Bayes</a>
+  <ul class="collapse">
+  <li><a href="#idea-final-del-capítulo" id="toc-idea-final-del-capítulo" class="nav-link" data-scroll-target="#idea-final-del-capítulo">Idea final del capítulo</a></li>
+  <li><a href="#lo-que-acabas-de-aprender" id="toc-lo-que-acabas-de-aprender" class="nav-link" data-scroll-target="#lo-que-acabas-de-aprender">Lo que acabas de aprender</a></li>
+  </ul></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-entender-drop_na" id="toc-ejercicio-1-entender-drop_na" class="nav-link" data-scroll-target="#ejercicio-1-entender-drop_na">Ejercicio 1 — Entender drop_na()</a></li>
+  <li><a href="#ejercicio-2-comparar-con-y-sin-drop_na" id="toc-ejercicio-2-comparar-con-y-sin-drop_na" class="nav-link" data-scroll-target="#ejercicio-2-comparar-con-y-sin-drop_na">Ejercicio 2 — Comparar con y sin drop_na()</a></li>
+  <li><a href="#ejercicio-3-jugar-con-set.seed" id="toc-ejercicio-3-jugar-con-set.seed" class="nav-link" data-scroll-target="#ejercicio-3-jugar-con-set.seed">Ejercicio 3 — Jugar con set.seed()</a></li>
+  <li><a href="#ejercicio-4-variabilidad-clave" id="toc-ejercicio-4-variabilidad-clave" class="nav-link" data-scroll-target="#ejercicio-4-variabilidad-clave">Ejercicio 4 — Variabilidad (clave)</a></li>
+  <li><a href="#ejercicio-5-distribución-clínica-real" id="toc-ejercicio-5-distribución-clínica-real" class="nav-link" data-scroll-target="#ejercicio-5-distribución-clínica-real">Ejercicio 5 — Distribución clínica real</a></li>
+  <li><a href="#ejercicio-6-pensamiento-clínico-profundo" id="toc-ejercicio-6-pensamiento-clínico-profundo" class="nav-link" data-scroll-target="#ejercicio-6-pensamiento-clínico-profundo">Ejercicio 6 — Pensamiento clínico profundo</a></li>
+  <li><a href="#ejercicio-7-nivel-siguiente" id="toc-ejercicio-7-nivel-siguiente" class="nav-link" data-scroll-target="#ejercicio-7-nivel-siguiente">Ejercicio 7 (nivel siguiente)</a></li>
+  <li><a href="#ejercicio-8-detectar-sesgo-en-la-distribución" id="toc-ejercicio-8-detectar-sesgo-en-la-distribución" class="nav-link" data-scroll-target="#ejercicio-8-detectar-sesgo-en-la-distribución">Ejercicio 8 — Detectar sesgo en la distribución</a></li>
+  <li><a href="#ejercicio-9-comparar-histogramas-vs-densidad" id="toc-ejercicio-9-comparar-histogramas-vs-densidad" class="nav-link" data-scroll-target="#ejercicio-9-comparar-histogramas-vs-densidad">Ejercicio 9 — Comparar histogramas vs densidad</a></li>
+  <li><a href="#ejercicio-10-identificar-outliers-clínicos" id="toc-ejercicio-10-identificar-outliers-clínicos" class="nav-link" data-scroll-target="#ejercicio-10-identificar-outliers-clínicos">Ejercicio 10 — Identificar outliers clínicos</a></li>
+  <li><a href="#ejercicio-11-distribución-vs-punto-de-corte" id="toc-ejercicio-11-distribución-vs-punto-de-corte" class="nav-link" data-scroll-target="#ejercicio-11-distribución-vs-punto-de-corte">Ejercicio 11 — Distribución vs punto de corte</a></li>
+  <li><a href="#ejercicio-12-superposición-de-distribuciones" id="toc-ejercicio-12-superposición-de-distribuciones" class="nav-link" data-scroll-target="#ejercicio-12-superposición-de-distribuciones">Ejercicio 12 — Superposición de distribuciones</a></li>
+  <li><a href="#ejercicio-13-pensamiento-bayesiano-inicial" id="toc-ejercicio-13-pensamiento-bayesiano-inicial" class="nav-link" data-scroll-target="#ejercicio-13-pensamiento-bayesiano-inicial">Ejercicio 13 — Pensamiento bayesiano inicial</a></li>
+  <li><a href="#ejercicio-14-cambio-en-la-distribución" id="toc-ejercicio-14-cambio-en-la-distribución" class="nav-link" data-scroll-target="#ejercicio-14-cambio-en-la-distribución">Ejercicio 14 — Cambio en la distribución</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c05.html">Módulo 3: Entender la Incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c06.html">6.- Distribuciones en la vida real</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">6.- Distribuciones en la vida real</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="intuición-sin-código" class="level2">
+<h2 class="anchored" data-anchor-id="intuición-sin-código">1. Intuición (SIN código)</h2>
+<p>En medicina, estamos acostumbrados a pensar en valores concretos:</p>
+<ul>
+<li>glicemia: <em>“100 está normal”</em></li>
+<li>IMC: <em>“30 es obesidad”</em></li>
+<li>presión arterial: <em>“140 ya es hipertensión”</em></li>
+</ul>
+<p>Pero la realidad biológica no funciona así.</p>
+<p>👉 <strong>No existen pacientes “promedio”</strong></p>
+<p>👉 <strong>Existen poblaciones con variabilidad</strong></p>
+<section id="qué-es-una-distribución" class="level3">
+<h3 class="anchored" data-anchor-id="qué-es-una-distribución">¿Qué es una distribución?</h3>
+<p>Una <strong>distribución</strong> es simplemente la forma en que los valores de una variable se reparten en un grupo de personas.</p>
+<p>Imagina esto:</p>
+<ul>
+<li>Tomas 1,000 pacientes</li>
+<li>Mides su glicemia</li>
+</ul>
+<p>¿Todos tienen el mismo valor?</p>
+<p>Claro que no.</p>
+<p>Obtendrás algo así:</p>
+<ul>
+<li>muchos pacientes entre 80–100</li>
+<li>algunos entre 100–125</li>
+<li>pocos por encima de 126</li>
+</ul>
+<p>👉 Eso <strong>ES una distribución</strong></p>
+</section>
+<section id="analogía-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="analogía-clínica">Analogía clínica</h3>
+<p>Piensa en la glicemia como si fuera la temperatura en una ciudad:</p>
+<ul>
+<li>No hay una sola temperatura</li>
+<li>Hay una <strong>distribución de temperaturas</strong></li>
+</ul>
+<p>Lo mismo ocurre en el cuerpo humano.</p>
+</section>
+<section id="valor-individual-vs-población" class="level3">
+<h3 class="anchored" data-anchor-id="valor-individual-vs-población">Valor individual vs población</h3>
+<p>Aquí está una idea clave:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Nivel</th>
+<th>Qué significa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>👤 Paciente individual</td>
+<td>Un número (ej: glicemia = 110)</td>
+</tr>
+<tr class="even">
+<td>👥 Población</td>
+<td>Un rango de valores</td>
+</tr>
+</tbody>
+</table>
+<p>👉 El error común:</p>
+<p>Creer que un solo valor representa a todos.</p>
+</section>
+<section id="valores-comunes-vs-extremos" class="level3">
+<h3 class="anchored" data-anchor-id="valores-comunes-vs-extremos">Valores comunes vs extremos</h3>
+<p>En cualquier distribución hay:</p>
+<ul>
+<li><strong>Valores comunes</strong> → la mayoría de las personas</li>
+<li><strong>Valores extremos</strong> → pocos individuos</li>
+</ul>
+<p>Ejemplo clínico:</p>
+<ul>
+<li>IMC 22 → muy común</li>
+<li>IMC 45 → raro</li>
+</ul>
+<p>👉 Pero ambos son reales.</p>
+</section>
+<section id="dispersión-variabilidad" class="level3">
+<h3 class="anchored" data-anchor-id="dispersión-variabilidad">Dispersión (variabilidad)</h3>
+<p>No todas las variables son igual de “estrechas”:</p>
+<ul>
+<li>La temperatura corporal → poca variación</li>
+<li>El IMC → mucha variación</li>
+</ul>
+<p>👉 Esto se llama <strong>dispersión</strong></p>
+</section>
+<section id="forma-de-la-distribución" class="level3">
+<h3 class="anchored" data-anchor-id="forma-de-la-distribución">Forma de la distribución</h3>
+<p>Las distribuciones pueden tener diferentes formas:</p>
+<ul>
+<li>Simétrica (tipo campana)</li>
+<li>Sesgada (más hacia un lado)</li>
+<li>Con colas largas (valores extremos)</li>
+</ul>
+<p>Ejemplo clínico:</p>
+<ul>
+<li>IMC suele estar sesgado a la derecha</li>
+<li>glicemia puede tener cola hacia valores altos</li>
+</ul>
+</section>
+<section id="punto-clave-clínico" class="level3">
+<h3 class="anchored" data-anchor-id="punto-clave-clínico">Punto clave clínico</h3>
+<p>Los puntos de corte como:</p>
+<ul>
+<li>glicemia ≥ 126 → diabetes</li>
+<li>IMC ≥ 30 → obesidad</li>
+</ul>
+<p>👉 <strong>NO reflejan la realidad completa</strong></p>
+<p>Son simplificaciones útiles, pero:</p>
+<p><em>La biología es continua, no binaria.</em></p>
+</section>
+<section id="idea-central-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="idea-central-del-capítulo">Idea central del capítulo</h3>
+<p>👉 La medicina trabaja con distribuciones, no con valores únicos.</p>
+<p>Y esto es fundamental para pensar en términos bayesianos.</p>
+</section>
+</section>
+<section id="ejemplo-simple-simulación-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
+<p>Vamos a crear una población ficticia de glicemia.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una población ficticia de glicemia</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>glicemia_sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">glicemia =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">15</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="histograma" class="level3">
+<h3 class="anchored" data-anchor-id="histograma">Histograma</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de la glicemia</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>glicemia_sim <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> glicemia)) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución simulada de glicemia"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Glicemia"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Número de personas"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="densidad-forma-suave" class="level3">
+<h3 class="anchored" data-anchor-id="densidad-forma-suave">Densidad (forma suave)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de densidad de la glicemia</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>glicemia_sim <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> glicemia)) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"orange"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Forma de la distribución de glicemia"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Glicemia"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Densidad"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="qué-estamos-viendo" class="level3">
+<h3 class="anchored" data-anchor-id="qué-estamos-viendo">¿Qué estamos viendo?</h3>
+<ul>
+<li>No hay un solo valor → hay un rango</li>
+<li>La mayoría está cerca de 100</li>
+<li>Hay valores extremos</li>
+</ul>
+<p>👉 Esto ya es pensar en términos de incertidumbre</p>
+</section>
+</section>
+<section id="ejemplo-aplicado-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</h2>
+<p>Ahora trabajamos con datos reales.</p>
+<p>Variables:</p>
+<ul>
+<li>glicemia → LBXSGL</li>
+<li>IMC → BMXBMI</li>
+<li>presión sistólica → BPXSY_mean</li>
+</ul>
+<section id="preparar-datos" class="level3">
+<h3 class="anchored" data-anchor-id="preparar-datos">Preparar datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seleccionar sólo las variables que voy a usar</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_dist <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(LBXSGL, BMXBMI, BPXSY_mean, RIDAGEYR) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="distribución-de-glicemia" class="level3">
+<h3 class="anchored" data-anchor-id="distribución-de-glicemia">1. Distribución de glicemia</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma - Distribución de la glicemia</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_dist <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> LBXSGL)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">70</span>, <span class="at">fill =</span> <span class="st">"darkred"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución de glicemia (NHANES)"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Glicemia"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Frecuencia"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación-visual" class="level4">
+<h4 class="anchored" data-anchor-id="interpretación-visual">Interpretación visual</h4>
+<ul>
+<li>Mayoría en rango normal</li>
+<li>Cola hacia valores altos</li>
+<li>Algunos pacientes claramente elevados</li>
+</ul>
+<p>👉 <strong>No hay una línea clara donde “empieza” la diabetes</strong></p>
+</section>
+</section>
+<section id="distribución-de-imc" class="level3">
+<h3 class="anchored" data-anchor-id="distribución-de-imc">2. Distribución de IMC</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma - Dsitribución del índice de masa corporal</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_dist <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> BMXBMI)) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">"darkgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución de IMC"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"IMC"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Frecuencia"</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="observación-clave" class="level4">
+<h4 class="anchored" data-anchor-id="observación-clave">Observación clave</h4>
+<ul>
+<li>Distribución sesgada a la derecha</li>
+<li>Muchos pacientes con IMC elevado</li>
+<li>Algunos valores extremos</li>
+</ul>
+<p>👉 Refleja la epidemia de obesidad</p>
+</section>
+</section>
+<section id="presión-arterial-sistólica" class="level3">
+<h3 class="anchored" data-anchor-id="presión-arterial-sistólica">3. Presión arterial sistólica</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de densidad de la presión arterial sistólica </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df_obesidad_dist <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> BPXSY_mean)) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"purple"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución de presión sistólica"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Presión sistólica"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Densidad"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="observación" class="level4">
+<h4 class="anchored" data-anchor-id="observación">Observación</h4>
+<ul>
+<li>Distribución más estrecha</li>
+<li>Menos dispersión que el IMC</li>
+<li>Pero aún con variabilidad importante</li>
+</ul>
+</section>
+</section>
+<section id="comparación-por-edad-opcional" class="level3">
+<h3 class="anchored" data-anchor-id="comparación-por-edad-opcional">4. Comparación por edad (opcional)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de densidad que compara la glicemia con la edad </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(LBXSGL), <span class="sc">!</span><span class="fu">is.na</span>(RIDAGEYR)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grupo_edad =</span> <span class="fu">if_else</span>(RIDAGEYR <span class="sc">&lt;</span> <span class="dv">50</span>, <span class="st">"&lt;50"</span>, <span class="st">"≥50"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> LBXSGL, <span class="at">fill =</span> grupo_edad)) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución de glicemia por edad"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Glicemia"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Grupo edad"</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="qué-muestra-esto" class="level4">
+<h4 class="anchored" data-anchor-id="qué-muestra-esto">Qué muestra esto</h4>
+<ul>
+<li>Los mayores tienden a desplazarse hacia glicemias más altas</li>
+<li>No es un cambio brusco → es gradual</li>
+</ul>
+<p>👉 La enfermedad aparece como un cambio en la distribución</p>
+</section>
+</section>
+</section>
+<section id="interpretación-clínica" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-clínica">4. Interpretación clínica</h2>
+<section id="no-existe-el-paciente-promedio" class="level3">
+<h3 class="anchored" data-anchor-id="no-existe-el-paciente-promedio">1. No existe el paciente “promedio”</h3>
+<p>Cuando dices:</p>
+<p><em>“La glicemia promedio es 100”</em></p>
+<p>Eso no describe a nadie en particular.</p>
+<p>👉 Describe <strong>una distribución completa</strong></p>
+</section>
+<section id="la-enfermedad-no-es-binaria" class="level3">
+<h3 class="anchored" data-anchor-id="la-enfermedad-no-es-binaria">2. La enfermedad no es binaria</h3>
+<p>Ejemplo:</p>
+<ul>
+<li>glicemia 124 → “no diabético”</li>
+<li>glicemia 126 → “diabético”</li>
+</ul>
+<p>👉 ¿Realmente son tan diferentes?</p>
+<p>No.</p>
+<p>👉 Están en la misma distribución.</p>
+</section>
+<section id="obesidad-como-fenómeno-poblacional" class="level3">
+<h3 class="anchored" data-anchor-id="obesidad-como-fenómeno-poblacional">3. Obesidad como fenómeno poblacional</h3>
+<p>El IMC muestra algo clave:</p>
+<ul>
+<li>No hay dos grupos separados (normal vs obeso)</li>
+<li>Hay una <strong>continuidad</strong></li>
+</ul>
+<p>👉 La obesidad no es un interruptor</p>
+<p>👉 Es un desplazamiento de toda la distribución</p>
+</section>
+<section id="riesgo-cardiovascular" class="level3">
+<h3 class="anchored" data-anchor-id="riesgo-cardiovascular">4. Riesgo cardiovascular</h3>
+<p>Presión arterial:</p>
+<ul>
+<li>No hay un punto donde el riesgo aparece de golpe</li>
+<li>El riesgo aumenta progresivamente</li>
+</ul>
+<p>👉 Esto es clave para decisiones clínicas</p>
+</section>
+</section>
+<section id="conexión-con-bayes" class="level2">
+<h2 class="anchored" data-anchor-id="conexión-con-bayes">5. Conexión con Bayes</h2>
+<p>Pensar en distribuciones es el primer paso para pensar bayesianamente:</p>
+<ul>
+<li>No hablamos de certezas</li>
+<li>Hablamos de <strong>rangos de posibilidad</strong></li>
+</ul>
+<p>Ejemplo:</p>
+<p><em>“Creo que este paciente tiene alta probabilidad de resistencia a la insulina”</em></p>
+<p>Eso implica:</p>
+<p>👉 una distribución de posibles estados fisiológicos</p>
+<section id="idea-final-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="idea-final-del-capítulo">Idea final del capítulo</h3>
+<p>La medicina no trata valores individuales aislados. Trata distribuciones de pacientes con distintos niveles de riesgo.</p>
+</section>
+<section id="lo-que-acabas-de-aprender" class="level3">
+<h3 class="anchored" data-anchor-id="lo-que-acabas-de-aprender">Lo que acabas de aprender</h3>
+<ul>
+<li>Qué es una distribución</li>
+<li>Por qué los datos clínicos no son un solo valor</li>
+<li>Cómo visualizar variabilidad</li>
+<li>Por qué los puntos de corte son simplificaciones</li>
+<li>Cómo empezar a pensar en incertidumbre</li>
+</ul>
+</section>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1-entender-drop_na" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-entender-drop_na">Ejercicio 1 — Entender drop_na()</h3>
+<p>Crea un dataset con:</p>
+<ul>
+<li>glicemia</li>
+<li>IMC</li>
+</ul>
+<p>Incluye algunos NA.</p>
+<p>👉 Tareas:</p>
+<ol type="1">
+<li>Cuenta cuántas filas hay antes</li>
+<li>Aplica drop_na()</li>
+<li>Cuenta cuántas quedan</li>
+<li>Reflexiona:</li>
+</ol>
+<p><em>¿Qué tipo de pacientes estás eliminando?</em></p>
+</section>
+<section id="ejercicio-2-comparar-con-y-sin-drop_na" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-comparar-con-y-sin-drop_na">Ejercicio 2 — Comparar con y sin drop_na()</h3>
+<p>Con NHANES:</p>
+<ol type="1">
+<li>Grafica la distribución de glicemia SIN drop_na()</li>
+<li>Luego CON drop_na()</li>
+<li>Compara:</li>
+</ol>
+<p>👉 ¿Cambia la forma de la distribución?</p>
+</section>
+<section id="ejercicio-3-jugar-con-set.seed" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-jugar-con-set.seed">Ejercicio 3 — Jugar con set.seed()</h3>
+<ol type="1">
+<li>Genera 1000 valores de glicemia simulada SIN set.seed()</li>
+<li>Grafica</li>
+<li>Vuelve a correr → observa cambios</li>
+</ol>
+<p>Ahora:</p>
+<ol start="4" type="1">
+<li>Usa set.seed(42)</li>
+<li>Repite</li>
+</ol>
+<p>👉 Pregunta:</p>
+<p><em>¿Qué cambia y qué no cambia?</em></p>
+</section>
+<section id="ejercicio-4-variabilidad-clave" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-variabilidad-clave">Ejercicio 4 — Variabilidad (clave)</h3>
+<p>Simula dos poblaciones:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#set.seed(123)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#baja_var &lt;- rnorm(1000, 100, 5)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#alta_var &lt;- rnorm(1000, 100, 20)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>👉 Grafica ambas distribuciones</p>
+<p>Pregunta:</p>
+<ul>
+<li>¿Cuál representa mejor:</li>
+</ul>
+<ol type="1">
+<li>glicemia en ayunas?</li>
+</ol>
+</section>
+<section id="ejercicio-5-distribución-clínica-real" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5-distribución-clínica-real">Ejercicio 5 — Distribución clínica real</h3>
+<p>Con NHANES:</p>
+<ol type="1">
+<li>Grafica IMC</li>
+<li>Identifica visualmente:</li>
+</ol>
+<ul>
+<li>zona más común</li>
+<li>valores extremos 3.Responde:</li>
+</ul>
+<p><em>¿Tiene sentido el punto de corte IMC = 30 viendo la distribución?</em></p>
+</section>
+<section id="ejercicio-6-pensamiento-clínico-profundo" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6-pensamiento-clínico-profundo">Ejercicio 6 — Pensamiento clínico profundo</h3>
+<p>Observa la distribución de glicemia.</p>
+<p>Responde:</p>
+<ol type="1">
+<li>¿Tiene sentido tratar igual a:</li>
+</ol>
+<ul>
+<li>glicemia 125</li>
+<li>glicemia 126?</li>
+</ul>
+<p>👉 Explica usando el concepto de distribución</p>
+</section>
+<section id="ejercicio-7-nivel-siguiente" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7-nivel-siguiente">Ejercicio 7 (nivel siguiente)</h3>
+<p>Crea dos grupos:</p>
+<ul>
+<li>IMC &lt; 30</li>
+<li>IMC ≥ 30</li>
+</ul>
+<p>Y grafica la distribución de glicemia para ambos.</p>
+<p>👉 Pregunta:</p>
+<p><em>¿Las distribuciones son realmente distintas o se solapan?</em></p>
+<p>(Este ejercicio abre la puerta al siguiente capítulo 👀)</p>
+</section>
+<section id="ejercicio-8-detectar-sesgo-en-la-distribución" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-8-detectar-sesgo-en-la-distribución">Ejercicio 8 — Detectar sesgo en la distribución</h3>
+<p>Con NHANES:</p>
+<ol type="1">
+<li>Grafica la distribución de IMC (BMXBMI)</li>
+<li>Observa la forma</li>
+</ol>
+<p>👉 Preguntas:</p>
+<ul>
+<li>¿Es simétrica o sesgada?</li>
+<li>¿Hacia qué lado?</li>
+<li>¿Qué significa clínicamente ese sesgo?</li>
+</ul>
+</section>
+<section id="ejercicio-9-comparar-histogramas-vs-densidad" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-9-comparar-histogramas-vs-densidad">Ejercicio 9 — Comparar histogramas vs densidad</h3>
+<p>Para glicemia (LBXSGL):</p>
+<ol type="1">
+<li>Haz un geom_histogram()</li>
+<li>Haz un geom_density()</li>
+</ol>
+<p>👉 Pregunta:</p>
+<p><em>¿Qué información te da cada uno que el otro no?</em></p>
+</section>
+<section id="ejercicio-10-identificar-outliers-clínicos" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-10-identificar-outliers-clínicos">Ejercicio 10 — Identificar outliers clínicos</h3>
+<p>Con presión sistólica (BPXSY_mean):</p>
+<ol type="1">
+<li>Grafica la distribución</li>
+<li>Identifica visualmente valores extremos</li>
+</ol>
+<p>👉 Pregunta:</p>
+<ul>
+<li>¿Qué valores considerarías clínicamente preocupantes?</li>
+<li>¿Son frecuentes o raros?</li>
+</ul>
+</section>
+<section id="ejercicio-11-distribución-vs-punto-de-corte" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-11-distribución-vs-punto-de-corte">Ejercicio 11 — Distribución vs punto de corte</h3>
+<p>Para glicemia:</p>
+<ol type="1">
+<li>Grafica la distribución</li>
+<li>Agrega una línea vertical en 126</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_vline(xintercept = 126, color = "red")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>👉 Pregunta:</p>
+<p><em>¿La línea separa claramente dos poblaciones?</em></p>
+</section>
+<section id="ejercicio-12-superposición-de-distribuciones" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-12-superposición-de-distribuciones">Ejercicio 12 — Superposición de distribuciones</h3>
+<p>Divide IMC en:</p>
+<ul>
+<li>normal (&lt;25)</li>
+<li>sobrepeso (25–30)</li>
+<li>obesidad (≥30)</li>
+</ul>
+<p>Y grafica la glicemia para cada grupo.</p>
+<p>👉 Pregunta:</p>
+<p><em>¿Las distribuciones están separadas o se solapan?</em></p>
+</section>
+<section id="ejercicio-13-pensamiento-bayesiano-inicial" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-13-pensamiento-bayesiano-inicial">Ejercicio 13 — Pensamiento bayesiano inicial</h3>
+<p>Observa la distribución de glicemia.</p>
+<p>👉 Pregunta:</p>
+<p><em>Si tomas un paciente al azar con glicemia de 110,</em> <em>¿es más probable que sea “normal” o “prediabético”?</em></p>
+<p>(No uses puntos de corte, usa la forma de la distribución)</p>
+</section>
+<section id="ejercicio-14-cambio-en-la-distribución" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-14-cambio-en-la-distribución">Ejercicio 14 — Cambio en la distribución</h3>
+<p>Divide por edad:</p>
+<ul>
+<li>&lt;40</li>
+<li>40–60</li>
+<li>60</li>
+</ul>
+<p>Grafica glicemia.</p>
+<p>👉 Pregunta:</p>
+<p><em>¿La edad cambia el centro o la forma de la distribución?</em></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
