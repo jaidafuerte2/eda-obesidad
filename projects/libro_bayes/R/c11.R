@@ -336,3 +336,25 @@ hist(posterior[, "usa_aspirina"], breaks = 30,
 # Respuesta: la obesidad causa inflamación y ocasionalmente se
 # puede prescribir menos de 100mg de aspirina como profilaxis
 # de eventos cardiovasculares por inflamación
+
+#####################
+##
+## Ejercicio 6
+##
+#####################
+
+#Ejercicio 6 — Explica como si enseñaras
+
+# Imagina que explicas esto a un colega médico.
+
+# Tarea:
+  
+#  Completa:
+  
+#  “Hicimos un modelo bayesiano y encontramos que…”
+
+# Incluye:
+  
+#  efecto
+#  incertidumbre
+#  interpretación clínica
