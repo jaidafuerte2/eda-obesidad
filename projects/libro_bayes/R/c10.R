@@ -101,18 +101,18 @@ ggplot(my_df_aspirina, aes(x = RXD530, y = BMXBMI)) +
   )
 
 # Diagrama de dispersión que relaciona la dosis de aspirina con 
-# la relación neutrófilos linfocitos
+# netrófilos
 my_df_aspirina <- df_aspirina %>%
   filter(
     RXD530 <= 500
   )
-ggplot(my_df_aspirina, aes(x = RXD530, y = LBDNENO/LBDLYMNO)) +
+ggplot(my_df_aspirina, aes(x = RXD530, y = LBDNENO)) +
   geom_point(alpha = 0.3) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(
     title = "Dosis de aspirina y neutrófilos",
     x = "Dosis de aspirina",
-    y = "Neutrofilos/linfocitos"
+    y = "Neutrofilos"
   )
 
 # Diagrama de dispersión que relaciona la dosis de aspirina con 
@@ -154,14 +154,15 @@ my_df_aspirina %>%
   )
 
 # Diagrama de caja que relaciona el uso de aspirina por causas
-# inflamatorias cpn neutrófilos
-ggplot(my_df_aspirina, aes(x = usa_aspirina_inflamatoria, y = LBDNENO)) +
+# inflamatorias (<= 100mg) con neutrófilos
+ggplot(my_df_aspirina, aes(x = aspirina_cat, y = LBDNENO)) +
   geom_boxplot() +
   labs(
     title = "Neutrófilos según uso de aspirina",
     x = "Uso de aspirina",
     y = "Neutrófilos"
   )
+
 # Crear un dag simple de aspirina
 dag_aspirina <- dagitty("
 dag {
@@ -176,7 +177,7 @@ dag {
 }
 ")
 # Visualizar el dag
-#plot(dag_aspirina)
+plot(dag_aspirina)
 
 # Crear un dag de aspirina con la aspirina no observada
 dag_aspirina2 <- dagitty("

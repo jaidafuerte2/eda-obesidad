@@ -32,6 +32,10 @@ website:
         - analysis/c08.qmd
         - analysis/c09.qmd
         - analysis/c10.qmd
+      - section: "Módulo 5: Modelos Bayesianos en R"
+        #href: analysis/m05.qmd
+        contents:
+        - analysis/c11.qmd
   page-footer: 
     border: false
     background: light

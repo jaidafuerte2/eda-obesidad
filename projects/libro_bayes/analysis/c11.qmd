@@ -1,0 +1,16 @@
+---
+title: "11.- Primer Modelo Bayesiano (brms)"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+
+
+df_obesidad <- read_csv("../data/obesidad_nhanes.csv")
+```
+
