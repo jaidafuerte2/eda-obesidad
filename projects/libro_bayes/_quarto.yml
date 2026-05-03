@@ -36,6 +36,8 @@ website:
         #href: analysis/m05.qmd
         contents:
         - analysis/c11.qmd
+        - analysis/c12.qmd
+        - analysis/c13.qmd
   page-footer: 
     border: false
     background: light

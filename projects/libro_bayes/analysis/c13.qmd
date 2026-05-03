@@ -1,0 +1,616 @@
+---
+title: "13.- Priors"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(rstanarm)
+library(bayesplot)
+
+# Cargar la dataset de obesidad
+df_obesidad <- read_csv(
+  "../data/obesidad_nhanes.csv",
+  guess_max = 10000,
+  show_col_types = FALSE
+)
+```
+
+## 1. Intuición (SIN código)
+
+Imagina que estás en consulta.
+
+Llega un paciente con obesidad abdominal, sedentario, con antecedentes familiares de diabetes. Antes de pedir cualquier examen, ya tienes una idea en tu cabeza:
+
+👉 “Este paciente probablemente tiene resistencia a la insulina”
+
+👉 “Su riesgo de diabetes es alto”
+
+Eso **es un prior**.
+
+### ¿Qué es un prior?
+
+Un **prior** es lo que creemos **antes de ver los datos**.
+
+No es adivinanza.
+No es subjetividad sin fundamento.
+
+Es:
+
+- experiencia clínica
+- fisiopatología
+- evidencia previa
+- sentido común médico
+
+👉 En medicina, **nunca empezamos desde cero**.
+
+¿Por qué esto es importante?
+
+En estadística clásica, se asume implícitamente que empezamos sin información previa.
+
+Pero eso no es realista.
+
+👉 Un médico SIEMPRE tiene una idea previa.
+
+Bayes simplemente hace algo muy poderoso:
+
+👉 **Hace explícito ese conocimiento previo**
+
+### Tipos de priors
+
+🔹 1. **Prior débil (weak prior)**
+
+Es como decir:
+
+`“No estoy muy seguro, pero tengo una idea general”`
+
+Ejemplo:
+
+- Sabes que el IMC promedio suele estar alrededor de 25–30
+- Pero no quieres forzar demasiado el modelo
+
+👉 Dejas que los datos hablen
+
+🔹 2. **Prior informativo**
+
+Es como decir:
+
+`“Estoy bastante seguro de esto”`
+
+Ejemplo:
+
+- Sabes que la insulina aumenta con el IMC
+- Tienes evidencia fisiopatológica fuerte
+
+👉 Guías al modelo con conocimiento clínico
+
+### Relación clave
+
+El corazón del análisis bayesiano es:
+
+👉 **Posterior = Prior + Datos**
+
+Pero no es una suma simple. Es una combinación inteligente.
+
+### Idea fundamental del capítulo
+
+👉 Si los datos son muy fuertes → dominan
+
+👉 Si los datos son débiles → el prior importa más
+
+### Analogía clínica
+
+Piensa en un diagnóstico:
+
+- **Paciente típico + síntomas claros** → el diagnóstico es obvio (datos dominan)
+- **Paciente ambiguo** → tu experiencia pesa más (prior domina)
+
+👉 **El análisis bayesiano funciona igual que el razonamiento clínico**
+
+## 2. Ejemplo simple (simulación en R)
+
+Vamos a construir una situación sencilla:
+
+Queremos estimar la relación entre IMC e insulina.
+
+Sabemos clínicamente que:
+
+👉 A mayor IMC → mayor insulina (resistencia a la insulina)
+
+### Simulación
+
+```{r}
+set.seed(123)
+
+# Crear 80 pacientes 
+n <- 80
+
+# Simaular imc e insulina (en relación con imc)
+datos_sim <- tibble(
+  imc = rnorm(n, mean = 28, sd = 4),
+  insulina = 5 + 0.6 * imc + rnorm(n, 0, 3)
+)
+```
+
+### Modelo 1: prior débil
+
+```{r}
+# Crear modelo débil
+modelo_debil <- stan_glm(
+  insulina ~ imc,
+  data = datos_sim,
+  prior = normal(0, 10), # prior es cuánto espero que cambie la 
+                         # insulina por cada punto de imc 
+  prior_intercept = normal(0, 20), # prior_intercept es la insulina
+                         # base cuando imc es igual a cero
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+```
+
+### Modelo 2: prior informativo
+
+```{r}
+# Crear modelo informativo
+modelo_informativo <- stan_glm(
+  insulina ~ imc,
+  data = datos_sim,
+  prior = normal(0.5, 0.2), # Espero que la insulina aumente 0.5 por
+                            # cada punto de imc. Incertidumbre = 0.2
+  prior_intercept = normal(5, 2), # La insulina de base es 5 cuando
+                                  # imc es cero. Con incertidumbre=2
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+```
+
+👉 Aquí estamos diciendo:
+
+`“Creo que la pendiente es positiva y cercana a 0.5”`
+
+### Comparación
+
+```{r}
+posterior_interval(modelo_debil)
+```
+
+#### Interpretación: 
+
+Por cada punto de imc, la insulina aumenta entre 0.55 y 0.84 puntos. En este rango la media de insulina varía entre -1.8 y 6.2
+
+```{r}
+posterior_interval(modelo_informativo)
+```
+
+### ¿Qué deberías observar?
+- Ambos modelos apuntan en la misma dirección
+- El modelo informativo suele ser:
+  - más estable
+  - menos disperso
+- El intervalo se achica un poco
+
+👉 El prior “empuja” ligeramente el resultado
+
+## 3. Ejemplo aplicado con NHANES con IMC y glicemia
+
+Ahora llevemos esto a datos reales.
+
+Queremos analizar:
+
+👉 Relación entre IMC y glicemia
+
+Preparación de datos
+
+```{r}
+# Seleccionar sólo los datos que voy a usar
+datos <- df_obesidad %>%
+  select(BMXBMI, LBXSGL) %>%
+  drop_na() %>%
+  rename(
+    imc = BMXBMI,
+    glicemia = LBXSGL
+  )
+# Filtrar los pacientes con imc monor de 100 y glicemia menor de 1000
+datos <- datos %>%
+  filter(
+    imc <= 100,
+    glicemia <= 500
+  )
+```
+
+### Exploración rápida
+
+```{r}
+#| message: false
+# Exploración rápida de imc vs insulina
+ggplot(datos, aes(x = imc, y = glicemia)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", color = "blue") +
+  labs(
+    title = "Relación entre IMC y glicemia",
+    x = "IMC",
+    y = "glicemia"
+  )
+```
+
+### Modelo 1: prior débil
+
+```{r}
+# Crear un modelo con prior débil
+modelo_nhanes_debil <- stan_glm(
+  glicemia ~ imc,
+  data = datos,
+  prior = normal(0, 10),
+  prior_intercept = normal(90, 20),
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+```
+
+### Modelo 2: prior informativo
+
+```{r}
+# Crear un modelo con prior informativo
+modelo_nhanes_info <- stan_glm(
+  glicemia ~ imc,
+  data = datos,
+  prior = normal(0.8, 0.3),
+  prior_intercept = normal(90, 10),
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+```
+
+👉 Aquí estamos incorporando conocimiento clínico:
+
+- IMC ↑ → glicemia ↑
+- No esperamos una relación negativa
+
+### Comparación
+
+```{r}
+# Intervalo posterior débil
+posterior_interval(modelo_nhanes_debil) # produce:
+```
+
+```{r}
+# Intervalo posterior informativo
+posterior_interval(modelo_nhanes_info) # produce:
+```
+
+#### Interprestación 
+
+El prior casi no cambió nada porque los datos son fuertes. Sigma me indica que dos personas con el mismo imc pueden tener diferencias de glicemia de más o menos 37-38mg/dl. Por ejemplo, con un mismo imc una persona podría tener 60 y otra 140mg/dl, tomando en cuenta una media de 100mg/dl
+
+### Visualización sugerida
+
+```{r}
+# Visualizar con prior débil
+mcmc_areas(
+  as.matrix(modelo_nhanes_debil),
+  pars = "imc"
+)
+```
+
+```{r}
+# Visualizar con prior informativo
+mcmc_areas(
+  as.matrix(modelo_nhanes_info),
+  pars = "imc"
+)
+```
+
+#### Interpretación de los gráficos
+
+La línea vertical azul indica el promedio o la mediana de la variación de glicemia por cada punto de imc. Las franjas azules suelen indicar dónde está el 50% de la población.
+
+### Qué deberías notar
+
+- Ambos modelos probablemente muestran:
+
+👉 pendiente positiva
+
+- Pero el modelo informativo:
+  - reduce incertidumbre
+  - evita estimaciones extremas
+
+👉 El prior actúa como una “guía clínica”
+
+## 4. Ejemplo aplicado con NHANES con IMC e insulina
+
+Ahora llevemos esto a comparar IMC vs insulina
+
+Queremos analizar:
+
+👉 Relación entre IMC e insulina
+
+Preparación de datos
+
+```{r}
+datos <- df_obesidad %>%
+  select(BMXBMI, LBXIN) %>%
+  drop_na() %>%
+  rename(
+    imc = BMXBMI,
+    insulina = LBXIN
+  )
+# Filtrar los pacientes con imc monor de 100 y glicemia menor de 1000
+datos <- datos %>%
+  filter(
+    imc <= 100,
+    insulina <= 100
+  )
+```
+
+### Exploración rápida
+
+```{r}
+#| message: false
+
+# Exploración rápida de imc vs insulina
+ggplot(datos, aes(x = imc, y = insulina)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", color = "blue") +
+  labs(
+    title = "Relación entre IMC e insulina",
+    x = "IMC",
+    y = "Insulina"
+  )
+```
+
+### Modelo 1: prior débil
+
+```{r}
+# Modelar con prior débil
+modelo_imc_debil <- stan_glm(
+  imc ~ insulina,
+  data = datos,
+  prior = normal(0, 1),
+  prior_intercept = normal(25, 10),
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+```
+
+
+### Modelo 2: prior informativo
+
+```{r}
+# Modelar con prior informativo
+modelo_imc_info <- stan_glm(
+  imc ~ insulina,
+  data = datos,
+  prior = normal(0.2, 0.1),
+  prior_intercept = normal(25, 5),
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+```
+
+### Comparación
+
+```{r}
+# Mostrar modelo débil
+posterior_interval(modelo_imc_debil) # produce:
+```
+
+```{r}
+# Mostrar modelo informativo 
+posterior_interval(modelo_imc_info) # produce:
+```
+
+#### Interpretación
+
+Sigma significa la desviación estándar de la media. Es decir para cierta insulina hay una media y, alrededor de esa media, hay una desviación de +-6 puntos de imc. Por ejemplo una media de 28 tiene pacientes alrededor de entre 22 y 34 de imc.
+
+## 5. Interpretación clínica
+
+Este es el punto clave del capítulo.
+
+### Lo que acabas de hacer
+
+No solo “corriste un modelo”.
+
+👉 Incorporaste conocimiento clínico explícitamente:
+
+- resistencia a la insulina
+- fisiopatología de obesidad
+
+### Qué significa el coeficiente
+
+Si obtienes algo como:
+
+👉 pendiente ≈ 0.3
+
+Significa:
+
+`Por cada aumento de 1 en IMC, la insulina aumenta ~0.3 (en promedio)`
+
+### Pero lo importante NO es el número exacto
+
+👉 Es la distribución
+
+- rango plausible
+- incertidumbre
+- consistencia con fisiología
+
+### Insight clave
+
+Si ambos modelos (débil vs informativo):
+
+- dan resultados similares
+
+👉 **los datos son fuertes**
+
+Si cambian mucho:
+
+👉 **el prior está influyendo bastante**
+
+### Traducción clínica directa
+
+Esto es exactamente lo que haces en consulta:
+
+- tienes una hipótesis (prior)
+- ves datos (laboratorio)
+- ajustas tu creencia (posterior)
+
+### Mensaje final
+
+👉 **No estás “forzando” el modelo**
+
+Estás haciendo explícito algo que ya haces:
+
+👉 pensar clínicamente antes de ver los datos
+
+## Ejercicios
+
+### Ejercicio 1
+
+Sin usar R, responde:
+
+Tienes esta creencia clínica:
+
+`“La insulina aumenta con el IMC, y el efecto es moderado, pero no estoy completamente seguro”`
+
+👉 Propón un prior para la pendiente.
+
+**Preguntas**:
+
+- ¿media?
+- ¿desviación?
+- ¿por qué?
+
+### Ejercicio 2
+
+Ahora cambia el escenario:
+
+`“Estoy MUY seguro de que el efecto es positivo y relativamente fuerte”`
+
+👉 Ajusta el prior.
+
+**Pregunta clave**:
+
+- ¿qué cambia: la media, la desviación o ambas?
+
+### Ejercicio 3 (clave conceptual)
+
+Explica con tus palabras:
+
+👉 ¿Qué pasaría si usas este prior?
+
+`normal(-0.5, 0.1)`
+
+en el modelo:
+
+`insulina ~ imc`
+
+### Ejercicio 4
+
+Simula datos donde:
+
+👉 NO hay relación entre IMC e insulina
+
+Luego:
+
+1. ajusta modelo con prior débil
+2. ajusta modelo con prior informativo positivo
+
+👉 **Compara resultados**
+
+**Pregunta clave**
+
+👉 ¿El prior puede “inventar” una relación?
+
+### Ejercicio 5
+
+Usa:
+
+`insulina ~ imc`
+
+Construye:
+
+- modelo con prior débil
+- modelo con prior informativo
+
+👉 compara:
+
+`posterior_interval()`
+
+**Preguntas**
+
+- ¿cambian los intervalos?
+- ¿cuánto cambian?
+- ¿quién domina: datos o prior?
+
+### Ejercicio 6 (muy importante)
+
+Ahora usa:
+
+`imc ~ insulina`
+
+👉 y responde:
+
+1. ¿cambia el sigma?
+2. ¿en qué unidades está sigma?
+3. ¿cuál modelo tiene más variabilidad?
+
+### Ejercicio 7
+
+Responde sin código:
+
+👉 ¿Cuándo usarías un prior débil en medicina?
+
+👉 ¿Cuándo usarías un prior informativo?
+
+### Ejercicio 8 (nivel libro 🔥)
+
+Tienes este escenario:
+
+Paciente:
+
+- IMC = 35
+- insulina elevada
+- en tratamiento con aspirina
+
+👉 Pregunta:
+
+¿Cómo usarías un prior en un modelo que incluya:
+
+`insulina ~ imc + aspirina`
+
+👉 Específicamente:
+
+- ¿qué prior pondrías para IMC?
+- ¿qué prior pondrías para aspirina?
+- ¿por qué?
+
+### Ejercicio 9 (el más importante)
+
+Explica con tus palabras:
+
+👉 ¿Por qué el prior casi no cambió tus resultados en NHANES?
+
+### Ejercicio 10 (nivel avanzado pero clave)
+
+Imagina:
+
+- tienes pocos datos
+- mucho ruido
+- relación poco clara
+
+👉 Pregunta:
+
+¿Qué pasaría si usas un prior muy fuerte?
+
+
+

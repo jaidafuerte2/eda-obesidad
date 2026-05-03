@@ -190,8 +190,9 @@ ggplot(posterior_df, aes(x = RXD530)) +
 #  Significa cuanto efecto tiene la aspirina sobre el índice de masa
 #  corporal. En este caso es entre -0.005 y 0.002
 #  ¿El intervalo de la pendiente incluye 0? Sí,
-#  ¿Qué implica eso clínicamente? Que tal vez la aspirina no tenga
-#  ningún efecto sobre el índice de masa corporal.
+#  ¿Qué implica eso clínicamente? No hay evidencia clara de relación
+#  entre aspirina e imc, el efecto podría ser positivo, negativo 
+#  o nulo 
 
 #####################
 ##
@@ -209,10 +210,16 @@ mean(posterior[, "RXD530"] > 0) # produce: [1] 0.21
 #  ¿Qué valor obtienes? 0.21
 #  Interprétalo así:
   
-#  👉 “La probabilidad de que el efecto sea positivo es 0.21”
+#  👉 “La probabilidad de que el efecto sea positivo es 21%”
 
 # ¿Ese valor es suficiente para decir que hay relación?
-# Creo que no.
+# Creo que no porque hasta 50% la evidencia es débil. Pero se
+# podría ver del otro lado, ¿Qué proporción de la distribución
+# está a la izquierda de cero 0 ?
+
+mean(posterior[, "RXD530"] < 0) # produce: 0.79
+# de 60% a 75% se podría decir que hay una evidencia débil, pero
+# de todas formas la variavión es pequeña
 
 #####################
 ##
@@ -226,9 +233,11 @@ mean(posterior[, "RXD530"] > 0) # produce: [1] 0.21
 
 # Preguntas:
 #  ¿La distribución está muy concentrada o muy dispersa?
-#  La distribución es normal
+#  La distribución es normal, relativamente concentrada alrededor
+#  de cero
 #  ¿Está claramente a un lado de 0 o centrada en 0?
-#  Ligeramente sesgada hacia la izquierda del 0
+#  Ligeramente sesgada hacia la izquierda del 0 pero muy cerca del
+#  cero
 #  ¿Cómo describirías la evidencia?
 
 #  Opciones:
@@ -238,8 +247,7 @@ mean(posterior[, "RXD530"] > 0) # produce: [1] 0.21
 #  débil
 #  inexistente
 
-#  No hay suficiente evidencia para decir que la aspirina
-#  tiene efecto sobre el índice de masa corporal
+#  Evidencia débil, prácticamente inexistente
 
 #####################
 ##
@@ -310,6 +318,14 @@ hist(posterior[, "usa_aspirina"], breaks = 30,
 # Efectivamente el sesgo va hacia la derecha de cero 0. Las dosis 
 # menores de 100mg de aspirina se asocian un poco más a imc mayor.
 
+# Conocer que proporción de de la distribución de los que toman 
+# menos de 100 mg de aspirina está un lado de cero
+mean(posterior[, "usa_aspirina"] > 0) # produce: 0.866
+# El 86% de la población está al lado derecho de cero (entre 80% 
+# y 95% se considera una evidencia moderada, >95 evidencia fuerte).
+# Sin embargo el efecto de la aspirina en el imc es pequeño (entre
+# -0.2 y 1.5 puntos de imc) 
+
 #####################
 ##
 ## Ejercicio 5
@@ -358,3 +374,130 @@ hist(posterior[, "usa_aspirina"], breaks = 30,
 #  efecto
 #  incertidumbre
 #  interpretación clínica
+
+# Hicimos un modelo bayesiano y encontramos que tomar 100mg de 
+# aspirina o  menos está asociado a una variación de entre -0.2 y 
+# +1.5 puntos de índice de masa corporal cuyo imc, entre los que
+# que sí toman aspirina, es en promedio 29.9 kg/m2 con una 
+# variación de entre 38.5 y 30.2 puntos de imc.  La interpretación 
+# clínica es que hay cierto sesgo a que las personas que toman
+# menos de 100 mg de aspirina tenga un imc más alto aunque no 
+# parece significativo.
+
+#####################
+##
+## Ejercicio 7
+##
+#####################
+
+
+# Ejercicio 7 (opcional, nivel 🔥🔥)
+
+# Calcula:
+  
+mean(abs(posterior[, "usa_aspirina"]) < 0.001) # produce: 0.001
+# Pregunta:
+  
+#   ¿Qué significa ese número? Que el efecto es irrelevante 
+#   clínicamente
+
+#####################
+##
+## Ejercicio 8
+##
+#####################
+
+# Ejercicio 8 — Clasificación de evidencia
+
+# Para cada intervalo, clasifica:
+  
+#  👉 fuerte / moderada / débil / inexistente
+
+# A: 0.01 a 0.03 = fuerte
+
+# B: -0.002 a 0.04 = débil o inexistente, mejor moderada pues hay
+# un sesgo a la derecha de 0
+
+# C: -0.01 a 0.01 = débil o inexistente pues consistentemente 
+# (variación similar) está cerca a cero
+
+# D: -0.05 a -0.02 = fuerte
+
+#####################
+##
+## Ejercicio 9
+##
+#####################
+
+# Ejercicio 9 — Pensamiento clínico
+
+# Un modelo da:
+  
+#  0.001 a 0.004
+
+# Pregunta:
+  
+#   ¿Es clínicamente importante o solo estadísticamente “detectable”?
+#   Es sólo estadísticamente detectable porque una variación
+#   de imc de 0.001 0 0.004 puntos de imc es pequeña, talvez 
+#   ni un kilo de cambio de peso, no es importante
+
+#####################
+##
+## Ejercicio 10
+##
+#####################
+
+# Ejercicio 10 — Probabilidad
+
+# Si obtienes:
+  
+#  mean(posterior[, "RXD530"] > 0) = 0.92
+# Preguntas:
+#  ¿Hay evidencia de relación? Sí
+#  ¿Qué tan fuerte? Moderada
+#  ¿Cómo lo dirías clínicamente? Existe una evidencia moderada
+#  De que tomar aspirina en X dosis se asocia un mayor imc pero
+#  la variación no es clínicamente significativa pues está en un
+#  rango cercano a cero
+
+#####################
+##
+## Ejercicio 11
+##
+#####################
+
+# Ejercicio 11 — Comparación mental
+
+# ¿Cuál es más convincente?
+  
+#  Modelo A
+# 30.02 a 0.03
+
+#  Modelo B
+#  0.001 a 0.08
+
+#  Explica por qué: El modelo A, simplemente porque no tiene tanta 
+#  variación entonces el resultado es un poco más consistente pues
+#  el intervalo es estrecho y los valores similares 
+
+#####################
+##
+## Ejercicio 12
+##
+#####################
+
+# Ejercicio 12 — Tu caso real
+
+# Con tu intervalo:
+  
+#  -0.005 a 0.002
+# Pregunta:
+  
+# ¿Qué porcentaje aproximado de la distribución crees que está 
+# cerca de 0?
+  
+#  (no exacto, solo intuición)
+
+# Respuesta: Creo que casi todos, simplemente los intervalos están 
+# muy cerca de cero

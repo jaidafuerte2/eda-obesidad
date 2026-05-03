@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12.- Añadiendo Complejidad al Modelo – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c11.html">Módulo 5: Modelos Bayesianos en R</a></li><li class="breadcrumb-item"><a href="../analysis/c12.html">12.- Añadiendo Complejidad al Modelo</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 1: Pensar Como Analista Bayesiano</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- De Datos a Decisiones Clínicas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 2: Herramientas en R (mínimo necesario)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Preparando NHANES en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Visualización para Entender Datos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 3: Entender la Incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidad como Creencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Distribuciones en la vida real</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Distribuciones conjuntas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 4: Pensamiento causal</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Introducción a DAGs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9.- Tu Modelo Causal de Obesidad</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10.- Aspirina como Proxy de Inflamación</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 5: Modelos Bayesianos en R</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11.- Primer Modelo Bayesiano en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">12.- Añadiendo Complejidad al Modelo</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13.- Priors</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intuición-sin-código" id="toc-intuición-sin-código" class="nav-link active" data-scroll-target="#intuición-sin-código">1. Intuición (SIN código)</a>
+  <ul class="collapse">
+  <li><a href="#el-problema-del-mundo-real" id="toc-el-problema-del-mundo-real" class="nav-link" data-scroll-target="#el-problema-del-mundo-real">El problema del mundo real</a></li>
+  <li><a href="#ejemplo-clínico-sencillo" id="toc-ejemplo-clínico-sencillo" class="nav-link" data-scroll-target="#ejemplo-clínico-sencillo">Ejemplo clínico sencillo</a></li>
+  <li><a href="#idea-clave-del-capítulo" id="toc-idea-clave-del-capítulo" class="nav-link" data-scroll-target="#idea-clave-del-capítulo">Idea clave del capítulo</a></li>
+  <li><a href="#analogía-clínica" id="toc-analogía-clínica" class="nav-link" data-scroll-target="#analogía-clínica">Analogía clínica</a></li>
+  <li><a href="#mensaje-central" id="toc-mensaje-central" class="nav-link" data-scroll-target="#mensaje-central">Mensaje central</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <ul class="collapse">
+  <li><a href="#modelo-simple-incorrecto" id="toc-modelo-simple-incorrecto" class="nav-link" data-scroll-target="#modelo-simple-incorrecto">Modelo simple (incorrecto)</a></li>
+  <li><a href="#modelo-ajustado-correcto" id="toc-modelo-ajustado-correcto" class="nav-link" data-scroll-target="#modelo-ajustado-correcto">Modelo ajustado (correcto)</a></li>
+  <li><a href="#qué-pasó" id="toc-qué-pasó" class="nav-link" data-scroll-target="#qué-pasó">¿Qué pasó?</a></li>
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-aplicado-con-nhanes" id="toc-ejemplo-aplicado-con-nhanes" class="nav-link" data-scroll-target="#ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</a>
+  <ul class="collapse">
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">Variables</a></li>
+  <li><a href="#preparación-de-datos" id="toc-preparación-de-datos" class="nav-link" data-scroll-target="#preparación-de-datos">Preparación de datos</a></li>
+  <li><a href="#modelo-simple" id="toc-modelo-simple" class="nav-link" data-scroll-target="#modelo-simple">Modelo simple</a></li>
+  <li><a href="#modelo-ajustado" id="toc-modelo-ajustado" class="nav-link" data-scroll-target="#modelo-ajustado">Modelo ajustado</a></li>
+  <li><a href="#qué-debes-observar" id="toc-qué-debes-observar" class="nav-link" data-scroll-target="#qué-debes-observar">Qué debes observar</a></li>
+  <li><a href="#pregunta-clave" id="toc-pregunta-clave" class="nav-link" data-scroll-target="#pregunta-clave">Pregunta clave</a></li>
+  <li><a href="#esto-es-lo-importante" id="toc-esto-es-lo-importante" class="nav-link" data-scroll-target="#esto-es-lo-importante">Esto es lo importante</a></li>
+  <li><a href="#interpretación-estadística" id="toc-interpretación-estadística" class="nav-link" data-scroll-target="#interpretación-estadística">Interpretación Estadística</a></li>
+  </ul></li>
+  <li><a href="#interpretación-clínica" id="toc-interpretación-clínica" class="nav-link" data-scroll-target="#interpretación-clínica">4. Interpretación clínica</a>
+  <ul class="collapse">
+  <li><a href="#lo-que-aprendiste-realmente" id="toc-lo-que-aprendiste-realmente" class="nav-link" data-scroll-target="#lo-que-aprendiste-realmente">Lo que aprendiste realmente</a></li>
+  <li><a href="#volviendo-al-paciente-real" id="toc-volviendo-al-paciente-real" class="nav-link" data-scroll-target="#volviendo-al-paciente-real">Volviendo al paciente real</a></li>
+  <li><a href="#interpretación-correcta" id="toc-interpretación-correcta" class="nav-link" data-scroll-target="#interpretación-correcta">Interpretación correcta</a></li>
+  <li><a href="#traducción-clínica" id="toc-traducción-clínica" class="nav-link" data-scroll-target="#traducción-clínica">Traducción clínica</a></li>
+  <li><a href="#mensaje-profundo" id="toc-mensaje-profundo" class="nav-link" data-scroll-target="#mensaje-profundo">Mensaje profundo</a></li>
+  <li><a href="#sobre-la-incertidumbre" id="toc-sobre-la-incertidumbre" class="nav-link" data-scroll-target="#sobre-la-incertidumbre">Sobre la incertidumbre</a></li>
+  <li><a href="#conclusión-final-del-capítulo" id="toc-conclusión-final-del-capítulo" class="nav-link" data-scroll-target="#conclusión-final-del-capítulo">Conclusión final del capítulo</a></li>
+  </ul></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-detectando-confusión" id="toc-ejercicio-1-detectando-confusión" class="nav-link" data-scroll-target="#ejercicio-1-detectando-confusión">Ejercicio 1 — Detectando confusión</a></li>
+  <li><a href="#ejercicio-2-interpretación-clínica-profunda" id="toc-ejercicio-2-interpretación-clínica-profunda" class="nav-link" data-scroll-target="#ejercicio-2-interpretación-clínica-profunda">Ejercicio 2 — Interpretación clínica profunda</a></li>
+  <li><a href="#ejercicio-3-escala-e-interpretación" id="toc-ejercicio-3-escala-e-interpretación" class="nav-link" data-scroll-target="#ejercicio-3-escala-e-interpretación">Ejercicio 3 — Escala e interpretación</a></li>
+  <li><a href="#ejercicio-4-qué-falta-en-el-modelo" id="toc-ejercicio-4-qué-falta-en-el-modelo" class="nav-link" data-scroll-target="#ejercicio-4-qué-falta-en-el-modelo">Ejercicio 4 — ¿Qué falta en el modelo?</a></li>
+  <li><a href="#ejercicio-5-cambiando-la-historia-del-modelo" id="toc-ejercicio-5-cambiando-la-historia-del-modelo" class="nav-link" data-scroll-target="#ejercicio-5-cambiando-la-historia-del-modelo">Ejercicio 5 — Cambiando la historia del modelo</a></li>
+  <li><a href="#ejercicio-6-pensamiento-causal-clave" id="toc-ejercicio-6-pensamiento-causal-clave" class="nav-link" data-scroll-target="#ejercicio-6-pensamiento-causal-clave">Ejercicio 6 — Pensamiento causal (clave)</a></li>
+  <li><a href="#ejercicio-7-detectando-no-linealidad" id="toc-ejercicio-7-detectando-no-linealidad" class="nav-link" data-scroll-target="#ejercicio-7-detectando-no-linealidad">Ejercicio 7 — Detectando no linealidad</a></li>
+  <li><a href="#ejercicio-8-interpretación-bayesiana-pura" id="toc-ejercicio-8-interpretación-bayesiana-pura" class="nav-link" data-scroll-target="#ejercicio-8-interpretación-bayesiana-pura">Ejercicio 8 — Interpretación bayesiana pura</a></li>
+  <li><a href="#ejercicio-9-la-lección-del-capítulo" id="toc-ejercicio-9-la-lección-del-capítulo" class="nav-link" data-scroll-target="#ejercicio-9-la-lección-del-capítulo">Ejercicio 9 — La lección del capítulo</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c11.html">Módulo 5: Modelos Bayesianos en R</a></li><li class="breadcrumb-item"><a href="../analysis/c12.html">12.- Añadiendo Complejidad al Modelo</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">12.- Añadiendo Complejidad al Modelo</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="intuición-sin-código" class="level2">
+<h2 class="anchored" data-anchor-id="intuición-sin-código">1. Intuición (SIN código)</h2>
+<p>Hasta ahora hemos trabajado con modelos simples.</p>
+<p>Por ejemplo:</p>
+<p><code>“¿Existe relación entre la aspirina y el IMC?”</code></p>
+<p>Y construimos algo así como:</p>
+<p>👉 IMC ~ aspirina</p>
+<p>Esto es útil… pero también peligroso.</p>
+<section id="el-problema-del-mundo-real" class="level3">
+<h3 class="anchored" data-anchor-id="el-problema-del-mundo-real">El problema del mundo real</h3>
+<p>En medicina, casi nada depende de una sola variable.</p>
+<p>Piensa en un paciente típico:</p>
+<ul>
+<li>Tiene una edad</li>
+<li>Tiene un sexo</li>
+<li>Tiene un nivel de actividad física</li>
+<li>Tiene múltiples factores de riesgo</li>
+</ul>
+<p>Entonces surge una pregunta clave:</p>
+<p>👉 ¿La relación que vemos es real… o está influenciada por otras variables?</p>
+</section>
+<section id="ejemplo-clínico-sencillo" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplo-clínico-sencillo">Ejemplo clínico sencillo</h3>
+<p>Imagina que observas esto:</p>
+<p><code>Las personas que toman aspirina tienen mayor IMC</code></p>
+<p>Podrías concluir:</p>
+<p>👉 “La aspirina está asociada a obesidad”</p>
+<p>Pero eso podría ser engañoso.</p>
+<p>¿Por qué?</p>
+<p>Porque:</p>
+<ul>
+<li>Las personas mayores usan más aspirina</li>
+<li>Las personas mayores también tienden a tener mayor IMC</li>
+</ul>
+<p>Entonces:</p>
+<p>👉 la edad está “mezclando” la relación</p>
+<p>A esto se le llama:</p>
+<p>👉 <strong>Confusión (confounding)</strong></p>
+</section>
+<section id="idea-clave-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="idea-clave-del-capítulo">Idea clave del capítulo</h3>
+<p>Un modelo simple puede contar una historia incompleta:</p>
+<p>👉 “Aspirina → IMC”</p>
+<p>Pero un modelo más realista diría:</p>
+<p>👉 “Aspirina, edad, sexo, actividad física → IMC”</p>
+</section>
+<section id="analogía-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="analogía-clínica">Analogía clínica</h3>
+<p>Es como evaluar a un paciente mirando solo un signo vital.</p>
+<p>👉 Útil, pero insuficiente.</p>
+<p>Un buen clínico integra:</p>
+<ul>
+<li>antecedentes</li>
+<li>contexto</li>
+<li>múltiples variables</li>
+</ul>
+<p>👉 Un buen modelo hace lo mismo.</p>
+</section>
+<section id="mensaje-central" class="level3">
+<h3 class="anchored" data-anchor-id="mensaje-central">Mensaje central</h3>
+<p>👉 <strong>Añadir variables cambia la historia que cuenta el modelo</strong></p>
+<p>Y muchas veces:</p>
+<p>👉 la historia inicial estaba equivocada</p>
+</section>
+</section>
+<section id="ejemplo-simple-simulación-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
+<p>Vamos a simular un caso clásico de confusión.</p>
+<p>La idea:</p>
+<p>La edad influye en el IMC La edad también influye en el uso de aspirina La aspirina en sí no tiene efecto real</p>
+<p>Pero si ignoramos la edad…</p>
+<p>👉 parecerá que sí lo tiene</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 200 pacientes</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Simular la edad, la dosis de aspirina y el imc de 200 pacientes</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>datos_sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">edad =</span> <span class="fu">rnorm</span>(n, <span class="dv">50</span>, <span class="dv">10</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">aspirina =</span> <span class="fl">0.05</span> <span class="sc">*</span> edad <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">imc =</span> <span class="dv">20</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> edad <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="modelo-simple-incorrecto" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-simple-incorrecto">Modelo simple (incorrecto)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un modelos simple ("incorrecto")</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>modelo_simple <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  imc <span class="sc">~</span> aspirina,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos_sim,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_simple) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      imc ~ aspirina
+ observations: 200
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) 32.6    0.5  
+aspirina     1.0    0.2  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 3.2    0.2   
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_simple) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    5%       95%
+(Intercept) 31.7645142 33.570271
+aspirina     0.5962211  1.282204
+sigma        2.9813750  3.499982</code></pre>
+</div>
+</div>
+<p>👉 Verás un efecto positivo de aspirina.</p>
+</section>
+<section id="modelo-ajustado-correcto" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-ajustado-correcto">Modelo ajustado (correcto)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo ajustado</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>modelo_ajustado <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  imc <span class="sc">~</span> aspirina <span class="sc">+</span> edad,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos_sim,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_ajustado) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      imc ~ aspirina + edad
+ observations: 200
+ predictors:   3
+------
+            Median MAD_SD
+(Intercept) 20.4    0.8  
+aspirina    -0.1    0.1  
+edad         0.3    0.0  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 1.9    0.1   
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_ajustado)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    5%        95%
+(Intercept) 19.1668983 21.7183437
+aspirina    -0.3334514  0.1225848
+edad         0.2712979  0.3233832
+sigma        1.7782362  2.1331566</code></pre>
+</div>
+</div>
+</section>
+<section id="qué-pasó" class="level3">
+<h3 class="anchored" data-anchor-id="qué-pasó">¿Qué pasó?</h3>
+<p>Al añadir edad:</p>
+<p>👉 el efecto de aspirina disminuye o desaparece</p>
+</section>
+<section id="interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación">Interpretación</h3>
+<ul>
+<li>El modelo simple se confundió</li>
+<li>El modelo ajustado se acerca más a la verdad</li>
+</ul>
+<section id="interpretación-del-modelo" class="level4">
+<h4 class="anchored" data-anchor-id="interpretación-del-modelo">Interpretación del modelo</h4>
+<p>La mediana de imc es 20.3 cuando apirina y edad son iguales a cero; aumentar en 1 unidad la aspirina cambia el imc en 0.1 puntos pero con una incertidumbre de 0.2 (mayor al cambio de imc) por lo que el efecto de la aspirina es débil e incierto. Cada año adicional aumenta el imc 0.3 puntos con una incertidumbre de cero, entonces la edad es un predictor fuerte y claro y el modelo está muy seguro de esto.</p>
+</section>
+<section id="interpretación-del-intervalo-posterior" class="level4">
+<h4 class="anchored" data-anchor-id="interpretación-del-intervalo-posterior">Interpretación del intervalo posterior</h4>
+<p>El efecto de la aspirina (de cada unidad) sobre el imc varía entre -0.16 y 0.3 puntos de imc , es decir que incluso puede ser que no tenga un efecto; el efecto de la edad (de cada unidad o año) sobre el imc es entre 0.27 y 0.32 o que tiene un efecto positivo, consistente y preciso; La variación del promedio de imc es entre 2.01 y 2.38. En resumen, despues de considerar la edad, no hay evidencia de que la aspirina cambie el imc, en cambio la edad sí tiene un efecto consistente.</p>
+</section>
+</section>
+</section>
+<section id="ejemplo-aplicado-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</h2>
+<p>Ahora llevamos esta idea a datos reales.</p>
+<section id="variables" class="level3">
+<h3 class="anchored" data-anchor-id="variables">Variables</h3>
+<ul>
+<li>IMC → BMXBMI</li>
+<li>Aspirina → RXD530</li>
+<li>Edad → RIDAGEYR</li>
+<li>Sexo → RIAGENDR</li>
+<li>Actividad física → PAD680 (ejemplo)</li>
+</ul>
+</section>
+<section id="preparación-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="preparación-de-datos">Preparación de datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seleccionar sólo las variables que voy a usar</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(BMXBMI, RXD530, RIDAGEYR, PAD680, RIAGENDR) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    RXD530 <span class="sc">&lt;=</span> <span class="dv">2000</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    BMXBMI <span class="sc">&lt;=</span> <span class="dv">100</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    RIDAGEYR <span class="sc">&lt;=</span> <span class="dv">100</span>, </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    PAD680 <span class="sc">&lt;=</span> <span class="dv">2000</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="modelo-simple" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-simple">Modelo simple</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>modelo_simple <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  BMXBMI <span class="sc">~</span> RXD530,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_simple)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      BMXBMI ~ RXD530
+ observations: 1063
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) 30.3    0.3  
+RXD530       0.0    0.0  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 6.7    0.1   
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_simple)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      5%         95%
+(Intercept) 29.643183614 30.85088004
+RXD530      -0.006802743  0.00118047
+sigma        6.506160730  6.98917170</code></pre>
+</div>
+</div>
+</section>
+<section id="modelo-ajustado" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-ajustado">Modelo ajustado</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo ajustado</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>modelo_ajustado <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  BMXBMI <span class="sc">~</span> RXD530 <span class="sc">+</span> RIDAGEYR <span class="sc">+</span> PAD680,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_ajustado) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      BMXBMI ~ RXD530 + RIDAGEYR + PAD680
+ observations: 1063
+ predictors:   4
+------
+            Median MAD_SD
+(Intercept) 35.3    1.4  
+RXD530       0.0    0.0  
+RIDAGEYR    -0.1    0.0  
+PAD680       0.0    0.0  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 6.5    0.1   
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_ajustado)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      5%          95%
+(Intercept) 32.872004220 37.538796646
+RXD530      -0.006600418  0.001231243
+RIDAGEYR    -0.155938785 -0.089560922
+PAD680       0.005148221  0.008671522
+sigma        6.250774808  6.744557870</code></pre>
+</div>
+</div>
+</section>
+<section id="qué-debes-observar" class="level3">
+<h3 class="anchored" data-anchor-id="qué-debes-observar">Qué debes observar</h3>
+<p>Compara:</p>
+<p>👉 coeficiente de <strong>RXD530 (aspirina)</strong></p>
+<p>Entre:</p>
+<ul>
+<li>modelo simple</li>
+<li>modelo ajustado</li>
+</ul>
+</section>
+<section id="pregunta-clave" class="level3">
+<h3 class="anchored" data-anchor-id="pregunta-clave">Pregunta clave</h3>
+<p>👉 ¿Cambió el efecto?</p>
+<ul>
+<li>¿Disminuyó?</li>
+<li>¿Aumentó?</li>
+<li>¿Se volvió incierto?</li>
+</ul>
+</section>
+<section id="esto-es-lo-importante" class="level3">
+<h3 class="anchored" data-anchor-id="esto-es-lo-importante">Esto es lo importante</h3>
+<p>👉 El modelo ajustado está diciendo:</p>
+<p><code>“Dado la edad, el sexo y la actividad física…</code> <code>¿qué pasa con la aspirina?”</code></p>
+</section>
+<section id="interpretación-estadística" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-estadística">Interpretación Estadística</h3>
+<section id="interpretación-del-modelo-1" class="level4">
+<h4 class="anchored" data-anchor-id="interpretación-del-modelo-1">Interpretación del modelo</h4>
+<p>Cada gramo de aspirina puede causar una disminución ligera de imc o cero o un aumento ligero; es muy probable que la aspirina tenga un efecto irrelevante sobre el imc. El modelo está bastante seguro de que a mayor edad, menor imc, es decir cada año una persona puede perder entre 0.15 y 0.09 puntos de imc.</p>
+</section>
+<section id="interpretación-del-intervalo-posterior-1" class="level4">
+<h4 class="anchored" data-anchor-id="interpretación-del-intervalo-posterior-1">Interpretación del intervalo posterior</h4>
+<p>Cada minuto de sedentarismo aumenta el peso entre 0.005 y 0.008 puntos de imc. Parece irrelevante pero qué pasa en 100 minutos? Pues hay un aumento de medio punto o casi un punto de imc. Muy interesante por eso se aconseja tratar de mantenerse activo aunque no necesariamente ejercicio (si el objetivo es adelgazar).</p>
+</section>
+</section>
+</section>
+<section id="interpretación-clínica" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-clínica">4. Interpretación clínica</h2>
+<p>Este capítulo es uno de los más importantes del libro.</p>
+<section id="lo-que-aprendiste-realmente" class="level3">
+<h3 class="anchored" data-anchor-id="lo-que-aprendiste-realmente">Lo que aprendiste realmente</h3>
+<p>No aprendiste solo a “añadir variables”.</p>
+<p>Aprendiste que:</p>
+<p>👉 <strong>los modelos pueden engañarte si son demasiado simples</strong></p>
+</section>
+<section id="volviendo-al-paciente-real" class="level3">
+<h3 class="anchored" data-anchor-id="volviendo-al-paciente-real">Volviendo al paciente real</h3>
+<p>Cuando ves esto:</p>
+<p><code>Aspirina asociada a mayor IMC</code></p>
+<p>Ahora sabes preguntar:</p>
+<ul>
+<li>¿Son más viejos estos pacientes?</li>
+<li>¿Hacen menos actividad física?</li>
+<li>¿Hay diferencias por sexo?</li>
+</ul>
+</section>
+<section id="interpretación-correcta" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-correcta">Interpretación correcta</h3>
+<p>El coeficiente ajustado de aspirina significa:</p>
+<p>👉 “La relación entre aspirina e IMC, manteniendo constantes edad, sexo y actividad física”</p>
+</section>
+<section id="traducción-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="traducción-clínica">Traducción clínica</h3>
+<p>Es como comparar pacientes:</p>
+<p>👉 <strong>del mismo perfil clínico</strong></p>
+<ul>
+<li>misma edad</li>
+<li>mismo sexo</li>
+<li>mismo nivel de actividad</li>
+</ul>
+<p>Y preguntar:</p>
+<p>👉 ¿los que usan aspirina tienen diferente IMC?</p>
+</section>
+<section id="mensaje-profundo" class="level3">
+<h3 class="anchored" data-anchor-id="mensaje-profundo">Mensaje profundo</h3>
+<p>👉 El modelo simple mezcla pacientes distintos</p>
+<p>👉 El modelo ajustado compara pacientes similares</p>
+</section>
+<section id="sobre-la-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="sobre-la-incertidumbre">Sobre la incertidumbre</h3>
+<p>Recuerda:</p>
+<p>👉 No hay un solo valor</p>
+<p>Hay una <strong>distribución</strong> del efecto.</p>
+<p>Entonces:</p>
+<ul>
+<li>Puede ser positivo</li>
+<li>Puede ser pequeño</li>
+<li>Puede ser incierto</li>
+</ul>
+<p>👉 Y eso es información valiosa</p>
+</section>
+<section id="conclusión-final-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="conclusión-final-del-capítulo">Conclusión final del capítulo</h3>
+<p>👉 <strong>Un modelo simple puede engañarte</strong></p>
+<p>👉 <strong>Un modelo ajustado se parece más a la realidad clínica</strong></p>
+<p>Y más importante aún:</p>
+<p>👉 <strong>Añadir variables no es complicar el modelo… es hacerlo más honesto</strong></p>
+</section>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1-detectando-confusión" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-detectando-confusión">Ejercicio 1 — Detectando confusión</h3>
+<p>🎯 Objetivo</p>
+<p>Ver cómo cambia una relación al ajustar.</p>
+<p>🔧 Instrucciones</p>
+<ol type="1">
+<li>Ajusta un modelo simple:</li>
+</ol>
+<p><code>stan_glm(BMXBMI ~ RXD530, data = datos)</code></p>
+<ol start="2" type="1">
+<li>Ajusta el modelo completo:</li>
+</ol>
+<p><code>stan_glm(BMXBMI ~ RXD530 + RIDAGEYR + PAD680, data = datos)</code></p>
+<ol start="3" type="1">
+<li>Extrae los intervalos:</li>
+</ol>
+<p><code>posterior_interval(modelo)</code></p>
+<p>❓Preguntas</p>
+<ul>
+<li>¿Cómo cambia el intervalo de RXD530?</li>
+<li>¿Se acerca más a 0?</li>
+<li>¿Se vuelve más estrecho o más ancho?</li>
+</ul>
+<p><strong>Reflexión clave</strong></p>
+<p>👉 ¿La aspirina tenía un efecto real… o era confusión?</p>
+</section>
+<section id="ejercicio-2-interpretación-clínica-profunda" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-interpretación-clínica-profunda">Ejercicio 2 — Interpretación clínica profunda</h3>
+<p>🎯 Objetivo</p>
+<p>Traducir coeficientes a lenguaje médico</p>
+<p>🔧 Instrucciones</p>
+<p>Usa el modelo ajustado y responde:</p>
+<p>❓ Preguntas</p>
+<ol type="1">
+<li>¿Qué significa el coeficiente de PAD680 en términos clínicos?</li>
+</ol>
+<p>👉 Tradúcelo a:</p>
+<ul>
+<li>+30 minutos sedentarios</li>
+<li>+120 minutos sedentarios</li>
+</ul>
+<ol start="2" type="1">
+<li><p>¿El efecto es clínicamente relevante o pequeño?</p></li>
+<li><p>¿Coincide con tu experiencia clínica?</p></li>
+</ol>
+</section>
+<section id="ejercicio-3-escala-e-interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-escala-e-interpretación">Ejercicio 3 — Escala e interpretación</h3>
+<p>🎯 Objetivo</p>
+<p>Entender el impacto de las unidades</p>
+<p>🔧 Instrucciones</p>
+<p>Calcula mentalmente:</p>
+<p>Si PAD680 tiene un coeficiente ≈ 0.006</p>
+<p>❓ Preguntas</p>
+<ol type="1">
+<li>¿Qué pasa con el IMC si una persona pasa:</li>
+</ol>
+<ul>
+<li>1 hora más sedentaria</li>
+<li>3 horas más sedentaria</li>
+</ul>
+<p><strong>Reflexión</strong></p>
+<p>👉 ¿Por qué es peligroso interpretar coeficientes sin considerar la escala?</p>
+</section>
+<section id="ejercicio-4-qué-falta-en-el-modelo" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-qué-falta-en-el-modelo">Ejercicio 4 — ¿Qué falta en el modelo?</h3>
+<p>🎯 Objetivo</p>
+<p>Pensar como clínico</p>
+<p>❓ Pregunta abierta</p>
+<p>Tu modelo actual tiene:</p>
+<ul>
+<li>aspirina</li>
+<li>edad</li>
+<li>sedentarismo</li>
+</ul>
+<p>👉 ¿Qué variables importantes faltan para explicar IMC?</p>
+<p>Escribe al menos 5.</p>
+<p>💡 Pistas</p>
+<ul>
+<li>nutrición</li>
+<li>metabolismo</li>
+<li>comportamiento</li>
+</ul>
+<p><strong>Nivel experto</strong></p>
+<p>👉 ¿Cuál de esas variables podría estar confundiendo la relación entre sedentarismo e IMC?</p>
+</section>
+<section id="ejercicio-5-cambiando-la-historia-del-modelo" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5-cambiando-la-historia-del-modelo">Ejercicio 5 — Cambiando la historia del modelo</h3>
+<p>🎯 Objetivo</p>
+<p>Entender que el modelo cuenta historias distintas</p>
+<p>🔧 Instrucciones</p>
+<p>Compara:</p>
+<ol type="1">
+<li>Modelo simple</li>
+<li>Modelo ajustado</li>
+</ol>
+<p>❓ Preguntas</p>
+<ul>
+<li>¿Qué historia cuenta cada uno?</li>
+<li>¿Cuál se parece más a la realidad clínica?</li>
+<li>¿Cuál sería peligrosa si la usaras para tomar decisiones?</li>
+</ul>
+</section>
+<section id="ejercicio-6-pensamiento-causal-clave" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6-pensamiento-causal-clave">Ejercicio 6 — Pensamiento causal (clave)</h3>
+<p>🎯 Objetivo</p>
+<p>Ir más allá de correlaciones</p>
+<p>❓ Pregunta</p>
+<p>Responde con palabras, no código:</p>
+<p>👉 ¿La actividad física afecta el IMC directamente… o a través de otros mecanismos?</p>
+<p>💡 Ejemplos</p>
+<ul>
+<li>apetito</li>
+<li>insulina</li>
+<li>masa muscular</li>
+</ul>
+<p><strong>Reflexión profunda</strong></p>
+<p>👉 ¿Tu modelo está capturando eso… o lo está simplificando demasiado?</p>
+</section>
+<section id="ejercicio-7-detectando-no-linealidad" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7-detectando-no-linealidad">Ejercicio 7 — Detectando no linealidad</h3>
+<p>🎯 Objetivo</p>
+<p>Conectar gráficos con modelos</p>
+<p>🔧 Instrucciones</p>
+<p>Haz un gráfico:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos, <span class="fu">aes</span>(<span class="at">x =</span> RIDAGEYR, <span class="at">y =</span> BMXBMI)) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>❓ Preguntas</p>
+<ul>
+<li>¿La relación parece lineal?</li>
+<li>¿Ves el “arco” que mencionaste?</li>
+<li>¿El modelo lineal está capturando bien esa forma?</li>
+</ul>
+<p><strong>Insight</strong></p>
+<p>👉 Un modelo puede estar “bien” pero ser insuficiente</p>
+</section>
+<section id="ejercicio-8-interpretación-bayesiana-pura" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-8-interpretación-bayesiana-pura">Ejercicio 8 — Interpretación bayesiana pura</h3>
+<p>🎯 Objetivo</p>
+<p>Hablar como bayesiano</p>
+<p>❓ Pregunta</p>
+<p>Completa esta frase con tus palabras:</p>
+<p>“Dado los datos y el modelo, es plausible que…”</p>
+<p>Para:</p>
+<ul>
+<li>aspirina</li>
+<li>edad</li>
+<li>sedentarismo</li>
+</ul>
+</section>
+<section id="ejercicio-9-la-lección-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-9-la-lección-del-capítulo">Ejercicio 9 — La lección del capítulo</h3>
+<p>Responde:</p>
+<p>👉 ¿Por qué un modelo simple puede engañarte?</p>
+<p>👉 ¿Qué cambió en tu forma de interpretar los datos después de este capítulo?</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

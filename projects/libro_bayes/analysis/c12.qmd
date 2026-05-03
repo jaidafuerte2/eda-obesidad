@@ -1,0 +1,567 @@
+---
+title: "12.- Añadiendo Complejidad al Modelo"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(rstanarm)
+
+# Cargar la dataset de obesidad
+df_obesidad <- read_csv(
+  "../data/obesidad_nhanes.csv",
+  guess_max = 10000,
+  show_col_types = FALSE
+)
+```
+
+## 1. Intuición (SIN código)
+
+Hasta ahora hemos trabajado con modelos simples.
+
+Por ejemplo:
+
+`“¿Existe relación entre la aspirina y el IMC?”`
+
+Y construimos algo así como:
+
+👉 IMC \~ aspirina
+
+Esto es útil… pero también peligroso.
+
+### El problema del mundo real
+
+En medicina, casi nada depende de una sola variable.
+
+Piensa en un paciente típico:
+
+-   Tiene una edad
+-   Tiene un sexo
+-   Tiene un nivel de actividad física
+-   Tiene múltiples factores de riesgo
+
+Entonces surge una pregunta clave:
+
+👉 ¿La relación que vemos es real… o está influenciada por otras variables?
+
+### Ejemplo clínico sencillo
+
+Imagina que observas esto:
+
+`Las personas que toman aspirina tienen mayor IMC`
+
+Podrías concluir:
+
+👉 “La aspirina está asociada a obesidad”
+
+Pero eso podría ser engañoso.
+
+¿Por qué?
+
+Porque:
+
+-   Las personas mayores usan más aspirina
+-   Las personas mayores también tienden a tener mayor IMC
+
+Entonces:
+
+👉 la edad está “mezclando” la relación
+
+A esto se le llama:
+
+👉 **Confusión (confounding)**
+
+### Idea clave del capítulo
+
+Un modelo simple puede contar una historia incompleta:
+
+👉 “Aspirina → IMC”
+
+Pero un modelo más realista diría:
+
+👉 “Aspirina, edad, sexo, actividad física → IMC”
+
+### Analogía clínica
+
+Es como evaluar a un paciente mirando solo un signo vital.
+
+👉 Útil, pero insuficiente.
+
+Un buen clínico integra:
+
+-   antecedentes
+-   contexto
+-   múltiples variables
+
+👉 Un buen modelo hace lo mismo.
+
+### Mensaje central
+
+👉 **Añadir variables cambia la historia que cuenta el modelo**
+
+Y muchas veces:
+
+👉 la historia inicial estaba equivocada
+
+## 2. Ejemplo simple (simulación en R)
+
+Vamos a simular un caso clásico de confusión.
+
+La idea:
+
+La edad influye en el IMC La edad también influye en el uso de aspirina La aspirina en sí no tiene efecto real
+
+Pero si ignoramos la edad…
+
+👉 parecerá que sí lo tiene
+
+```{r}
+set.seed(123)
+
+# 200 pacientes
+n <- 200
+
+# Simular la edad, la dosis de aspirina y el imc de 200 pacientes
+datos_sim <- tibble(
+  edad = rnorm(n, 50, 10),
+  aspirina = 0.05 * edad + rnorm(n, 0, 1),
+  imc = 20 + 0.3 * edad + rnorm(n, 0, 2)
+)
+```
+
+### Modelo simple (incorrecto)
+
+```{r}
+# Crear un modelos simple ("incorrecto")
+modelo_simple <- stan_glm(
+  imc ~ aspirina,
+  data = datos_sim,
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+print(modelo_simple) # produce:
+```
+
+```{r}
+posterior_interval(modelo_simple) # produce:
+```
+
+👉 Verás un efecto positivo de aspirina.
+
+### Modelo ajustado (correcto)
+
+```{r}
+# Modelo ajustado
+modelo_ajustado <- stan_glm(
+  imc ~ aspirina + edad,
+  data = datos_sim,
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+print(modelo_ajustado) # produce:
+```
+
+```{r}
+posterior_interval(modelo_ajustado)
+```
+
+### ¿Qué pasó?
+
+Al añadir edad:
+
+👉 el efecto de aspirina disminuye o desaparece
+
+### Interpretación
+
+-   El modelo simple se confundió
+-   El modelo ajustado se acerca más a la verdad
+
+#### Interpretación del modelo
+
+La mediana de imc es 20.3 cuando apirina y edad son iguales a cero; aumentar en 1 unidad la aspirina cambia el imc en 0.1 puntos pero con una incertidumbre de 0.2 (mayor al cambio de imc) por lo que el efecto de la aspirina es débil e incierto. Cada año adicional aumenta el imc 0.3 puntos con una incertidumbre de cero, entonces la edad es un predictor fuerte y claro y el modelo está muy seguro de esto.
+
+#### Interpretación del intervalo posterior
+
+El efecto de la aspirina (de cada unidad) sobre el imc varía entre -0.16 y 0.3 puntos de imc , es decir que incluso puede ser que no tenga un efecto; el efecto de la edad (de cada unidad o año) sobre el imc es entre 0.27 y 0.32 o que tiene un efecto positivo, consistente y preciso; La variación del promedio de imc es entre 2.01 y 2.38. En resumen, despues de considerar la edad, no hay evidencia de que la aspirina cambie el imc, en cambio la edad sí tiene un efecto consistente.
+
+## 3. Ejemplo aplicado con NHANES
+
+Ahora llevamos esta idea a datos reales.
+
+### Variables
+
+-   IMC → BMXBMI
+-   Aspirina → RXD530
+-   Edad → RIDAGEYR
+-   Sexo → RIAGENDR
+-   Actividad física → PAD680 (ejemplo)
+
+### Preparación de datos
+
+```{r}
+# Seleccionar sólo las variables que voy a usar
+datos <- df_obesidad %>%
+  select(BMXBMI, RXD530, RIDAGEYR, PAD680, RIAGENDR) %>%
+  drop_na()
+datos <- datos %>%
+  filter(
+    RXD530 <= 2000,
+    BMXBMI <= 100,
+    RIDAGEYR <= 100, 
+    PAD680 <= 2000
+  )
+```
+
+### Modelo simple
+
+```{r}
+modelo_simple <- stan_glm(
+  BMXBMI ~ RXD530,
+  data = datos,
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+print(modelo_simple)
+```
+
+```{r}
+posterior_interval(modelo_simple)
+```
+
+### Modelo ajustado
+
+```{r}
+# Modelo ajustado
+modelo_ajustado <- stan_glm(
+  BMXBMI ~ RXD530 + RIDAGEYR + PAD680,
+  data = datos,
+  chains = 2,
+  iter = 1000,
+  refresh = 0
+)
+print(modelo_ajustado) # produce:
+```
+
+```{r}
+posterior_interval(modelo_ajustado)
+```
+
+### Qué debes observar
+
+Compara:
+
+👉 coeficiente de **RXD530 (aspirina)**
+
+Entre:
+
+-   modelo simple
+-   modelo ajustado
+
+### Pregunta clave
+
+👉 ¿Cambió el efecto?
+
+-   ¿Disminuyó?
+-   ¿Aumentó?
+-   ¿Se volvió incierto?
+
+### Esto es lo importante
+
+👉 El modelo ajustado está diciendo:
+
+`“Dado la edad, el sexo y la actividad física…` `¿qué pasa con la aspirina?”`
+
+### Interpretación Estadística
+
+#### Interpretación del modelo
+
+Cada gramo de aspirina puede causar una disminución ligera de imc o cero o un aumento ligero; es muy probable que la aspirina tenga un efecto irrelevante sobre el imc. El modelo está bastante seguro de que a mayor edad, menor imc, es decir cada año una persona puede perder entre 0.15 y 0.09 puntos de imc.
+
+#### Interpretación del intervalo posterior
+
+Cada minuto de sedentarismo aumenta el peso entre 0.005 y 0.008 puntos de imc. Parece irrelevante pero qué pasa en 100 minutos? Pues hay un aumento de medio punto o casi un punto de imc. Muy interesante por eso se aconseja tratar de mantenerse activo aunque no necesariamente ejercicio (si el objetivo es adelgazar).
+
+## 4. Interpretación clínica
+
+Este capítulo es uno de los más importantes del libro.
+
+### Lo que aprendiste realmente
+
+No aprendiste solo a “añadir variables”.
+
+Aprendiste que:
+
+👉 **los modelos pueden engañarte si son demasiado simples**
+
+### Volviendo al paciente real
+
+Cuando ves esto:
+
+`Aspirina asociada a mayor IMC`
+
+Ahora sabes preguntar:
+
+-   ¿Son más viejos estos pacientes?
+-   ¿Hacen menos actividad física?
+-   ¿Hay diferencias por sexo?
+
+### Interpretación correcta
+
+El coeficiente ajustado de aspirina significa:
+
+👉 “La relación entre aspirina e IMC, manteniendo constantes edad, sexo y actividad física”
+
+### Traducción clínica
+
+Es como comparar pacientes:
+
+👉 **del mismo perfil clínico**
+
+-   misma edad
+-   mismo sexo
+-   mismo nivel de actividad
+
+Y preguntar:
+
+👉 ¿los que usan aspirina tienen diferente IMC?
+
+### Mensaje profundo
+
+👉 El modelo simple mezcla pacientes distintos
+
+👉 El modelo ajustado compara pacientes similares
+
+### Sobre la incertidumbre
+
+Recuerda:
+
+👉 No hay un solo valor
+
+Hay una **distribución** del efecto.
+
+Entonces:
+
+-   Puede ser positivo
+-   Puede ser pequeño
+-   Puede ser incierto
+
+👉 Y eso es información valiosa
+
+### Conclusión final del capítulo
+
+👉 **Un modelo simple puede engañarte**
+
+👉 **Un modelo ajustado se parece más a la realidad clínica**
+
+Y más importante aún:
+
+👉 **Añadir variables no es complicar el modelo… es hacerlo más honesto**
+
+## Ejercicios
+
+### Ejercicio 1 — Detectando confusión
+
+🎯 Objetivo
+
+Ver cómo cambia una relación al ajustar.
+
+🔧 Instrucciones
+
+1.  Ajusta un modelo simple:
+
+`stan_glm(BMXBMI ~ RXD530, data = datos)`
+
+2.  Ajusta el modelo completo:
+
+`stan_glm(BMXBMI ~ RXD530 + RIDAGEYR + PAD680, data = datos)`
+
+3.  Extrae los intervalos:
+
+`posterior_interval(modelo)`
+
+❓Preguntas
+
+-   ¿Cómo cambia el intervalo de RXD530?
+-   ¿Se acerca más a 0?
+-   ¿Se vuelve más estrecho o más ancho?
+
+**Reflexión clave**
+
+👉 ¿La aspirina tenía un efecto real… o era confusión?
+
+### Ejercicio 2 — Interpretación clínica profunda
+
+🎯 Objetivo
+
+Traducir coeficientes a lenguaje médico
+
+🔧 Instrucciones
+
+Usa el modelo ajustado y responde:
+
+❓ Preguntas
+
+1.  ¿Qué significa el coeficiente de PAD680 en términos clínicos?
+
+👉 Tradúcelo a:
+
+-   +30 minutos sedentarios
+-   +120 minutos sedentarios
+
+2.  ¿El efecto es clínicamente relevante o pequeño?
+
+3.  ¿Coincide con tu experiencia clínica?
+
+### Ejercicio 3 — Escala e interpretación
+
+🎯 Objetivo
+
+Entender el impacto de las unidades
+
+🔧 Instrucciones
+
+Calcula mentalmente:
+
+Si PAD680 tiene un coeficiente ≈ 0.006
+
+❓ Preguntas
+
+1.  ¿Qué pasa con el IMC si una persona pasa:
+
+-   1 hora más sedentaria
+-   3 horas más sedentaria
+
+**Reflexión**
+
+👉 ¿Por qué es peligroso interpretar coeficientes sin considerar la escala?
+
+### Ejercicio 4 — ¿Qué falta en el modelo?
+
+🎯 Objetivo
+
+Pensar como clínico
+
+❓ Pregunta abierta
+
+Tu modelo actual tiene:
+
+-   aspirina
+-   edad
+-   sedentarismo
+
+👉 ¿Qué variables importantes faltan para explicar IMC?
+
+Escribe al menos 5.
+
+💡 Pistas
+
+-   nutrición
+-   metabolismo
+-   comportamiento
+
+**Nivel experto**
+
+👉 ¿Cuál de esas variables podría estar confundiendo la relación entre sedentarismo e IMC?
+
+### Ejercicio 5 — Cambiando la historia del modelo
+
+🎯 Objetivo
+
+Entender que el modelo cuenta historias distintas
+
+🔧 Instrucciones
+
+Compara:
+
+1.  Modelo simple
+2.  Modelo ajustado
+
+❓ Preguntas
+
+-   ¿Qué historia cuenta cada uno?
+-   ¿Cuál se parece más a la realidad clínica?
+-   ¿Cuál sería peligrosa si la usaras para tomar decisiones?
+
+### Ejercicio 6 — Pensamiento causal (clave)
+
+🎯 Objetivo
+
+Ir más allá de correlaciones
+
+❓ Pregunta
+
+Responde con palabras, no código:
+
+👉 ¿La actividad física afecta el IMC directamente… o a través de otros mecanismos?
+
+💡 Ejemplos
+
+-   apetito
+-   insulina
+-   masa muscular
+
+**Reflexión profunda**
+
+👉 ¿Tu modelo está capturando eso… o lo está simplificando demasiado?
+
+### Ejercicio 7 — Detectando no linealidad
+
+🎯 Objetivo
+
+Conectar gráficos con modelos
+
+🔧 Instrucciones
+
+Haz un gráfico:
+
+```{r}
+#| fig-show: hide
+#| message: false
+
+ggplot(datos, aes(x = RIDAGEYR, y = BMXBMI)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth()
+```
+
+❓ Preguntas
+
+-   ¿La relación parece lineal?
+-   ¿Ves el “arco” que mencionaste?
+-   ¿El modelo lineal está capturando bien esa forma?
+
+**Insight**
+
+👉 Un modelo puede estar “bien” pero ser insuficiente
+
+### Ejercicio 8 — Interpretación bayesiana pura
+
+🎯 Objetivo
+
+Hablar como bayesiano
+
+❓ Pregunta
+
+Completa esta frase con tus palabras:
+
+“Dado los datos y el modelo, es plausible que…”
+
+Para:
+
+-   aspirina
+-   edad
+-   sedentarismo
+
+### Ejercicio 9 — La lección del capítulo
+
+Responde:
+
+👉 ¿Por qué un modelo simple puede engañarte?
+
+👉 ¿Qué cambió en tu forma de interpretar los datos después de este capítulo?

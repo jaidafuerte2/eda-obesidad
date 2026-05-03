@@ -21,9 +21,9 @@ En medicina muchas veces queremos estudiar cosas que no podemos observar de form
 
 Por ejemplo:
 
-- No podemos “ver” la resistencia a la insulina
-- No podemos medir fácilmente la inflamación crónica de bajo grado
-- No podemos saber exactamente cuánto daño metabólico acumulado tiene una persona
+-   No podemos “ver” la resistencia a la insulina
+-   No podemos medir fácilmente la inflamación crónica de bajo grado
+-   No podemos saber exactamente cuánto daño metabólico acumulado tiene una persona
 
 Lo que hacemos entonces es usar señales indirectas.
 
@@ -33,10 +33,10 @@ Una variable proxy es una variable observable que usamos como aproximación de o
 
 Por ejemplo:
 
-- El perímetro abdominal puede ser un proxy de grasa visceral
-- La hemoglobina glicosilada puede ser un proxy del promedio de glucosa de los últimos meses
-- La proteína C reactiva puede ser un proxy de inflamación
-- La dosis de aspirina puede ser un proxy de inflamación o de enfermedad cardiovascular previa
+-   El perímetro abdominal puede ser un proxy de grasa visceral
+-   La hemoglobina glicosilada puede ser un proxy del promedio de glucosa de los últimos meses
+-   La proteína C reactiva puede ser un proxy de inflamación
+-   La dosis de aspirina puede ser un proxy de inflamación o de enfermedad cardiovascular previa
 
 La idea central es simple:
 
@@ -50,12 +50,12 @@ La aspirina es un buen ejemplo.
 
 Muchas personas usan aspirina porque:
 
-- tienen dolor o inflamación
-- tienen artritis
-- tienen riesgo cardiovascular
-- han tenido un infarto previo
-- un médico les indicó aspirina preventiva
-- la toman por automedicación
+-   tienen dolor o inflamación
+-   tienen artritis
+-   tienen riesgo cardiovascular
+-   han tenido un infarto previo
+-   un médico les indicó aspirina preventiva
+-   la toman por automedicación
 
 Eso significa que la aspirina puede estar relacionada con inflamación, pero también con edad, enfermedad cardiovascular, diabetes, obesidad o decisiones médicas previas.
 
@@ -71,29 +71,29 @@ Una variable observada es algo que podemos medir directamente.
 
 Por ejemplo:
 
-- IMC
-- glucosa
-- neutrófilos
-- dosis de aspirina
+-   IMC
+-   glucosa
+-   neutrófilos
+-   dosis de aspirina
 
 Una variable latente es algo que existe, pero no observamos de manera directa.
 
 Por ejemplo:
 
-- inflamación crónica
-- riesgo cardiometabólico global
-- resistencia a la insulina
-- estrés fisiológico acumulado
+-   inflamación crónica
+-   riesgo cardiometabólico global
+-   resistencia a la insulina
+-   estrés fisiológico acumulado
 
 Podemos pensar en la inflamación crónica como una especie de “fuego interno” que no vemos directamente, pero del que observamos humo.
 
 Ese humo puede ser:
 
-- neutrófilos elevados
-- GGT elevada
-- glucosa alta
-- obesidad abdominal
-- uso de aspirina
+-   neutrófilos elevados
+-   GGT elevada
+-   glucosa alta
+-   obesidad abdominal
+-   uso de aspirina
 
 La aspirina no es el fuego.
 
@@ -121,9 +121,9 @@ No necesariamente.
 
 Puede ocurrir que:
 
-- las personas con obesidad tienen más inflamación
-- las personas con más inflamación usan más aspirina
-- las personas con obesidad también tienen más glucosa
+-   las personas con obesidad tienen más inflamación
+-   las personas con más inflamación usan más aspirina
+-   las personas con obesidad también tienen más glucosa
 
 Entonces la obesidad podría ser la verdadera causa de ambas cosas.
 
@@ -133,9 +133,9 @@ La confusión ocurre cuando una tercera variable influye tanto en la exposición
 
 En este caso:
 
-- obesidad → más inflamación
-- obesidad → más aspirina
-- obesidad → más glucosa
+-   obesidad → más inflamación
+-   obesidad → más aspirina
+-   obesidad → más glucosa
 
 Por eso no basta con ver correlaciones.
 
@@ -145,19 +145,19 @@ Necesitamos pensar en historias causales.
 
 Podemos imaginar una historia causal así:
 
-- La obesidad aumenta la inflamación
-- La inflamación aumenta la probabilidad de usar aspirina
-- La inflamación también aumenta neutrófilos, GGT y glucosa
-- La edad aumenta la probabilidad de usar aspirina y también aumenta el riesgo cardiometabólico
+-   La obesidad aumenta la inflamación
+-   La inflamación aumenta la probabilidad de usar aspirina
+-   La inflamación también aumenta neutrófilos, GGT y glucosa
+-   La edad aumenta la probabilidad de usar aspirina y también aumenta el riesgo cardiometabólico
 
 La relación puede representarse de forma simplificada así:
 
-- obesidad → inflamación
-- inflamación → aspirina
-- inflamación → neutrófilos
-- inflamación → glucosa
-- edad → aspirina
-- edad → glucosa
+-   obesidad → inflamación
+-   inflamación → aspirina
+-   inflamación → neutrófilos
+-   inflamación → glucosa
+-   edad → aspirina
+-   edad → glucosa
 
 La inflamación está en el centro del sistema, pero no la observamos directamente.
 
@@ -171,9 +171,9 @@ Queremos representar una variable latente llamada `inflamacion_real`.
 
 No podemos verla directamente, pero sí podemos observar:
 
-- neutrófilos
-- glucosa
-- uso de aspirina
+-   neutrófilos
+-   glucosa
+-   uso de aspirina
 
 ```{r}
 set.seed(123)
@@ -216,9 +216,9 @@ ggplot(datos_proxy, aes(x = aspirina, y = neutrofilos)) +
 
 Esperaríamos una tendencia positiva:
 
-- más aspirina
-- más neutrófilos
-- más inflamación subyacente
+-   más aspirina
+-   más neutrófilos
+-   más inflamación subyacente
 
 Pero la relación no será perfecta, porque la aspirina también tiene ruido.
 
@@ -250,8 +250,8 @@ ggplot(datos_proxy, aes(x = aspirina, y = neutrofilos)) +
 
 Ahora la aspirina depende tanto de:
 
-- inflamación
-- edad
+-   inflamación
+-   edad
 
 Esto hace que la interpretación sea más difícil.
 
@@ -265,14 +265,14 @@ Ahora usaremos variables reales de NHANES.
 
 Nos enfocaremos en:
 
-- RXD530: dosis de aspirina
-- RXQ515: aspirina prescrita
-- RXQ520: aspirina automedicada
-- LBDNENO: neutrófilos
-- LBDLYMNO: linfocitos
-- LBXSGTSI: GGT
-- BMXBMI: IMC
-- LBXSGL: glucosa
+-   RXD530: dosis de aspirina
+-   RXQ515: aspirina prescrita
+-   RXQ520: aspirina automedicada
+-   LBDNENO: neutrófilos
+-   LBDLYMNO: linfocitos
+-   LBXSGTSI: GGT
+-   BMXBMI: IMC
+-   LBXSGL: glucosa
 
 Primero construimos un subconjunto simple.
 
@@ -489,11 +489,11 @@ Desde la perspectiva clínica, la inflamación crónica es uno de los ejes centr
 
 En La Teoría Hormonal de la Obesidad, la inflamación aparece como parte del círculo vicioso que conecta:
 
-- obesidad
-- resistencia a la insulina
-- hígado graso
-- enfermedad cardiovascular
-- diabetes
+-   obesidad
+-   resistencia a la insulina
+-   hígado graso
+-   enfermedad cardiovascular
+-   diabetes
 
 El problema es que la inflamación de bajo grado no siempre es fácil de medir.
 
@@ -501,12 +501,12 @@ Por eso necesitamos proxies.
 
 La aspirina puede ser útil porque suele aparecer con mayor frecuencia en personas que:
 
-- tienen dolor crónico
-- tienen enfermedad cardiovascular
-- tienen diabetes
-- tienen obesidad
-- tienen inflamación persistente
-- han recibido indicación médica preventiva
+-   tienen dolor crónico
+-   tienen enfermedad cardiovascular
+-   tienen diabetes
+-   tienen obesidad
+-   tienen inflamación persistente
+-   han recibido indicación médica preventiva
 
 Pero precisamente por eso la aspirina también puede ser engañosa.
 
@@ -514,26 +514,26 @@ Una persona puede usar aspirina por razones totalmente distintas a la inflamaci�
 
 Por ejemplo:
 
-- por prevención cardiovascular
-- por antecedente de infarto
-- por dolor articular
-- por recomendación médica relacionada con la edad
+-   por prevención cardiovascular
+-   por antecedente de infarto
+-   por dolor articular
+-   por recomendación médica relacionada con la edad
 
 Entonces, si usamos la aspirina como proxy, debemos recordar tres ideas:
 
-- Puede contener información útil sobre inflamación
-- No representa inflamación de manera pura
-- Debe interpretarse junto con otras variables
+-   Puede contener información útil sobre inflamación
+-   No representa inflamación de manera pura
+-   Debe interpretarse junto con otras variables
 
 En la práctica, suele ser mejor combinar varios proxies:
 
-- aspirina
-- neutrófilos
-- linfocitos
-- GGT
-- glucosa
-- obesidad abdominal
-- IMC
+-   aspirina
+-   neutrófilos
+-   linfocitos
+-   GGT
+-   glucosa
+-   obesidad abdominal
+-   IMC
 
 Cuando varios de esos indicadores apuntan en la misma dirección, nuestra creencia en la presencia de inflamación crónica se vuelve más fuerte.
 
@@ -549,25 +549,23 @@ Integramos múltiples pistas imperfectas para aproximarnos a una realidad que no
 
 Sin usar código, responde:
 
-1. ¿Por qué la aspirina puede relacionarse con inflamación?
-2. ¿Por qué la aspirina también puede relacionarse con edad?
-3. ¿Por qué dos personas con la misma dosis de aspirina podrían tener niveles muy diferentes de inflamación?
-4. ¿Por qué una relación plana entre aspirina y neutrófilos no significa necesariamente que la aspirina “no sirve”?
+1.  ¿Por qué la aspirina puede relacionarse con inflamación?
+2.  ¿Por qué la aspirina también puede relacionarse con edad?
+3.  ¿Por qué dos personas con la misma dosis de aspirina podrían tener niveles muy diferentes de inflamación?
+4.  ¿Por qué una relación plana entre aspirina y neutrófilos no significa necesariamente que la aspirina “no sirve”?
 
 ### Ejercicio 2 — Comparar proxies
 
 Ordena estas variables desde la que crees que podría ser un proxy más fuerte de inflamación hasta la más débil:
 
-- neutrófilos
-- GGT
-- glucosa
-- IMC
-- dosis de aspirina
-- linfocitos
+-   neutrófilos
+-   GGT
+-   glucosa
+-   IMC
+-   dosis de aspirina
+-   linfocitos
 
 Luego explica por qué pusiste la aspirina en esa posición.
-
-
 
 ### Ejercicio 3 — Crear una variable binaria de aspirina
 
@@ -591,16 +589,16 @@ my_df_aspirina <- my_df_aspirina %>%
 
 Después calcula:
 
-- IMC promedio
-- glucosa promedio
-- neutrófilos promedio
+-   IMC promedio
+-   glucosa promedio
+-   neutrófilos promedio
 
 para los grupos "sí" y "no".
 
 Pregunta para interpretar:
 
-- ¿Las personas que usan aspirina parecen tener peor perfil - metabólico?
-- ¿Crees que eso significa que la aspirina causa ese peor perfil?
+-   ¿Las personas que usan aspirina parecen tener peor perfil - metabólico?
+-   ¿Crees que eso significa que la aspirina causa ese peor perfil?
 
 ### Ejercicio 4 — Relación visual con neutrófilos
 
@@ -627,10 +625,10 @@ ggplot(my_df_aspirina, aes(x = RXD530, y = LBDNENO/LBDLYMNO)) +
 
 Luego responde:
 
-1. ¿La pendiente parece positiva, negativa o plana?
-2. ¿La relación parece fuerte o débil?
-3. ¿Qué otras variables podrían estar ocultando una relación más clara?
-4. ¿Qué te enseña esto sobre los proxies imperfectos?
+1.  ¿La pendiente parece positiva, negativa o plana?
+2.  ¿La relación parece fuerte o débil?
+3.  ¿Qué otras variables podrían estar ocultando una relación más clara?
+4.  ¿Qué te enseña esto sobre los proxies imperfectos?
 
 ### Ejercicio 5 — Comparar con otro proxy
 
@@ -661,9 +659,9 @@ ggplot(my_df_aspirina, aes(x = RXD530, y = LBDNENO)) +
 
 Después compara:
 
-- ¿Qué variable parece relacionarse más claramente con neutrófilos?
-- ¿IMC parece un proxy más fuerte de inflamación que la aspirina?
-- ¿Qué nos dice esto sobre obesidad e inflamación?
+-   ¿Qué variable parece relacionarse más claramente con neutrófilos?
+-   ¿IMC parece un proxy más fuerte de inflamación que la aspirina?
+-   ¿Qué nos dice esto sobre obesidad e inflamación?
 
 ### Ejercicio 6 — DAG conceptual
 
@@ -695,18 +693,18 @@ plot(dag_aspirina)
 
 Luego responde:
 
-1. ¿Por qué la edad puede confundir la relación entre aspirina y glucosa?
-2. ¿Por qué la obesidad puede aumentar tanto la inflamación como la glucosa?
-3. ¿Por qué no sería correcto decir “la aspirina aumenta la glucosa” solamente viendo una asociación?
+1.  ¿Por qué la edad puede confundir la relación entre aspirina y glucosa?
+2.  ¿Por qué la obesidad puede aumentar tanto la inflamación como la glucosa?
+3.  ¿Por qué no sería correcto decir “la aspirina aumenta la glucosa” solamente viendo una asociación?
 
 ### Ejercicio 7 — Crear una hipótesis bayesiana
 
 Imagina que observas esto:
 
-- IMC alto
-- glucosa alta
-- neutrófilos ligeramente altos
-- uso de aspirina
+-   IMC alto
+-   glucosa alta
+-   neutrófilos ligeramente altos
+-   uso de aspirina
 
 Escribe una hipótesis clínica simple de 3–5 líneas sobre qué podría estar pasando en esa persona.
 
