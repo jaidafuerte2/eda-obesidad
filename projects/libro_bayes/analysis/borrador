@@ -1,0 +1,318 @@
+## Ejercicios
+
+### Ejercicio 1 — Detectar el problema
+
+Toma tu modelo actual.
+
+👉 Pregunta:
+
+- ¿La media está bien?
+- ¿La dispersión está bien?
+- ¿Las colas están bien?
+
+👉 Escribe 3 frases clínicas, por ejemplo:
+
+`“El modelo sobreestima el IMC promedio…”`
+
+### Ejercicio 2 — Comparación de modelos
+
+Construye dos modelos:
+
+```{r}
+
+# Seleccionar las variables que voy a usar
+datos <- df_obesidad %>%
+  select(BMXBMI, LBXIN, RIDAGEYR, PAD680) %>%
+  drop_na()
+
+# Filtrar los pacientes con por imc, dosis habitual de aspirina, edad,
+# y minutos diarios de actividad sedentaria
+datos <- datos %>%
+  filter(
+    BMXBMI <= 100,
+    LBXIN <= 100,
+    RIDAGEYR <= 100,
+    PAD680 < 2000
+  )
+
+# Construir modelo 1
+modelo1 <- stan_glm(
+  BMXBMI ~ LBXIN + RIDAGEYR,
+  data = datos,
+  chains = 2, iter = 1000, refresh = 0
+)
+
+# Construir modelo 2
+modelo2 <- stan_glm(
+  BMXBMI ~ LBXIN + I(LBXIN^2) + RIDAGEYR,
+  data = datos,
+  chains = 2, iter = 1000, refresh = 0
+)
+```
+
+👉 Genera yrep para ambos
+
+```{r}
+yrep1 <- posterior_predict(modelo1)
+yrep2 <- posterior_predict(modelo2)
+```
+
+👉 Haz PPC
+
+```{r}
+ppc_dens_overlay(
+  y = datos$BMXBMI,
+  yrep = yrep1[1:50, ]
+)
+```
+
+```{r}
+ppc_dens_overlay(
+  y = datos$BMXBMI,
+  yrep = yrep2[1:50, ]
+)
+```
+
+
+Pregunta:
+
+👉 ¿Cuál reproduce mejor:
+
+la media?
+la forma?
+
+### Ejercicio 3 — Intuición sobre distribución
+
+Sin cambiar el modelo:
+
+👉 observa el histograma real de IMC
+
+```{r}
+ggplot(datos, aes(x = BMXBMI)) +
+  geom_histogram(bins = 30)
+```
+
+**Pregunta:**
+
+👉 ¿Es simétrico?
+
+👉 ¿Tiene cola derecha?
+
+### Ejercicio 4 — Pensamiento clínico
+
+Responde:
+
+👉 ¿Por qué el IMC NO debería ser perfectamente normal en la vida real?
+
+Pista:
+
+- obesidad
+- heterogeneidad
+- estilos de vida
+
+### Ejercicio 5 — Nivel clave
+
+Completa esta frase:
+
+`“Aunque el modelo no reproduce perfectamente la distribución,`
+`sigue siendo útil para ________,`
+`pero no para ________.”`
+
+### Ejercicio 6 — Insight profundo
+
+Responde:
+
+👉 ¿Qué te enseñó el PPC sobre el modelo que no podrías ver solo con coeficientes?
+
+### Ejercicio 7 — ¿Dónde falla más el modelo?
+
+Ya viste que el modelo no encaja perfecto.
+
+👉 Ahora sé más específico:
+
+Divide mentalmente la distribución en 3 zonas:
+
+- baja (IMC < 25)
+- media (25–30)
+- alta (> 30)
+
+**Pregunta:**
+
+👉 ¿En cuál zona el modelo falla más?
+
+👉 ¿Qué implicación clínica tendría eso?
+
+(Pista: no es lo mismo fallar en obesidad que en normopeso)
+
+### Ejercicio 8 — Chequeo de extremos
+
+Sin cambiar el modelo:
+
+👉 compara visualmente o con quantiles:
+
+- mínimo real vs mínimo simulado
+- máximo real vs máximo simulado
+
+**Pregunta:**
+
+👉 ¿El modelo genera pacientes “imposibles”?
+
+Ejemplo:
+
+- IMC demasiado bajo (< 15)
+- IMC extremadamente alto sin control
+
+### Ejercicio 9 — Sensibilidad a variables
+
+Construye este modelo:
+
+```{r}
+modelo_simple <- stan_glm(
+  BMXBMI ~ RIDAGEYR,
+  data = datos,
+  chains = 2, iter = 1000, refresh = 0
+)
+```
+
+👉 haz PPC
+
+```{r}
+yrep1 <- posterior_predict(modelo_simple)
+```
+
+
+```{r}
+ppc_dens_overlay(
+  y = datos$BMXBMI,
+  yrep = yrep1[1:50, ]
+)
+```
+
+**Pregunta:**
+
+👉 ¿Es peor, igual o mejor que el modelo con insulina?
+
+### Ejercicio 10 — Modelo absurdo (muy importante)
+
+Construye un modelo deliberadamente malo:
+
+```{r}
+modelo_absurdo <- stan_glm(
+  BMXBMI ~ 1,
+  data = datos,
+  chains = 2, iter = 1000, refresh = 0
+)
+```
+
+👉 PPC
+
+```{r}
+yrep1 <- posterior_predict(modelo_absurdo)
+
+ppc_dens_overlay(
+  y = datos$BMXBMI,
+  yrep = yrep1[1:50, ]
+)
+```
+
+**Pregunta:**
+
+👉 ¿Qué patrones desaparecen completamente?
+
+### Ejercicio 11 — Comparación mental
+
+Sin correr código nuevo:
+
+Ordena estos modelos de mejor a peor (según PPC):
+
+1. IMC ~ 1
+2. IMC ~ edad + sexo
+3. IMC ~ insulina + edad + sexo
+4. IMC ~ insulina + insulina² + edad + sexo
+
+**Pregunta:**
+
+👉 ¿Por qué ese orden?
+
+### Ejercicio 12 — Forma de la relación
+
+Haz un gráfico:
+
+```{r}
+ggplot(datos, aes(x = LBXIN, y = BMXBMI)) +
+  geom_point(alpha = 0.3)
+```
+
+**Pregunta:**
+
+👉 ¿La relación parece lineal?
+
+👉 ¿Dónde falla la linealidad?
+
+### Ejercicio 13 — Pensamiento causal
+
+Responde:
+
+👉 ¿Tiene sentido clínico modelar:
+
+`IMC ~ insulina`
+
+o
+
+`insulina ~ IMC`
+
+**Objetivo**
+
+Diferenciar:
+
+- predicción
+vs
+- causalidad
+
+### Ejercicio 14 — Interpretación crítica
+
+Completa:
+
+`“El modelo reproduce razonablemente ________,`
+`pero falla en ________, lo que implica que ________.”`
+
+### Ejercicio 15 — Umbral de aceptación
+
+Define tu criterio personal:
+
+👉 ¿Cuándo considerarías que un modelo es “suficientemente bueno”?
+
+Ejemplo:
+
+- diferencia de media < X
+- colas razonables
+- forma aproximada
+
+### Ejercicio 16 — Traducción clínica real
+
+Imagina que presentas esto a un colega médico.
+
+👉 Explica en lenguaje clínico:
+
+- qué hace el modelo
+- qué hace bien
+- qué hace mal
+
+### Ejercicio 17 — Pregunta incómoda
+
+Responde con honestidad:
+
+👉 ¿Te sentirías cómodo tomando decisiones clínicas con este modelo?
+
+- sí
+- no
+- depende
+
+**Y explica por qué**
+
+### Ejercicio 18 — Insight final del capítulo
+
+Completa:
+
+`“El posterior predictive check me permitió ver que ________,`
+`algo que no habría detectado mirando solo ________.”`

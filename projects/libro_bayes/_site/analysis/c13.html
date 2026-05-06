@@ -285,6 +285,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">13.- Priors</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14.- Chequeo del Modelo</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -337,6 +343,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#insight-clave" id="toc-insight-clave" class="nav-link" data-scroll-target="#insight-clave">Insight clave</a></li>
   <li><a href="#traducción-clínica-directa" id="toc-traducción-clínica-directa" class="nav-link" data-scroll-target="#traducción-clínica-directa">Traducción clínica directa</a></li>
   <li><a href="#mensaje-final" id="toc-mensaje-final" class="nav-link" data-scroll-target="#mensaje-final">Mensaje final</a></li>
+  </ul></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3-clave-conceptual" id="toc-ejercicio-3-clave-conceptual" class="nav-link" data-scroll-target="#ejercicio-3-clave-conceptual">Ejercicio 3 (clave conceptual)</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  <li><a href="#ejercicio-6-muy-importante" id="toc-ejercicio-6-muy-importante" class="nav-link" data-scroll-target="#ejercicio-6-muy-importante">Ejercicio 6 (muy importante)</a></li>
+  <li><a href="#ejercicio-7" id="toc-ejercicio-7" class="nav-link" data-scroll-target="#ejercicio-7">Ejercicio 7</a></li>
+  <li><a href="#ejercicio-8-nivel-libro" id="toc-ejercicio-8-nivel-libro" class="nav-link" data-scroll-target="#ejercicio-8-nivel-libro">Ejercicio 8 (nivel libro 🔥)</a></li>
+  <li><a href="#ejercicio-9-el-más-importante" id="toc-ejercicio-9-el-más-importante" class="nav-link" data-scroll-target="#ejercicio-9-el-más-importante">Ejercicio 9 (el más importante)</a></li>
+  <li><a href="#ejercicio-10-nivel-avanzado-pero-clave" id="toc-ejercicio-10-nivel-avanzado-pero-clave" class="nav-link" data-scroll-target="#ejercicio-10-nivel-avanzado-pero-clave">Ejercicio 10 (nivel avanzado pero clave)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -835,6 +854,123 @@ sigma        6.2764186  6.5796939</code></pre>
 <p>👉 <strong>No estás “forzando” el modelo</strong></p>
 <p>Estás haciendo explícito algo que ya haces:</p>
 <p>👉 pensar clínicamente antes de ver los datos</p>
+</section>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Sin usar R, responde:</p>
+<p>Tienes esta creencia clínica:</p>
+<p><code>“La insulina aumenta con el IMC, y el efecto es moderado, pero no estoy completamente seguro”</code></p>
+<p>👉 Propón un prior para la pendiente.</p>
+<p><strong>Preguntas</strong>:</p>
+<ul>
+<li>¿media?</li>
+<li>¿desviación?</li>
+<li>¿por qué?</li>
+</ul>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Ahora cambia el escenario:</p>
+<p><code>“Estoy MUY seguro de que el efecto es positivo y relativamente fuerte”</code></p>
+<p>👉 Ajusta el prior.</p>
+<p><strong>Pregunta clave</strong>:</p>
+<ul>
+<li>¿qué cambia: la media, la desviación o ambas?</li>
+</ul>
+</section>
+<section id="ejercicio-3-clave-conceptual" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-clave-conceptual">Ejercicio 3 (clave conceptual)</h3>
+<p>Explica con tus palabras:</p>
+<p>👉 ¿Qué pasaría si usas este prior?</p>
+<p><code>normal(-0.5, 0.1)</code></p>
+<p>en el modelo:</p>
+<p><code>insulina ~ imc</code></p>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Simula datos donde:</p>
+<p>👉 NO hay relación entre IMC e insulina</p>
+<p>Luego:</p>
+<ol type="1">
+<li>ajusta modelo con prior débil</li>
+<li>ajusta modelo con prior informativo positivo</li>
+</ol>
+<p>👉 <strong>Compara resultados</strong></p>
+<p><strong>Pregunta clave</strong></p>
+<p>👉 ¿El prior puede “inventar” una relación?</p>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Usa:</p>
+<p><code>insulina ~ imc</code></p>
+<p>Construye:</p>
+<ul>
+<li>modelo con prior débil</li>
+<li>modelo con prior informativo</li>
+</ul>
+<p>👉 compara:</p>
+<p><code>posterior_interval()</code></p>
+<p><strong>Preguntas</strong></p>
+<ul>
+<li>¿cambian los intervalos?</li>
+<li>¿cuánto cambian?</li>
+<li>¿quién domina: datos o prior?</li>
+</ul>
+</section>
+<section id="ejercicio-6-muy-importante" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6-muy-importante">Ejercicio 6 (muy importante)</h3>
+<p>Ahora usa:</p>
+<p><code>imc ~ insulina</code></p>
+<p>👉 y responde:</p>
+<ol type="1">
+<li>¿cambia el sigma?</li>
+<li>¿en qué unidades está sigma?</li>
+<li>¿cuál modelo tiene más variabilidad?</li>
+</ol>
+</section>
+<section id="ejercicio-7" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7">Ejercicio 7</h3>
+<p>Responde sin código:</p>
+<p>👉 ¿Cuándo usarías un prior débil en medicina?</p>
+<p>👉 ¿Cuándo usarías un prior informativo?</p>
+</section>
+<section id="ejercicio-8-nivel-libro" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-8-nivel-libro">Ejercicio 8 (nivel libro 🔥)</h3>
+<p>Tienes este escenario:</p>
+<p>Paciente:</p>
+<ul>
+<li>IMC = 35</li>
+<li>insulina elevada</li>
+<li>en tratamiento con aspirina</li>
+</ul>
+<p>👉 Pregunta:</p>
+<p>¿Cómo usarías un prior en un modelo que incluya:</p>
+<p><code>insulina ~ imc + aspirina</code></p>
+<p>👉 Específicamente:</p>
+<ul>
+<li>¿qué prior pondrías para IMC?</li>
+<li>¿qué prior pondrías para aspirina?</li>
+<li>¿por qué?</li>
+</ul>
+</section>
+<section id="ejercicio-9-el-más-importante" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-9-el-más-importante">Ejercicio 9 (el más importante)</h3>
+<p>Explica con tus palabras:</p>
+<p>👉 ¿Por qué el prior casi no cambió tus resultados en NHANES?</p>
+</section>
+<section id="ejercicio-10-nivel-avanzado-pero-clave" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-10-nivel-avanzado-pero-clave">Ejercicio 10 (nivel avanzado pero clave)</h3>
+<p>Imagina:</p>
+<ul>
+<li>tienes pocos datos</li>
+<li>mucho ruido</li>
+<li>relación poco clara</li>
+</ul>
+<p>👉 Pregunta:</p>
+<p>¿Qué pasaría si usas un prior muy fuerte?</p>
 
 
 </section>

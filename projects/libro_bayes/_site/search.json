@@ -1145,5 +1145,93 @@
       "Módulo 5: Modelos Bayesianos en R",
       "13.- Priors"
     ]
+  },
+  {
+    "objectID": "analysis/c14.html",
+    "href": "analysis/c14.html",
+    "title": "14.- Chequeo del Modelo",
+    "section": "",
+    "text": "Hasta ahora has aprendido a construir modelos bayesianos. Pero aquí viene una idea clave —y un poco incómoda:\n👉 Construir un modelo no significa que sea correcto\nUn modelo puede:\n\najustarse bien a los datos\ndarte resultados “bonitos”\nparecer clínicamente razonable\n\n…y aun así estar equivocado.\n\n\nPiensa en una prueba diagnóstica nueva.\nNo basta con que:\n\ntenga buena teoría\nesté bien diseñada\nsuene convincente\n\n👉 Debe funcionar en pacientes reales\nCon los modelos pasa exactamente lo mismo.\n\n\n\nUn modelo es razonable si:\n👉 puede reproducir datos similares a los que observamos en la realidad\nEs decir:\n\nsi el modelo genera pacientes “simulados”\nesos pacientes deberían parecerse a los reales\n\n\n\n\nEl modelo bayesiano tiene una propiedad muy poderosa:\n👉 Puede generar datos nuevos\nA partir del modelo, podemos simular:\n\nnuevos valores de IMC\nnuevos valores de glicemia\nnuevos pacientes\n\nEntonces hacemos algo muy simple:\n👉 Comparamos:\n\ndatos reales vs\ndatos simulados por el modelo\n\n\n\n\nLa pregunta clave es:\n👉 ¿El modelo realmente representa la realidad clínica?\n⚠️ Idea crítica\nUn modelo puede:\n\nestimar bien los coeficientes\ntener intervalos razonables\n\n👉 y aun así fallar en reproducir la realidad\n\n\n\n👉 “Si el modelo no puede generar datos como los reales, no debes confiar en él”",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "14.- Chequeo del Modelo"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#intuición-sin-código",
+    "href": "analysis/c14.html#intuición-sin-código",
+    "title": "14.- Chequeo del Modelo",
+    "section": "",
+    "text": "Hasta ahora has aprendido a construir modelos bayesianos. Pero aquí viene una idea clave —y un poco incómoda:\n👉 Construir un modelo no significa que sea correcto\nUn modelo puede:\n\najustarse bien a los datos\ndarte resultados “bonitos”\nparecer clínicamente razonable\n\n…y aun así estar equivocado.\n\n\nPiensa en una prueba diagnóstica nueva.\nNo basta con que:\n\ntenga buena teoría\nesté bien diseñada\nsuene convincente\n\n👉 Debe funcionar en pacientes reales\nCon los modelos pasa exactamente lo mismo.\n\n\n\nUn modelo es razonable si:\n👉 puede reproducir datos similares a los que observamos en la realidad\nEs decir:\n\nsi el modelo genera pacientes “simulados”\nesos pacientes deberían parecerse a los reales\n\n\n\n\nEl modelo bayesiano tiene una propiedad muy poderosa:\n👉 Puede generar datos nuevos\nA partir del modelo, podemos simular:\n\nnuevos valores de IMC\nnuevos valores de glicemia\nnuevos pacientes\n\nEntonces hacemos algo muy simple:\n👉 Comparamos:\n\ndatos reales vs\ndatos simulados por el modelo\n\n\n\n\nLa pregunta clave es:\n👉 ¿El modelo realmente representa la realidad clínica?\n⚠️ Idea crítica\nUn modelo puede:\n\nestimar bien los coeficientes\ntener intervalos razonables\n\n👉 y aun así fallar en reproducir la realidad\n\n\n\n👉 “Si el modelo no puede generar datos como los reales, no debes confiar en él”",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "14.- Chequeo del Modelo"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#ejemplo-simple-simulación-en-r",
+    "href": "analysis/c14.html#ejemplo-simple-simulación-en-r",
+    "title": "14.- Chequeo del Modelo",
+    "section": "2. Ejemplo simple (simulación en R)",
+    "text": "2. Ejemplo simple (simulación en R)\nVamos a entender la idea con un ejemplo sencillo.\nSupongamos que modelamos el IMC como una distribución normal.\n\nset.seed(123)\n\n# Datos reales simulados\nimc_real &lt;- rnorm(100, mean = 28, sd = 4)\n\n# Modelo (supuesto): IMC ~ Normal(28, 4)\n# Generamos datos simulados desde el modelo\nimc_sim &lt;- replicate(100, rnorm(100, mean = 28, sd = 4))\n\n\nComparación visual\n\n# Comparar visualmente el modelos con los datos reales\nppc_dens_overlay(y = imc_real, yrep = imc_sim)\n\n\n\n\n\n\n\n\n\n\n¿Qué estamos viendo?\n\nLínea oscura → datos reales\nLíneas celestes → datos simulados por el modelo\n\n\n\nInterpretación\nSi el modelo es razonable:\n\nlas curvas deberían parecerse\n\nSi no:\n\nel modelo está fallando\n\n\n\nEjemplo de mal modelo\n\n# Modelo incorrecto\nimc_sim_mal &lt;- replicate(100, rnorm(100, mean = 24, sd = 2))\n\n# Comparar visualmente el modelos con los datos reales. \nppc_dens_overlay(y = imc_real, yrep = imc_sim_mal)\n\n\n\n\n\n\n\n\nSe observa claramente que los datos simulados por el modelo generan un gráfico muy diferente al gráfico generado por los datos reales\n\n\nLección\n👉 No basta con ajustar un modelo\n👉 Hay que verificar si genera datos plausibles",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "14.- Chequeo del Modelo"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#ejemplo-aplicado-con-nhanes-y-aspirina",
+    "href": "analysis/c14.html#ejemplo-aplicado-con-nhanes-y-aspirina",
+    "title": "14.- Chequeo del Modelo",
+    "section": "3. Ejemplo aplicado con NHANES y aspirina",
+    "text": "3. Ejemplo aplicado con NHANES y aspirina\nAhora llevamos esta idea a datos reales.\n\nPreparación\n\n# Seleccionar las variables que voy a usar\ndatos &lt;- df_obesidad %&gt;%\n  select(BMXBMI, RXD530, RIDAGEYR, PAD680) %&gt;%\n  drop_na()\n\n# Filtrar los pacientes con por imc, dosis habitual de aspirina, edad,\n# y minutos diarios de actividad sedentaria\ndatos &lt;- datos %&gt;%\n  filter(\n    BMXBMI &lt;= 100,\n    RXD530 &lt;= 500,\n    RIDAGEYR &lt;= 100,\n    PAD680 &lt; 2000\n  )\n\n\n\nModelo base\n\n# Crear modelo base\nmodelo &lt;- stan_glm(\n  BMXBMI ~ RXD530 + RIDAGEYR + PAD680,\n  data = datos,\n  family = gaussian(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\n\n\n\nGenerar datos simulados\n\n# Generar datos simulados\nyrep &lt;- posterior_predict(modelo)\n\n👉 yrep contiene:\n\nmuchas versiones simuladas del IMC\ncada fila = un mundo posible\n\n\n\nChequeo visual\n\n# Chequeo visual\nppc_dens_overlay(\n  y = datos$BMXBMI,\n  yrep = yrep[1:50, ]\n)\n\n\n\n\n\n\n\n\n\n\n¿Qué debes observar?\nHazte estas preguntas:\n\n1. ¿La distribución es similar?\n\n¿El modelo captura la forma general del IMC?\n¿La curva es parecida?\n\n\n\n2. ¿La variabilidad es realista?\n\n¿los datos simulados son muy “estrechos”?\n¿o demasiado dispersos?\n\n\n\n3. ¿Los extremos son plausibles?\n\n¿el modelo genera IMC muy bajos o muy altos irreales?\n¿faltan valores extremos?\n\n\n\n\nAlternativa: histograma\n\n# Alternativa al histograma\nppc_hist(\n  y = datos$BMXBMI,\n  yrep = yrep[1:5, ]\n)",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "14.- Chequeo del Modelo"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#ejemplo-aplicado-con-nhanes-e-insulina",
+    "href": "analysis/c14.html#ejemplo-aplicado-con-nhanes-e-insulina",
+    "title": "14.- Chequeo del Modelo",
+    "section": "4. Ejemplo aplicado con NHANES e insulina",
+    "text": "4. Ejemplo aplicado con NHANES e insulina\nAhora llevamos esta idea a datos reales.\n\nPreparación\n\n# Seleccionar las variables que voy a usar\ndatos &lt;- df_obesidad %&gt;%\n  select(BMXBMI, LBXIN, RIDAGEYR, PAD680) %&gt;%\n  drop_na()\n\n# Filtrar los pacientes con por imc, dosis habitual de aspirina, edad,\n# y minutos diarios de actividad sedentaria\ndatos &lt;- datos %&gt;%\n  filter(\n    BMXBMI &lt;= 100,\n    LBXIN &lt;= 100,\n    RIDAGEYR &lt;= 100,\n    PAD680 &lt; 2000\n  )\n\n\n\nModelo base\n\n# Crear modelo base\nmodelo &lt;- stan_glm(\n  BMXBMI ~ LBXIN + I(LBXIN^2) + RIDAGEYR + PAD680,\n  data = datos,\n  family = gaussian(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\n\n\n\nGenerar datos simulados\n\n# Generar datos simulados\nyrep &lt;- posterior_predict(modelo)\n\n👉 yrep contiene:\n\nmuchas versiones simuladas del IMC\ncada fila = un mundo posible\n\n\n\nChequeo visual\n\n# Chequeo visual\nppc_dens_overlay(\n  y = datos$BMXBMI,\n  yrep = yrep[1:50, ]\n)\n\n\n\n\n\n\n\n\n\n\nAlternativa al histograma\n\n# Alternativa con el histograma\nppc_hist(\n  y = datos$BMXBMI,\n  yrep = yrep[1:8, ]\n)",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "14.- Chequeo del Modelo"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#interpretación-clínica",
+    "href": "analysis/c14.html#interpretación-clínica",
+    "title": "14.- Chequeo del Modelo",
+    "section": "5. Interpretación clínica",
+    "text": "5. Interpretación clínica\nAquí es donde todo cobra sentido.\n\nImagina este escenario\nTu modelo dice:\n👉 “La aspirina se asocia con menor IMC”\nSuena interesante.\nPero cuando haces el chequeo:\n👉 el modelo:\n\nno reproduce la distribución real del IMC\nsubestima la variabilidad\nignora valores extremos\n\n\n\nProblema\nEntonces:\n👉 el modelo no representa la realidad clínica\n\n\nConsecuencia\nAunque los coeficientes sean “bonitos”:\n👉 no puedes confiar en el modelo\n\n\nInterpretación práctica\nUn buen modelo debería:\n\nreproducir la variabilidad real del IMC\ngenerar pacientes plausibles\ncapturar valores extremos razonables\n\n\n\nInsight clave\n👉 Un modelo puede estar “bien estimado”…\n👉 …pero ser clínicamente inútil\n\n\nCambio de mentalidad\nAntes:\n\n“El modelo converge → está bien”\n\nAhora:\n\n“¿El modelo reproduce la realidad?”\n\n\n\nMensaje final del capítulo\n👉 El modelo no está para describir los datos…\n👉 Está para generar una realidad creíble\nY si no puede hacerlo:\n👉 no debes confiar en él\n\n\nLo que viene después\nEn los siguientes capítulos aprenderás:\n\ncómo mejorar modelos que fallan\ncómo detectar problemas específicos\ncómo ajustar supuestos\n\nPero por ahora quédate con esto:\n👉 Un buen analista bayesiano no solo construye modelos…\n👉 también los cuestiona",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "14.- Chequeo del Modelo"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#ejercicios",
+    "href": "analysis/c13.html#ejercicios",
+    "title": "13.- Priors",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nSin usar R, responde:\nTienes esta creencia clínica:\n“La insulina aumenta con el IMC, y el efecto es moderado, pero no estoy completamente seguro”\n👉 Propón un prior para la pendiente.\nPreguntas:\n\n¿media?\n¿desviación?\n¿por qué?\n\n\n\nEjercicio 2\nAhora cambia el escenario:\n“Estoy MUY seguro de que el efecto es positivo y relativamente fuerte”\n👉 Ajusta el prior.\nPregunta clave:\n\n¿qué cambia: la media, la desviación o ambas?\n\n\n\nEjercicio 3 (clave conceptual)\nExplica con tus palabras:\n👉 ¿Qué pasaría si usas este prior?\nnormal(-0.5, 0.1)\nen el modelo:\ninsulina ~ imc\n\n\nEjercicio 4\nSimula datos donde:\n👉 NO hay relación entre IMC e insulina\nLuego:\n\najusta modelo con prior débil\najusta modelo con prior informativo positivo\n\n👉 Compara resultados\nPregunta clave\n👉 ¿El prior puede “inventar” una relación?\n\n\nEjercicio 5\nUsa:\ninsulina ~ imc\nConstruye:\n\nmodelo con prior débil\nmodelo con prior informativo\n\n👉 compara:\nposterior_interval()\nPreguntas\n\n¿cambian los intervalos?\n¿cuánto cambian?\n¿quién domina: datos o prior?\n\n\n\nEjercicio 6 (muy importante)\nAhora usa:\nimc ~ insulina\n👉 y responde:\n\n¿cambia el sigma?\n¿en qué unidades está sigma?\n¿cuál modelo tiene más variabilidad?\n\n\n\nEjercicio 7\nResponde sin código:\n👉 ¿Cuándo usarías un prior débil en medicina?\n👉 ¿Cuándo usarías un prior informativo?\n\n\nEjercicio 8 (nivel libro 🔥)\nTienes este escenario:\nPaciente:\n\nIMC = 35\ninsulina elevada\nen tratamiento con aspirina\n\n👉 Pregunta:\n¿Cómo usarías un prior en un modelo que incluya:\ninsulina ~ imc + aspirina\n👉 Específicamente:\n\n¿qué prior pondrías para IMC?\n¿qué prior pondrías para aspirina?\n¿por qué?\n\n\n\nEjercicio 9 (el más importante)\nExplica con tus palabras:\n👉 ¿Por qué el prior casi no cambió tus resultados en NHANES?\n\n\nEjercicio 10 (nivel avanzado pero clave)\nImagina:\n\ntienes pocos datos\nmucho ruido\nrelación poco clara\n\n👉 Pregunta:\n¿Qué pasaría si usas un prior muy fuerte?",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "13.- Priors"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#ejercicios",
+    "href": "analysis/c14.html#ejercicios",
+    "title": "14.- Chequeo del Modelo",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1 — Detectar el problema\nToma tu modelo actual.\n👉 Pregunta:\n\n¿La media está bien?\n¿La dispersión está bien?\n¿Las colas están bien?\n\n👉 Escribe 3 frases clínicas, por ejemplo:\n“El modelo sobreestima el IMC promedio…”\n\n\nEjercicio 2 — Comparación de modelos\nConstruye dos modelos:\n\n# Construir modelo 1\nmodelo1 &lt;- stan_glm(\n  BMXBMI ~ LBXIN + RIDAGEYR,\n  data = datos,\n  family = gaussian(),\n  chains = 2, \n  iter = 1000, \n  refresh = 0\n)\n\n# Construir modelo 2\nmodelo2 &lt;- stan_glm(\n  BMXBMI ~ LBXIN + I(LBXIN^2) + RIDAGEYR,\n  data = datos,\n  family = gaussian(),\n  chains = 2, \n  iter = 1000, \n  refresh = 0\n)\n\n👉 Genera yrep para ambos\n\nyrep1 &lt;- posterior_predict(modelo1)\nyrep2 &lt;- posterior_predict(modelo2)\n\n👉 Haz PPC\n\nppc_dens_overlay(\n  y = datos$BMXBMI,\n  yrep = yrep1[1:50, ]\n)\n\n\n\n\n\n\n\n\n\nppc_dens_overlay(\n  y = datos$BMXBMI,\n  yrep = yrep2[1:50, ]\n)\n\n\n\n\n\n\n\n\nPregunta:\n👉 ¿Cuál reproduce mejor:\nla media? la forma?\n\n\nEjercicio 3 — Intuición sobre distribución\nSin cambiar el modelo:\n👉 observa el histograma real de IMC\n\nggplot(datos, aes(x = BMXBMI)) +\n  geom_histogram(bins = 30)\n\n\n\n\n\n\n\n\nPregunta:\n👉 ¿Es simétrico?\n👉 ¿Tiene cola derecha?\n\n\nEjercicio 4 — Pensamiento clínico\nResponde:\n👉 ¿Por qué el IMC NO debería ser perfectamente normal en la vida real?\nPista:\n\nobesidad\nheterogeneidad\nestilos de vida\n\n\n\nEjercicio 5 — Nivel clave\nCompleta esta frase:\n“Aunque el modelo no reproduce perfectamente la distribución, sigue siendo útil para ________, pero no para ________.”\n\n\nEjercicio 6 — Insight profundo\nResponde:\n👉 ¿Qué te enseñó el PPC sobre el modelo que no podrías ver solo con coeficientes?",
+    "crumbs": [
+      "Módulo 5: Modelos Bayesianos en R",
+      "14.- Chequeo del Modelo"
+    ]
   }
 ]

@@ -38,6 +38,7 @@ website:
         - analysis/c11.qmd
         - analysis/c12.qmd
         - analysis/c13.qmd
+        - analysis/c14.qmd
   page-footer: 
     border: false
     background: light
