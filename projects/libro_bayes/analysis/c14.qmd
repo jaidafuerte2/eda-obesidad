@@ -19,18 +19,18 @@ df_obesidad <- read_csv(
   show_col_types = FALSE
 )
 ```
+
 ## 1. Intuición (SIN código)
 
-Hasta ahora has aprendido a construir modelos bayesianos.
-Pero aquí viene una idea clave —y un poco incómoda:
+Hasta ahora has aprendido a construir modelos bayesianos. Pero aquí viene una idea clave —y un poco incómoda:
 
 👉 **Construir un modelo no significa que sea correcto**
 
 Un modelo puede:
 
-- ajustarse bien a los datos
-- darte resultados “bonitos”
-- parecer clínicamente razonable
+-   ajustarse bien a los datos
+-   darte resultados “bonitos”
+-   parecer clínicamente razonable
 
 …y aun así estar equivocado.
 
@@ -40,9 +40,9 @@ Piensa en una prueba diagnóstica nueva.
 
 No basta con que:
 
-- tenga buena teoría
-- esté bien diseñada
-- suene convincente
+-   tenga buena teoría
+-   esté bien diseñada
+-   suene convincente
 
 👉 Debe **funcionar en pacientes reales**
 
@@ -56,8 +56,8 @@ Un modelo es razonable si:
 
 Es decir:
 
-- si el modelo genera pacientes “simulados”
-- esos pacientes deberían parecerse a los reales
+-   si el modelo genera pacientes “simulados”
+-   esos pacientes deberían parecerse a los reales
 
 ### La idea central: posterior predictive checks
 
@@ -67,17 +67,16 @@ El modelo bayesiano tiene una propiedad muy poderosa:
 
 A partir del modelo, podemos simular:
 
-- nuevos valores de IMC
-- nuevos valores de glicemia
-- nuevos pacientes
+-   nuevos valores de IMC
+-   nuevos valores de glicemia
+-   nuevos pacientes
 
 Entonces hacemos algo muy simple:
 
 👉 Comparamos:
 
-- datos reales
-vs
-- datos simulados por el modelo
+-   datos reales vs
+-   datos simulados por el modelo
 
 ### Traducción clínica
 
@@ -89,8 +88,8 @@ La pregunta clave es:
 
 Un modelo puede:
 
-- estimar bien los coeficientes
-- tener intervalos razonables
+-   estimar bien los coeficientes
+-   tener intervalos razonables
 
 👉 **y aun así fallar en reproducir la realidad**
 
@@ -124,18 +123,18 @@ ppc_dens_overlay(y = imc_real, yrep = imc_sim)
 
 ### ¿Qué estamos viendo?
 
-- Línea oscura → datos reales
-- Líneas celestes → datos simulados por el modelo
+-   Línea oscura → datos reales
+-   Líneas celestes → datos simulados por el modelo
 
 ### Interpretación
 
 Si el modelo es razonable:
 
-- las curvas deberían parecerse
+-   las curvas deberían parecerse
 
 Si no:
 
-- el modelo está fallando
+-   el modelo está fallando
 
 ### Ejemplo de mal modelo
 
@@ -201,8 +200,8 @@ yrep <- posterior_predict(modelo)
 
 👉 yrep contiene:
 
-- muchas versiones simuladas del IMC
-- cada fila = un mundo posible
+-   muchas versiones simuladas del IMC
+-   cada fila = un mundo posible
 
 ### Chequeo visual
 
@@ -214,26 +213,24 @@ ppc_dens_overlay(
 )
 ```
 
-
-
 ### ¿Qué debes observar?
 
 Hazte estas preguntas:
 
 #### 1. ¿La distribución es similar?
 
-- ¿El modelo captura la forma general del IMC?
-- ¿La curva es parecida?
+-   ¿El modelo captura la forma general del IMC?
+-   ¿La curva es parecida?
 
 #### 2. ¿La variabilidad es realista?
 
-- ¿los datos simulados son muy “estrechos”?
-- ¿o demasiado dispersos?
+-   ¿los datos simulados son muy “estrechos”?
+-   ¿o demasiado dispersos?
 
 #### 3. ¿Los extremos son plausibles?
 
-- ¿el modelo genera IMC muy bajos o muy altos irreales?
-- ¿faltan valores extremos?
+-   ¿el modelo genera IMC muy bajos o muy altos irreales?
+-   ¿faltan valores extremos?
 
 ### Alternativa: histograma
 
@@ -292,8 +289,8 @@ yrep <- posterior_predict(modelo)
 
 👉 yrep contiene:
 
-- muchas versiones simuladas del IMC
-- cada fila = un mundo posible
+-   muchas versiones simuladas del IMC
+-   cada fila = un mundo posible
 
 ### Chequeo visual
 
@@ -332,9 +329,9 @@ Pero cuando haces el chequeo:
 
 👉 el modelo:
 
-- no reproduce la distribución real del IMC
-- subestima la variabilidad
-- ignora valores extremos
+-   no reproduce la distribución real del IMC
+-   subestima la variabilidad
+-   ignora valores extremos
 
 ### Problema
 
@@ -352,9 +349,9 @@ Aunque los coeficientes sean “bonitos”:
 
 Un buen modelo debería:
 
-- reproducir la variabilidad real del IMC
-- generar pacientes plausibles
-- capturar valores extremos razonables
+-   reproducir la variabilidad real del IMC
+-   generar pacientes plausibles
+-   capturar valores extremos razonables
 
 ### Insight clave
 
@@ -366,11 +363,11 @@ Un buen modelo debería:
 
 Antes:
 
-- “El modelo converge → está bien”
+-   “El modelo converge → está bien”
 
 Ahora:
 
-- “¿El modelo reproduce la realidad?”
+-   “¿El modelo reproduce la realidad?”
 
 ### Mensaje final del capítulo
 
@@ -386,9 +383,9 @@ Y si no puede hacerlo:
 
 En los siguientes capítulos aprenderás:
 
-- cómo mejorar modelos que fallan
-- cómo detectar problemas específicos
-- cómo ajustar supuestos
+-   cómo mejorar modelos que fallan
+-   cómo detectar problemas específicos
+-   cómo ajustar supuestos
 
 Pero por ahora quédate con esto:
 
@@ -404,9 +401,9 @@ Toma tu modelo actual.
 
 👉 Pregunta:
 
-- ¿La media está bien?
-- ¿La dispersión está bien?
-- ¿Las colas están bien?
+-   ¿La media está bien?
+-   ¿La dispersión está bien?
+-   ¿Las colas están bien?
 
 👉 Escribe 3 frases clínicas, por ejemplo:
 
@@ -427,6 +424,11 @@ modelo1 <- stan_glm(
   refresh = 0
 )
 
+
+```
+
+
+```{r}
 # Construir modelo 2
 modelo2 <- stan_glm(
   BMXBMI ~ LBXIN + I(LBXIN^2) + RIDAGEYR,
@@ -438,12 +440,18 @@ modelo2 <- stan_glm(
 )
 ```
 
+
 👉 Genera yrep para ambos
 
 ```{r}
 yrep1 <- posterior_predict(modelo1)
+```
+
+
+```{r}
 yrep2 <- posterior_predict(modelo2)
 ```
+
 
 👉 Haz PPC
 
@@ -461,13 +469,11 @@ ppc_dens_overlay(
 )
 ```
 
-
 Pregunta:
 
 👉 ¿Cuál reproduce mejor:
 
-la media?
-la forma?
+la media? la forma?
 
 ### Ejercicio 3 — Intuición sobre distribución
 
@@ -494,17 +500,15 @@ Responde:
 
 Pista:
 
-- obesidad
-- heterogeneidad
-- estilos de vida
+-   obesidad
+-   heterogeneidad
+-   estilos de vida
 
 ### Ejercicio 5 — Nivel clave
 
 Completa esta frase:
 
-`“Aunque el modelo no reproduce perfectamente la distribución,`
-`sigue siendo útil para ________,`
-`pero no para ________.”`
+`“Aunque el modelo no reproduce perfectamente la distribución,` `sigue siendo útil para ________,` `pero no para ________.”`
 
 ### Ejercicio 6 — Insight profundo
 

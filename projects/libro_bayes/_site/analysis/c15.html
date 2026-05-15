@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15.- Resistencia a la insulina – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c15.html">Módulo 6: Modelos Clínicos Reales</a></li><li class="breadcrumb-item"><a href="../analysis/c15.html">15.- Resistencia a la insulina</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 1: Pensar Como Analista Bayesiano</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- De Datos a Decisiones Clínicas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 2: Herramientas en R (mínimo necesario)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Preparando NHANES en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Visualización para Entender Datos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 3: Entender la Incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidad como Creencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Distribuciones en la vida real</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Distribuciones conjuntas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 4: Pensamiento causal</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Introducción a DAGs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9.- Tu Modelo Causal de Obesidad</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10.- Aspirina como Proxy de Inflamación</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 5: Modelos Bayesianos en R</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11.- Primer Modelo Bayesiano en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12.- Añadiendo Complejidad al Modelo</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13.- Priors</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14.- Chequeo del Modelo</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 6: Modelos Clínicos Reales</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">15.- Resistencia a la insulina</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">16.- Riesgo cardiovascular</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17.- Modelos multinivel</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intuición-sin-código" id="toc-intuición-sin-código" class="nav-link active" data-scroll-target="#intuición-sin-código">1. Intuición (SIN código)</a>
+  <ul class="collapse">
+  <li><a href="#un-ejemplo-clínico" id="toc-un-ejemplo-clínico" class="nav-link" data-scroll-target="#un-ejemplo-clínico">Un ejemplo clínico</a></li>
+  <li><a href="#qué-estamos-intentando-modelar" id="toc-qué-estamos-intentando-modelar" class="nav-link" data-scroll-target="#qué-estamos-intentando-modelar">¿Qué estamos intentando modelar?</a></li>
+  <li><a href="#idea-central-del-modelo" id="toc-idea-central-del-modelo" class="nav-link" data-scroll-target="#idea-central-del-modelo">Idea central del modelo</a></li>
+  <li><a href="#interpretación-fisiopatológica" id="toc-interpretación-fisiopatológica" class="nav-link" data-scroll-target="#interpretación-fisiopatológica">Interpretación fisiopatológica</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <ul class="collapse">
+  <li><a href="#visualización" id="toc-visualización" class="nav-link" data-scroll-target="#visualización">Visualización</a></li>
+  <li><a href="#intuición-clave" id="toc-intuición-clave" class="nav-link" data-scroll-target="#intuición-clave">Intuición clave</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-aplicado-con-nhanes" id="toc-ejemplo-aplicado-con-nhanes" class="nav-link" data-scroll-target="#ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</a>
+  <ul class="collapse">
+  <li><a href="#preparación-de-datos" id="toc-preparación-de-datos" class="nav-link" data-scroll-target="#preparación-de-datos">Preparación de datos</a></li>
+  <li><a href="#paso-1-modelo-simple-imc-y-glicemia" id="toc-paso-1-modelo-simple-imc-y-glicemia" class="nav-link" data-scroll-target="#paso-1-modelo-simple-imc-y-glicemia">Paso 1 — Modelo simple: IMC y glicemia</a></li>
+  <li><a href="#resultados" id="toc-resultados" class="nav-link" data-scroll-target="#resultados">Resultados</a></li>
+  <li><a href="#interpretación-clínica" id="toc-interpretación-clínica" class="nav-link" data-scroll-target="#interpretación-clínica">Interpretación clínica</a></li>
+  <li><a href="#paso-2-añadiendo-distribución-de-grasa" id="toc-paso-2-añadiendo-distribución-de-grasa" class="nav-link" data-scroll-target="#paso-2-añadiendo-distribución-de-grasa">Paso 2 — Añadiendo distribución de grasa</a></li>
+  <li><a href="#modelo-ajustado" id="toc-modelo-ajustado" class="nav-link" data-scroll-target="#modelo-ajustado">Modelo ajustado</a></li>
+  <li><a href="#resultados-1" id="toc-resultados-1" class="nav-link" data-scroll-target="#resultados-1">Resultados</a></li>
+  <li><a href="#un-resultado-sorprendente" id="toc-un-resultado-sorprendente" class="nav-link" data-scroll-target="#un-resultado-sorprendente">Un resultado sorprendente</a></li>
+  <li><a href="#interpretando-la-cintura" id="toc-interpretando-la-cintura" class="nav-link" data-scroll-target="#interpretando-la-cintura">Interpretando la cintura</a></li>
+  <li><a href="#interpretando-el-imc-negativo" id="toc-interpretando-el-imc-negativo" class="nav-link" data-scroll-target="#interpretando-el-imc-negativo">Interpretando el IMC negativo</a></li>
+  <li><a href="#posible-interpretación-fisiopatológica" id="toc-posible-interpretación-fisiopatológica" class="nav-link" data-scroll-target="#posible-interpretación-fisiopatológica">Posible interpretación fisiopatológica</a></li>
+  <li><a href="#un-insight-importante" id="toc-un-insight-importante" class="nav-link" data-scroll-target="#un-insight-importante">Un insight importante</a></li>
+  <li><a href="#colinealidad-clínica" id="toc-colinealidad-clínica" class="nav-link" data-scroll-target="#colinealidad-clínica">Colinealidad clínica</a></li>
+  <li><a href="#colinealidad" id="toc-colinealidad" class="nav-link" data-scroll-target="#colinealidad">Colinealidad</a></li>
+  </ul></li>
+  <li><a href="#visualizando-el-fenómeno-en-datos-reales" id="toc-visualizando-el-fenómeno-en-datos-reales" class="nav-link" data-scroll-target="#visualizando-el-fenómeno-en-datos-reales">4. Visualizando el fenómeno en datos reales</a>
+  <ul class="collapse">
+  <li><a href="#gráfico-1-misma-imc-distinta-cintura" id="toc-gráfico-1-misma-imc-distinta-cintura" class="nav-link" data-scroll-target="#gráfico-1-misma-imc-distinta-cintura">Gráfico 1 — Misma IMC, distinta cintura</a></li>
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación">Interpretación</a></li>
+  <li><a href="#gráfico-2-misma-cintura-distinto-imc" id="toc-gráfico-2-misma-cintura-distinto-imc" class="nav-link" data-scroll-target="#gráfico-2-misma-cintura-distinto-imc">Gráfico 2 — Misma cintura, distinto IMC</a></li>
+  <li><a href="#interpretación-1" id="toc-interpretación-1" class="nav-link" data-scroll-target="#interpretación-1">Interpretación</a></li>
+  <li><a href="#gráfico-3-relación-imcglicemia-según-cintura" id="toc-gráfico-3-relación-imcglicemia-según-cintura" class="nav-link" data-scroll-target="#gráfico-3-relación-imcglicemia-según-cintura">Gráfico 3 — Relación IMC–glicemia según cintura</a></li>
+  <li><a href="#interpretación-fisiopatológica-1" id="toc-interpretación-fisiopatológica-1" class="nav-link" data-scroll-target="#interpretación-fisiopatológica-1">Interpretación fisiopatológica</a></li>
+  <li><a href="#sigma-y-la-complejidad-biológica" id="toc-sigma-y-la-complejidad-biológica" class="nav-link" data-scroll-target="#sigma-y-la-complejidad-biológica">Sigma y la complejidad biológica</a></li>
+  <li><a href="#interpretación-clínica-final" id="toc-interpretación-clínica-final" class="nav-link" data-scroll-target="#interpretación-clínica-final">Interpretación clínica final</a></li>
+  <li><a href="#insight-central-del-capítulo" id="toc-insight-central-del-capítulo" class="nav-link" data-scroll-target="#insight-central-del-capítulo">Insight central del capítulo</a></li>
+  </ul></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-interpretación-clínica-básica" id="toc-ejercicio-1-interpretación-clínica-básica" class="nav-link" data-scroll-target="#ejercicio-1-interpretación-clínica-básica">Ejercicio 1 — Interpretación clínica básica</a></li>
+  <li><a href="#ejercicio-2-pensamiento-clínico" id="toc-ejercicio-2-pensamiento-clínico" class="nav-link" data-scroll-target="#ejercicio-2-pensamiento-clínico">Ejercicio 2 — Pensamiento clínico</a></li>
+  <li><a href="#ejercicio-3-interpretando-incertidumbre" id="toc-ejercicio-3-interpretando-incertidumbre" class="nav-link" data-scroll-target="#ejercicio-3-interpretando-incertidumbre">Ejercicio 3 — Interpretando incertidumbre</a></li>
+  <li><a href="#ejercicio-4-pensamiento-bayesiano" id="toc-ejercicio-4-pensamiento-bayesiano" class="nav-link" data-scroll-target="#ejercicio-4-pensamiento-bayesiano">Ejercicio 4 — Pensamiento bayesiano</a></li>
+  <li><a href="#ejercicio-5-sigma-y-biología" id="toc-ejercicio-5-sigma-y-biología" class="nav-link" data-scroll-target="#ejercicio-5-sigma-y-biología">Ejercicio 5 — Sigma y biología</a></li>
+  <li><a href="#ejercicio-6-limitaciones-del-imc" id="toc-ejercicio-6-limitaciones-del-imc" class="nav-link" data-scroll-target="#ejercicio-6-limitaciones-del-imc">Ejercicio 6 — Limitaciones del IMC</a></li>
+  <li><a href="#ejercicio-7-interpretación-visual" id="toc-ejercicio-7-interpretación-visual" class="nav-link" data-scroll-target="#ejercicio-7-interpretación-visual">Ejercicio 7 — Interpretación visual</a></li>
+  <li><a href="#ejercicio-8-colinealidad-clínica" id="toc-ejercicio-8-colinealidad-clínica" class="nav-link" data-scroll-target="#ejercicio-8-colinealidad-clínica">Ejercicio 8 — Colinealidad clínica</a></li>
+  <li><a href="#ejercicio-9-exploración-adicional-con-nhanes" id="toc-ejercicio-9-exploración-adicional-con-nhanes" class="nav-link" data-scroll-target="#ejercicio-9-exploración-adicional-con-nhanes">Ejercicio 9 — Exploración adicional con NHANES</a></li>
+  <li><a href="#ejercicio-10-reflexión-final-el-más-importante" id="toc-ejercicio-10-reflexión-final-el-más-importante" class="nav-link" data-scroll-target="#ejercicio-10-reflexión-final-el-más-importante">Ejercicio 10 — Reflexión final (el más importante)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c15.html">Módulo 6: Modelos Clínicos Reales</a></li><li class="breadcrumb-item"><a href="../analysis/c15.html">15.- Resistencia a la insulina</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">15.- Resistencia a la insulina</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="intuición-sin-código" class="level2">
+<h2 class="anchored" data-anchor-id="intuición-sin-código">1. Intuición (SIN código)</h2>
+<p>En la práctica clínica hay algo frustrante pero fascinante:</p>
+<p>👉 <strong>La resistencia a la insulina no se mide directamente.</strong></p>
+<p>No hay un examen rutinario simple que diga: “este paciente tiene X nivel de resistencia”.</p>
+<p>En cambio, la inferimos.</p>
+<p>¿Cómo?</p>
+<p>A través de señales indirectas:</p>
+<ul>
+<li>glicemia elevada</li>
+<li>aumento de adiposidad</li>
+<li>acumulación de grasa visceral</li>
+</ul>
+<section id="un-ejemplo-clínico" class="level3">
+<h3 class="anchored" data-anchor-id="un-ejemplo-clínico">Un ejemplo clínico</h3>
+<p>Imagina dos pacientes:</p>
+<ul>
+<li><strong>Paciente A</strong>
+<ul>
+<li>IMC: 30</li>
+<li>Cintura: moderada</li>
+</ul></li>
+<li>Paciente B
+<ul>
+<li>IMC: 30</li>
+<li>Cintura: muy elevada</li>
+</ul></li>
+</ul>
+<p>Ambos tienen el mismo IMC. Pero no son metabólicamente iguales.</p>
+<p>👉 El paciente B probablemente tiene más grasa visceral</p>
+<p>👉 y mayor resistencia a la insulina</p>
+<p>Esto es clave:</p>
+<p><code>No toda obesidad es metabólicamente igual</code></p>
+</section>
+<section id="qué-estamos-intentando-modelar" class="level3">
+<h3 class="anchored" data-anchor-id="qué-estamos-intentando-modelar">¿Qué estamos intentando modelar?</h3>
+<p>Queremos usar datos para responder:</p>
+<p>👉 ¿Cómo se relaciona la glicemia con:</p>
+<ul>
+<li>el IMC (adiposidad general)</li>
+<li>la cintura (grasa visceral)?</li>
+</ul>
+<p>Y más importante:</p>
+<p>👉 ¿Cuál de estas dos variables parece tener mayor impacto?</p>
+</section>
+<section id="idea-central-del-modelo" class="level3">
+<h3 class="anchored" data-anchor-id="idea-central-del-modelo">Idea central del modelo</h3>
+<p>Vamos a construir un modelo que diga:</p>
+<p>“Dado el IMC y la cintura de un paciente, ¿qué valores de glicemia son plausibles?”</p>
+<p>No buscamos una respuesta exacta. Buscamos un rango plausible.</p>
+</section>
+<section id="interpretación-fisiopatológica" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-fisiopatológica">Interpretación fisiopatológica</h3>
+<p>Este modelo no es solo estadística.</p>
+<p>Es una forma de representar:</p>
+<ul>
+<li>hiperinsulinemia compensatoria</li>
+<li>resistencia periférica</li>
+<li>inflamación metabólica</li>
+<li>rol de la grasa visceral</li>
+</ul>
+<p>👉 El modelo es una herramienta para entender fisiopatología.</p>
+</section>
+</section>
+<section id="ejemplo-simple-simulación-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
+<p>Antes de usar datos reales, construyamos intuición.</p>
+<p>Imaginemos que:</p>
+<ul>
+<li>la glicemia aumenta con el IMC</li>
+<li>pero aumenta aún más con la cintura</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear 200 pacientes</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Simular glicemmia a partir de valores simulados de imc y cintura </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>datos_sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">imc =</span> <span class="fu">rnorm</span>(n, <span class="dv">27</span>, <span class="dv">4</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">cintura =</span> <span class="fu">rnorm</span>(n, <span class="dv">95</span>, <span class="dv">12</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">glicemia =</span> <span class="dv">70</span> <span class="sc">+</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="fl">0.6</span> <span class="sc">*</span> imc <span class="sc">+</span>          <span class="co"># efecto moderado</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="fl">0.8</span> <span class="sc">*</span> cintura <span class="sc">+</span>      <span class="co"># efecto más fuerte</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="visualización" class="level3">
+<h3 class="anchored" data-anchor-id="visualización">Visualización</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la relación entre imc y glicemia</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_sim, <span class="fu">aes</span>(<span class="at">x =</span> imc, <span class="at">y =</span> glicemia)) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ahora con cintura:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la relación entre cintura y glicemia</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_sim, <span class="fu">aes</span>(<span class="at">x =</span> cintura, <span class="at">y =</span> glicemia)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="intuición-clave" class="level3">
+<h3 class="anchored" data-anchor-id="intuición-clave">Intuición clave</h3>
+<p>Vas a notar algo:</p>
+<p>👉 Ambas variables se relacionan con glicemia</p>
+<p>👉 Pero la cintura suele mostrar una pendiente más pronunciada</p>
+<p>Esto anticipa lo que veremos en datos reales.</p>
+</section>
+</section>
+<section id="ejemplo-aplicado-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</h2>
+<p>Hasta ahora hemos hablado de resistencia a la insulina de forma conceptual. Ahora vamos a intentar observar parte de esa fisiopatología directamente en datos reales.</p>
+<p>Trabajaremos con tres variables de NHANES:</p>
+<ul>
+<li>LBXSGL → glicemia</li>
+<li>BMXBMI → IMC</li>
+<li>BMXWAIST → circunferencia de cintura</li>
+</ul>
+<p>La idea clínica es simple:</p>
+<p>👉 la glicemia podría aumentar tanto con la adiposidad total (IMC) como con la adiposidad visceral (cintura).</p>
+<p>Pero queremos responder una pregunta más profunda:</p>
+<p><code>¿Importa más el peso total o la distribución de grasa?</code></p>
+<section id="preparación-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="preparación-de-datos">Preparación de datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preparar los datos</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(LBXSGL, LBXIN, BMXBMI, BMXWAIST) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtrar los datos por glicemia e índice de masa corporal</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    LBXSGL <span class="sc">&lt;=</span> <span class="dv">1000</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    BMXBMI <span class="sc">&lt;=</span> <span class="dv">100</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="paso-1-modelo-simple-imc-y-glicemia" class="level3">
+<h3 class="anchored" data-anchor-id="paso-1-modelo-simple-imc-y-glicemia">Paso 1 — Modelo simple: IMC y glicemia</h3>
+<p>Comencemos con un modelo sencillo.</p>
+<p><code>glicemia∼IMC</code></p>
+<p>En R:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un modelo simple</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>modelo_imc <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  LBXSGL <span class="sc">~</span> BMXBMI,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="resultados" class="level3">
+<h3 class="anchored" data-anchor-id="resultados">Resultados</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_imc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      LBXSGL ~ BMXBMI
+ observations: 2517
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) 77.4    2.8  
+BMXBMI       0.9    0.1  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 32.4    0.5  
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_imc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    5%       95%
+(Intercept) 72.6535091 81.759105
+BMXBMI       0.7222992  1.031487
+sigma       31.7217250 33.200546</code></pre>
+</div>
+</div>
+<p>Resultados principales:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>Mediana</th>
+<th>Intervalo posterior 90%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>IMC</td>
+<td>1.0</td>
+<td>0.89 a 1.15</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="interpretación-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-clínica">Interpretación clínica</h3>
+<p>El modelo sugiere que:</p>
+<p>👉 por cada aumento de 1 unidad de IMC, la glicemia aumenta aproximadamente 1 mg/dL.</p>
+<p>Y el rango plausible del efecto está aproximadamente entre:</p>
+<ul>
+<li>+0.9 mg/dL</li>
+<li>+1.15 mg/dL</li>
+</ul>
+<p>Hasta aquí, el resultado parece bastante intuitivo:</p>
+<p>👉 mayor adiposidad → mayor alteración metabólica.</p>
+</section>
+<section id="paso-2-añadiendo-distribución-de-grasa" class="level3">
+<h3 class="anchored" data-anchor-id="paso-2-añadiendo-distribución-de-grasa">Paso 2 — Añadiendo distribución de grasa</h3>
+<p>El IMC tiene una limitación importante:</p>
+<p>👉 no distingue músculo de grasa</p>
+<p>👉 no distingue grasa subcutánea de grasa visceral</p>
+<p>Dos personas con el mismo IMC pueden tener perfiles metabólicos completamente distintos.</p>
+<p>Por eso añadiremos:</p>
+<p>circunferencia de cintura (BMXWAIST)</p>
+</section>
+<section id="modelo-ajustado" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-ajustado">Modelo ajustado</h3>
+<p>Ahora construiremos:</p>
+<p><code>glicemia∼IMC+cintura</code></p>
+<p>En R:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear modelo de relación de glicemia con imc + citura</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>modelo_completo <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  LBXSGL <span class="sc">~</span> BMXBMI <span class="sc">+</span> BMXWAIST,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="resultados-1" class="level3">
+<h3 class="anchored" data-anchor-id="resultados-1">Resultados</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_completo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      LBXSGL ~ BMXBMI + BMXWAIST
+ observations: 2517
+ predictors:   3
+------
+            Median MAD_SD
+(Intercept) 35.9    4.2  
+BMXBMI      -1.6    0.2  
+BMXWAIST     1.1    0.1  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 31.5    0.5  
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_completo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   5%       95%
+(Intercept) 29.156063 42.846180
+BMXBMI      -1.963689 -1.192603
+BMXWAIST     0.979143  1.298721
+sigma       30.704678 32.184325</code></pre>
+</div>
+</div>
+<p>Resultados principales:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>Mediana</th>
+<th>Intervalo posterior 90%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>IMC</td>
+<td>-1.6</td>
+<td>-1.90 a -1.29</td>
+</tr>
+<tr class="even">
+<td>Cintura</td>
+<td>1.2</td>
+<td>1.07 a 1.32</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="un-resultado-sorprendente" class="level3">
+<h3 class="anchored" data-anchor-id="un-resultado-sorprendente">Un resultado sorprendente</h3>
+<p>Aquí ocurrió algo muy interesante.</p>
+<p>Cuando ajustamos por cintura:</p>
+<ul>
+<li>la cintura mostró una asociación positiva fuerte con glicemia</li>
+<li>el IMC cambió de positivo a negativo</li>
+</ul>
+<p>Esto NO significa:</p>
+<p>❌ “el IMC protege”</p>
+<p>La interpretación correcta es más sutil.</p>
+</section>
+<section id="interpretando-la-cintura" class="level3">
+<h3 class="anchored" data-anchor-id="interpretando-la-cintura">Interpretando la cintura</h3>
+<p>El coeficiente de cintura significa:</p>
+<p><code>Manteniendo constante el IMC, cada centímetro adicional de cintura se asocia aproximadamente con un aumento de 1 mg/dL de glicemia.</code></p>
+<p>Y el intervalo posterior:</p>
+<p><code>1.07 a 1.32</code></p>
+<p>permanece completamente por encima de 0.</p>
+<p>Esto sugiere una asociación metabólica consistente.</p>
+</section>
+<section id="interpretando-el-imc-negativo" class="level3">
+<h3 class="anchored" data-anchor-id="interpretando-el-imc-negativo">Interpretando el IMC negativo</h3>
+<p>Ahora pensemos cuidadosamente en el IMC.</p>
+<p>El coeficiente negativo significa:</p>
+<p><code>Entre personas con la misma cintura, aquellas con mayor IMC tienden a tener glicemias menores.</code></p>
+<p>A primera vista esto parece extraño.</p>
+<p>Pero fisiopatológicamente tiene sentido.</p>
+</section>
+<section id="posible-interpretación-fisiopatológica" class="level3">
+<h3 class="anchored" data-anchor-id="posible-interpretación-fisiopatológica">Posible interpretación fisiopatológica</h3>
+<p>Si dos personas tienen:</p>
+<ul>
+<li>la misma cintura</li>
+<li>pero una tiene mayor IMC</li>
+</ul>
+<p>entonces parte de esa masa corporal adicional podría corresponder a:</p>
+<ul>
+<li>masa muscular</li>
+<li>masa no visceral</li>
+<li>grasa menos metabólicamente activa</li>
+</ul>
+<p>El músculo:</p>
+<ul>
+<li>capta glucosa</li>
+<li>almacena glucógeno</li>
+<li>mejora sensibilidad a insulina</li>
+</ul>
+<p>Entonces el modelo podría estar capturando indirectamente diferencias en composición corporal.</p>
+</section>
+<section id="un-insight-importante" class="level3">
+<h3 class="anchored" data-anchor-id="un-insight-importante">Un insight importante</h3>
+<p>El modelo parece sugerir:</p>
+<p><code>La distribución de grasa importa más que el peso total.</code></p>
+<p>Y esto coincide con conceptos modernos de medicina metabólica:</p>
+<ul>
+<li>adiposidad visceral</li>
+<li>obesidad metabólicamente sana</li>
+<li>limitaciones del IMC</li>
+</ul>
+</section>
+<section id="colinealidad-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="colinealidad-clínica">Colinealidad clínica</h3>
+<p>IMC y cintura están fuertemente relacionados.</p>
+<p>Las personas con mayor IMC suelen tener:</p>
+<ul>
+<li>más grasa total</li>
+<li>y también mayor cintura</li>
+</ul>
+<p>Esto genera un fenómeno llamado:</p>
+</section>
+<section id="colinealidad" class="level3">
+<h3 class="anchored" data-anchor-id="colinealidad">Colinealidad</h3>
+<p>El modelo intenta separar:</p>
+<ul>
+<li>cuánto del efecto corresponde al IMC</li>
+<li>cuánto corresponde a la cintura</li>
+</ul>
+<p>Y cuando logra separar parcialmente ambos componentes, emerge una interpretación fisiopatológica mucho más interesante.</p>
+</section>
+</section>
+<section id="visualizando-el-fenómeno-en-datos-reales" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-el-fenómeno-en-datos-reales">4. Visualizando el fenómeno en datos reales</h2>
+<p>Hasta ahora hemos visto coeficientes.</p>
+<p>Ahora veremos directamente los datos.</p>
+<section id="gráfico-1-misma-imc-distinta-cintura" class="level3">
+<h3 class="anchored" data-anchor-id="gráfico-1-misma-imc-distinta-cintura">Gráfico 1 — Misma IMC, distinta cintura</h3>
+<p>Seleccionemos pacientes con IMC cercano a 30.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtrar por pacientes cercanos a un imc de 30</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>datos_imc30 <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(BMXBMI <span class="sc">&gt;=</span> <span class="dv">29</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>         BMXBMI <span class="sc">&lt;=</span> <span class="dv">31</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión de cintura en relación con la glicemia cuando</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># los pacientes tienen más o menos 30 de imc </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_imc30,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> BMXWAIST,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> LBXSGL)) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Glicemia y cintura"</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Pacientes con IMC aproximado de 30"</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Circunferencia de cintura (cm)"</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Glicemia (mg/dL)"</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación">Interpretación</h3>
+<p>Aquí observamos algo importante:</p>
+<p>👉 pacientes con el mismo IMC pueden tener glicemias muy distintas dependiendo de la cintura.</p>
+<p>Esto sugiere que:</p>
+<ul>
+<li>la adiposidad visceral</li>
+<li>y no solamente el peso total</li>
+</ul>
+<p>podría estar desempeñando un rol central en la resistencia a la insulina.</p>
+</section>
+<section id="gráfico-2-misma-cintura-distinto-imc" class="level3">
+<h3 class="anchored" data-anchor-id="gráfico-2-misma-cintura-distinto-imc">Gráfico 2 — Misma cintura, distinto IMC</h3>
+<p>Ahora hagamos lo contrario.</p>
+<p>Seleccionemos pacientes con cintura cercana a 100 cm.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># filtrar por observaciones con cintura similar a 100cm o casi 100 cm</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>datos_cintura <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(BMXWAIST <span class="sc">&gt;=</span> <span class="dv">98</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>         BMXWAIST <span class="sc">&lt;=</span> <span class="dv">102</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona el imc con la glicemia en las</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># observaciones cercanas a 100cm de cintura</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_cintura,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> BMXBMI,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> LBXSGL)) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Glicemia e IMC"</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Pacientes con cintura aproximada de 100 cm"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"IMC"</span>,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Glicemia (mg/dL)"</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación-1" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-1">Interpretación</h3>
+<p>Aquí aparece uno de los hallazgos más interesantes del capítulo.</p>
+<p>👉 Manteniendo una cintura similar, el IMC ya no muestra la relación positiva esperada.</p>
+<p>La pendiente incluso puede volverse negativa.</p>
+<p>Esto es compatible con la idea de que:</p>
+<ul>
+<li>parte del IMC podría reflejar masa muscular</li>
+<li>o adiposidad menos peligrosa metabólicamente</li>
+</ul>
+<p>una vez que controlamos la grasa visceral.</p>
+</section>
+<section id="gráfico-3-relación-imcglicemia-según-cintura" class="level3">
+<h3 class="anchored" data-anchor-id="gráfico-3-relación-imcglicemia-según-cintura">Gráfico 3 — Relación IMC–glicemia según cintura</h3>
+<p>Ahora observemos cómo cambia la relación entre IMC y glicemia dependiendo de la cintura.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona el imc con la glicemia </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># facetado por nivel de cintura.</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>datos <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">cintura_cat =</span> <span class="fu">case_when</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>      BMXWAIST <span class="sc">&lt;</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">"Cintura baja"</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>      BMXWAIST <span class="sc">&lt;</span> <span class="dv">110</span> <span class="sc">~</span> <span class="st">"Cintura media"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Cintura alta"</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> BMXBMI,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> LBXSGL)) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> cintura_cat) <span class="sc">+</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación-fisiopatológica-1" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-fisiopatológica-1">Interpretación fisiopatológica</h3>
+<p>Este gráfico muestra algo muy importante:</p>
+<ul>
+<li>en cintura baja, la relación IMC–glicemia es relativamente plana</li>
+<li>en cintura media y alta, la relación puede volverse negativa</li>
+</ul>
+<p>Esto sugiere que el significado metabólico del IMC depende del contexto corporal.</p>
+<p>👉 El IMC no representa la misma biología en todos los pacientes.</p>
+</section>
+<section id="sigma-y-la-complejidad-biológica" class="level3">
+<h3 class="anchored" data-anchor-id="sigma-y-la-complejidad-biológica">Sigma y la complejidad biológica</h3>
+<p>En ambos modelos observamos:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Modelo</th>
+<th>Sigma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Modelo simple</td>
+<td>~39.8</td>
+</tr>
+<tr class="even">
+<td>Modelo ajustado</td>
+<td>~39.0</td>
+</tr>
+</tbody>
+</table>
+<p>Sigma representa la variabilidad de glicemia que el modelo todavía no logra explicar.</p>
+<p>Esto es importante porque:</p>
+<ul>
+<li>IMC y cintura NO determinan completamente la glicemia</li>
+<li>todavía existen muchos otros factores:
+<ul>
+<li>dieta</li>
+<li>genética</li>
+<li>actividad física</li>
+<li>inflamación</li>
+<li>insulina</li>
+<li>sueño</li>
+<li>medicación</li>
+<li>diabetes previa</li>
+</ul></li>
+</ul>
+<p>El modelo reconoce explícitamente esa incertidumbre.</p>
+<p>Y eso es profundamente bayesiano.</p>
+</section>
+<section id="interpretación-clínica-final" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-clínica-final">Interpretación clínica final</h3>
+<p>Este capítulo nos deja una idea central:</p>
+<p><code>No toda obesidad es metabólicamente igual.</code></p>
+<p>El modelo sugiere que:</p>
+<ul>
+<li>la distribución de grasa</li>
+<li>especialmente la grasa abdominal</li>
+</ul>
+<p>podría ser más importante que el peso total para entender resistencia a la insulina y alteraciones de glicemia.</p>
+</section>
+<section id="insight-central-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="insight-central-del-capítulo">Insight central del capítulo</h3>
+<p>👉 La distribución de grasa importa más que el peso total.</p>
+</section>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1-interpretación-clínica-básica" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-interpretación-clínica-básica">Ejercicio 1 — Interpretación clínica básica</h3>
+<p>Tu modelo ajustado mostró:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Mediana</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>IMC</td>
+<td>-1.6</td>
+</tr>
+<tr class="even">
+<td>cintura</td>
+<td>1.2</td>
+</tr>
+</tbody>
+</table>
+<p>Explica con tus propias palabras:</p>
+<ol type="1">
+<li>¿Qué significa el coeficiente positivo de cintura?</li>
+<li>¿Por qué el coeficiente negativo del IMC NO significa necesariamente que el IMC “proteja”?</li>
+<li>¿Qué posible interpretación fisiopatológica podría tener ese coeficiente negativo?</li>
+</ol>
+</section>
+<section id="ejercicio-2-pensamiento-clínico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-pensamiento-clínico">Ejercicio 2 — Pensamiento clínico</h3>
+<p>Imagina dos pacientes:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Paciente</th>
+<th>IMC</th>
+<th>Cintura</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>30</td>
+<td>90</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>30</td>
+<td>110</td>
+</tr>
+</tbody>
+</table>
+<p>Usando los resultados del modelo:</p>
+<ol type="1">
+<li>¿Cuál paciente esperarías que tenga mayor glicemia?</li>
+<li>¿Qué concepto fisiopatológico está representando la cintura?</li>
+<li>¿Por qué el IMC por sí solo podría ser insuficiente?</li>
+</ol>
+</section>
+<section id="ejercicio-3-interpretando-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-interpretando-incertidumbre">Ejercicio 3 — Interpretando incertidumbre</h3>
+<p>El intervalo posterior para cintura fue aproximadamente:</p>
+<p><code>1.07 a 1.32</code></p>
+<p>Responde:</p>
+<ol type="1">
+<li>¿Qué significa este intervalo en lenguaje clínico?</li>
+<li>¿Por qué este intervalo da más información que un único coeficiente?</li>
+<li>¿Qué implicaría si el intervalo incluyera valores cercanos a 0?</li>
+</ol>
+</section>
+<section id="ejercicio-4-pensamiento-bayesiano" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-pensamiento-bayesiano">Ejercicio 4 — Pensamiento bayesiano</h3>
+<p>Completa la idea:</p>
+<p><code>“El modelo no produce un único efecto verdadero del IMC.</code> <code>Produce _____________________.”</code></p>
+</section>
+<section id="ejercicio-5-sigma-y-biología" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5-sigma-y-biología">Ejercicio 5 — Sigma y biología</h3>
+<p>Tu sigma fue aproximadamente:</p>
+<p><code>σ≈39</code></p>
+<p>Explica:</p>
+<ol type="1">
+<li>¿Qué representa sigma intuitivamente?</li>
+<li>¿Por qué sigma sigue siendo relativamente grande incluso después de ajustar por cintura?</li>
+<li>Menciona al menos 4 factores biológicos que podrían explicar parte de esa variabilidad residual.</li>
+</ol>
+</section>
+<section id="ejercicio-6-limitaciones-del-imc" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6-limitaciones-del-imc">Ejercicio 6 — Limitaciones del IMC</h3>
+<p>Menciona al menos 3 limitaciones del IMC como marcador metabólico.</p>
+<p>Luego responde:</p>
+<p>👉 ¿Por qué dos personas con el mismo IMC pueden tener perfiles metabólicos distintos?</p>
+</section>
+<section id="ejercicio-7-interpretación-visual" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7-interpretación-visual">Ejercicio 7 — Interpretación visual</h3>
+<p>Observaste:</p>
+<ul>
+<li>pendiente positiva entre cintura y glicemia</li>
+<li>pendiente negativa entre IMC y glicemia (a cintura constante)</li>
+</ul>
+<p>Explica fisiopatológicamente:</p>
+<ol type="1">
+<li>¿Por qué la grasa visceral podría elevar glicemia?</li>
+<li>¿Cómo podría la masa muscular influir sobre glicemia?</li>
+<li>¿Qué está intentando separar el modelo ajustado?</li>
+</ol>
+</section>
+<section id="ejercicio-8-colinealidad-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-8-colinealidad-clínica">Ejercicio 8 — Colinealidad clínica</h3>
+<p>Explica con tus palabras:</p>
+<ol type="1">
+<li>¿Por qué IMC y cintura están correlacionados?</li>
+<li>¿Por qué esto dificulta separar efectos?</li>
+<li>¿Por qué en este capítulo la colinealidad tiene significado fisiopatológico y no solo matemático?</li>
+</ol>
+</section>
+<section id="ejercicio-9-exploración-adicional-con-nhanes" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-9-exploración-adicional-con-nhanes">Ejercicio 9 — Exploración adicional con NHANES</h3>
+<p>Crea un nuevo gráfico usando:</p>
+<ul>
+<li>HbA1c (LBXGH) o</li>
+<li>insulina (LBXIN)</li>
+</ul>
+<p>como resultado.</p>
+<p>Puedes usar:</p>
+<ul>
+<li>LBXGH ~ BMXBMI + BMXWAIST</li>
+</ul>
+<p>o:</p>
+<ul>
+<li>LBXIN ~ BMXBMI + BMXWAIST</li>
+</ul>
+<p>Luego responde:</p>
+<ol type="1">
+<li>¿La cintura sigue mostrando una asociación fuerte?</li>
+<li>¿El IMC vuelve a cambiar de signo?</li>
+<li>¿Los resultados son fisiopatológicamente plausibles?</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preparar los datos</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(LBXIN, BMXBMI, BMXWAIST) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtrar los datos por glicemia e índice de masa corporal</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    LBXIN <span class="sc">&lt;=</span> <span class="dv">100</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    BMXBMI <span class="sc">&lt;=</span> <span class="dv">100</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de la insulina</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos, <span class="fu">aes</span>(<span class="at">x =</span> LBXIN)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un modelo simple</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>modelo_imc <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  LBXIN <span class="sc">~</span> BMXBMI,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir resultados del modelo</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_imc) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      LBXIN ~ BMXBMI
+ observations: 2506
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) -9.7    0.9  
+BMXBMI       0.8    0.0  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 10.3    0.1  
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir el intervalo posterior del modelo</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_imc) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     5%        95%
+(Intercept) -11.1701067 -8.3330636
+BMXBMI        0.7233321  0.8212119
+sigma        10.1122243 10.5822513</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear modelo de relación de insulina con imc + citura</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>modelo_completo <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  LBXIN <span class="sc">~</span> BMXBMI <span class="sc">+</span> BMXWAIST,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir el resultado del modelo</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_completo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      LBXIN ~ BMXBMI + BMXWAIST
+ observations: 2506
+ predictors:   3
+------
+            Median MAD_SD
+(Intercept) -18.0    1.4 
+BMXBMI        0.3    0.1 
+BMXWAIST      0.2    0.0 
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 10.2    0.2  
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># imprimir el intervalo posterior</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_completo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     5%         95%
+(Intercept) -20.1828007 -15.8896071
+BMXBMI        0.1762466   0.3923838
+BMXWAIST      0.1788221   0.2754173
+sigma         9.9943432  10.4708149</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión de cintura en relación con la insulina cuando</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># los pacientes tienen más o menos 30 de imc </span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_imc30,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> BMXWAIST,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> LBXIN)) <span class="sc">+</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Inuslinemia y cintura"</span>,</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Pacientes con IMC aproximado de 30"</span>,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Circunferencia de cintura (cm)"</span>,</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Insulinemia"</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona el imc con la insulina en las</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># observaciones cercanas a 100cm de cintura</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_cintura,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> BMXBMI,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> LBXIN)) <span class="sc">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Insulina e IMC"</span>,</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Pacientes con cintura aproximada de 100 cm"</span>,</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"IMC"</span>,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Insulina (mg/dL)"</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ejercicio-10-reflexión-final-el-más-importante" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-10-reflexión-final-el-más-importante">Ejercicio 10 — Reflexión final (el más importante)</h3>
+<p>Antes de este capítulo, muchas personas pensarían:</p>
+<p><code>“La obesidad depende principalmente del peso.”</code></p>
+<p>Después de trabajar con estos modelos:</p>
+<p>👉 ¿Cómo cambiarías esa afirmación?</p>
+<p>Intenta responder en:</p>
+<ul>
+<li>lenguaje clínico</li>
+<li>no estadístico</li>
+<li>como si se lo explicaras a un paciente o a otro médico.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
