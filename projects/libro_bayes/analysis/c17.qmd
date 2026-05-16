@@ -686,16 +686,16 @@ comenzamos a pensar:
 
 Imagina que analizas:
 
-- cintura abdominal
-- glicemia
+-   cintura abdominal
+-   glicemia
 
 en toda la población mezclada.
 
 **Preguntas**
 
-1. ¿Qué información clínica podría ocultarse?
-2. ¿Por qué hombres y mujeres podrían comportarse distinto?
-3. ¿Por qué la edad podría modificar la relación?
+1.  ¿Qué información clínica podría ocultarse?
+2.  ¿Por qué hombres y mujeres podrían comportarse distinto?
+3.  ¿Por qué la edad podría modificar la relación?
 
 ### 2. Variables proxy
 
@@ -705,9 +705,9 @@ Reflexiona sobre esta frase:
 
 **Preguntas**
 
-1. ¿Qué otras cosas podría estar capturando la cintura?
-2. ¿Por qué la misma cintura podría representar distinto riesgo según sexo?
-3. ¿Qué limitaciones clínicas tiene usar IMC o cintura como proxy metabólico?
+1.  ¿Qué otras cosas podría estar capturando la cintura?
+2.  ¿Por qué la misma cintura podría representar distinto riesgo según sexo?
+3.  ¿Qué limitaciones clínicas tiene usar IMC o cintura como proxy metabólico?
 
 ### 3. Pensamiento clínico sobre interacciones
 
@@ -725,10 +725,10 @@ Piensa en un medicamento antihipertensivo.
 
 ¿Por qué sería razonable esperar que el efecto del medicamento cambie según:
 
-- edad
-- sexo
-- obesidad
-- actividad física
+-   edad
+-   sexo
+-   obesidad
+-   actividad física
 
 ?
 
@@ -781,9 +781,9 @@ posterior_interval(modelo_mujeres) # produce:
 
 **Preguntas**
 
-1. ¿Las pendientes son parecidas?
-2. ¿La incertidumbre cambia?
-3. ¿Qué grupo tiene mayor variabilidad?
+1.  ¿Las pendientes son parecidas?
+2.  ¿La incertidumbre cambia?
+3.  ¿Qué grupo tiene mayor variabilidad?
 
 ### 6. Modelo con interacción por sexo
 
@@ -803,25 +803,24 @@ posterior_interval(modelo_interaccion) # produce:
 
 **Preguntas**
 
-1. ¿La interacción parece positiva o negativa?
-2. ¿Qué significa clínicamente?
-3.¿La cintura parece afectar más a hombres o mujeres?
+1.  ¿La interacción parece positiva o negativa?
+2.  ¿Qué significa clínicamente? 3.¿La cintura parece afectar más a hombres o mujeres?
 
 ### 7. Visualización de interacción
 
 Haz un gráfico con:
 
-- cintura
-- glicemia
-- color por sexo
+-   cintura
+-   glicemia
+-   color por sexo
 
 y agrega líneas de regresión.
 
 **Preguntas**
 
-1. ¿Las pendientes parecen distintas?
-2. ¿Las líneas son paralelas?
-3. ¿El gráfico coincide con el modelo?
+1.  ¿Las pendientes parecen distintas?
+2.  ¿Las líneas son paralelas?
+3.  ¿El gráfico coincide con el modelo?
 
 ### 8. Interacción con edad
 
@@ -874,9 +873,9 @@ ggplot(datos,
 
 **Preguntas**
 
-1. ¿Qué grupo tiene mayor pendiente?
-2. ¿El resultado coincide con tu intuición clínica?
-3. ¿Qué explicaciones fisiopatológicas podrían existir?
+1.  ¿Qué grupo tiene mayor pendiente?
+2.  ¿El resultado coincide con tu intuición clínica?
+3.  ¿Qué explicaciones fisiopatológicas podrían existir?
 
 ### 9. Pensar como epidemiólogo
 
@@ -884,9 +883,9 @@ Supón que los adultos mayores tienen menor pendiente que mediana edad.
 
 **Preguntas**
 
-1. ¿Podría existir sesgo de supervivencia?
-2. ¿Qué papel podrían tener los medicamentos?
-3. ¿Por qué los adultos mayores de NHANES no representan necesariamente a todos los adultos mayores?
+1.  ¿Podría existir sesgo de supervivencia?
+2.  ¿Qué papel podrían tener los medicamentos?
+3.  ¿Por qué los adultos mayores de NHANES no representan necesariamente a todos los adultos mayores?
 
 ### 10. Inflamación y distribución de grasa
 
@@ -896,9 +895,9 @@ Reflexiona sobre esta idea:
 
 **Preguntas**
 
-1. ¿Por qué?
-2. ¿Cómo se relaciona esto con resistencia a la insulina?
-3. ¿Cómo podría afectar la interpretación de la cintura abdominal?
+1.  ¿Por qué?
+2.  ¿Cómo se relaciona esto con resistencia a la insulina?
+3.  ¿Cómo podría afectar la interpretación de la cintura abdominal?
 
 ### 11. Pensar en incertidumbre
 
@@ -906,9 +905,9 @@ Observa un intervalo posterior amplio.
 
 **Preguntas**
 
-1. ¿Qué significa clínicamente?
-2. ¿Implica que “no hay efecto”?
-3. ¿Qué tipos de incertidumbre pueden existir en medicina?
+1.  ¿Qué significa clínicamente?
+2.  ¿Implica que “no hay efecto”?
+3.  ¿Qué tipos de incertidumbre pueden existir en medicina?
 
 ### 12. Comparar modelos
 
@@ -924,9 +923,9 @@ Compara mentalmente:
 
 **Preguntas**
 
-1. ¿Qué complejidad agrega el modelo B?
-2. ¿Qué información clínica extra obtiene?
-3. ¿Qué riesgos existen al usar solo el modelo A?
+1.  ¿Qué complejidad agrega el modelo B?
+2.  ¿Qué información clínica extra obtiene?
+3.  ¿Qué riesgos existen al usar solo el modelo A?
 
 ### 13. Buscar otras interacciones plausibles
 
@@ -934,11 +933,11 @@ Piensa en variables NHANES donde podría existir interacción.
 
 Ejemplos:
 
-- actividad física × obesidad
-- edad × HDL
-- sexo × triglicéridos
-- cintura × aspirina
-- diabetes × inflamación
+-   actividad física × obesidad
+-   edad × HDL
+-   sexo × triglicéridos
+-   cintura × aspirina
+-   diabetes × inflamación
 
 **Pregunta**
 
@@ -954,9 +953,9 @@ Ejemplo:
 
 Luego:
 
-1. plantea el modelo
-2. explica la interacción esperada
-3. justifica fisiopatológicamente
+1.  plantea el modelo
+2.  explica la interacción esperada
+3.  justifica fisiopatológicamente
 
 ### 15. Reflexión final
 
