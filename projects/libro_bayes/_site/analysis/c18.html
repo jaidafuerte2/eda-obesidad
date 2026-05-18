@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>18.- Interpretar resultados bayesianos – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c18.html">Módulo 7: Decisiones bajo incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c18.html">18.- Interpretar resultados bayesianos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 1: Pensar Como Analista Bayesiano</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- De Datos a Decisiones Clínicas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 2: Herramientas en R (mínimo necesario)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Preparando NHANES en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Visualización para Entender Datos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 3: Entender la Incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidad como Creencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Distribuciones en la vida real</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Distribuciones conjuntas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 4: Pensamiento causal</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Introducción a DAGs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9.- Tu Modelo Causal de Obesidad</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10.- Aspirina como Proxy de Inflamación</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 5: Modelos Bayesianos en R</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11.- Primer Modelo Bayesiano en R</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12.- Añadiendo Complejidad al Modelo</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13.- Priors</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14.- Chequeo del Modelo</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 6: Modelos Clínicos Reales</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15.- Resistencia a la insulina</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">16.- Riesgo cardiovascular</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17.- Modelos multinivel</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 7: Decisiones bajo incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c18.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">18.- Interpretar resultados bayesianos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19.- Tomar decisiones clínicas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20.- Conclusiones y siguientes pasos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intuición" id="toc-intuición" class="nav-link active" data-scroll-target="#intuición">1. Intuición</a>
+  <ul class="collapse">
+  <li><a href="#un-modelo-bayesiano-no-da-respuestas-exactas" id="toc-un-modelo-bayesiano-no-da-respuestas-exactas" class="nav-link" data-scroll-target="#un-modelo-bayesiano-no-da-respuestas-exactas">Un modelo bayesiano no da respuestas exactas</a></li>
+  <li><a href="#pensar-en-distribuciones-no-en-números-únicos" id="toc-pensar-en-distribuciones-no-en-números-únicos" class="nav-link" data-scroll-target="#pensar-en-distribuciones-no-en-números-únicos">Pensar en distribuciones, no en números únicos</a></li>
+  <li><a href="#la-incertidumbre-no-es-un-problema" id="toc-la-incertidumbre-no-es-un-problema" class="nav-link" data-scroll-target="#la-incertidumbre-no-es-un-problema">La incertidumbre no es un problema</a></li>
+  <li><a href="#intervalos-creíbles-una-interpretación-natural" id="toc-intervalos-creíbles-una-interpretación-natural" class="nav-link" data-scroll-target="#intervalos-creíbles-una-interpretación-natural">Intervalos creíbles: una interpretación natural</a></li>
+  <li><a href="#bayes-permite-hablar-en-probabilidades-directas" id="toc-bayes-permite-hablar-en-probabilidades-directas" class="nav-link" data-scroll-target="#bayes-permite-hablar-en-probabilidades-directas">Bayes permite hablar en probabilidades directas</a></li>
+  <li><a href="#una-analogía-clínica-útil" id="toc-una-analogía-clínica-útil" class="nav-link" data-scroll-target="#una-analogía-clínica-útil">Una analogía clínica útil</a></li>
+  <li><a href="#el-mensaje-central-del-capítulo" id="toc-el-mensaje-central-del-capítulo" class="nav-link" data-scroll-target="#el-mensaje-central-del-capítulo">El mensaje central del capítulo</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <ul class="collapse">
+  <li><a href="#simular-datos" id="toc-simular-datos" class="nav-link" data-scroll-target="#simular-datos">Simular datos</a></li>
+  <li><a href="#visualizar-datos" id="toc-visualizar-datos" class="nav-link" data-scroll-target="#visualizar-datos">Visualizar datos</a></li>
+  <li><a href="#ajustar-el-modelo-bayesiano" id="toc-ajustar-el-modelo-bayesiano" class="nav-link" data-scroll-target="#ajustar-el-modelo-bayesiano">Ajustar el modelo bayesiano</a></li>
+  <li><a href="#ver-resultados" id="toc-ver-resultados" class="nav-link" data-scroll-target="#ver-resultados">Ver resultados</a></li>
+  <li><a href="#cómo-interpretamos-esto" id="toc-cómo-interpretamos-esto" class="nav-link" data-scroll-target="#cómo-interpretamos-esto">¿Cómo interpretamos esto?</a></li>
+  <li><a href="#obtener-intervalos-creíbles" id="toc-obtener-intervalos-creíbles" class="nav-link" data-scroll-target="#obtener-intervalos-creíbles">Obtener intervalos creíbles</a></li>
+  <li><a href="#interpretación-clínica-del-intervalo" id="toc-interpretación-clínica-del-intervalo" class="nav-link" data-scroll-target="#interpretación-clínica-del-intervalo">Interpretación clínica del intervalo</a></li>
+  <li><a href="#probabilidad-de-que-el-efecto-sea-positivo" id="toc-probabilidad-de-que-el-efecto-sea-positivo" class="nav-link" data-scroll-target="#probabilidad-de-que-el-efecto-sea-positivo">Probabilidad de que el efecto sea positivo</a></li>
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación">Interpretación</a></li>
+  <li><a href="#la-idea-importante" id="toc-la-idea-importante" class="nav-link" data-scroll-target="#la-idea-importante">La idea importante</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-aplicado-con-nhanes" id="toc-ejemplo-aplicado-con-nhanes" class="nav-link" data-scroll-target="#ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</a>
+  <ul class="collapse">
+  <li><a href="#preparar-datos" id="toc-preparar-datos" class="nav-link" data-scroll-target="#preparar-datos">Preparar datos</a></li>
+  <li><a href="#visualizar-relación" id="toc-visualizar-relación" class="nav-link" data-scroll-target="#visualizar-relación">Visualizar relación</a></li>
+  <li><a href="#ajustar-modelo-bayesiano" id="toc-ajustar-modelo-bayesiano" class="nav-link" data-scroll-target="#ajustar-modelo-bayesiano">Ajustar modelo bayesiano</a></li>
+  <li><a href="#ver-resultados-1" id="toc-ver-resultados-1" class="nav-link" data-scroll-target="#ver-resultados-1">Ver resultados</a></li>
+  <li><a href="#interpretación-clínica" id="toc-interpretación-clínica" class="nav-link" data-scroll-target="#interpretación-clínica">Interpretación clínica</a></li>
+  <li><a href="#obtener-intervalo-creíble" id="toc-obtener-intervalo-creíble" class="nav-link" data-scroll-target="#obtener-intervalo-creíble">Obtener intervalo creíble</a></li>
+  <li><a href="#interpretación-clínica-correcta" id="toc-interpretación-clínica-correcta" class="nav-link" data-scroll-target="#interpretación-clínica-correcta">Interpretación clínica correcta</a></li>
+  <li><a href="#calcular-probabilidad-de-efecto-positivo" id="toc-calcular-probabilidad-de-efecto-positivo" class="nav-link" data-scroll-target="#calcular-probabilidad-de-efecto-positivo">Calcular probabilidad de efecto positivo</a></li>
+  <li><a href="#traducción-clínica" id="toc-traducción-clínica" class="nav-link" data-scroll-target="#traducción-clínica">Traducción clínica</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-con-cintura-abdominal" id="toc-ejemplo-con-cintura-abdominal" class="nav-link" data-scroll-target="#ejemplo-con-cintura-abdominal">Ejemplo con cintura abdominal</a>
+  <ul class="collapse">
+  <li><a href="#ajustar-modelo" id="toc-ajustar-modelo" class="nav-link" data-scroll-target="#ajustar-modelo">Ajustar modelo</a></li>
+  <li><a href="#ver-intervalo-creíble" id="toc-ver-intervalo-creíble" class="nav-link" data-scroll-target="#ver-intervalo-creíble">Ver intervalo creíble</a></li>
+  <li><a href="#interpretación-clínica-1" id="toc-interpretación-clínica-1" class="nav-link" data-scroll-target="#interpretación-clínica-1">Interpretación clínica</a></li>
+  <li><a href="#por-qué-esto-es-clínicamente-útil" id="toc-por-qué-esto-es-clínicamente-útil" class="nav-link" data-scroll-target="#por-qué-esto-es-clínicamente-útil">¿Por qué esto es clínicamente útil?</a></li>
+  </ul></li>
+  <li><a href="#sedentarismo-e-incertidumbre" id="toc-sedentarismo-e-incertidumbre" class="nav-link" data-scroll-target="#sedentarismo-e-incertidumbre">Sedentarismo e incertidumbre</a>
+  <ul class="collapse">
+  <li><a href="#modelar-el-efecto-del-sedentarismo-sobre-la-glicemia" id="toc-modelar-el-efecto-del-sedentarismo-sobre-la-glicemia" class="nav-link" data-scroll-target="#modelar-el-efecto-del-sedentarismo-sobre-la-glicemia">Modelar el efecto del sedentarismo sobre la glicemia</a></li>
+  <li><a href="#ver-intervalo-creíble-1" id="toc-ver-intervalo-creíble-1" class="nav-link" data-scroll-target="#ver-intervalo-creíble-1">Ver intervalo creíble</a></li>
+  <li><a href="#interpretación-1" id="toc-interpretación-1" class="nav-link" data-scroll-target="#interpretación-1">Interpretación</a></li>
+  <li><a href="#calcular-probabilidad-de-efecto-positivo-1" id="toc-calcular-probabilidad-de-efecto-positivo-1" class="nav-link" data-scroll-target="#calcular-probabilidad-de-efecto-positivo-1">Calcular probabilidad de efecto positivo</a></li>
+  <li><a href="#interpretación-2" id="toc-interpretación-2" class="nav-link" data-scroll-target="#interpretación-2">Interpretación</a></li>
+  <li><a href="#un-punto-fundamental" id="toc-un-punto-fundamental" class="nav-link" data-scroll-target="#un-punto-fundamental">Un punto fundamental</a></li>
+  </ul></li>
+  <li><a href="#interpretación-clínica-2" id="toc-interpretación-clínica-2" class="nav-link" data-scroll-target="#interpretación-clínica-2">4. Interpretación clínica</a>
+  <ul class="collapse">
+  <li><a href="#cómo-pensar-clínicamente-un-resultado-bayesiano" id="toc-cómo-pensar-clínicamente-un-resultado-bayesiano" class="nav-link" data-scroll-target="#cómo-pensar-clínicamente-un-resultado-bayesiano">Cómo pensar clínicamente un resultado bayesiano</a></li>
+  <li><a href="#un-cambio-mental-importante" id="toc-un-cambio-mental-importante" class="nav-link" data-scroll-target="#un-cambio-mental-importante">Un cambio mental importante</a></li>
+  <li><a href="#la-incertidumbre-como-herramienta" id="toc-la-incertidumbre-como-herramienta" class="nav-link" data-scroll-target="#la-incertidumbre-como-herramienta">La incertidumbre como herramienta</a></li>
+  <li><a href="#lenguaje-clínico-útil" id="toc-lenguaje-clínico-útil" class="nav-link" data-scroll-target="#lenguaje-clínico-útil">Lenguaje clínico útil</a></li>
+  <li><a href="#una-diferencia-profunda" id="toc-una-diferencia-profunda" class="nav-link" data-scroll-target="#una-diferencia-profunda">Una diferencia profunda</a></li>
+  <li><a href="#insight-final-del-capítulo" id="toc-insight-final-del-capítulo" class="nav-link" data-scroll-target="#insight-final-del-capítulo">Insight final del capítulo</a></li>
+  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo">Resumen del capítulo</a></li>
+  <li><a href="#idea-central-para-recordar" id="toc-idea-central-para-recordar" class="nav-link" data-scroll-target="#idea-central-para-recordar">Idea central para recordar</a></li>
+  </ul></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-traducir-notación-científica" id="toc-ejercicio-1-traducir-notación-científica" class="nav-link" data-scroll-target="#ejercicio-1-traducir-notación-científica">Ejercicio 1 — Traducir notación científica</a></li>
+  <li><a href="#ejercicio-2-interpretación-intuitiva" id="toc-ejercicio-2-interpretación-intuitiva" class="nav-link" data-scroll-target="#ejercicio-2-interpretación-intuitiva">Ejercicio 2 — Interpretación intuitiva</a></li>
+  <li><a href="#ejercicio-3-pensar-en-rangos-plausibles" id="toc-ejercicio-3-pensar-en-rangos-plausibles" class="nav-link" data-scroll-target="#ejercicio-3-pensar-en-rangos-plausibles">Ejercicio 3 — Pensar en rangos plausibles</a></li>
+  <li><a href="#ejercicio-4-interpretar-probabilidades-directas" id="toc-ejercicio-4-interpretar-probabilidades-directas" class="nav-link" data-scroll-target="#ejercicio-4-interpretar-probabilidades-directas">Ejercicio 4 — Interpretar probabilidades directas</a></li>
+  <li><a href="#ejercicio-5-comparar-dos-escenarios" id="toc-ejercicio-5-comparar-dos-escenarios" class="nav-link" data-scroll-target="#ejercicio-5-comparar-dos-escenarios">Ejercicio 5 — Comparar dos escenarios</a></li>
+  <li><a href="#ejercicio-6-construir-interpretación-clínica" id="toc-ejercicio-6-construir-interpretación-clínica" class="nav-link" data-scroll-target="#ejercicio-6-construir-interpretación-clínica">Ejercicio 6 — Construir interpretación clínica</a></li>
+  <li><a href="#ejercicio-7-magnitud-vs-probabilidad" id="toc-ejercicio-7-magnitud-vs-probabilidad" class="nav-link" data-scroll-target="#ejercicio-7-magnitud-vs-probabilidad">Ejercicio 7 — Magnitud vs probabilidad</a></li>
+  <li><a href="#ejercicio-8-interpretar-sigma" id="toc-ejercicio-8-interpretar-sigma" class="nav-link" data-scroll-target="#ejercicio-8-interpretar-sigma">Ejercicio 8 — Interpretar sigma</a></li>
+  <li><a href="#ejercicio-9-traducir-para-un-médico" id="toc-ejercicio-9-traducir-para-un-médico" class="nav-link" data-scroll-target="#ejercicio-9-traducir-para-un-médico">Ejercicio 9 — Traducir para un médico</a></li>
+  <li><a href="#ejercicio-10-la-incertidumbre-como-información" id="toc-ejercicio-10-la-incertidumbre-como-información" class="nav-link" data-scroll-target="#ejercicio-10-la-incertidumbre-como-información">Ejercicio 10 — La incertidumbre como información</a></li>
+  <li><a href="#mini-ejercicio-conceptual-muy-importante" id="toc-mini-ejercicio-conceptual-muy-importante" class="nav-link" data-scroll-target="#mini-ejercicio-conceptual-muy-importante">Mini ejercicio conceptual (MUY IMPORTANTE)</a></li>
+  <li><a href="#ejercicio-final-integrador" id="toc-ejercicio-final-integrador" class="nav-link" data-scroll-target="#ejercicio-final-integrador">Ejercicio final integrador</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c18.html">Módulo 7: Decisiones bajo incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c18.html">18.- Interpretar resultados bayesianos</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">18.- Interpretar resultados bayesianos</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="intuición" class="level2">
+<h2 class="anchored" data-anchor-id="intuición">1. Intuición</h2>
+<p>Hasta ahora hemos construido modelos bayesianos para explorar relaciones clínicas en NHANES:</p>
+<ul>
+<li>IMC y glicemia</li>
+<li>Circunferencia de cintura y metabolismo</li>
+<li>Actividad física y salud metabólica</li>
+</ul>
+<p>Pero construir el modelo es solo una parte del trabajo.</p>
+<p>La verdadera pregunta clínica es:</p>
+<p><code>“¿Cómo interpretamos estos resultados?”</code></p>
+<p>Y aquí aparece una de las mayores ventajas del enfoque bayesiano:</p>
+<p>👉 Bayes habla el lenguaje natural de la medicina.</p>
+<p>En muchos análisis tradicionales, el resultado suele terminar reducido a algo como:</p>
+<ul>
+<li>“p &lt; 0.05”</li>
+<li>“estadísticamente significativo”</li>
+<li>“no significativo”</li>
+</ul>
+<p>El problema es que ese lenguaje no se parece mucho a cómo pensamos en clínica.</p>
+<p>Un médico rara vez piensa así.</p>
+<p>Normalmente pensamos de esta manera:</p>
+<ul>
+<li>“Parece bastante probable…”</li>
+<li>“Existe evidencia moderada…”</li>
+<li>“Es poco probable que…”</li>
+<li>“Todavía hay incertidumbre…”</li>
+</ul>
+<p>Y precisamente eso es lo que permite Bayes.</p>
+<section id="un-modelo-bayesiano-no-da-respuestas-exactas" class="level3">
+<h3 class="anchored" data-anchor-id="un-modelo-bayesiano-no-da-respuestas-exactas">Un modelo bayesiano no da respuestas exactas</h3>
+<p>Un modelo bayesiano no intenta decir:</p>
+<p>❌ “El efecto verdadero es exactamente 0.42”</p>
+<p>En cambio, dice algo mucho más realista:</p>
+<p>✅ “Los valores más plausibles están alrededor de 0.42”</p>
+<p>✅ “Existe incertidumbre”</p>
+<p>✅ “Algunos valores son más probables que otros”</p>
+</section>
+<section id="pensar-en-distribuciones-no-en-números-únicos" class="level3">
+<h3 class="anchored" data-anchor-id="pensar-en-distribuciones-no-en-números-únicos">Pensar en distribuciones, no en números únicos</h3>
+<p>Uno de los cambios mentales más importantes en Bayes es este:</p>
+<p>👉 dejar de pensar en estimaciones únicas</p>
+<p>👉 empezar a pensar en distribuciones</p>
+<p>Por ejemplo:</p>
+<p>Supongamos que estudiamos la relación entre IMC y glicemia.</p>
+<p>Un enfoque clásico podría decir:</p>
+<ul>
+<li>“Por cada aumento de 1 unidad de IMC, la glicemia aumenta 0.8 mg/dL”</li>
+</ul>
+<p>Pero Bayes diría algo más completo:</p>
+<ul>
+<li>“Los valores más plausibles están entre 0.4 y 1.2”</li>
+<li>“Es muy probable que el efecto sea positivo”</li>
+<li>“Existe cierta incertidumbre sobre el tamaño exacto”</li>
+</ul>
+<p>Eso se parece mucho más al razonamiento clínico real.</p>
+</section>
+<section id="la-incertidumbre-no-es-un-problema" class="level3">
+<h3 class="anchored" data-anchor-id="la-incertidumbre-no-es-un-problema">La incertidumbre no es un problema</h3>
+<p>Muchos principiantes sienten incomodidad cuando ven incertidumbre.</p>
+<p>Pero en medicina, la incertidumbre siempre existe.</p>
+<p>La diferencia es que Bayes:</p>
+<p>👉 la hace visible</p>
+<p>👉 la cuantifica</p>
+<p>👉 la incorpora explícitamente</p>
+<p>Y eso es extremadamente útil.</p>
+<p>Porque la toma de decisiones clínicas rara vez ocurre con certeza absoluta.</p>
+</section>
+<section id="intervalos-creíbles-una-interpretación-natural" class="level3">
+<h3 class="anchored" data-anchor-id="intervalos-creíbles-una-interpretación-natural">Intervalos creíbles: una interpretación natural</h3>
+<p>Uno de los conceptos más útiles en Bayes es el intervalo creíble.</p>
+<p>La interpretación intuitiva es:</p>
+<p><code>“Hay un 95% de probabilidad de que el verdadero valor esté dentro de este rango.”</code></p>
+<p>Por ejemplo:</p>
+<ul>
+<li>efecto plausible del IMC:
+<ul>
+<li>entre 0.3 y 1.1 mg/dL</li>
+</ul></li>
+</ul>
+<p>Eso significa:</p>
+<p>👉 dados los datos y el modelo,</p>
+<p>👉 esos son los valores más compatibles con la evidencia.</p>
+</section>
+<section id="bayes-permite-hablar-en-probabilidades-directas" class="level3">
+<h3 class="anchored" data-anchor-id="bayes-permite-hablar-en-probabilidades-directas">Bayes permite hablar en probabilidades directas</h3>
+<p>Y aquí aparece una de las ideas más poderosas del capítulo.</p>
+<p>Con Bayes podemos decir cosas como:</p>
+<ul>
+<li>“Hay un 92% de probabilidad de que el efecto sea positivo.”</li>
+<li>“Existe una alta probabilidad de que mayor cintura se asocie con peor metabolismo.”</li>
+<li>“La evidencia es moderada, pero todavía incierta.”</li>
+</ul>
+<p>Ese lenguaje es extremadamente natural para médicos.</p>
+<p>Porque la clínica siempre trabaja con probabilidades.</p>
+</section>
+<section id="una-analogía-clínica-útil" class="level3">
+<h3 class="anchored" data-anchor-id="una-analogía-clínica-útil">Una analogía clínica útil</h3>
+<p>Imagina dos escenarios.</p>
+<section id="escenario-1" class="level4">
+<h4 class="anchored" data-anchor-id="escenario-1">Escenario 1</h4>
+<p>Un médico dice:</p>
+<p><code>“El resultado fue estadísticamente significativo.”</code></p>
+<p>Eso realmente no nos dice mucho clínicamente.</p>
+</section>
+<section id="escenario-2" class="level4">
+<h4 class="anchored" data-anchor-id="escenario-2">Escenario 2</h4>
+<p>El médico dice:</p>
+<p><code>“Hay aproximadamente un 90% de probabilidad de que este factor aumente el riesgo metabólico.”</code></p>
+<p>Eso es mucho más interpretable.</p>
+<p>Mucho más accionable.</p>
+<p>Mucho más cercano a la toma real de decisiones.</p>
+</section>
+</section>
+<section id="el-mensaje-central-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="el-mensaje-central-del-capítulo">El mensaje central del capítulo</h3>
+<p>👉 Un modelo bayesiano no entrega certezas absolutas.</p>
+<p>👉 Entrega distribuciones de plausibilidad.</p>
+<p>👉 Entrega probabilidades útiles para decidir bajo incertidumbre.</p>
+<p>Y eso se parece mucho más a la medicina real.</p>
+</section>
+</section>
+<section id="ejemplo-simple-simulación-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
+<p>Vamos a comenzar con un ejemplo pequeño y simple.</p>
+<p>Queremos explorar si un mayor IMC podría asociarse con mayor glicemia.</p>
+<section id="simular-datos" class="level3">
+<h3 class="anchored" data-anchor-id="simular-datos">Simular datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simular el imc y la glicemia de 80 pacientes</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">imc =</span> <span class="fu">rnorm</span>(<span class="dv">80</span>, <span class="at">mean =</span> <span class="dv">30</span>, <span class="at">sd =</span> <span class="dv">5</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">glicemia =</span> <span class="dv">70</span> <span class="sc">+</span> <span class="fl">0.9</span> <span class="sc">*</span> imc <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">80</span>, <span class="dv">0</span>, <span class="dv">8</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="visualizar-datos" class="level3">
+<h3 class="anchored" data-anchor-id="visualizar-datos">Visualizar datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión y tendencia que relaciona el imc con la </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># glicemia </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos, <span class="fu">aes</span>(imc, glicemia)) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"IMC y glicemia simulada"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"IMC"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Glicemia"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c18_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ajustar-el-modelo-bayesiano" class="level3">
+<h3 class="anchored" data-anchor-id="ajustar-el-modelo-bayesiano">Ajustar el modelo bayesiano</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelar el efecto de el imc a la glicemia</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  glicemia <span class="sc">~</span> imc,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ver-resultados" class="level3">
+<h3 class="anchored" data-anchor-id="ver-resultados">Ver resultados</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir resultado del modelo</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo, <span class="at">digits =</span> <span class="dv">2</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      glicemia ~ imc
+ observations: 80
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) 63.11   5.56 
+imc          1.11   0.18 
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 7.61   0.61  
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+</section>
+<section id="cómo-interpretamos-esto" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-interpretamos-esto">¿Cómo interpretamos esto?</h3>
+<p>El coeficiente de IMC es aproximadamente 1.04.</p>
+<p>Eso significa:</p>
+<p>👉 por cada aumento de 1 unidad de IMC,</p>
+<p>👉 la glicemia probablemente aumenta alrededor de 1.04 mg/dL.</p>
+<p>Pero lo más importante:</p>
+<p>👉 no estamos diciendo que el valor exacto sea 1.04.</p>
+<p>Estamos diciendo:</p>
+<ul>
+<li>valores cercanos a 1.04 son plausibles</li>
+<li>existe incertidumbre</li>
+<li>algunos valores son más compatibles con los datos que otros</li>
+</ul>
+</section>
+<section id="obtener-intervalos-creíbles" class="level3">
+<h3 class="anchored" data-anchor-id="obtener-intervalos-creíbles">Obtener intervalos creíbles</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir intervalo posterior</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo, <span class="at">prob =</span> <span class="fl">0.95</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  2.5%     97.5%
+(Intercept) 52.6631751 75.326697
+imc          0.7191751  1.461611
+sigma        6.5422657  9.065549</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-clínica-del-intervalo" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-clínica-del-intervalo">Interpretación clínica del intervalo</h3>
+<p>Podemos decir:</p>
+<p><code>“Hay un 95% de probabilidad de que el verdadero efecto del IMC sobre la glicemia esté entre 0.66 y 1.18 mg/dL.”</code></p>
+<p>Ese lenguaje es perfectamente natural para clínica.</p>
+</section>
+<section id="probabilidad-de-que-el-efecto-sea-positivo" class="level3">
+<h3 class="anchored" data-anchor-id="probabilidad-de-que-el-efecto-sea-positivo">Probabilidad de que el efecto sea positivo</h3>
+<p>Ahora viene una de las partes más interesantes.</p>
+<p>Podemos calcular directamente:</p>
+<p>👉 ¿qué proporción de la distribución posterior es mayor que cero?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conocer la probabilidad de que el efecto sea positivo</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(modelo)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(posterior[, <span class="st">"imc"</span>] <span class="sc">&gt;</span> <span class="dv">0</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación">Interpretación</h3>
+<p>Eso significa:</p>
+<p><code>“Existe una probabilidad extremadamente alta de que un mayor IMC se asocie con mayor glicemia..”</code></p>
+<p>Eso es increíblemente intuitivo.</p>
+<p>Y muchísimo más cercano al lenguaje clínico real.</p>
+</section>
+<section id="la-idea-importante" class="level3">
+<h3 class="anchored" data-anchor-id="la-idea-importante">La idea importante</h3>
+<p>Observa el cambio conceptual.</p>
+<p>No estamos preguntando:</p>
+<p>❌ “¿Existe o no existe efecto?”</p>
+<p>Estamos preguntando:</p>
+<p>✅ “¿Qué tan probable es que el efecto sea positivo?”</p>
+<p>Ese cambio mental es fundamental en Bayes.</p>
+</section>
+</section>
+<section id="ejemplo-aplicado-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-aplicado-con-nhanes">3. Ejemplo aplicado con NHANES</h2>
+<p>Ahora llevemos estas ideas a datos reales.</p>
+<p>Usaremos un modelo simple ya conocido:</p>
+<ul>
+<li>glicemia → LBXSGL</li>
+<li>IMC → BMXBMI</li>
+</ul>
+<section id="preparar-datos" class="level3">
+<h3 class="anchored" data-anchor-id="preparar-datos">Preparar datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seleccionar las variables que voy a usar</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>nhanes_modelo <span class="ot">&lt;-</span> df_obesidad <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(LBXSGL, <span class="co"># glicemia </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>         BMXBMI,<span class="co"># índice de masa corporal</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>         BMXWAIST, <span class="co"># cintura</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>         PAD680 <span class="co"># minutos al día de actividad sedentaria</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    LBXSGL <span class="sc">&lt;=</span> <span class="dv">600</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    BMXBMI <span class="sc">&lt;</span> <span class="dv">100</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    BMXWAIST <span class="sc">&lt;</span> <span class="dv">200</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    PAD680 <span class="sc">&lt;</span> <span class="dv">1000</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="visualizar-relación" class="level3">
+<h3 class="anchored" data-anchor-id="visualizar-relación">Visualizar relación</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión y tendencia de la relación entre IMC y</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># glicemia</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nhanes_modelo, <span class="fu">aes</span>(BMXBMI, LBXSGL)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"IMC y glicemia en NHANES"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"IMC"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Glicemia"</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c18_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ajustar-modelo-bayesiano" class="level3">
+<h3 class="anchored" data-anchor-id="ajustar-modelo-bayesiano">Ajustar modelo bayesiano</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelar el efecto de el índice de masa corporal sobre la glicemia</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>modelo_imc <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  LBXSGL <span class="sc">~</span> BMXBMI,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nhanes_modelo,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ver-resultados-1" class="level3">
+<h3 class="anchored" data-anchor-id="ver-resultados-1">Ver resultados</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir el modelo modelo_imc</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_imc) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      LBXSGL ~ BMXBMI
+ observations: 5225
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) 74.0    2.3  
+BMXBMI       1.0    0.1  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 39.6    0.4  
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-clínica">Interpretación clínica</h3>
+<p>Podemos traducir esto así:</p>
+<p><code>“En promedio, mayores niveles de IMC se asocian con mayores niveles de glicemia.”</code></p>
+<p>Y más específicamente:</p>
+<p><code>“Por cada unidad adicional de IMC, la glicemia probablemente aumenta alrededor de 1.0 mg/dL.”</code></p>
+</section>
+<section id="obtener-intervalo-creíble" class="level3">
+<h3 class="anchored" data-anchor-id="obtener-intervalo-creíble">Obtener intervalo creíble</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_imc,) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    5%       95%
+(Intercept) 70.5946633 77.815333
+BMXBMI       0.9056916  1.151758
+sigma       38.9879144 40.262733</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-clínica-correcta" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-clínica-correcta">Interpretación clínica correcta</h3>
+<p>Podemos decir:</p>
+<p><code>“Hay un 90% de probabilidad de que el verdadero efecto del IMC sobre la glicemia esté entre 0.89 y 1.17 mg/dL.”</code></p>
+<p>Y esto tiene una interpretación clínica importante:</p>
+<p>👉 prácticamente todo el rango es positivo.</p>
+<p>Eso aumenta nuestra confianza en que existe una asociación positiva.</p>
+</section>
+<section id="calcular-probabilidad-de-efecto-positivo" class="level3">
+<h3 class="anchored" data-anchor-id="calcular-probabilidad-de-efecto-positivo">Calcular probabilidad de efecto positivo</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la probabilidad de efecto positivo:</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(modelo_imc)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(posterior[, <span class="st">"BMXBMI"</span>] <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+</section>
+<section id="traducción-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="traducción-clínica">Traducción clínica</h3>
+<p>Podemos escribir:</p>
+<p><code>“Existe una probabilidad extremadamente alta de que un mayor IMC se asocie con mayor glicemia.”</code></p>
+<p>Observa algo importante:</p>
+<p>👉 no estamos hablando de “significativo” o “no significativo”.</p>
+<p>Estamos hablando de:</p>
+<ul>
+<li>probabilidad</li>
+<li>plausibilidad</li>
+<li>incertidumbre</li>
+</ul>
+</section>
+</section>
+<section id="ejemplo-con-cintura-abdominal" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-con-cintura-abdominal">Ejemplo con cintura abdominal</h2>
+<p>Ahora usemos otra variable clínicamente muy importante:</p>
+<ul>
+<li>cintura → BMXWAIST</li>
+</ul>
+<section id="ajustar-modelo" class="level3">
+<h3 class="anchored" data-anchor-id="ajustar-modelo">Ajustar modelo</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelar el efecto de la cintura sobre la glicemia </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>modelo_cintura <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  LBXSGL <span class="sc">~</span> BMXWAIST,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nhanes_modelo,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ver-intervalo-creíble" class="level3">
+<h3 class="anchored" data-anchor-id="ver-intervalo-creíble">Ver intervalo creíble</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_cintura) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    5%        95%
+(Intercept) 40.2665938 51.6541520
+BMXWAIST     0.5306345  0.6456644
+sigma       38.4773605 39.6399694</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-clínica-1" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-clínica-1">Interpretación clínica</h3>
+<p>Podemos decir:</p>
+<p><code>“Existe una alta probabilidad de que mayor circunferencia de cintura se asocie con mayor glicemia.”</code></p>
+<p>Y además:</p>
+<p><code>“Los valores más plausibles del efecto están entre 0.53 y 0.64 mg/dL por cada cm adicional de cintura.”</code></p>
+</section>
+<section id="por-qué-esto-es-clínicamente-útil" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-esto-es-clínicamente-útil">¿Por qué esto es clínicamente útil?</h3>
+<p>Porque ahora podemos pensar en:</p>
+<ul>
+<li>magnitud del efecto</li>
+<li>incertidumbre</li>
+<li>plausibilidad clínica</li>
+</ul>
+<p>Y no solamente en una etiqueta binaria de “significativo”.</p>
+</section>
+</section>
+<section id="sedentarismo-e-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="sedentarismo-e-incertidumbre">Sedentarismo e incertidumbre</h2>
+<p>Ahora imaginemos un modelo con actividad física (PAD680).</p>
+<p>Muchas veces los resultados son menos claros.</p>
+<p>Y eso también es información útil.</p>
+<section id="modelar-el-efecto-del-sedentarismo-sobre-la-glicemia" class="level3">
+<h3 class="anchored" data-anchor-id="modelar-el-efecto-del-sedentarismo-sobre-la-glicemia">Modelar el efecto del sedentarismo sobre la glicemia</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo para conocer cómo influye el sedentarismo sobre</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># la glicemia</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>modelo_sedentarismo <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  LBXSGL <span class="sc">~</span> PAD680,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nhanes_modelo,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ver-intervalo-creíble-1" class="level3">
+<h3 class="anchored" data-anchor-id="ver-intervalo-creíble-1">Ver intervalo creíble</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_sedentarismo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        5%           95%
+(Intercept) 100.0766517393 104.203007769
+PAD680       -0.0007332123   0.008572547
+sigma        39.6230151808  40.999116079</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-1" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-1">Interpretación</h3>
+<p>Aquí el intervalo incluye:</p>
+<ul>
+<li>valores negativos</li>
+<li>valores cercanos a cero</li>
+<li>algunos positivos</li>
+</ul>
+<p>Entonces podríamos decir:</p>
+<p><code>“Existe incertidumbre considerable sobre el efecto del sedentarismo en este modelo.”</code></p>
+<p>Y eso es perfectamente válido.</p>
+<p>Bayes no obliga a fingir certeza.</p>
+</section>
+<section id="calcular-probabilidad-de-efecto-positivo-1" class="level3">
+<h3 class="anchored" data-anchor-id="calcular-probabilidad-de-efecto-positivo-1">Calcular probabilidad de efecto positivo</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la probabilidad de efecto positivo:</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(modelo_sedentarismo)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(posterior[, <span class="st">"PAD680"</span>] <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.925</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-2" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-2">Interpretación</h3>
+<p>Existe aproximadamente un 92.5% de probabilidad de que el efecto del sedentarismo sobre la glicemia sea positivo.</p>
+</section>
+<section id="un-punto-fundamental" class="level3">
+<h3 class="anchored" data-anchor-id="un-punto-fundamental">Un punto fundamental</h3>
+<p>Muchos principiantes creen que:</p>
+<p>👉 “intervalo amplio = mal modelo”</p>
+<p>No necesariamente.</p>
+<p>A veces significa:</p>
+<ul>
+<li>pocos datos</li>
+<li>mucho ruido biológico</li>
+<li>efecto pequeño</li>
+<li>heterogeneidad clínica real</li>
+</ul>
+<p>Y eso es extremadamente común en medicina.</p>
+</section>
+</section>
+<section id="interpretación-clínica-2" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-clínica-2">4. Interpretación clínica</h2>
+<p>Llegamos a una de las habilidades más importantes de todo el análisis bayesiano:</p>
+<p>👉 traducir resultados estadísticos a razonamiento clínico.</p>
+<section id="cómo-pensar-clínicamente-un-resultado-bayesiano" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-pensar-clínicamente-un-resultado-bayesiano">Cómo pensar clínicamente un resultado bayesiano</h3>
+<p>Cuando observas un modelo, intenta hacerte estas preguntas:</p>
+<section id="cuál-es-la-dirección-del-efecto" class="level4">
+<h4 class="anchored" data-anchor-id="cuál-es-la-dirección-del-efecto">1. ¿Cuál es la dirección del efecto?</h4>
+<p>Por ejemplo:</p>
+<ul>
+<li>¿mayor IMC aumenta glicemia?</li>
+<li>¿mayor cintura empeora metabolismo?</li>
+</ul>
+</section>
+<section id="qué-tan-probable-es-ese-efecto" class="level4">
+<h4 class="anchored" data-anchor-id="qué-tan-probable-es-ese-efecto">2. ¿Qué tan probable es ese efecto?</h4>
+<p>Aquí aparece la probabilidad posterior.</p>
+<p>Ejemplos útiles:</p>
+<ul>
+<li>“Hay un 95% de probabilidad…”</li>
+<li>“Es muy probable que…”</li>
+<li>“Existe evidencia moderada…”</li>
+</ul>
+</section>
+<section id="cuánta-incertidumbre-existe" class="level4">
+<h4 class="anchored" data-anchor-id="cuánta-incertidumbre-existe">3. ¿Cuánta incertidumbre existe?</h4>
+<p>Aquí observamos:</p>
+<ul>
+<li>amplitud del intervalo creíble</li>
+<li>dispersión posterior</li>
+<li>plausibilidad clínica</li>
+</ul>
+</section>
+<section id="el-tamaño-del-efecto-parece-clínicamente-importante" class="level4">
+<h4 class="anchored" data-anchor-id="el-tamaño-del-efecto-parece-clínicamente-importante">4. ¿El tamaño del efecto parece clínicamente importante?</h4>
+<p>No todo efecto probable es clínicamente relevante.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>un aumento de 0.05 mg/dL puede ser trivial</li>
+<li>un aumento de 5 mg/dL podría ser importante</li>
+</ul>
+<p>Bayes ayuda a pensar en magnitudes, no solo en existencia.</p>
+</section>
+</section>
+<section id="un-cambio-mental-importante" class="level3">
+<h3 class="anchored" data-anchor-id="un-cambio-mental-importante">Un cambio mental importante</h3>
+<p>En estadística clásica, muchas veces se enseña:</p>
+<p>❌ “rechazar o no rechazar”</p>
+<p>En Bayes pensamos más así:</p>
+<p>✅ “¿Qué tan compatible es esta hipótesis con los datos?”</p>
+<p>✅ “¿Qué tan probable parece?”</p>
+<p>✅ “¿Qué rango de efectos es plausible?”</p>
+<p>Ese enfoque suele ser mucho más útil para medicina.</p>
+</section>
+<section id="la-incertidumbre-como-herramienta" class="level3">
+<h3 class="anchored" data-anchor-id="la-incertidumbre-como-herramienta">La incertidumbre como herramienta</h3>
+<p>Uno de los mensajes más importantes del capítulo es este:</p>
+<p>👉 La incertidumbre no es un defecto.</p>
+<p>👉 Es información clínica útil.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>si el intervalo es muy amplio:
+<ul>
+<li>quizá necesitamos más datos</li>
+<li>quizá existe mucha variabilidad biológica</li>
+<li>quizá el fenómeno es complejo</li>
+</ul></li>
+</ul>
+<p>Eso también enseña algo.</p>
+</section>
+<section id="lenguaje-clínico-útil" class="level3">
+<h3 class="anchored" data-anchor-id="lenguaje-clínico-útil">Lenguaje clínico útil</h3>
+<p>A partir de ahora, intenta usar frases como:</p>
+<ul>
+<li>“Existe alta probabilidad de que…”</li>
+<li>“Los valores más plausibles son…”</li>
+<li>“Existe incertidumbre moderada…”</li>
+<li>“La evidencia sugiere que…”</li>
+<li>“Es poco probable que…”</li>
+</ul>
+<p>Ese lenguaje es mucho más natural para toma de decisiones.</p>
+</section>
+<section id="una-diferencia-profunda" class="level3">
+<h3 class="anchored" data-anchor-id="una-diferencia-profunda">Una diferencia profunda</h3>
+<p>Frecuentemente, la estadística tradicional se siente distante de la práctica clínica.</p>
+<p>Bayes, en cambio, permite hablar directamente de:</p>
+<ul>
+<li>probabilidades</li>
+<li>incertidumbre</li>
+<li>plausibilidad</li>
+<li>decisiones</li>
+</ul>
+<p>Y eso se parece muchísimo más a cómo pensamos los humanos.</p>
+</section>
+<section id="insight-final-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="insight-final-del-capítulo">Insight final del capítulo</h3>
+<p>👉 Un modelo bayesiano no elimina la incertidumbre.</p>
+<p>👉 La convierte en algo interpretable.</p>
+<p>Y eso es extremadamente valioso en medicina.</p>
+</section>
+<section id="resumen-del-capítulo" class="level3">
+<h3 class="anchored" data-anchor-id="resumen-del-capítulo">Resumen del capítulo</h3>
+<p>En este capítulo aprendiste que:</p>
+<ul>
+<li>los modelos bayesianos producen distribuciones posteriores</li>
+<li>debemos pensar en rangos plausibles, no en valores exactos</li>
+<li>los intervalos creíbles tienen interpretación probabilística directa</li>
+<li>podemos calcular probabilidades intuitivas:
+<ul>
+<li>“probabilidad de efecto positivo”</li>
+</ul></li>
+<li>la incertidumbre clínica es información útil</li>
+<li>Bayes permite traducir resultados estadísticos a lenguaje natural</li>
+</ul>
+</section>
+<section id="idea-central-para-recordar" class="level3">
+<h3 class="anchored" data-anchor-id="idea-central-para-recordar">Idea central para recordar</h3>
+<p><code>“Bayes te permite hablar el lenguaje natural de la clínica: probabilidades.”</code></p>
+</section>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1-traducir-notación-científica" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-traducir-notación-científica">Ejercicio 1 — Traducir notación científica</h3>
+<p>Convierte mentalmente estos números:</p>
+<p><code>3.5e+02</code></p>
+<p><code>4.2e-03</code></p>
+<p><code>-7.1e-04</code></p>
+<p><code>1.08e+01</code></p>
+<p><strong>Objetivo</strong></p>
+<p>Entrenar lectura rápida de outputs de R.</p>
+</section>
+<section id="ejercicio-2-interpretación-intuitiva" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-interpretación-intuitiva">Ejercicio 2 — Interpretación intuitiva</h3>
+<p>Supón este resultado:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BMXBMI</td>
+<td>0.40</td>
+<td>1.20</td>
+</tr>
+</tbody>
+</table>
+<p>Responde:</p>
+<ol type="1">
+<li>¿El efecto parece positivo o negativo?</li>
+<li>¿El intervalo incluye cero?</li>
+<li>¿Qué dirías clínicamente?</li>
+<li>¿Existe mucha o poca incertidumbre?</li>
+</ol>
+</section>
+<section id="ejercicio-3-pensar-en-rangos-plausibles" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-pensar-en-rangos-plausibles">Ejercicio 3 — Pensar en rangos plausibles</h3>
+<p>Supón este intervalo:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BMXWAIST</td>
+<td>-0.05</td>
+<td>0.60</td>
+</tr>
+</tbody>
+</table>
+<p>Pregunta:</p>
+<ol type="1">
+<li>¿Podemos estar seguros de que el efecto es positivo?</li>
+<li>¿Qué significa que el intervalo incluya valores negativos?</li>
+<li>¿Cómo interpretarías esto en lenguaje clínico?</li>
+</ol>
+</section>
+<section id="ejercicio-4-interpretar-probabilidades-directas" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-interpretar-probabilidades-directas">Ejercicio 4 — Interpretar probabilidades directas</h3>
+<p>Supón que obtienes:</p>
+<p><code>mean(posterior[, "BMXBMI"] &gt; 0)</code></p>
+<p><code>[1] 0.97</code></p>
+<p>Responde:</p>
+<ol type="1">
+<li>¿Qué significa exactamente 0.97?</li>
+<li>Escríbelo en lenguaje clínico.</li>
+<li>¿Eso implica certeza absoluta?</li>
+</ol>
+</section>
+<section id="ejercicio-5-comparar-dos-escenarios" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5-comparar-dos-escenarios">Ejercicio 5 — Comparar dos escenarios</h3>
+<p><strong>Escenario A</strong></p>
+<p><code>Probabilidad efecto positivo = 0.99</code></p>
+<p>Intervalo:</p>
+<p><code>0.80 a 1.20</code></p>
+<p><strong>Escenario B</strong></p>
+<p><code>Probabilidad efecto positivo = 0.60</code></p>
+<p>Intervalo:</p>
+<p><code>-0.30 a 0.90</code></p>
+<p>Preguntas:</p>
+<ol type="1">
+<li>¿Cuál tiene evidencia más fuerte?</li>
+<li>¿Cuál tiene más incertidumbre?</li>
+<li>¿Cuál usarías con más confianza clínicamente?</li>
+<li>¿Cuál parece más compatible con “efecto pequeño o inexistente”?</li>
+</ol>
+</section>
+<section id="ejercicio-6-construir-interpretación-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6-construir-interpretación-clínica">Ejercicio 6 — Construir interpretación clínica</h3>
+<p>Supón este resultado:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>media</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PAD680</td>
+<td>0.004</td>
+<td>-0.001</td>
+<td>0.009</td>
+</tr>
+</tbody>
+</table>
+<p>Ahora escribe:</p>
+<ol type="1">
+<li>una interpretación estadística simple</li>
+<li>una interpretación clínica</li>
+<li>una interpretación bayesiana usando probabilidades</li>
+<li>una frase sobre incertidumbre</li>
+</ol>
+</section>
+<section id="ejercicio-7-magnitud-vs-probabilidad" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7-magnitud-vs-probabilidad">Ejercicio 7 — Magnitud vs probabilidad</h3>
+<p>Supón dos modelos.</p>
+<p><strong>Modelo A</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>efecto</td>
+<td>0.001</td>
+<td>0.003</td>
+</tr>
+</tbody>
+</table>
+<p>Probabilidad positiva</p>
+<p><code>0.99</code></p>
+<p><strong>Modelo B</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>efecto</td>
+<td>2.0</td>
+<td>8.0</td>
+</tr>
+</tbody>
+</table>
+<p>Probabilidad positiva</p>
+<p><code>0.90</code></p>
+<p>Preguntas:</p>
+<ol type="1">
+<li>¿Cuál tiene mayor magnitud clínica?</li>
+<li>¿Cuál tiene mayor certeza estadística?</li>
+<li>¿Cuál podría ser más importante para pacientes?</li>
+<li>¿Qué enseña esto sobre “probabilidad” vs “relevancia clínica”?</li>
+</ol>
+</section>
+<section id="ejercicio-8-interpretar-sigma" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-8-interpretar-sigma">Ejercicio 8 — Interpretar sigma</h3>
+<p>Supón este output:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>sigma</td>
+<td>38</td>
+<td>42</td>
+</tr>
+</tbody>
+</table>
+<p>Preguntas:</p>
+<ol type="1">
+<li>¿Qué representa sigma?</li>
+<li>¿Qué significa clínicamente un sigma alto?</li>
+<li>¿Qué podría indicar sobre glicemia?</li>
+<li>¿Un sigma grande invalida automáticamente el modelo?</li>
+</ol>
+</section>
+<section id="ejercicio-9-traducir-para-un-médico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-9-traducir-para-un-médico">Ejercicio 9 — Traducir para un médico</h3>
+<p>Supón este resultado:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BMXWAIST</td>
+<td>0.45</td>
+<td>0.70</td>
+</tr>
+</tbody>
+</table>
+<p>Y:</p>
+<p><code>Probabilidad efecto positivo = 0.999</code></p>
+<p>Ahora escribe la interpretación:</p>
+<ol type="1">
+<li>como estadístico</li>
+<li>como médico clínico</li>
+<li>como si explicaras a un residente</li>
+<li>como si lo escribieras en el libro</li>
+</ol>
+</section>
+<section id="ejercicio-10-la-incertidumbre-como-información" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-10-la-incertidumbre-como-información">Ejercicio 10 — La incertidumbre como información</h3>
+<p>Supón este intervalo:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>5%</th>
+<th>95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PAD680</td>
+<td>-1.2</td>
+<td>1.4</td>
+</tr>
+</tbody>
+</table>
+<p>Preguntas:</p>
+<ol type="1">
+<li>¿Por qué este resultado NO significa “modelo inútil”?</li>
+<li>¿Qué podría estar causando tanta incertidumbre?</li>
+<li>¿Qué hipótesis clínicas podrías plantear?</li>
+<li>¿Qué harías después como investigador?</li>
+</ol>
+</section>
+<section id="mini-ejercicio-conceptual-muy-importante" class="level3">
+<h3 class="anchored" data-anchor-id="mini-ejercicio-conceptual-muy-importante">Mini ejercicio conceptual (MUY IMPORTANTE)</h3>
+<p>Completa la frase:</p>
+<p><code>“En Bayes, el objetivo no es eliminar la incertidumbre, sino…”</code></p>
+</section>
+<section id="ejercicio-final-integrador" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-final-integrador">Ejercicio final integrador</h3>
+<p>Usa uno de tus modelos reales de NHANES y responde:</p>
+<ol type="1">
+<li>¿Cuál es el efecto medio?</li>
+<li>¿Cuál es el intervalo creíble?</li>
+<li>¿Incluye cero?</li>
+<li>¿Qué tan probable parece el efecto?</li>
+<li>¿Qué tan grande parece clínicamente?</li>
+<li>¿Existe mucha incertidumbre?</li>
+<li>¿Cómo se lo explicarías a otro médico?</li>
+<li>¿Cómo cambiaría tu interpretación si el intervalo fuera el doble de ancho?</li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

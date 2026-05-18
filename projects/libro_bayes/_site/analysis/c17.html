@@ -322,6 +322,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 7: Decisiones bajo incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">18.- Interpretar resultados bayesianos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19.- Tomar decisiones clínicas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20.- Conclusiones y siguientes pasos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -663,10 +692,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Pendiente del modelo global</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_global) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                    5%        95%
-(Intercept) 26.1462144 49.4236252
-cintura      0.6630495  0.8986985
-sigma       10.1027368 11.9242956</code></pre>
+<pre><code>                    5%       95%
+(Intercept) 13.9259464 35.014271
+cintura      0.8151913  1.028495
+sigma        9.7244958 11.445758</code></pre>
 </div>
 </div>
 <section id="qué-problema-tiene" class="level4">
@@ -704,18 +733,18 @@ sigma       10.1027368 11.9242956</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_hombres) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    5%        95%
-(Intercept) 44.7276496 75.8257056
-cintura      0.4747068  0.7721967
-sigma        7.7933289  9.9017626</code></pre>
+(Intercept) 52.9940181 78.2720702
+cintura      0.4678462  0.7106924
+sigma        6.5227864  8.0587093</code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_mujeres) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    5%        95%
-(Intercept) 65.3992596 90.4816337
-cintura      0.1464879  0.4200225
-sigma        7.1921237  9.1232150</code></pre>
+(Intercept) 54.1652599 81.1674580
+cintura      0.2401691  0.5261724
+sigma        6.3854325  8.0563053</code></pre>
 </div>
 </div>
 </section>
@@ -792,10 +821,10 @@ sigma        7.1921237  9.1232150</code></pre>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_global) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                   5%       95%
-(Intercept) 40.760580 51.596614
-BMXWAIST     0.531832  0.641378
-sigma       38.600341 39.872321</code></pre>
+<pre><code>                    5%        95%
+(Intercept) 40.8503865 51.9491103
+BMXWAIST     0.5293631  0.6398421
+sigma       38.5860035 39.8456677</code></pre>
 </div>
 </div>
 <section id="interpretación" class="level4">
@@ -819,10 +848,10 @@ sigma       38.600341 39.872321</code></pre>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_sexo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    5%        95%
-(Intercept) 41.8468068 52.7347748
-BMXWAIST     0.5309986  0.6333617
-RIAGENDR2   -3.0413326  0.4640909
-sigma       38.5538866 39.8834837</code></pre>
+(Intercept) 41.7135865 52.3098562
+BMXWAIST     0.5344221  0.6362597
+RIAGENDR2   -3.0989414  0.2674228
+sigma       38.5667619 39.8317636</code></pre>
 </div>
 </div>
 <section id="qué-agrega-este-modelo" class="level4">
@@ -847,12 +876,12 @@ sigma       38.5538866 39.8834837</code></pre>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_interaccion) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                           5%        95%
-(Intercept)        28.8094724 44.4962467
-BMXWAIST            0.6112757  0.7674103
-RIAGENDR2           6.8818203 28.3991281
-BMXWAIST:RIAGENDR2 -0.2976918 -0.0867933
-sigma              38.5548369 39.8147896</code></pre>
+<pre><code>                           5%         95%
+(Intercept)        28.7579674 44.46108005
+BMXWAIST            0.6095545  0.76668870
+RIAGENDR2           6.6864520 28.13935594
+BMXWAIST:RIAGENDR2 -0.3007757 -0.08480242
+sigma              38.5254490 39.78097146</code></pre>
 </div>
 </div>
 <section id="interpretación-1" class="level4">
@@ -964,11 +993,11 @@ sigma              38.5548369 39.8147896</code></pre>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_edad) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                               5%        95%
-(Intercept)            40.5602834 50.7459460
-BMXWAIST                0.4402569  0.5427374
-grupo_edadMayor        15.6467096 20.0574525
-grupo_edadMediana edad 11.3172693 15.6276583
-sigma                  37.8622464 39.1158919</code></pre>
+(Intercept)            40.6013106 50.6117468
+BMXWAIST                0.4410627  0.5456065
+grupo_edadMayor        15.7753870 20.1348409
+grupo_edadMediana edad 11.4624440 15.6339008
+sigma                  37.8471654 39.0911229</code></pre>
 </div>
 </div>
 </section>
@@ -986,13 +1015,13 @@ sigma                  37.8622464 39.1158919</code></pre>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_interaccion) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                          5%         95%
-(Intercept)                      53.42370559  69.1869795
-BMXWAIST                          0.24331723   0.4055727
-grupo_edadMayor                 -11.43429933  15.1834985
-grupo_edadMediana edad          -36.97651406 -11.7262602
-BMXWAIST:grupo_edadMayor          0.03814293   0.3022481
-BMXWAIST:grupo_edadMediana edad   0.26100539   0.5102779
-sigma                            37.75062084  39.0081896</code></pre>
+(Intercept)                      54.30868752  69.7827439
+BMXWAIST                          0.23679329   0.3982947
+grupo_edadMayor                 -12.75438115  15.3613777
+grupo_edadMediana edad          -35.53023388 -12.7881348
+BMXWAIST:grupo_edadMayor          0.03784292   0.3133823
+BMXWAIST:grupo_edadMediana edad   0.27038690   0.5029723
+sigma                            37.81189843  38.9993053</code></pre>
 </div>
 </div>
 </section>
@@ -1173,10 +1202,10 @@ sigma                            37.75062084  39.0081896</code></pre>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_global) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                    5%        95%
-(Intercept) 40.7353329 51.5790733
-BMXWAIST     0.5330324  0.6396666
-sigma       38.5558582 39.8124399</code></pre>
+<pre><code>                  5%        95%
+(Intercept) 40.90760 51.1407289
+BMXWAIST     0.53701  0.6396289
+sigma       38.60817 39.7913147</code></pre>
 </div>
 </div>
 <p>Luego crea modelos separados por sexo.</p>
@@ -1201,19 +1230,19 @@ sigma       38.5558582 39.8124399</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_hombres) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                    5%        95%
-(Intercept) 28.6315084 44.9654467
-BMXWAIST     0.6067577  0.7676314
-sigma       38.2197320 39.9126285</code></pre>
+<pre><code>                   5%        95%
+(Intercept) 28.527941 44.2330158
+BMXWAIST     0.609771  0.7703403
+sigma       38.140864 39.9494093</code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_mujeres) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    5%        95%
-(Intercept) 47.2810074 61.1132252
-BMXWAIST     0.4266229  0.5668543
-sigma       38.4317162 40.2025163</code></pre>
+(Intercept) 46.4097966 61.7403057
+BMXWAIST     0.4188115  0.5747199
+sigma       38.4180974 40.1892207</code></pre>
 </div>
 </div>
 <p><strong>Preguntas</strong></p>
@@ -1238,11 +1267,11 @@ sigma       38.4317162 40.2025163</code></pre>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_interaccion) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                           5%         95%
-(Intercept)        28.7240041 45.26050841
-BMXWAIST            0.6048976  0.76384759
-RIAGENDR2           7.4443630 28.42569042
-BMXWAIST:RIAGENDR2 -0.3010706 -0.08854699
-sigma              38.5452663 39.82296011</code></pre>
+(Intercept)        29.3305697 45.17795457
+BMXWAIST            0.6052268  0.76026618
+RIAGENDR2           6.7800502 28.08608271
+BMXWAIST:RIAGENDR2 -0.2959815 -0.08098032
+sigma              38.5121726 39.77400897</code></pre>
 </div>
 </div>
 <p><strong>Preguntas</strong></p>
@@ -1294,13 +1323,13 @@ sigma              38.5452663 39.82296011</code></pre>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_interaccion) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                          5%         95%
-(Intercept)                      53.73831619  69.1864530
-BMXWAIST                          0.24317759   0.4052726
-grupo_edadMayor                 -12.28940302  16.0350470
-grupo_edadMediana edad          -36.26377818 -11.6114051
-BMXWAIST:grupo_edadMayor          0.02893085   0.3069350
-BMXWAIST:grupo_edadMediana edad   0.25365680   0.5075460
-sigma                            37.81523280  38.9990880</code></pre>
+(Intercept)                      54.16520269  69.1703694
+BMXWAIST                          0.24801925   0.4022989
+grupo_edadMayor                 -11.57804511  13.8049651
+grupo_edadMediana edad          -34.90996469 -11.4911246
+BMXWAIST:grupo_edadMayor          0.04816453   0.3062994
+BMXWAIST:grupo_edadMediana edad   0.25484019   0.5016209
+sigma                            37.78553662  39.0191749</code></pre>
 </div>
 </div>
 <div class="cell">

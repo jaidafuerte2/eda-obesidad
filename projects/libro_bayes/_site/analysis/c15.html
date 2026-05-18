@@ -322,6 +322,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Módulo 7: Decisiones bajo incertidumbre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">18.- Interpretar resultados bayesianos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19.- Tomar decisiones clínicas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20.- Conclusiones y siguientes pasos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -593,7 +622,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  predictors:   2
 ------
             Median MAD_SD
-(Intercept) 77.4    2.8  
+(Intercept) 77.2    2.6  
 BMXBMI       0.9    0.1  
 
 Auxiliary parameter(s):
@@ -609,9 +638,9 @@ sigma 32.4    0.5
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_imc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    5%       95%
-(Intercept) 72.6535091 81.759105
-BMXBMI       0.7222992  1.031487
-sigma       31.7217250 33.200546</code></pre>
+(Intercept) 72.5754740 82.017584
+BMXBMI       0.7169779  1.036827
+sigma       31.6953123 33.144193</code></pre>
 </div>
 </div>
 <p>Resultados principales:</p>
@@ -681,13 +710,13 @@ sigma       31.7217250 33.200546</code></pre>
  predictors:   3
 ------
             Median MAD_SD
-(Intercept) 35.9    4.2  
+(Intercept) 35.7    4.4  
 BMXBMI      -1.6    0.2  
 BMXWAIST     1.1    0.1  
 
 Auxiliary parameter(s):
       Median MAD_SD
-sigma 31.5    0.5  
+sigma 31.4    0.4  
 
 ------
 * For help interpreting the printed output see ?print.stanreg
@@ -697,11 +726,11 @@ sigma 31.5    0.5
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_completo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                   5%       95%
-(Intercept) 29.156063 42.846180
-BMXBMI      -1.963689 -1.192603
-BMXWAIST     0.979143  1.298721
-sigma       30.704678 32.184325</code></pre>
+<pre><code>                    5%       95%
+(Intercept) 28.5494731 42.820919
+BMXBMI      -1.9326633 -1.215774
+BMXWAIST     0.9800191  1.292680
+sigma       30.7451161 32.188336</code></pre>
 </div>
 </div>
 <p>Resultados principales:</p>
@@ -1182,7 +1211,7 @@ sigma       30.704678 32.184325</code></pre>
  predictors:   2
 ------
             Median MAD_SD
-(Intercept) -9.7    0.9  
+(Intercept) -9.6    0.9  
 BMXBMI       0.8    0.0  
 
 Auxiliary parameter(s):
@@ -1199,9 +1228,9 @@ sigma 10.3    0.1
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_imc) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     5%        95%
-(Intercept) -11.1701067 -8.3330636
-BMXBMI        0.7233321  0.8212119
-sigma        10.1122243 10.5822513</code></pre>
+(Intercept) -11.0901968 -8.2242248
+BMXBMI        0.7220872  0.8178903
+sigma        10.1179709 10.5788942</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1225,13 +1254,13 @@ sigma        10.1122243 10.5822513</code></pre>
  predictors:   3
 ------
             Median MAD_SD
-(Intercept) -18.0    1.4 
+(Intercept) -17.9    1.4 
 BMXBMI        0.3    0.1 
 BMXWAIST      0.2    0.0 
 
 Auxiliary parameter(s):
       Median MAD_SD
-sigma 10.2    0.2  
+sigma 10.2    0.1  
 
 ------
 * For help interpreting the printed output see ?print.stanreg
@@ -1243,10 +1272,10 @@ sigma 10.2    0.2
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_completo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     5%         95%
-(Intercept) -20.1828007 -15.8896071
-BMXBMI        0.1762466   0.3923838
-BMXWAIST      0.1788221   0.2754173
-sigma         9.9943432  10.4708149</code></pre>
+(Intercept) -20.0258355 -15.7615491
+BMXBMI        0.1788419   0.4053413
+BMXWAIST      0.1756808   0.2704572
+sigma         9.9971049  10.4784430</code></pre>
 </div>
 </div>
 <div class="cell">

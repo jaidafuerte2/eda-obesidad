@@ -11,6 +11,7 @@ editor: visual
 library(tidyverse)
 library(rstanarm)
 library(bayesplot)
+options(scipen = 999) # evitar la notación científica
 
 # Cargar la dataset de obesidad
 df_obesidad <- read_csv(
@@ -20,13 +21,13 @@ df_obesidad <- read_csv(
 )
 ```
 
-## 1. 🧠 Intuición
+## 1. Intuición
 
 Hasta ahora hemos construido modelos bayesianos para explorar relaciones clínicas en NHANES:
 
-- IMC y glicemia
-- Circunferencia de cintura y metabolismo
-- Actividad física y salud metabólica
+-   IMC y glicemia
+-   Circunferencia de cintura y metabolismo
+-   Actividad física y salud metabólica
 
 Pero construir el modelo es solo una parte del trabajo.
 
@@ -40,9 +41,9 @@ Y aquí aparece una de las mayores ventajas del enfoque bayesiano:
 
 En muchos análisis tradicionales, el resultado suele terminar reducido a algo como:
 
-- “p < 0.05”
-- “estadísticamente significativo”
-- “no significativo”
+-   “p \< 0.05”
+-   “estadísticamente significativo”
+-   “no significativo”
 
 El problema es que ese lenguaje no se parece mucho a cómo pensamos en clínica.
 
@@ -50,10 +51,10 @@ Un médico rara vez piensa así.
 
 Normalmente pensamos de esta manera:
 
-- “Parece bastante probable…”
-- “Existe evidencia moderada…”
-- “Es poco probable que…”
-- “Todavía hay incertidumbre…”
+-   “Parece bastante probable…”
+-   “Existe evidencia moderada…”
+-   “Es poco probable que…”
+-   “Todavía hay incertidumbre…”
 
 Y precisamente eso es lo que permite Bayes.
 
@@ -85,13 +86,13 @@ Supongamos que estudiamos la relación entre IMC y glicemia.
 
 Un enfoque clásico podría decir:
 
-- “Por cada aumento de 1 unidad de IMC, la glicemia aumenta 0.8 mg/dL”
+-   “Por cada aumento de 1 unidad de IMC, la glicemia aumenta 0.8 mg/dL”
 
 Pero Bayes diría algo más completo:
 
-- “Los valores más plausibles están entre 0.4 y 1.2”
-- “Es muy probable que el efecto sea positivo”
-- “Existe cierta incertidumbre sobre el tamaño exacto”
+-   “Los valores más plausibles están entre 0.4 y 1.2”
+-   “Es muy probable que el efecto sea positivo”
+-   “Existe cierta incertidumbre sobre el tamaño exacto”
 
 Eso se parece mucho más al razonamiento clínico real.
 
@@ -123,8 +124,8 @@ La interpretación intuitiva es:
 
 Por ejemplo:
 
-- efecto plausible del IMC:
-  - entre 0.3 y 1.1 mg/dL
+-   efecto plausible del IMC:
+    -   entre 0.3 y 1.1 mg/dL
 
 Eso significa:
 
@@ -138,9 +139,9 @@ Y aquí aparece una de las ideas más poderosas del capítulo.
 
 Con Bayes podemos decir cosas como:
 
-- “Hay un 92% de probabilidad de que el efecto sea positivo.”
-- “Existe una alta probabilidad de que mayor cintura se asocie con peor metabolismo.”
-- “La evidencia es moderada, pero todavía incierta.”
+-   “Hay un 92% de probabilidad de que el efecto sea positivo.”
+-   “Existe una alta probabilidad de que mayor cintura se asocie con peor metabolismo.”
+-   “La evidencia es moderada, pero todavía incierta.”
 
 Ese lenguaje es extremadamente natural para médicos.
 
@@ -180,7 +181,7 @@ Mucho más cercano a la toma real de decisiones.
 
 Y eso se parece mucho más a la medicina real.
 
-## 2.  Ejemplo simple (simulación en R)
+## 2. Ejemplo simple (simulación en R)
 
 Vamos a comenzar con un ejemplo pequeño y simple.
 
@@ -254,9 +255,9 @@ Pero lo más importante:
 
 Estamos diciendo:
 
-- valores cercanos a 1.04 son plausibles
-- existe incertidumbre
-- algunos valores son más compatibles con los datos que otros
+-   valores cercanos a 1.04 son plausibles
+-   existe incertidumbre
+-   algunos valores son más compatibles con los datos que otros
 
 ### Obtener intervalos creíbles
 
@@ -284,7 +285,7 @@ Podemos calcular directamente:
 ```{r}
 # Conocer la probabilidad de que el efecto sea positivo
 posterior <- as.matrix(modelo)
-mean(posterior[, "imc"] > 0) # produce: [1] 1
+mean(posterior[, "imc"] > 0) 
 ```
 
 ### Interpretación
@@ -311,14 +312,14 @@ Estamos preguntando:
 
 Ese cambio mental es fundamental en Bayes.
 
-## 3. 📊 Ejemplo aplicado con NHANES
+## 3. Ejemplo aplicado con NHANES
 
 Ahora llevemos estas ideas a datos reales.
 
 Usaremos un modelo simple ya conocido:
 
-- glicemia → LBXSGL
-- IMC → BMXBMI
+-   glicemia → LBXSGL
+-   IMC → BMXBMI
 
 ### Preparar datos
 
@@ -342,6 +343,8 @@ nhanes_modelo <- df_obesidad %>%
 ### Visualizar relación
 
 ```{r}
+#| message: false
+
 # Diagrama de dispersión y tendencia de la relación entre IMC y
 # glicemia
 ggplot(nhanes_modelo, aes(BMXBMI, LBXSGL)) +
@@ -423,15 +426,15 @@ Observa algo importante:
 
 Estamos hablando de:
 
-- probabilidad
-- plausibilidad
-- incertidumbre
+-   probabilidad
+-   plausibilidad
+-   incertidumbre
 
 ## Ejemplo con cintura abdominal
 
 Ahora usemos otra variable clínicamente muy importante:
 
-- cintura → BMXWAIST
+-   cintura → BMXWAIST
 
 ### Ajustar modelo
 
@@ -467,9 +470,9 @@ Y además:
 
 Porque ahora podemos pensar en:
 
-- magnitud del efecto
-- incertidumbre
-- plausibilidad clínica
+-   magnitud del efecto
+-   incertidumbre
+-   plausibilidad clínica
 
 Y no solamente en una etiqueta binaria de “significativo”.
 
@@ -506,17 +509,29 @@ posterior_interval(modelo_sedentarismo) # produce:
 
 Aquí el intervalo incluye:
 
-- valores negativos
-- valores cercanos a cero
-- algunos positivos
+-   valores negativos
+-   valores cercanos a cero
+-   algunos positivos
 
 Entonces podríamos decir:
 
-`“Existe incertidumbre considerable sobre el efecto de la actividad física en este modelo.”`
+`“Existe incertidumbre considerable sobre el efecto del sedentarismo en este modelo.”`
 
 Y eso es perfectamente válido.
 
 Bayes no obliga a fingir certeza.
+
+### Calcular probabilidad de efecto positivo
+
+```{r}
+# Calcular la probabilidad de efecto positivo:
+posterior <- as.matrix(modelo_sedentarismo)
+mean(posterior[, "PAD680"] > 0) # produce:
+```
+
+### Interpretación
+
+Existe aproximadamente un 92.5% de probabilidad de que el efecto del sedentarismo sobre la glicemia sea positivo.
 
 ### Un punto fundamental
 
@@ -528,10 +543,10 @@ No necesariamente.
 
 A veces significa:
 
-- pocos datos
-- mucho ruido biológico
-- efecto pequeño
-- heterogeneidad clínica real
+-   pocos datos
+-   mucho ruido biológico
+-   efecto pequeño
+-   heterogeneidad clínica real
 
 Y eso es extremadamente común en medicina.
 
@@ -549,8 +564,8 @@ Cuando observas un modelo, intenta hacerte estas preguntas:
 
 Por ejemplo:
 
-- ¿mayor IMC aumenta glicemia?
-- ¿mayor cintura empeora metabolismo?
+-   ¿mayor IMC aumenta glicemia?
+-   ¿mayor cintura empeora metabolismo?
 
 #### 2. ¿Qué tan probable es ese efecto?
 
@@ -558,17 +573,17 @@ Aquí aparece la probabilidad posterior.
 
 Ejemplos útiles:
 
-- “Hay un 95% de probabilidad…”
-- “Es muy probable que…”
-- “Existe evidencia moderada…”
+-   “Hay un 95% de probabilidad…”
+-   “Es muy probable que…”
+-   “Existe evidencia moderada…”
 
 #### 3. ¿Cuánta incertidumbre existe?
 
 Aquí observamos:
 
-- amplitud del intervalo creíble
-- dispersión posterior
-- plausibilidad clínica
+-   amplitud del intervalo creíble
+-   dispersión posterior
+-   plausibilidad clínica
 
 #### 4. ¿El tamaño del efecto parece clínicamente importante?
 
@@ -576,8 +591,8 @@ No todo efecto probable es clínicamente relevante.
 
 Por ejemplo:
 
-- un aumento de 0.05 mg/dL puede ser trivial
-- un aumento de 5 mg/dL podría ser importante
+-   un aumento de 0.05 mg/dL puede ser trivial
+-   un aumento de 5 mg/dL podría ser importante
 
 Bayes ayuda a pensar en magnitudes, no solo en existencia.
 
@@ -607,10 +622,10 @@ Uno de los mensajes más importantes del capítulo es este:
 
 Por ejemplo:
 
-- si el intervalo es muy amplio:
-  - quizá necesitamos más datos
-  - quizá existe mucha variabilidad biológica
-  - quizá el fenómeno es complejo
+-   si el intervalo es muy amplio:
+    -   quizá necesitamos más datos
+    -   quizá existe mucha variabilidad biológica
+    -   quizá el fenómeno es complejo
 
 Eso también enseña algo.
 
@@ -618,11 +633,11 @@ Eso también enseña algo.
 
 A partir de ahora, intenta usar frases como:
 
-- “Existe alta probabilidad de que…”
-- “Los valores más plausibles son…”
-- “Existe incertidumbre moderada…”
-- “La evidencia sugiere que…”
-- “Es poco probable que…”
+-   “Existe alta probabilidad de que…”
+-   “Los valores más plausibles son…”
+-   “Existe incertidumbre moderada…”
+-   “La evidencia sugiere que…”
+-   “Es poco probable que…”
 
 Ese lenguaje es mucho más natural para toma de decisiones.
 
@@ -632,10 +647,10 @@ Frecuentemente, la estadística tradicional se siente distante de la práctica c
 
 Bayes, en cambio, permite hablar directamente de:
 
-- probabilidades
-- incertidumbre
-- plausibilidad
-- decisiones
+-   probabilidades
+-   incertidumbre
+-   plausibilidad
+-   decisiones
 
 Y eso se parece muchísimo más a cómo pensamos los humanos.
 
@@ -651,14 +666,215 @@ Y eso es extremadamente valioso en medicina.
 
 En este capítulo aprendiste que:
 
-- los modelos bayesianos producen distribuciones posteriores
-- debemos pensar en rangos plausibles, no en valores exactos
-- los intervalos creíbles tienen interpretación probabilística directa
-- podemos calcular probabilidades intuitivas:
-  - “probabilidad de efecto positivo”
-- la incertidumbre clínica es información útil
-- Bayes permite traducir resultados estadísticos a lenguaje natural
+-   los modelos bayesianos producen distribuciones posteriores
+-   debemos pensar en rangos plausibles, no en valores exactos
+-   los intervalos creíbles tienen interpretación probabilística directa
+-   podemos calcular probabilidades intuitivas:
+    -   “probabilidad de efecto positivo”
+-   la incertidumbre clínica es información útil
+-   Bayes permite traducir resultados estadísticos a lenguaje natural
 
 ### Idea central para recordar
 
 `“Bayes te permite hablar el lenguaje natural de la clínica: probabilidades.”`
+
+## Ejercicios
+
+### Ejercicio 1 — Traducir notación científica
+
+Convierte mentalmente estos números:
+
+`3.5e+02`
+
+`4.2e-03`
+
+`-7.1e-04`
+
+`1.08e+01`
+
+**Objetivo**
+
+Entrenar lectura rápida de outputs de R.
+
+### Ejercicio 2 — Interpretación intuitiva
+
+Supón este resultado:
+
+| Parámetro | 5%   | 95%  |
+| --------- | ---- | ---- |
+| BMXBMI    | 0.40 | 1.20 |
+
+Responde:
+
+1. ¿El efecto parece positivo o negativo?
+2. ¿El intervalo incluye cero?
+3. ¿Qué dirías clínicamente?
+4. ¿Existe mucha o poca incertidumbre?
+
+### Ejercicio 3 — Pensar en rangos plausibles
+
+Supón este intervalo:
+
+| Parámetro | 5%    | 95%  |
+| --------- | ----- | ---- |
+| BMXWAIST  | -0.05 | 0.60 |
+
+Pregunta:
+
+1. ¿Podemos estar seguros de que el efecto es positivo?
+2. ¿Qué significa que el intervalo incluya valores negativos?
+3. ¿Cómo interpretarías esto en lenguaje clínico?
+
+### Ejercicio 4 — Interpretar probabilidades directas
+
+Supón que obtienes:
+
+`mean(posterior[, "BMXBMI"] > 0)`
+
+`[1] 0.97`
+
+Responde:
+
+1. ¿Qué significa exactamente 0.97?
+2. Escríbelo en lenguaje clínico.
+3. ¿Eso implica certeza absoluta?
+
+### Ejercicio 5 — Comparar dos escenarios
+
+**Escenario A**
+
+`Probabilidad efecto positivo = 0.99`
+
+Intervalo:
+
+`0.80 a 1.20`
+
+**Escenario B**
+
+`Probabilidad efecto positivo = 0.60`
+
+Intervalo:
+
+`-0.30 a 0.90`
+
+Preguntas:
+
+1. ¿Cuál tiene evidencia más fuerte?
+2. ¿Cuál tiene más incertidumbre?
+3. ¿Cuál usarías con más confianza clínicamente?
+4. ¿Cuál parece más compatible con “efecto pequeño o inexistente”?
+
+### Ejercicio 6 — Construir interpretación clínica
+
+Supón este resultado:
+
+| Parámetro | media | 5%     | 95%   |
+| --------- | ----- | ------ | ----- |
+| PAD680    | 0.004 | -0.001 | 0.009 |
+
+Ahora escribe:
+
+1. una interpretación estadística simple
+2. una interpretación clínica
+3. una interpretación bayesiana usando probabilidades
+4. una frase sobre incertidumbre
+
+### Ejercicio 7 — Magnitud vs probabilidad
+
+Supón dos modelos.
+
+**Modelo A**
+
+| Parámetro | 5%    | 95%   |
+| --------- | ----- | ----- |
+| efecto    | 0.001 | 0.003 |
+
+Probabilidad positiva
+
+`0.99`
+
+**Modelo B**
+
+| Parámetro | 5%  | 95% |
+| --------- | --- | --- |
+| efecto    | 2.0 | 8.0 |
+
+Probabilidad positiva
+
+`0.90`
+
+Preguntas:
+
+1. ¿Cuál tiene mayor magnitud clínica?
+2. ¿Cuál tiene mayor certeza estadística?
+3. ¿Cuál podría ser más importante para pacientes?
+4. ¿Qué enseña esto sobre “probabilidad” vs “relevancia clínica”?
+
+### Ejercicio 8 — Interpretar sigma
+
+Supón este output:
+
+| Parámetro | 5% | 95% |
+| --------- | -- | --- |
+| sigma     | 38 | 42  |
+
+Preguntas:
+
+1. ¿Qué representa sigma?
+2. ¿Qué significa clínicamente un sigma alto?
+3. ¿Qué podría indicar sobre glicemia?
+4. ¿Un sigma grande invalida automáticamente el modelo?
+
+### Ejercicio 9 — Traducir para un médico
+
+Supón este resultado:
+
+| Parámetro | 5%   | 95%  |
+| --------- | ---- | ---- |
+| BMXWAIST  | 0.45 | 0.70 |
+
+Y:
+
+`Probabilidad efecto positivo = 0.999`
+
+Ahora escribe la interpretación:
+
+1. como estadístico
+2. como médico clínico
+3. como si explicaras a un residente
+4. como si lo escribieras en el libro
+
+### Ejercicio 10 — La incertidumbre como información
+
+Supón este intervalo:
+
+| Parámetro | 5%   | 95% |
+| --------- | ---- | --- |
+| PAD680    | -1.2 | 1.4 |
+
+Preguntas:
+
+1. ¿Por qué este resultado NO significa “modelo inútil”?
+2. ¿Qué podría estar causando tanta incertidumbre?
+3. ¿Qué hipótesis clínicas podrías plantear?
+4. ¿Qué harías después como investigador?
+
+### Mini ejercicio conceptual (MUY IMPORTANTE)
+
+Completa la frase:
+
+`“En Bayes, el objetivo no es eliminar la incertidumbre, sino…”`
+
+### Ejercicio final integrador
+
+Usa uno de tus modelos reales de NHANES y responde:
+
+1. ¿Cuál es el efecto medio?
+2. ¿Cuál es el intervalo creíble?
+3. ¿Incluye cero?
+4. ¿Qué tan probable parece el efecto?
+5. ¿Qué tan grande parece clínicamente?
+6. ¿Existe mucha incertidumbre?
+7. ¿Cómo se lo explicarías a otro médico?
+8. ¿Cómo cambiaría tu interpretación si el intervalo fuera el doble de ancho?
+

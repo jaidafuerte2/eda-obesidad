@@ -427,7 +427,6 @@ modelo1 <- stan_glm(
 
 ```
 
-
 ```{r}
 # Construir modelo 2
 modelo2 <- stan_glm(
@@ -440,18 +439,15 @@ modelo2 <- stan_glm(
 )
 ```
 
-
 👉 Genera yrep para ambos
 
 ```{r}
 yrep1 <- posterior_predict(modelo1)
 ```
 
-
 ```{r}
 yrep2 <- posterior_predict(modelo2)
 ```
-
 
 👉 Haz PPC
 

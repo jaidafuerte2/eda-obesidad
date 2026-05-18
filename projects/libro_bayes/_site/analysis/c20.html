@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>1.- ¿Qué significa incertidumbre en medicina? – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
+<title>20.- Conclusiones y siguientes pasos – Bayes Para Entender la Obesidad - De datos clínicos a decisiones bajo incertidumbre</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">Módulo 1: Pensar Como Analista Bayesiano</a></li><li class="breadcrumb-item"><a href="../analysis/c01.html">1.- ¿Qué significa incertidumbre en medicina?</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c18.html">Módulo 7: Decisiones bajo incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c20.html">20.- Conclusiones y siguientes pasos</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link active">
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">1.- ¿Qué significa incertidumbre en medicina?</span></a>
   </div>
 </li>
@@ -345,7 +345,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c20.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c20.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">20.- Conclusiones y siguientes pasos</span></a>
   </div>
 </li>
@@ -361,41 +361,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#intuición-sin-código" id="toc-intuición-sin-código" class="nav-link active" data-scroll-target="#intuición-sin-código">1. Intuición (SIN código)</a>
+  <li><a href="#intuición" id="toc-intuición" class="nav-link active" data-scroll-target="#intuición">1. Intuición</a>
   <ul class="collapse">
-  <li><a href="#el-problema-del-pensamiento-determinista" id="toc-el-problema-del-pensamiento-determinista" class="nav-link" data-scroll-target="#el-problema-del-pensamiento-determinista">El problema del pensamiento determinista</a></li>
-  <li><a href="#entonces-qué-es-la-incertidumbre" id="toc-entonces-qué-es-la-incertidumbre" class="nav-link" data-scroll-target="#entonces-qué-es-la-incertidumbre">Entonces… ¿qué es la incertidumbre?</a></li>
-  <li><a href="#un-ejemplo-clínico-más-claro" id="toc-un-ejemplo-clínico-más-claro" class="nav-link" data-scroll-target="#un-ejemplo-clínico-más-claro">Un ejemplo clínico más claro</a></li>
-  <li><a href="#diagnóstico-vs-probabilidad" id="toc-diagnóstico-vs-probabilidad" class="nav-link" data-scroll-target="#diagnóstico-vs-probabilidad">Diagnóstico vs Probabilidad</a></li>
-  <li><a href="#introducción-al-pensamiento-bayesiano" id="toc-introducción-al-pensamiento-bayesiano" class="nav-link" data-scroll-target="#introducción-al-pensamiento-bayesiano">Introducción al pensamiento bayesiano</a></li>
-  <li><a href="#por-qué-esto-es-importante-en-obesidad" id="toc-por-qué-esto-es-importante-en-obesidad" class="nav-link" data-scroll-target="#por-qué-esto-es-importante-en-obesidad">¿Por qué esto es importante en obesidad?</a></li>
-  <li><a href="#idea-clave-del-capítulo" id="toc-idea-clave-del-capítulo" class="nav-link" data-scroll-target="#idea-clave-del-capítulo">Idea clave del capítulo</a></li>
+  <li><a href="#empezamos-con-datos" id="toc-empezamos-con-datos" class="nav-link" data-scroll-target="#empezamos-con-datos">Empezamos con datos</a></li>
+  <li><a href="#después-entendimos-la-incertidumbre" id="toc-después-entendimos-la-incertidumbre" class="nav-link" data-scroll-target="#después-entendimos-la-incertidumbre">Después entendimos la incertidumbre</a></li>
+  <li><a href="#aprendimos-a-pensar-en-probabilidades" id="toc-aprendimos-a-pensar-en-probabilidades" class="nav-link" data-scroll-target="#aprendimos-a-pensar-en-probabilidades">Aprendimos a pensar en probabilidades</a></li>
+  <li><a href="#construimos-modelos" id="toc-construimos-modelos" class="nav-link" data-scroll-target="#construimos-modelos">Construimos modelos</a></li>
+  <li><a href="#también-aprendimos-algo-importante" id="toc-también-aprendimos-algo-importante" class="nav-link" data-scroll-target="#también-aprendimos-algo-importante">También aprendimos algo importante:</a></li>
+  <li><a href="#qué-significa-pensar-como-analista-bayesiano" id="toc-qué-significa-pensar-como-analista-bayesiano" class="nav-link" data-scroll-target="#qué-significa-pensar-como-analista-bayesiano">Qué significa pensar como analista bayesiano</a></li>
   </ul></li>
-  <li><a href="#ejemplo-simple-simulación-en-r" id="toc-ejemplo-simple-simulación-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</a>
+  <li><a href="#ejemplo-simple-simulación-conceptual-en-r" id="toc-ejemplo-simple-simulación-conceptual-en-r" class="nav-link" data-scroll-target="#ejemplo-simple-simulación-conceptual-en-r">2. Ejemplo simple (simulación conceptual en R)</a></li>
+  <li><a href="#reflexión-aplicada-con-nhanes" id="toc-reflexión-aplicada-con-nhanes" class="nav-link" data-scroll-target="#reflexión-aplicada-con-nhanes">3. Reflexión aplicada con NHANES</a>
   <ul class="collapse">
-  <li><a href="#visualización" id="toc-visualización" class="nav-link" data-scroll-target="#visualización">Visualización</a></li>
-  <li><a href="#qué-estamos-viendo" id="toc-qué-estamos-viendo" class="nav-link" data-scroll-target="#qué-estamos-viendo">¿Qué estamos viendo?</a></li>
-  <li><a href="#experimento-mental" id="toc-experimento-mental" class="nav-link" data-scroll-target="#experimento-mental">Experimento mental</a></li>
+  <li><a href="#el-ejemplo-del-imc-y-la-glicemia" id="toc-el-ejemplo-del-imc-y-la-glicemia" class="nav-link" data-scroll-target="#el-ejemplo-del-imc-y-la-glicemia">El ejemplo del IMC y la glicemia</a></li>
+  <li><a href="#el-hdl-como-marcador-dinámico" id="toc-el-hdl-como-marcador-dinámico" class="nav-link" data-scroll-target="#el-hdl-como-marcador-dinámico">El HDL como marcador dinámico</a></li>
+  <li><a href="#aspirina-como-proxy-de-inflamación" id="toc-aspirina-como-proxy-de-inflamación" class="nav-link" data-scroll-target="#aspirina-como-proxy-de-inflamación">Aspirina como proxy de inflamación</a></li>
   </ul></li>
-  <li><a href="#ejemplo-aplicado-nhanes-ligero" id="toc-ejemplo-aplicado-nhanes-ligero" class="nav-link" data-scroll-target="#ejemplo-aplicado-nhanes-ligero">3. Ejemplo aplicado (NHANES ligero)</a>
+  <li><a href="#interpretación-clínica-y-cierre-final" id="toc-interpretación-clínica-y-cierre-final" class="nav-link" data-scroll-target="#interpretación-clínica-y-cierre-final">4. Interpretación clínica y cierre final</a>
   <ul class="collapse">
-  <li><a href="#lo-importante-aquí" id="toc-lo-importante-aquí" class="nav-link" data-scroll-target="#lo-importante-aquí">Lo importante aquí</a></li>
-  </ul></li>
-  <li><a href="#conclusión-del-capítulo" id="toc-conclusión-del-capítulo" class="nav-link" data-scroll-target="#conclusión-del-capítulo">4. Conclusión del capítulo</a></li>
-  <li><a href="#ejercicios-capítulo-1" id="toc-ejercicios-capítulo-1" class="nav-link" data-scroll-target="#ejercicios-capítulo-1">Ejercicios — Capítulo 1</a>
-  <ul class="collapse">
-  <li><a href="#ejercicio-1-el-diagnóstico-incómodo" id="toc-ejercicio-1-el-diagnóstico-incómodo" class="nav-link" data-scroll-target="#ejercicio-1-el-diagnóstico-incómodo">Ejercicio 1 — El diagnóstico incómodo</a></li>
-  <li><a href="#ejercicio-2-dos-pacientes-casi-iguales" id="toc-ejercicio-2-dos-pacientes-casi-iguales" class="nav-link" data-scroll-target="#ejercicio-2-dos-pacientes-casi-iguales">Ejercicio 2 — Dos pacientes casi iguales</a></li>
-  <li><a href="#ejercicio-3-imc-como-medida-imperfecta" id="toc-ejercicio-3-imc-como-medida-imperfecta" class="nav-link" data-scroll-target="#ejercicio-3-imc-como-medida-imperfecta">Ejercicio 3 — IMC como medida imperfecta</a></li>
-  <li><a href="#ejercicio-4-pensamiento-bayesiano-básico" id="toc-ejercicio-4-pensamiento-bayesiano-básico" class="nav-link" data-scroll-target="#ejercicio-4-pensamiento-bayesiano-básico">Ejercicio 4 — Pensamiento bayesiano básico</a></li>
-  <li><a href="#ejercicio-5-crear-tu-propia-incertidumbre" id="toc-ejercicio-5-crear-tu-propia-incertidumbre" class="nav-link" data-scroll-target="#ejercicio-5-crear-tu-propia-incertidumbre">Ejercicio 5 — Crear tu propia incertidumbre</a></li>
-  <li><a href="#ejercicio-6-el-falso-diagnóstico-perfecto" id="toc-ejercicio-6-el-falso-diagnóstico-perfecto" class="nav-link" data-scroll-target="#ejercicio-6-el-falso-diagnóstico-perfecto">Ejercicio 6 — El falso diagnóstico perfecto</a></li>
-  <li><a href="#ejercicio-7-juega-con-la-variabilidad" id="toc-ejercicio-7-juega-con-la-variabilidad" class="nav-link" data-scroll-target="#ejercicio-7-juega-con-la-variabilidad">Ejercicio 7 — Juega con la variabilidad</a></li>
-  <li><a href="#ejercicio-8-hay-dos-poblaciones" id="toc-ejercicio-8-hay-dos-poblaciones" class="nav-link" data-scroll-target="#ejercicio-8-hay-dos-poblaciones">Ejercicio 8 — ¿Hay dos poblaciones?</a></li>
-  <li><a href="#ejercicio-9-variable-categórica-real" id="toc-ejercicio-9-variable-categórica-real" class="nav-link" data-scroll-target="#ejercicio-9-variable-categórica-real">Ejercicio 9 — Variable categórica real</a></li>
-  <li><a href="#ejercicio-10-traducción-mental" id="toc-ejercicio-10-traducción-mental" class="nav-link" data-scroll-target="#ejercicio-10-traducción-mental">Ejercicio 10 — Traducción mental</a></li>
-  <li><a href="#ejercicio-11-detecta-el-error" id="toc-ejercicio-11-detecta-el-error" class="nav-link" data-scroll-target="#ejercicio-11-detecta-el-error">Ejercicio 11 — Detecta el error</a></li>
-  <li><a href="#ejercicio-12-tu-propia-práctica-clínica" id="toc-ejercicio-12-tu-propia-práctica-clínica" class="nav-link" data-scroll-target="#ejercicio-12-tu-propia-práctica-clínica">Ejercicio 12 — Tu propia práctica clínica</a></li>
+  <li><a href="#cómo-cambia-esto-la-práctica-médica" id="toc-cómo-cambia-esto-la-práctica-médica" class="nav-link" data-scroll-target="#cómo-cambia-esto-la-práctica-médica">Cómo cambia esto la práctica médica</a></li>
+  <li><a href="#diagnóstico" id="toc-diagnóstico" class="nav-link" data-scroll-target="#diagnóstico">Diagnóstico</a></li>
+  <li><a href="#evaluación-de-riesgo" id="toc-evaluación-de-riesgo" class="nav-link" data-scroll-target="#evaluación-de-riesgo">Evaluación de riesgo</a></li>
+  <li><a href="#toma-de-decisiones" id="toc-toma-de-decisiones" class="nav-link" data-scroll-target="#toma-de-decisiones">Toma de decisiones</a></li>
+  <li><a href="#limitaciones-del-análisis-realizado" id="toc-limitaciones-del-análisis-realizado" class="nav-link" data-scroll-target="#limitaciones-del-análisis-realizado">Limitaciones del análisis realizado</a></li>
+  <li><a href="#nhanes-es-observacional" id="toc-nhanes-es-observacional" class="nav-link" data-scroll-target="#nhanes-es-observacional">NHANES es observacional</a></li>
+  <li><a href="#existen-variables-no-medidas" id="toc-existen-variables-no-medidas" class="nav-link" data-scroll-target="#existen-variables-no-medidas">Existen variables no medidas</a></li>
+  <li><a href="#los-modelos-simplifican-la-realidad" id="toc-los-modelos-simplifican-la-realidad" class="nav-link" data-scroll-target="#los-modelos-simplifican-la-realidad">Los modelos simplifican la realidad</a></li>
+  <li><a href="#siguientes-pasos" id="toc-siguientes-pasos" class="nav-link" data-scroll-target="#siguientes-pasos">Siguientes pasos</a></li>
+  <li><a href="#reflexión-final" id="toc-reflexión-final" class="nav-link" data-scroll-target="#reflexión-final">Reflexión final</a></li>
+  <li><a href="#el-mensaje-más-importante-del-libro" id="toc-el-mensaje-más-importante-del-libro" class="nav-link" data-scroll-target="#el-mensaje-más-importante-del-libro">El mensaje más importante del libro</a></li>
+  <li><a href="#cierre-final-al-lector" id="toc-cierre-final-al-lector" class="nav-link" data-scroll-target="#cierre-final-al-lector">Cierre final al lector</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -403,9 +398,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">Módulo 1: Pensar Como Analista Bayesiano</a></li><li class="breadcrumb-item"><a href="../analysis/c01.html">1.- ¿Qué significa incertidumbre en medicina?</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c18.html">Módulo 7: Decisiones bajo incertidumbre</a></li><li class="breadcrumb-item"><a href="../analysis/c20.html">20.- Conclusiones y siguientes pasos</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">1.- ¿Qué significa incertidumbre en medicina?</h1>
+<h1 class="title">20.- Conclusiones y siguientes pasos</h1>
 </div>
 
 
@@ -422,465 +417,486 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="intuición-sin-código" class="level2">
-<h2 class="anchored" data-anchor-id="intuición-sin-código">1. Intuición (SIN código)</h2>
-<p>Imagina esta escena clínica.</p>
-<p>Un paciente llega a consulta. Tiene sobrepeso, algo de fatiga y antecedentes familiares de diabetes. Solicitas exámenes:</p>
-<ul>
-<li>Glucosa: 112 mg/dL</li>
-<li>HbA1c: 5.9%</li>
-</ul>
-<p>Ahora viene la pregunta incómoda:</p>
-<p><strong>¿Tiene diabetes sí o no?</strong></p>
-<p>La formación tradicional nos empuja a responder como si esto fuera una pregunta binaria:</p>
-<ul>
-<li>Sí</li>
-<li>No</li>
-</ul>
-<p>Pero en el fondo sabes que esa respuesta es… artificial.</p>
-<section id="el-problema-del-pensamiento-determinista" class="level3">
-<h3 class="anchored" data-anchor-id="el-problema-del-pensamiento-determinista">El problema del pensamiento determinista</h3>
-<p>En medicina, muchas veces actuamos como si:</p>
-<p><em>Un valor → implica una verdad absoluta</em></p>
-<p>Ejemplos típicos:</p>
-<ul>
-<li>HbA1c ≥ 6.5% → diabetes</li>
-<li>IMC ≥ 30 → obesidad</li>
-<li>PA ≥ 140/90 → hipertensión</li>
-</ul>
-<p>Esto es útil… pero es una simplificación.</p>
-<p>Porque en la realidad:</p>
-<ul>
-<li>Un paciente con HbA1c de 6.4% <em>no es radicalmente distinto</em> de uno con 6.5%</li>
-<li>Un IMC de 29.9 vs 30 <em>no cambia mágicamente el metabolismo</em></li>
-<li>La presión arterial varía minuto a minuto</li>
-</ul>
-<p>👉 Es decir: <strong>la biología no funciona en categorías rígidas</strong></p>
+<section id="intuición" class="level2">
+<h2 class="anchored" data-anchor-id="intuición">1. Intuición</h2>
+<p>Llegamos al final del recorrido.</p>
+<p>Pero, en realidad, este no es el final.</p>
+<p>Es el inicio de una nueva manera de pensar.</p>
+<p>A lo largo del libro aprendimos mucho más que comandos en R o modelos estadísticos. Aprendimos una forma distinta de enfrentar la incertidumbre clínica.</p>
+<p>Ese es el verdadero objetivo del pensamiento bayesiano.</p>
+<section id="empezamos-con-datos" class="level3">
+<h3 class="anchored" data-anchor-id="empezamos-con-datos">Empezamos con datos</h3>
+<p>Al inicio del libro, NHANES podía parecer simplemente una tabla enorme llena de variables difíciles de interpretar.</p>
+<p>IMC.</p>
+<p>Cintura abdominal.</p>
+<p>Glicemia.</p>
+<p>HDL.</p>
+<p>Triglicéridos.</p>
+<p>Relación neutrófilos - linfocitos.</p>
+<p>Uso de aspirina.</p>
+<p>Presión arterial.</p>
+<p>Pero poco a poco entendimos algo importante:</p>
+<p>👉 los datos clínicos no son solo números</p>
+<p>👉 representan procesos biológicos reales</p>
+<p>Detrás de cada observación hay una persona.</p>
+<p>Un metabolismo.</p>
+<p>Una historia clínica.</p>
+<p>Un conjunto de mecanismos fisiopatológicos interactuando entre sí.</p>
 </section>
-<section id="entonces-qué-es-la-incertidumbre" class="level3">
-<h3 class="anchored" data-anchor-id="entonces-qué-es-la-incertidumbre">Entonces… ¿qué es la incertidumbre?</h3>
-<p>La incertidumbre en medicina significa:</p>
-<p><strong>No estamos completamente seguros de lo que está pasando, aunque tengamos datos</strong></p>
-<p>Y esto ocurre por varias razones:</p>
-<ol type="1">
-<li>Variabilidad biológica:</li>
-</ol>
+<section id="después-entendimos-la-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="después-entendimos-la-incertidumbre">Después entendimos la incertidumbre</h3>
+<p>En medicina muchas veces nos entrenan para buscar respuestas definitivas:</p>
 <ul>
-<li>El cuerpo humano cambia constantemente</li>
+<li>¿Tiene o no tiene enfermedad?</li>
+<li>¿Este tratamiento funciona o no?</li>
+<li>¿Este resultado es normal o anormal?</li>
 </ul>
-<ol start="2" type="1">
-<li>Errores de medición:</li>
-</ol>
-<ul>
-<li>Ningún examen es perfecto</li>
-</ul>
-<ol start="3" type="1">
-<li>Modelos simplificados:</li>
-</ol>
-<ul>
-<li>IMC ≠ grasa visceral Glucosa ≠ estado metabólico completo</li>
-</ul>
-<ol start="4" type="1">
-<li>Información incompleta:</li>
-</ol>
-<ul>
-<li>No vemos todo: dieta, sueño, estrés, genética</li>
-</ul>
+<p>Pero la realidad clínica rara vez es tan simple.</p>
+<p>Un paciente puede tener glicemia normal y aun así presentar resistencia a la insulina.</p>
+<p>Otro puede tener obesidad sin desarrollar diabetes durante años.</p>
+<p>Otro puede mejorar clínicamente aunque algunos biomarcadores cambien poco.</p>
+<p>La medicina real ocurre en zonas grises.</p>
+<p>Y justamente ahí es donde el enfoque bayesiano resulta tan útil.</p>
 </section>
-<section id="un-ejemplo-clínico-más-claro" class="level3">
-<h3 class="anchored" data-anchor-id="un-ejemplo-clínico-más-claro">Un ejemplo clínico más claro</h3>
-<p>Dos pacientes:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Paciente</th>
-<th>Glucosa</th>
-<th>HbA1c</th>
-<th>IMC</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>A</td>
-<td>126</td>
-<td>6.6%</td>
-<td>31</td>
-</tr>
-<tr class="even">
-<td>B</td>
-<td>124</td>
-<td>6.4%</td>
-<td>30</td>
-</tr>
-</tbody>
-</table>
-<p>Según criterios clásicos:</p>
+<section id="aprendimos-a-pensar-en-probabilidades" class="level3">
+<h3 class="anchored" data-anchor-id="aprendimos-a-pensar-en-probabilidades">Aprendimos a pensar en probabilidades</h3>
+<p>El pensamiento bayesiano cambia una idea fundamental:</p>
+<p>Antes:</p>
 <ul>
-<li>Paciente A → “diabético”</li>
-<li>Paciente B → “no diabético”</li>
+<li>la incertidumbre parecía un problema</li>
 </ul>
-<p>Pero clínicamente…</p>
-<p>👉 ¿Realmente son tan diferentes?</p>
-<p>La respuesta honesta es: <strong>no lo sabemos con certeza</strong></p>
+<p>Ahora:</p>
+<ul>
+<li>entendemos que la incertidumbre es parte natural de la medicina</li>
+</ul>
+<p>No siempre podemos saber algo con certeza absoluta.</p>
+<p>Pero sí podemos:</p>
+<ul>
+<li>estimar rangos plausibles</li>
+<li>actualizar nuestras creencias con nueva evidencia</li>
+<li>tomar decisiones razonables bajo incertidumbre</li>
+</ul>
+<p>Ese cambio de mentalidad es enorme.</p>
 </section>
-<section id="diagnóstico-vs-probabilidad" class="level3">
-<h3 class="anchored" data-anchor-id="diagnóstico-vs-probabilidad">Diagnóstico vs Probabilidad</h3>
-<p>Aquí aparece una idea clave:</p>
-<p><strong>Un diagnóstico no es una verdad absoluta, es una decisión bajo incertidumbre</strong></p>
-<p>En lugar de pensar:</p>
-<ul>
-<li>“Tiene diabetes”</li>
-</ul>
-<p>Podríamos pensar:</p>
-<ul>
-<li>“Hay una alta probabilidad de que tenga alteración metabólica significativa”</li>
-</ul>
-<p>Esto cambia todo.</p>
-</section>
-<section id="introducción-al-pensamiento-bayesiano" class="level3">
-<h3 class="anchored" data-anchor-id="introducción-al-pensamiento-bayesiano">Introducción al pensamiento bayesiano</h3>
-<p>El pensamiento bayesiano propone algo más realista:</p>
-<p><strong>La probabilidad representa qué tan fuerte creemos en una hipótesis, dada la información disponible</strong></p>
+<section id="construimos-modelos" class="level3">
+<h3 class="anchored" data-anchor-id="construimos-modelos">Construimos modelos</h3>
+<p>A lo largo del libro usamos modelos simples, pero muy poderosos conceptualmente.</p>
+<p>Aprendimos que un modelo es una herramienta para pensar.</p>
+<p>No es “la verdad”.</p>
+<p>No es una representación perfecta del cuerpo humano.</p>
+<p>Es una aproximación útil.</p>
 <p>Por ejemplo:</p>
-<p>En lugar de decir:</p>
 <ul>
-<li>“Este paciente es sano”</li>
+<li>modelamos la relación entre IMC y glicemia</li>
+<li>exploramos cintura abdominal y riesgo metabólico</li>
+<li>analizamos HDL como marcador dinámico del estado metabólico</li>
+<li>utilizamos aspirina como proxy indirecto de inflamación</li>
 </ul>
-<p>Decimos:</p>
+<p>Cada modelo intentaba capturar una pequeña parte de un sistema biológico mucho más complejo.</p>
+<p>Y eso es exactamente lo que ocurre en investigación clínica real.</p>
+</section>
+<section id="también-aprendimos-algo-importante" class="level3">
+<h3 class="anchored" data-anchor-id="también-aprendimos-algo-importante">También aprendimos algo importante:</h3>
+<p><strong>los modelos pueden equivocarse</strong></p>
+<p>Este es uno de los aprendizajes más valiosos del libro.</p>
+<p>Un modelo puede:</p>
 <ul>
-<li>“Con la información actual, creemos que la probabilidad de enfermedad es baja, pero no cero”</li>
+<li>simplificar demasiado</li>
+<li>ignorar variables importantes</li>
+<li>confundirse por asociaciones espurias</li>
+<li>verse afectado por sesgos de selección</li>
+<li>reflejar limitaciones de los datos</li>
 </ul>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Enfoque tradicional</th>
-<th>Enfoque bayesiano</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Diagnóstico fijo</td>
-<td>Probabilidad</td>
-</tr>
-<tr class="even">
-<td>Blanco o negro</td>
-<td>Escala de grises</td>
-</tr>
-<tr class="odd">
-<td>Certeza aparente</td>
-<td>Incertidumbre explícita</td>
-</tr>
-<tr class="even">
-<td>Reglas rígidas</td>
-<td>Actualización continua</td>
-</tr>
-</tbody>
-</table>
+<p>Por eso el pensamiento bayesiano no consiste en “creer ciegamente” en los resultados.</p>
+<p>Consiste en:</p>
+<ul>
+<li>cuestionar</li>
+<li>comparar</li>
+<li>actualizar</li>
+<li>interpretar críticamente</li>
+</ul>
 </section>
-<section id="por-qué-esto-es-importante-en-obesidad" class="level3">
-<h3 class="anchored" data-anchor-id="por-qué-esto-es-importante-en-obesidad">¿Por qué esto es importante en obesidad?</h3>
-<p>En el contexto del metabolismo y obesidad:</p>
-<p>El IMC <strong>no distingue grasa visceral vs subcutánea</strong> Dos personas con el mismo IMC pueden tener: Riesgo cardiometabólico muy distinto Niveles de inflamación diferentes</p>
-<p>👉 Entonces:</p>
-<p><strong>Clasificar no es entender</strong></p>
-<p>Y ahí es donde entra Bayes.</p>
+<section id="qué-significa-pensar-como-analista-bayesiano" class="level3">
+<h3 class="anchored" data-anchor-id="qué-significa-pensar-como-analista-bayesiano">Qué significa pensar como analista bayesiano</h3>
+<p>Pensar como analista bayesiano significa:</p>
+<section id="pensar-en-distribuciones-no-en-valores-únicos" class="level4">
+<h4 class="anchored" data-anchor-id="pensar-en-distribuciones-no-en-valores-únicos">1. Pensar en distribuciones, no en valores únicos**</h4>
+<p>En lugar de preguntar:</p>
+<p><code>“¿Cuál es el valor correcto?”</code></p>
+<p>Empezamos a preguntar:</p>
+<p><code>“¿Qué valores son plausibles dados los datos?”</code></p>
+<p>Ese pequeño cambio transforma completamente la interpretación clínica.</p>
 </section>
-<section id="idea-clave-del-capítulo" class="level3">
-<h3 class="anchored" data-anchor-id="idea-clave-del-capítulo">Idea clave del capítulo</h3>
-<p><em>La medicina no trata con certezas, sino con niveles de creencia basados en evidencia incompleta</em></p>
-<p>Y aprender a manejar eso explícitamente es lo que te convierte en un mejor analista… y un mejor clínico.</p>
+<section id="aceptar-la-incertidumbre" class="level4">
+<h4 class="anchored" data-anchor-id="aceptar-la-incertidumbre">2. Aceptar la incertidumbre</h4>
+<p>La incertidumbre no desaparece porque hagamos un análisis sofisticado.</p>
+<p>Simplemente aprendemos a describirla mejor.</p>
+<p>Y eso mejora la toma de decisiones.</p>
+</section>
+<section id="actualizar-creencias-con-evidencia" class="level4">
+<h4 class="anchored" data-anchor-id="actualizar-creencias-con-evidencia">3. Actualizar creencias con evidencia</h4>
+<p>Antes del análisis ya tenemos conocimiento previo:</p>
+<ul>
+<li>fisiología</li>
+<li>experiencia clínica</li>
+<li>literatura científica</li>
+<li>contexto del paciente</li>
+</ul>
+<p>Luego llegan los datos.</p>
+<p>El análisis bayesiano combina ambas cosas:</p>
+<ul>
+<li>conocimiento previo</li>
+<li>evidencia observada</li>
+</ul>
+<p>Eso se parece mucho más al razonamiento clínico real.</p>
+</section>
+<section id="cuestionar-constantemente-los-resultados" class="level4">
+<h4 class="anchored" data-anchor-id="cuestionar-constantemente-los-resultados">4. Cuestionar constantemente los resultados</h4>
+<p>Un analista bayesiano no pregunta solamente:</p>
+<p><code>“¿El modelo encontró algo?”</code></p>
+<p>También pregunta:</p>
+<ul>
+<li>¿Tiene sentido biológico?</li>
+<li>¿Podría existir confusión?</li>
+<li>¿Faltan variables importantes?</li>
+<li>¿La asociación es causal o solo observacional?</li>
+<li>¿Los datos son suficientemente buenos?</li>
+</ul>
+<p>Ese pensamiento crítico es más importante que cualquier software.</p>
 </section>
 </section>
-<section id="ejemplo-simple-simulación-en-r" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-en-r">2. Ejemplo simple (simulación en R)</h2>
-<p>Vamos a simular algo muy sencillo:</p>
-<p>👉 Pacientes con niveles de glucosa y su “verdadero estado metabólico” (que en la vida real no vemos directamente)</p>
+</section>
+<section id="ejemplo-simple-simulación-conceptual-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-simple-simulación-conceptual-en-r">2. Ejemplo simple (simulación conceptual en R)</h2>
+<p>Este capítulo no busca introducir nuevos modelos.</p>
+<p>Pero sí vale la pena mostrar cómo cambió nuestra manera de interpretar resultados.</p>
+<p>Imaginemos este escenario clínico simplificado:</p>
+<p>Un médico observa que pacientes con mayor cintura abdominal tienden a tener glicemias más altas.</p>
+<p>Antes del enfoque bayesiano podría pensar:</p>
+<p><em>“Entonces la relación es verdadera o falsa”.</em></p>
+<p>Ahora pensamos distinto:</p>
+<p><em>“¿Qué tan plausible es esa relación?”</em></p>
+<p><em>“¿Qué tan incierta es?”</em></p>
+<p><em>“¿Qué otras explicaciones podrían existir?”</em></p>
+<p>Incluso un modelo simple puede ayudarnos a visualizar esto.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulamos 200 pacientes</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Se crean 200 observaciones con una media de 105 y una desviación</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># estándar de 15</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">glucosa =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">105</span>, <span class="at">sd =</span> <span class="dv">15</span>),</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># "verdadero estado" (1 = alteración metabólica, 0 = normal)</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Se categoriza</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">estado_real =</span> <span class="fu">if_else</span>(glucosa <span class="sc">&gt;</span> <span class="dv">110</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregamos ruido (simulando incertidumbre real)</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> datos <span class="sc">%&gt;%</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Un 10% se invierte simulando errores posibles de la vida real</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># como: errores diagnósticos, medición imperfecta o variabilidad</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># biológica</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">estado_observado =</span> <span class="fu">if_else</span>(<span class="fu">runif</span>(n) <span class="sc">&lt;</span> <span class="fl">0.1</span>, <span class="dv">1</span> <span class="sc">-</span> estado_real, estado_real)</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<section id="visualización" class="level3">
-<h3 class="anchored" data-anchor-id="visualización">Visualización</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico en el que se observarán barras azules por </span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># debajo de 110 y barras rosadas por encima de 110 lo </span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># que corresponde al 10% del error de la simulación </span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># anterior con runif</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos, <span class="fu">aes</span>(<span class="at">x =</span> glucosa, <span class="at">fill =</span> <span class="fu">factor</span>(estado_observado))) <span class="sc">+</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">5</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Estado observado"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Glucosa vs estado metabólico (con incertidumbre)"</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simular 100 pacientes con las variables de cintura y glicemia</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>datos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cintura =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="dv">10</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">glicemia =</span> <span class="dv">70</span> <span class="sc">+</span> cintura <span class="sc">*</span> <span class="fl">0.6</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de dispersión que relaciona la cintura y la glicemia</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos, <span class="fu">aes</span>(cintura, glicemia)) <span class="sc">+</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Relación simulada entre cintura y glicemia"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cintura (cm)"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Glicemia"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="c01_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="c20_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-</section>
-<section id="qué-estamos-viendo" class="level3">
-<h3 class="anchored" data-anchor-id="qué-estamos-viendo">¿Qué estamos viendo?</h3>
+<p>El punto importante no es la línea exacta.</p>
+<p>El punto importante es entender:</p>
 <ul>
-<li>No hay una línea perfecta que separe sano vs enfermo</li>
-<li>Hay superposición</li>
-<li>Hay errores (simulados como en la vida real)</li>
+<li>tendencia</li>
+<li>variabilidad</li>
+<li>incertidumbre</li>
+<li>plausibilidad biológica</li>
 </ul>
-<p>👉 Esto refleja la realidad clínica:</p>
-<p><strong>Los datos nunca son perfectos</strong></p>
+<p>Eso resume gran parte del pensamiento bayesiano aplicado.</p>
 </section>
-<section id="experimento-mental" class="level3">
-<h3 class="anchored" data-anchor-id="experimento-mental">Experimento mental</h3>
-<p>Si un paciente tiene glucosa de 112:</p>
+<section id="reflexión-aplicada-con-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-aplicada-con-nhanes">3. Reflexión aplicada con NHANES</h2>
+<p>A lo largo del libro usamos NHANES como un laboratorio clínico y epidemiológico.</p>
+<p>No para buscar “verdades absolutas”.</p>
+<p>Sino para aprender a razonar con datos reales.</p>
+<section id="el-ejemplo-del-imc-y-la-glicemia" class="level3">
+<h3 class="anchored" data-anchor-id="el-ejemplo-del-imc-y-la-glicemia">El ejemplo del IMC y la glicemia</h3>
+<p>Uno de los hallazgos más interesantes apareció cuando analizamos:</p>
 <ul>
-<li>¿Está enfermo?</li>
-<li>¿Está sano?</li>
+<li>IMC</li>
+<li>glicemia</li>
+<li>cintura abdominal</li>
 </ul>
-<p>La simulación muestra:</p>
-<p>👉 Puede estar en ambos grupos</p>
-</section>
-</section>
-<section id="ejemplo-aplicado-nhanes-ligero" class="level2">
-<h2 class="anchored" data-anchor-id="ejemplo-aplicado-nhanes-ligero">3. Ejemplo aplicado (NHANES ligero)</h2>
-<p>Ahora conectemos con datos reales.</p>
-<p>Supongamos que observamos:</p>
+<p>Inicialmente parecía existir una relación positiva relativamente esperada:</p>
 <ul>
-<li>Glucosa (LBXSGL)</li>
-<li>HbA1c (LBXGH)</li>
-<li>IMC (BMXBMI)</li>
+<li>mayor IMC</li>
+<li>mayor glicemia</li>
 </ul>
-<p>En NHANES verías algo como:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_obesidad <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(LBXSGL, LBXGH, BMXBMI) <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> BMXBMI)) <span class="sc">+</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="c01_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<section id="lo-importante-aquí" class="level3">
-<h3 class="anchored" data-anchor-id="lo-importante-aquí">Lo importante aquí</h3>
+<p>Pero al controlar indirectamente por cintura abdominal similar, la tendencia cambió.</p>
+<p>Eso nos obligó a pensar más profundamente.</p>
+<p>Tal vez:</p>
 <ul>
-<li>No hay cortes naturales perfectos</li>
-<li>No hay “dos poblaciones separadas” limpias</li>
-<li>Todo es continuo</li>
+<li>el IMC no captura adecuadamente la adiposidad visceral</li>
+<li>la distribución de grasa importa más que el peso total</li>
+<li>existen subgrupos metabólicamente distintos</li>
+<li>la fisiopatología es más compleja de lo que parece inicialmente</li>
 </ul>
-<p>👉 Esto refuerza la idea:</p>
-<p><strong>La realidad biológica es probabilística, no categórica</strong></p>
+<p>Ese momento representa perfectamente el valor del análisis bayesiano:</p>
+<p>👉 no quedarse solo con la primera asociación observada</p>
 </section>
-</section>
-<section id="conclusión-del-capítulo" class="level2">
-<h2 class="anchored" data-anchor-id="conclusión-del-capítulo">4. Conclusión del capítulo</h2>
-<p>Este capítulo no trata de modelos ni de fórmulas.</p>
-<p>Trata de algo más fundamental:</p>
-<p><strong>Cómo pensar</strong></p>
-</section>
-<section id="ejercicios-capítulo-1" class="level2">
-<h2 class="anchored" data-anchor-id="ejercicios-capítulo-1">Ejercicios — Capítulo 1</h2>
-<section id="ejercicio-1-el-diagnóstico-incómodo" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-1-el-diagnóstico-incómodo">Ejercicio 1 — El diagnóstico incómodo</h3>
-<p>Un paciente tiene:</p>
+<section id="el-hdl-como-marcador-dinámico" class="level3">
+<h3 class="anchored" data-anchor-id="el-hdl-como-marcador-dinámico">El HDL como marcador dinámico</h3>
+<p>Otro aprendizaje importante fue dejar de interpretar el HDL como una variable aislada y estática.</p>
+<p>Empezamos a verlo como:</p>
 <ul>
-<li>Glucosa: 125 mg/dL</li>
-<li>HbA1c: 6.4%</li>
-<li>IMC: 31</li>
+<li>marcador metabólico dinámico</li>
+<li>posible reflejo del estado inflamatorio</li>
+<li>indicador indirecto de sensibilidad a la insulina</li>
 </ul>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>Según criterios clásicos, ¿es diabético?</li>
-<li>¿Qué tan seguro estás de esa respuesta? (alto, medio, bajo)</li>
-<li>Reformula tu respuesta en términos probabilísticos</li>
-</ol>
-<p>💡 Objetivo: romper el pensamiento binario</p>
+<p>Eso cambia completamente la interpretación clínica.</p>
+<p>Porque los biomarcadores no existen separados de la fisiología.</p>
+<p>Forman parte de sistemas interconectados.</p>
 </section>
-<section id="ejercicio-2-dos-pacientes-casi-iguales" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-2-dos-pacientes-casi-iguales">Ejercicio 2 — Dos pacientes casi iguales</h3>
-<p>Paciente A:</p>
+<section id="aspirina-como-proxy-de-inflamación" class="level3">
+<h3 class="anchored" data-anchor-id="aspirina-como-proxy-de-inflamación">Aspirina como proxy de inflamación</h3>
+<p>También exploramos el uso de aspirina como aproximación indirecta a fenómenos inflamatorios y riesgo cardiovascular.</p>
+<p>Esto fue especialmente importante para entender algo fundamental:</p>
+<p>👉 muchas veces en análisis clínico trabajamos con proxies imperfectos</p>
+<p>Los datos reales rara vez son ideales.</p>
+<p>A veces:</p>
 <ul>
-<li>HbA1c: 6.5%</li>
+<li>faltan variables</li>
+<li>las mediciones son incompletas</li>
+<li>los indicadores son indirectos</li>
 </ul>
-<p>Paciente B:</p>
+<p>Y aun así debemos tomar decisiones.</p>
+</section>
+</section>
+<section id="interpretación-clínica-y-cierre-final" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-clínica-y-cierre-final">4. Interpretación clínica y cierre final</h2>
+<section id="cómo-cambia-esto-la-práctica-médica" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-cambia-esto-la-práctica-médica">Cómo cambia esto la práctica médica</h3>
+<p>El pensamiento bayesiano no reemplaza la medicina clínica.</p>
+<p>La fortalece.</p>
+<p>Porque ayuda a:</p>
 <ul>
-<li>HbA1c: 6.4%</li>
+<li>integrar evidencia</li>
+<li>manejar incertidumbre</li>
+<li>evitar conclusiones absolutas</li>
+<li>interpretar resultados en contexto</li>
 </ul>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>¿Son clínicamente diferentes?</li>
-<li>¿El sistema de clasificación los trata diferente?</li>
-<li>¿Qué problema conceptual estás viendo aquí?</li>
-</ol>
-<p>💡 Objetivo: detectar arbitrariedad de los puntos de corte</p>
 </section>
-<section id="ejercicio-3-imc-como-medida-imperfecta" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-3-imc-como-medida-imperfecta">Ejercicio 3 — IMC como medida imperfecta</h3>
-<p>Dos pacientes:</p>
+<section id="diagnóstico" class="level3">
+<h3 class="anchored" data-anchor-id="diagnóstico">Diagnóstico</h3>
+<p>En la práctica real, el diagnóstico rara vez es completamente binario.</p>
+<p>Muchas veces trabajamos con probabilidades:</p>
 <ul>
-<li>Ambos con IMC = 30</li>
-<li>Uno con alta grasa visceral</li>
-<li>Otro con masa muscular alta</li>
+<li>probabilidad pretest</li>
+<li>probabilidad postest</li>
+<li>factores de riesgo</li>
+<li>contexto clínico</li>
 </ul>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>¿Tienen el mismo riesgo cardiometabólico?</li>
-<li>¿Qué tipo de incertidumbre estás enfrentando?</li>
-<li>¿Qué información te falta?</li>
-</ol>
-<p>💡 Objetivo: entender limitaciones de los datos</p>
+<p>El enfoque bayesiano se adapta naturalmente a esta realidad.</p>
 </section>
-<section id="ejercicio-4-pensamiento-bayesiano-básico" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-4-pensamiento-bayesiano-básico">Ejercicio 4 — Pensamiento bayesiano básico</h3>
-<p>Un paciente tiene:</p>
+<section id="evaluación-de-riesgo" class="level3">
+<h3 class="anchored" data-anchor-id="evaluación-de-riesgo">Evaluación de riesgo</h3>
+<p>La obesidad no es simplemente exceso de peso.</p>
+<p>Es un fenómeno metabólico complejo.</p>
+<p>Dos pacientes con el mismo IMC pueden tener riesgos completamente distintos:</p>
 <ul>
-<li>Obesidad</li>
-<li>Sedentarismo</li>
-<li>Historia familiar de diabetes</li>
+<li>distinta distribución de grasa</li>
+<li>diferente inflamación</li>
+<li>distinta sensibilidad a la insulina</li>
+<li>diferente función hepática</li>
+<li>distinto contexto genético y ambiental</li>
 </ul>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>Antes de ver exámenes, ¿crees que la probabilidad de diabetes es alta o baja?</li>
-<li>¿Qué estás usando aquí: datos o creencias previas?</li>
-<li>¿Por qué esto NO es “mala medicina”?</li>
-</ol>
-<p>💡 Objetivo: introducir la idea de prior (creencia previa)</p>
+<p>Por eso el análisis probabilístico resulta tan importante.</p>
 </section>
-<section id="ejercicio-5-crear-tu-propia-incertidumbre" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-5-crear-tu-propia-incertidumbre">Ejercicio 5 — Crear tu propia incertidumbre</h3>
-<p>👉 Modifica el código de simulación:</p>
+<section id="toma-de-decisiones" class="level3">
+<h3 class="anchored" data-anchor-id="toma-de-decisiones">Toma de decisiones</h3>
+<p>En medicina casi nunca tenemos información perfecta.</p>
+<p>Debemos decidir aun con incertidumbre.</p>
+<p>Y eso no es un defecto del sistema.</p>
+<p>Es la naturaleza misma de la práctica clínica.</p>
+<p>El objetivo no es eliminar la incertidumbre.</p>
+<p>El objetivo es:</p>
+<p>👉 tomar mejores decisiones a pesar de ella</p>
+</section>
+<section id="limitaciones-del-análisis-realizado" class="level3">
+<h3 class="anchored" data-anchor-id="limitaciones-del-análisis-realizado">Limitaciones del análisis realizado</h3>
+<p>Este punto es extremadamente importante.</p>
+</section>
+<section id="nhanes-es-observacional" class="level3">
+<h3 class="anchored" data-anchor-id="nhanes-es-observacional">NHANES es observacional</h3>
+<p>Gran parte del análisis del libro utilizó datos observacionales.</p>
+<p>Eso significa que:</p>
 <ul>
-<li>Cambia el punto de corte de glucosa (ej: 100 en lugar de 110)</li>
-<li>Cambia el error (ej: 20% en lugar de 10%)</li>
+<li>encontramos asociaciones</li>
+<li>exploramos patrones</li>
+<li>identificamos relaciones plausibles</li>
 </ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cambia estos valores</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p><code>glucosa &gt; 100</code></p>
-<p><code>runif(n) &lt; 0.2</code></p>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>¿Qué pasa con el solapamiento?</li>
-<li>¿Aumenta o disminuye la incertidumbre?</li>
-<li>¿Qué escenario se parece más a la vida real?</li>
-</ol>
-<p>💡 Objetivo: ver cómo nace la incertidumbre</p>
+<p>Pero:</p>
+<p>👉 no demostramos causalidad directa</p>
 </section>
-<section id="ejercicio-6-el-falso-diagnóstico-perfecto" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-6-el-falso-diagnóstico-perfecto">Ejercicio 6 — El falso diagnóstico perfecto</h3>
-<p>👉 Elimina el error:</p>
-<p><code>estado_observado = estado_real</code></p>
-<p>👉 Pregunta:</p>
+<section id="existen-variables-no-medidas" class="level3">
+<h3 class="anchored" data-anchor-id="existen-variables-no-medidas">Existen variables no medidas</h3>
+<p>Siempre pueden existir factores que no fueron incluidos:</p>
 <ul>
-<li>¿Qué pasa con el gráfico?</li>
-<li>¿Existe aún incertidumbre?</li>
-<li>¿Este escenario es realista?</li>
+<li>sueño</li>
+<li>estrés</li>
+<li>dieta detallada</li>
+<li>genética</li>
+<li>microbiota</li>
+<li>actividad física real</li>
+<li>medicación no registrada</li>
 </ul>
-<p>💡 Objetivo: entender que la perfección no existe en medicina</p>
+<p>Eso limita cualquier modelo.</p>
 </section>
-<section id="ejercicio-7-juega-con-la-variabilidad" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-7-juega-con-la-variabilidad">Ejercicio 7 — Juega con la variabilidad</h3>
-<p>👉 Cambia la desviación estándar:</p>
-<p><code>rnorm(n, mean = 105, sd = 5)</code></p>
-<p><code>rnorm(n, mean = 105, sd = 25)</code></p>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>¿Cómo cambia la superposición?</li>
-<li>¿Qué significa esto clínicamente?</li>
-</ol>
-<p>💡 Objetivo: entender variabilidad biológica</p>
+<section id="los-modelos-simplifican-la-realidad" class="level3">
+<h3 class="anchored" data-anchor-id="los-modelos-simplifican-la-realidad">Los modelos simplifican la realidad</h3>
+<p>Todos los modelos simplifican.</p>
+<p>Necesariamente.</p>
+<p>El cuerpo humano es muchísimo más complejo que cualquier ecuación estadística.</p>
+<p>Por eso debemos recordar siempre:</p>
+<p><em>“Un modelo no es la realidad, es una aproximación”.</em></p>
 </section>
-<section id="ejercicio-8-hay-dos-poblaciones" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-8-hay-dos-poblaciones">Ejercicio 8 — ¿Hay dos poblaciones?</h3>
-<p>👉 Grafica la glucosa:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_obesidad, <span class="fu">aes</span>(<span class="at">x =</span> LBXSGL)) <span class="sc">+</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>¿Ves dos grupos claramente separados?</li>
-<li>¿Dónde pondrías el punto de corte?</li>
-<li>¿Qué tan arbitrario es?</li>
-</ol>
-<p>💡 Objetivo: ver la continuidad de la realidad</p>
-</section>
-<section id="ejercicio-9-variable-categórica-real" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-9-variable-categórica-real">Ejercicio 9 — Variable categórica real</h3>
-<p>Supongamos:</p>
+<section id="siguientes-pasos" class="level3">
+<h3 class="anchored" data-anchor-id="siguientes-pasos">Siguientes pasos</h3>
+<p>Este libro es un punto de partida.</p>
+<p>No un punto final.</p>
+<section id="profundizar-en-análisis-bayesiano" class="level4">
+<h4 class="anchored" data-anchor-id="profundizar-en-análisis-bayesiano">1. Profundizar en análisis bayesiano</h4>
+<p>Más adelante puedes explorar:</p>
 <ul>
-<li>Hipertensión (sí/no)</li>
-<li>Obesidad (sí/no)</li>
+<li>modelos multinivel más complejos</li>
+<li>interacciones más sofisticadas</li>
+<li>modelos longitudinales</li>
+<li>mejores priors</li>
+<li>validación predictiva</li>
 </ul>
-<p>👉 Pregunta (sin modelo aún):</p>
-<ol type="1">
-<li>¿Crees que están relacionadas?</li>
-<li>¿Cómo lo expresarías en términos de probabilidad?</li>
-</ol>
-<p>Ejemplo esperado:</p>
-<p>P(obesidad | hipertensión)</p>
-<p>💡 Objetivo: empezar a pensar en probabilidades condicionales</p>
+<p>Incluso eventualmente:</p>
+<ul>
+<li>brms</li>
+<li>Stan más avanzado</li>
+<li>modelos causales probabilísticos</li>
+</ul>
+<p>Pero ahora ya tienes la base conceptual más importante.</p>
 </section>
-<section id="ejercicio-10-traducción-mental" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-10-traducción-mental">Ejercicio 10 — Traducción mental</h3>
-<p>Convierte estas frases:</p>
-<p>❌ “El paciente es diabético”</p>
-<p>👉 En versión bayesiana:</p>
-<p>❌ “El paciente está sano”</p>
-<p>👉 En versión bayesiana:</p>
-<p>❌ “El IMC indica obesidad”</p>
-<p>👉 En versión bayesiana:</p>
-<p>💡 Objetivo: reprogramar tu lenguaje clínico</p>
+<section id="profundizar-en-pensamiento-causal" class="level4">
+<h4 class="anchored" data-anchor-id="profundizar-en-pensamiento-causal">2. Profundizar en pensamiento causal</h4>
+<p>Uno de los pasos más valiosos será estudiar:</p>
+<ul>
+<li>DAGs</li>
+<li>confusión</li>
+<li>mediación</li>
+<li>sesgo de selección</li>
+<li>inferencia causal</li>
+</ul>
+<p>Porque muchas asociaciones clínicas pueden interpretarse incorrectamente si no pensamos causalmente.</p>
 </section>
-<section id="ejercicio-11-detecta-el-error" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-11-detecta-el-error">Ejercicio 11 — Detecta el error</h3>
-<p>Un colega dice:</p>
-<p><em>“Si la HbA1c es menor a 6.5%, no hay diabetes”</em></p>
-<p>👉 Pregunta:</p>
-<ol type="1">
-<li>¿Qué está mal en esa afirmación?</li>
-<li>¿Qué tipo de pensamiento es?</li>
-<li>¿Cómo lo corregirías?</li>
-</ol>
+<section id="explorar-más-datos" class="level4">
+<h4 class="anchored" data-anchor-id="explorar-más-datos">3. Explorar más datos</h4>
+<p>NHANES tiene muchísimas variables aún por explorar:</p>
+<ul>
+<li>dieta</li>
+<li>sueño</li>
+<li>salud mental</li>
+<li>función hepática</li>
+<li>marcadores inflamatorios</li>
+<li>actividad física</li>
+</ul>
+<p>Y después puedes continuar con:</p>
+<ul>
+<li>MIMIC</li>
+<li>UK Biobank</li>
+<li>datasets hospitalarios</li>
+<li>registros clínicos propios</li>
+</ul>
 </section>
-<section id="ejercicio-12-tu-propia-práctica-clínica" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-12-tu-propia-práctica-clínica">Ejercicio 12 — Tu propia práctica clínica</h3>
-<p>Piensa en un paciente real que hayas visto recientemente.</p>
-<p>👉 Responde:</p>
-<ol type="1">
-<li>¿Qué decisión tomaste?</li>
-<li>¿Qué incertidumbre había?</li>
-<li>¿La expresaste o la ignoraste?</li>
-<li>¿Cómo la expresarías ahora en términos</li>
-<li>probabilísticos?</li>
-</ol>
+<section id="aplicación-práctica" class="level4">
+<h4 class="anchored" data-anchor-id="aplicación-práctica">4. Aplicación práctica</h4>
+<p>El análisis de datos clínicos puede transformarse en herramientas reales:</p>
+<ul>
+<li>dashboards clínicos</li>
+<li>apps en Shiny</li>
+<li>reportes automatizados</li>
+<li>sistemas de apoyo a decisiones</li>
+<li>monitoreo metabólico</li>
+</ul>
+<p>La programación puede convertirse en una extensión del razonamiento clínico.</p>
+</section>
+<section id="comunicación-y-educación" class="level4">
+<h4 class="anchored" data-anchor-id="comunicación-y-educación">5. Comunicación y educación</h4>
+<p>Saber analizar datos no es suficiente.</p>
+<p>También debemos aprender a comunicar.</p>
+<p>Puedes:</p>
+<ul>
+<li>crear un blog en Quarto</li>
+<li>publicar visualizaciones</li>
+<li>escribir artículos educativos</li>
+<li>enseñar a otros médicos</li>
+<li>compartir análisis reproducibles</li>
+</ul>
+<p>La comunicación clara mejora la medicina.</p>
+</section>
+</section>
+<section id="reflexión-final" class="level3">
+<h3 class="anchored" data-anchor-id="reflexión-final">Reflexión final</h3>
+<p>La obesidad es mucho más compleja que una simple acumulación de grasa.</p>
+<p>A lo largo del libro vimos cómo interactúan:</p>
+<ul>
+<li>insulina</li>
+<li>inflamación</li>
+<li>adiposidad visceral</li>
+<li>metabolismo hepático</li>
+<li>riesgo cardiovascular</li>
+</ul>
+<p>Y probablemente todavía estamos viendo solo una pequeña parte del sistema completo.</p>
+<p>Pero incluso modelos simples pueden ayudarnos a pensar mejor.</p>
+<p>Y pensar mejor puede conducir a decisiones clínicas más razonables.</p>
+</section>
+<section id="el-mensaje-más-importante-del-libro" class="level3">
+<h3 class="anchored" data-anchor-id="el-mensaje-más-importante-del-libro">El mensaje más importante del libro</h3>
+<p>Los datos no reemplazan el juicio clínico.</p>
+<p>👉 Lo mejoran.</p>
+<p>El análisis bayesiano no busca convertir al médico en una máquina estadística.</p>
+<p>Busca ayudarlo a:</p>
+<ul>
+<li>razonar mejor</li>
+<li>interpretar mejor</li>
+<li>cuestionar mejor</li>
+<li>decidir mejor</li>
+</ul>
+</section>
+<section id="cierre-final-al-lector" class="level3">
+<h3 class="anchored" data-anchor-id="cierre-final-al-lector">Cierre final al lector</h3>
+<p>Si llegaste hasta aquí, ya aprendiste algo muy valioso.</p>
+<p>Aprendiste a mirar los datos clínicos de otra manera.</p>
+<p>Aprendiste que:</p>
+<ul>
+<li>la incertidumbre no es enemiga</li>
+<li>los modelos son herramientas imperfectas</li>
+<li>las probabilidades pueden ayudar a decidir</li>
+<li>la fisiopatología importa</li>
+<li>los datos necesitan contexto clínico</li>
+</ul>
+<p>Y quizás lo más importante:</p>
+<p>👉 aprendiste una forma de pensar, no solo una herramienta</p>
+<p>Ese aprendizaje puede acompañarte mucho más allá de NHANES, mucho más allá de R y mucho más allá de este libro.</p>
+<p>Ahora tienes una base sólida para:</p>
+<ul>
+<li>seguir explorando</li>
+<li>construir nuevos modelos</li>
+<li>analizar tus propios datos</li>
+<li>cuestionar evidencia</li>
+<li>mejorar decisiones clínicas</li>
+</ul>
+<p>La curiosidad científica y el pensamiento crítico probablemente serán siempre más importantes que cualquier software específico.</p>
+<p>Sigue preguntando.</p>
+<p>Sigue explorando.</p>
+<p>Sigue actualizando tus creencias con evidencia.</p>
+<p>Eso, en esencia, es pensar como analista bayesiano.</p>
 
 
 </section>
