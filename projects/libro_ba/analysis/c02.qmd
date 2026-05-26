@@ -1,0 +1,611 @@
+---
+title: "2.- Distribuciones: pensar más allá de un promedio"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(readr)
+library(dplyr)
+library(tidyverse)
+
+sales <- read_csv("../data/superstore_sales.csv",
+                  guess_max = 10000,
+                  show_col_types = FALSE)
+```
+
+
+## Introducción
+
+Imagina dos tiendas.
+
+Ambas tienen ventas promedio diarias de 500 dólares.
+
+A primera vista parecen similares.
+Si sólo observamos el promedio, podríamos concluir que ambos negocios funcionan igual.
+
+Pero ahora imaginemos algo más.
+
+La primera tienda vende casi siempre entre 480 y 520 dólares diarios.
+Es estable. Predecible. Tranquila.
+
+La segunda tienda alterna entre días de 50 dólares y días de 2000 dólares.
+Es caótica. Inestable. Difícil de anticipar.
+
+Aunque ambas tengan exactamente el mismo promedio, vivir dentro de esos negocios sería completamente diferente.
+
+Las decisiones también serían distintas:
+
+- inventario,
+- contratación,
+- flujo de caja,
+- promociones,
+- riesgo,
+- planificación.
+
+Aquí aparece una idea fundamental de este libro:
+
+`Los negocios reales no existen como números únicos.`
+`Existen como distribuciones.`
+
+Y esa diferencia cambia completamente la forma de pensar.
+
+Durante mucho tiempo, gran parte de la educación estadística se centró en una sola pregunta:
+
+`“¿Cuál es el promedio?”`
+
+Pero en la práctica, esa pregunta rara vez es suficiente.
+
+En negocios reales necesitamos preguntas mejores:
+
+- ¿Qué tan variable es el sistema?
+- ¿Qué tan frecuentes son los extremos?
+- ¿Qué rango de resultados es plausible?
+- ¿Qué tan incierto es el futuro?
+- ¿Cuánto riesgo existe realmente?
+
+Este capítulo marca una transición importante en nuestra forma de pensar.
+
+Pasaremos de ver números únicos a ver distribuciones completas.
+
+Y eso, en el fondo, es el inicio del pensamiento probabilístico.
+
+## 1. Pensar en distribuciones
+
+### ¿Qué es una distribución?
+
+De manera intuitiva, una distribución es simplemente:
+
+`la forma en que los valores se reparten.`
+
+No es una fórmula complicada.
+No es algo exclusivamente matemático.
+
+Es una manera de describir cómo se comporta la realidad.
+
+Por ejemplo:
+
+- algunas ventas son pequeñas,
+- otras medianas,
+- unas pocas muy grandes.
+
+Una distribución nos muestra:
+
+- qué valores son comunes,
+- cuáles son raros,
+- dónde se concentran los datos,
+- qué tan dispersos están,
+- y qué tan frecuentes son los extremos.
+
+Pensar en distribuciones significa aceptar algo muy importante:
+
+`La variabilidad no es un error del sistema.`
+`Es parte natural del sistema.`
+
+## 2. Contexto de negocio
+
+Antes de analizar los datos, vale la pena introducir algunas ideas simples de negocio.
+
+### Ventas (Sales)
+
+La variable *Sales* representa el dinero generado por una venta.
+
+En retail, normalmente ocurre algo interesante:
+
+- existen muchísimas ventas pequeñas,
+- algunas ventas medianas,
+- y unas pocas ventas enormes.
+
+Eso produce distribuciones asimétricas.
+
+### Ganancia (Profit)
+
+*Profit* representa cuánto dinero realmente gana la empresa después de costos y descuentos.
+
+Y aquí aparece otra realidad importante:
+
+`vender mucho no siempre significa ganar mucho.`
+
+A veces existen ventas con ganancias negativas.
+
+Sí, una empresa puede vender y aun así perder dinero en ciertas transacciones.
+
+### Descuento (Discount)
+
+Los descuentos pueden aumentar ventas, pero también pueden reducir ganancias.
+
+En negocios reales casi nunca existe una relación simple entre variables.
+
+Por eso necesitamos mirar distribuciones completas y no solamente promedios.
+
+## 3. Cargando el dataset
+
+Usaremos el dataset clásico de retail del libro.
+
+Primer vistazo:
+
+```{r}
+# Primer vistazo de la dataset
+glimpse(sales)
+```
+
+También podemos revisar rápidamente algunas variables numéricas:
+
+```{r}
+# Revisar rápidamente algunas variables numéricas
+sales %>%
+  select(Sales, Profit, Discount, Quantity) %>%
+  summary() # produce:
+```
+
+## 4. La distribución de las ventas
+
+Comencemos con una pregunta simple:
+
+`¿Cómo se distribuyen realmente las ventas?`
+
+### Histograma
+
+Distribución general de las ventas
+
+```{r}
+# Distribución de la ventas
+ggplot(sales, aes(x = Sales)) +
+  geom_histogram(
+    bins = 100,
+    fill = "steelblue",
+    color = "white"
+  ) + 
+  labs(
+    title = "Distribución de ventas",
+    x = "Sales",
+    y = "Frecuencia"
+  )
+```
+
+Distribución general de las ventas hecha zoom para poder ver los valores atípicos principalmente en el eje X de Sales
+
+```{r}
+# Distribución de la ventas
+ggplot(sales, aes(x = Sales)) +
+  geom_histogram(
+    bins = 100,
+    fill = "steelblue",
+    color = "white"
+  ) + 
+  #coord_cartesian(xlim = c(0, 1000)) +
+  coord_cartesian(ylim = c(0, 50)) +
+  labs(
+    title = "Distribución de ventas",
+    x = "Sales",
+    y = "Frecuencia"
+  )
+```
+
+### ¿Qué estamos viendo?
+
+Este gráfico suele mostrar algo muy común en negocios reales:
+
+- muchísimas ventas pequeñas,
+- algunas ventas medianas,
+- pocas ventas extremadamente grandes.
+
+La distribución normalmente aparece:
+
+- sesgada hacia la derecha,
+- con una cola larga,
+- y con valores extremos importantes.
+
+Esto significa que:
+
+`unas pocas ventas grandes pueden influir muchísimo en el promedio.`
+
+## 5. Densidad: una visión más suave de la distribución
+
+Los histogramas son útiles, pero a veces la forma general se aprecia mejor con una curva de densidad.
+
+```{r}
+# Densidad de las ventas hecha zoom en el eje x de 
+# las ventas para poder apreciar la forma de la
+# distribución
+ggplot(sales, aes(x = Sales)) +
+  geom_density(
+    fill = "skyblue",
+    alpha = 0.5
+  ) +
+  coord_cartesian(xlim = c(0, 1000)) +
+  labs(
+    title = "Densidad de ventas",
+    x = "Sales",
+    y = "Densidad"
+  )
+```
+
+### Interpretación intuitiva
+
+Una curva de densidad nos ayuda a visualizar:
+
+- dónde se concentran los datos,
+- qué regiones son más plausibles,
+- y qué valores son relativamente raros.
+
+No representa probabilidades exactas individuales.
+
+Representa algo más intuitivo:
+
+`zonas donde los datos tienden a acumularse.`
+
+## 6. Promedio vs mediana
+
+Ahora aparece una pregunta importante.
+
+Si las ventas tienen valores extremos grandes:
+
+`¿el promedio sigue representando bien al negocio?`
+
+Calculemos promedio y mediana.
+
+```{r}
+# Resumir las ventas por media y mediana
+sales %>%
+  summarise(
+    media_sales = mean(Sales),
+    mediana_sales = median(Sales)
+  )
+```
+
+En datasets reales de retail suele ocurrir algo interesante:
+
+- el promedio es mucho mayor que la mediana.
+
+¿Por qué?
+
+Porque unas pocas ventas enormes “arrastran” el promedio hacia arriba.
+
+La mediana, en cambio, representa el punto donde:
+
+- la mitad de las observaciones queda por debajo,
+- y la otra mitad por encima.
+
+### Idea importante
+
+`Dos negocios con la misma media pueden comportarse de formas completamente distintas.`
+
+Por eso:
+
+`pensar probabilísticamente implica mirar más allá del promedio.`
+
+## 7. Cuantiles y percentiles
+
+Los cuantiles nos ayudan a pensar en rangos plausibles.
+
+Por ejemplo:
+
+```{r}
+# Resumen de percentiles de las ventas
+sales %>%
+  summarise(
+    p25 = quantile(Sales, 0.25),
+    mediana = median(Sales),
+    p75 = quantile(Sales, 0.75)
+  ) # produce:
+```
+
+Esto nos permite responder preguntas muy útiles:
+
+- ¿qué ventas son típicas?
+- ¿qué valores pertenecen al 25% superior?
+- ¿qué tan disperso es el negocio?
+
+## 8. Visualizando cuantiles
+
+Los boxplots son excelentes para visualizar dispersión y cuantiles.
+
+Versión del diagrama con zoom para poder observar la mediana
+
+```{r}
+# Diagrama de caja de las ventas
+ggplot(sales, aes(y = Sales)) +
+  geom_boxplot(fill = "tomato") +
+  coord_cartesian(ylim = c(0, 1000)) +
+  labs(
+    title = "Boxplot de ventas",
+    y = "ventas"
+  )
+```
+
+Versión del diagrama de caja sin zoom para poder observar la dispersión
+
+```{r}
+# Diagrama de caja de las ventas
+ggplot(sales, aes(y = Sales)) +
+  geom_boxplot(fill = "tomato") +
+  labs(
+    title = "Boxplot de ventas",
+    y = "ventas"
+  )
+```
+
+### Interpretación intuitiva
+
+El boxplot resume:
+
+- mediana,
+- dispersión,
+- rango típico,
+- posibles valores extremos.
+
+Nos ayuda a pensar rápidamente:
+
+`¿qué tan estable o inestable es el sistema?`
+
+## 9. Distribución de ganancias
+
+Ahora analicemos Profit.
+
+```{r}
+# Distribución de las ganancias con zoom en el eje X
+ggplot(sales, aes(x = Profit)) +
+  geom_histogram(
+    bins = 500,
+    fill = "darkgreen",
+    color = "white"
+  ) + 
+  coord_cartesian(xlim = c(-750, 1000)) +
+  labs(
+    title = "Distribución de ganancias",
+    x = "Profit",
+    y = "Frecuencia"
+  )
+```
+
+```{r}
+# Distribución de las ganancias con zoom en el eje Y
+ggplot(sales, aes(x = Profit)) +
+  geom_histogram(
+    bins = 100,
+    fill = "darkgreen",
+    color = "white"
+  ) + 
+  coord_cartesian(ylim = c(0, 50)) +
+  labs(
+    title = "Distribución de ganancias",
+    x = "Profit",
+    y = "Frecuencia"
+  )
+```
+
+Aquí suele aparecer algo muy interesante:
+
+- existen ganancias positivas,
+- pero también pérdidas.
+
+Esto es extremadamente importante en negocios reales.
+
+Una empresa puede tener ventas altas y aun así experimentar pérdidas frecuentes en ciertas operaciones.
+
+## 10. Comparando categorías
+
+Las distribuciones también permiten comparar segmentos del negocio.
+
+```{r}
+# Diagrama de densidad de las ventas, coloreado por Category
+# y con zoom en el eje X
+ggplot(sales, aes(x = Sales, fill = Category)) +
+  geom_density(alpha = 0.4) +
+  coord_cartesian(xlim = c(0, 600)) +
+  labs(
+    title = "Distribución de ventas por categoría",
+    x = "Sales",
+    y = "Densidad"
+  )
+```
+
+### ¿Por qué esto importa?
+
+Porque diferentes categorías pueden tener:
+
+- distintos niveles de riesgo,
+- diferentes patrones de ventas,
+- distintas probabilidades de valores extremos.
+
+Y eso cambia las decisiones.
+
+## 11. Introducción ligera a la variabilidad
+
+Hasta ahora hemos hablado mucho de dispersión.
+
+Ahora introduzcamos una idea matemática ligera.
+
+### Promedio
+
+El promedio intenta representar un “centro”.
+
+Podemos visualizarlo como:
+
+`un punto de equilibrio aproximado.`
+
+### Desviación estándar
+
+La desviación estándar intenta medir:
+
+`qué tan lejos suelen estar los datos respecto al promedio.`
+
+No necesitamos profundizar matemáticamente todavía.
+
+La intuición importante es:
+
+- valores pequeños → sistema más estable,
+- valores grandes → sistema más variable.
+
+## 12. Fórmula mínima
+
+La regresión y los modelos vendrán después.
+Por ahora sólo necesitamos una idea intuitiva de dispersión.
+
+Aun así, vale la pena conocer suavemente la fórmula del promedio:
+
+`promedio = x1 + x2 + ... + xn / n `
+
+La idea importante no es memorizar la fórmula.
+
+La idea importante es entender sus limitaciones:
+
+`el promedio resume, pero también oculta información.`
+
+## 13. Pensar en rangos plausibles
+
+Aquí aparece una transición muy importante hacia el pensamiento bayesiano.
+
+En lugar de preguntar:
+
+`“¿Cuál será exactamente la próxima venta?”`
+
+podemos pensar:
+
+`“¿Qué rango de ventas parece plausible?”`
+
+Ese cambio parece pequeño.
+
+Pero filosóficamente es enorme.
+
+Porque el mundo real contiene incertidumbre.
+
+Y la incertidumbre no desaparece aunque tengamos más datos.
+
+## 14. Reflexión bayesiana
+
+El pensamiento probabilístico comienza cuando dejamos de buscar certezas absolutas.
+
+Los datos reales:
+
+- fluctúan,
+- cambian,
+- contienen ruido,
+- presentan heterogeneidad,
+- y producen resultados inesperados.
+
+Por eso las distribuciones son tan importantes.
+
+Nos enseñan a pensar en:
+
+- rangos,
+- plausibilidad,
+- incertidumbre,
+- variabilidad natural.
+
+Más adelante, los modelos bayesianos harán exactamente eso:
+
+- producir distribuciones,
+- no respuestas únicas.
+
+Y esa es una de las ideas más profundas de este libro:
+
+`Los modelos no producen verdades exactas.`
+`Ayudan a pensar mejor bajo incertidumbre.`
+
+## 15. Posibles errores de interpretación
+
+### Error 1: confiar demasiado en el promedio
+
+El promedio puede ocultar:
+
+- riesgo,
+- inestabilidad,
+- asimetrías,
+- extremos importantes.
+
+### Error 2: asumir normalidad automáticamente
+
+Muchos fenómenos reales:
+
+- NO son perfectamente normales,
+- NO son simétricos,
+- tienen colas largas,
+- contienen extremos relevantes.
+
+### Error 3: ignorar la variabilidad
+
+Dos negocios con la misma media pueden tener perfiles de riesgo completamente distintos.
+
+## 16. Ejercicios
+
+### Ejercicio 1
+
+Construye un histograma para *Quantity*.
+
+Describe:
+
+- forma,
+- dispersión,
+- posibles asimetrías.
+
+### Ejercicio 2
+
+Compara:
+
+- promedio,
+- mediana,
+- percentil 90
+
+de *Sales*.
+
+¿Qué diferencias observas?
+
+### Ejercicio 3
+
+Crea boxplots de *Profit* por *Category*.
+
+Pregunta:
+
+`¿Qué categorías parecen más variables?`
+
+### Ejercicio 4
+
+Explora si existen ventas extremadamente altas.
+
+Usa:
+
+```{r}
+high_sales <- sales %>% 
+  select(Sales) %>%
+  arrange(desc(Sales))
+high_sales[1:10,] # Cambiar si se desean ver más valores
+```
+
+
+Pregunta:
+
+`¿Qué implicaciones podrían tener estos extremos en decisiones reales?`
+
+### Ejercicio 5
+
+Construye curvas de densidad por región.
+
+Pregunta:
+
+`¿Todas las regiones parecen comportarse igual?`
+

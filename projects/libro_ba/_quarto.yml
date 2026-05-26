@@ -1,0 +1,68 @@
+project: 
+  type: website
+  
+website: 
+  title: "Decisiones bajo incertidumbre - Business Analytics Bayesiano con R"   
+  favicon: favicon.ico
+  sidebar: 
+    style: "docked"
+    contents: 
+      - index.qmd
+      # Nota: los comentarios van después de la almohadilla o numeral 
+      - analysis/c00_prefacio.qmd
+      - section: "PARTE I — APRENDER A VER LA INCERTIDUMBRE"
+        #href: analysis/m01.qmd
+        contents: 
+        - analysis/c01.qmd
+        - analysis/c02.qmd
+        - analysis/c03.qmd
+      - section: "PARTE II — APRENDER A PENSAR BAYESIANAMENTE"
+        #href: analysis/m02.qmd
+        contents: 
+        - analysis/c04.qmd
+        #- analysis/c04.qmd
+      #- section: "Módulo 3: Entender la Incertidumbre"
+        #href: analysis/m03.qmd
+        #contents:
+        #- analysis/c05.qmd
+        #- analysis/c06.qmd
+        #- analysis/c07.qmd
+      #- section: "Módulo 4: Pensamiento causal"
+        #href: analysis/m04.qmd
+        #contents:
+        #- analysis/c08.qmd
+        #- analysis/c09.qmd
+        #- analysis/c10.qmd
+      #- section: "Módulo 5: Modelos Bayesianos en R"
+        #href: analysis/m05.qmd
+        #contents:
+        #- analysis/c11.qmd
+        #- analysis/c12.qmd
+        #- analysis/c13.qmd
+        #- analysis/c14.qmd
+      #- section: "Módulo 6: Modelos Clínicos Reales"
+        #href: analysis/m06.qmd
+        #contents:
+        #- analysis/c15.qmd
+        #- analysis/c16.qmd
+        #- analysis/c17.qmd
+      #- section: "Módulo 7: Decisiones bajo incertidumbre"
+        #href: analysis/m07.qmd
+        #contents:
+        #- analysis/c18.qmd
+        #- analysis/c19.qmd
+        #- analysis/c20.qmd
+  page-footer: 
+    border: false
+    background: light
+    center: "Copyright, David Villafuerte MD." 
+    left: 
+      - icon: github
+        href: https://github.com/
+      - icon: bluesky 
+        href: https://bsky.app/ 
+    
+format: 
+  html: 
+    theme: cosmo
+    toc: true

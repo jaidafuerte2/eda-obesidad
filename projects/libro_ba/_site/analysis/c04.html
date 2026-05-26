@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4.- Bayes: aprender de nueva evidencia – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c04.html">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</a></li><li class="breadcrumb-item"><a href="../analysis/c04.html">4.- Bayes: aprender de nueva evidencia</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — APRENDER A VER LA INCERTIDUMBRE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Simulación y mundos posibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#pensar-bayesianamente-sin-darse-cuenta" id="toc-pensar-bayesianamente-sin-darse-cuenta" class="nav-link" data-scroll-target="#pensar-bayesianamente-sin-darse-cuenta">Pensar bayesianamente sin darse cuenta</a></li>
+  <li><a href="#la-idea-central-de-bayes" id="toc-la-idea-central-de-bayes" class="nav-link" data-scroll-target="#la-idea-central-de-bayes">La idea central de Bayes</a></li>
+  <li><a href="#incertidumbre-y-aprendizaje" id="toc-incertidumbre-y-aprendizaje" class="nav-link" data-scroll-target="#incertidumbre-y-aprendizaje">Incertidumbre y aprendizaje</a></li>
+  <li><a href="#contexto-de-negocio" id="toc-contexto-de-negocio" class="nav-link" data-scroll-target="#contexto-de-negocio">Contexto de negocio</a>
+  <ul class="collapse">
+  <li><a href="#qué-es-una-campaña-de-marketing" id="toc-qué-es-una-campaña-de-marketing" class="nav-link" data-scroll-target="#qué-es-una-campaña-de-marketing">¿Qué es una campaña de marketing?</a></li>
+  </ul></li>
+  <li><a href="#conversion-rate" id="toc-conversion-rate" class="nav-link" data-scroll-target="#conversion-rate">Conversion rate</a>
+  <ul class="collapse">
+  <li><a href="#conversion-rate-1" id="toc-conversion-rate-1" class="nav-link" data-scroll-target="#conversion-rate-1">Conversion rate</a></li>
+  </ul></li>
+  <li><a href="#storytelling-central-del-capítulo" id="toc-storytelling-central-del-capítulo" class="nav-link" data-scroll-target="#storytelling-central-del-capítulo">Storytelling central del capítulo</a></li>
+  <li><a href="#introducción-visual-a-bayes" id="toc-introducción-visual-a-bayes" class="nav-link" data-scroll-target="#introducción-visual-a-bayes">Introducción visual a Bayes</a></li>
+  <li><a href="#bayes-usando-frecuencias-naturales" id="toc-bayes-usando-frecuencias-naturales" class="nav-link" data-scroll-target="#bayes-usando-frecuencias-naturales">Bayes usando frecuencias naturales</a></li>
+  <li><a href="#introducción-suave-a-la-fórmula-de-bayes" id="toc-introducción-suave-a-la-fórmula-de-bayes" class="nav-link" data-scroll-target="#introducción-suave-a-la-fórmula-de-bayes">Introducción suave a la fórmula de Bayes</a></li>
+  <li><a href="#lo-importante-no-es-memorizar-la-fórmula" id="toc-lo-importante-no-es-memorizar-la-fórmula" class="nav-link" data-scroll-target="#lo-importante-no-es-memorizar-la-fórmula">Lo importante NO es memorizar la fórmula</a></li>
+  <li><a href="#ejemplo-intuitivo-con-clientes" id="toc-ejemplo-intuitivo-con-clientes" class="nav-link" data-scroll-target="#ejemplo-intuitivo-con-clientes">Ejemplo intuitivo con clientes</a></li>
+  <li><a href="#primer-contacto-con-el-dataset-real" id="toc-primer-contacto-con-el-dataset-real" class="nav-link" data-scroll-target="#primer-contacto-con-el-dataset-real">Primer contacto con el dataset real</a>
+  <ul class="collapse">
+  <li><a href="#preparación-inicial" id="toc-preparación-inicial" class="nav-link" data-scroll-target="#preparación-inicial">Preparación inicial</a></li>
+  </ul></li>
+  <li><a href="#explorar-el-dataset" id="toc-explorar-el-dataset" class="nav-link" data-scroll-target="#explorar-el-dataset">Explorar el dataset</a></li>
+  <li><a href="#explorar-conversiones" id="toc-explorar-conversiones" class="nav-link" data-scroll-target="#explorar-conversiones">Explorar conversiones</a></li>
+  <li><a href="#visualización-simple-de-conversiones" id="toc-visualización-simple-de-conversiones" class="nav-link" data-scroll-target="#visualización-simple-de-conversiones">Visualización simple de conversiones</a></li>
+  <li><a href="#qué-debemos-interpretar" id="toc-qué-debemos-interpretar" class="nav-link" data-scroll-target="#qué-debemos-interpretar">Qué debemos interpretar</a></li>
+  <li><a href="#un-error-muy-común" id="toc-un-error-muy-común" class="nav-link" data-scroll-target="#un-error-muy-común">Un error muy común</a></li>
+  <li><a href="#antes-y-después-de-nueva-evidencia" id="toc-antes-y-después-de-nueva-evidencia" class="nav-link" data-scroll-target="#antes-y-después-de-nueva-evidencia">Antes y después de nueva evidencia</a></li>
+  <li><a href="#lo-profundo-del-pensamiento-bayesiano" id="toc-lo-profundo-del-pensamiento-bayesiano" class="nav-link" data-scroll-target="#lo-profundo-del-pensamiento-bayesiano">Lo profundo del pensamiento bayesiano</a></li>
+  <li><a href="#prior-y-posterior-en-la-vida-real" id="toc-prior-y-posterior-en-la-vida-real" class="nav-link" data-scroll-target="#prior-y-posterior-en-la-vida-real">Prior y posterior en la vida real</a>
+  <ul class="collapse">
+  <li><a href="#medicina" id="toc-medicina" class="nav-link" data-scroll-target="#medicina">Medicina</a></li>
+  <li><a href="#negocios" id="toc-negocios" class="nav-link" data-scroll-target="#negocios">Negocios</a></li>
+  <li><a href="#vida-cotidiana" id="toc-vida-cotidiana" class="nav-link" data-scroll-target="#vida-cotidiana">Vida cotidiana</a></li>
+  </ul></li>
+  <li><a href="#visualizaciones-útiles-para-este-capítulo" id="toc-visualizaciones-útiles-para-este-capítulo" class="nav-link" data-scroll-target="#visualizaciones-útiles-para-este-capítulo">Visualizaciones útiles para este capítulo</a></li>
+  <li><a href="#posibles-errores-de-interpretación" id="toc-posibles-errores-de-interpretación" class="nav-link" data-scroll-target="#posibles-errores-de-interpretación">Posibles errores de interpretación</a>
+  <ul class="collapse">
+  <li><a href="#confundir-probabilidad-con-certeza" id="toc-confundir-probabilidad-con-certeza" class="nav-link" data-scroll-target="#confundir-probabilidad-con-certeza">Confundir probabilidad con certeza</a></li>
+  <li><a href="#ignorar-creencias-previas" id="toc-ignorar-creencias-previas" class="nav-link" data-scroll-target="#ignorar-creencias-previas">Ignorar creencias previas</a></li>
+  <li><a href="#sobreinterpretar-muestras-pequeñas" id="toc-sobreinterpretar-muestras-pequeñas" class="nav-link" data-scroll-target="#sobreinterpretar-muestras-pequeñas">Sobreinterpretar muestras pequeñas</a></li>
+  <li><a href="#pensar-que-bayes-elimina-incertidumbre" id="toc-pensar-que-bayes-elimina-incertidumbre" class="nav-link" data-scroll-target="#pensar-que-bayes-elimina-incertidumbre">Pensar que Bayes elimina incertidumbre</a></li>
+  </ul></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">Reflexión bayesiana</a></li>
+  <li><a href="#conexión-con-capítulos-futuros" id="toc-conexión-con-capítulos-futuros" class="nav-link" data-scroll-target="#conexión-con-capítulos-futuros">Conexión con capítulos futuros</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c04.html">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</a></li><li class="breadcrumb-item"><a href="../analysis/c04.html">4.- Bayes: aprender de nueva evidencia</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">4.- Bayes: aprender de nueva evidencia</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<p>Vivimos rodeados de incertidumbre.</p>
+<p>Un médico recibe un examen de laboratorio y cambia parcialmente su sospecha diagnóstica. Un inversionista lee una noticia económica y ajusta sus expectativas. Una empresa lanza una campaña publicitaria y empieza a preguntarse:</p>
+<p><code>“¿Está funcionando realmente?”</code></p>
+<p>Ninguna de estas personas posee certeza absoluta.</p>
+<p>Lo único que tienen es información incompleta.</p>
+<p>Y, aun así, deben tomar decisiones.</p>
+<p>El pensamiento bayesiano nace precisamente de esta realidad:</p>
+<p><code>aprender a modificar racionalmente nuestras creencias cuando aparece nueva evidencia.</code></p>
+<p>Ese es el corazón de Bayes.</p>
+<p>No se trata de alcanzar verdades perfectas. No se trata de eliminar la incertidumbre. Se trata de aprender continuamente.</p>
+</section>
+<section id="pensar-bayesianamente-sin-darse-cuenta" class="level2">
+<h2 class="anchored" data-anchor-id="pensar-bayesianamente-sin-darse-cuenta">Pensar bayesianamente sin darse cuenta</h2>
+<p>Aunque muchas personas consideran a Bayes como una idea matemática compleja, en realidad todos pensamos bayesianamente todos los días.</p>
+<p>Imagina esta situación:</p>
+<ul>
+<li>Un amigo normalmente llega puntual.</li>
+<li>Hoy lleva 40 minutos de retraso.</li>
+<li>No responde mensajes.</li>
+</ul>
+<p>Tu cerebro automáticamente comienza a actualizar posibilidades:</p>
+<ul>
+<li>quizá hubo tráfico</li>
+<li>quizá olvidó la reunión</li>
+<li>quizá ocurrió algo importante</li>
+</ul>
+<p>No tienes certeza.</p>
+<p>Pero la nueva evidencia cambia lo que consideras plausible.</p>
+<p>Eso es pensamiento bayesiano.</p>
+</section>
+<section id="la-idea-central-de-bayes" class="level2">
+<h2 class="anchored" data-anchor-id="la-idea-central-de-bayes">La idea central de Bayes</h2>
+<p>La esencia de Bayes puede resumirse así:</p>
+<p><code>“Lo que creemos antes puede cambiar cuando aparece nueva información.”</code></p>
+<p>En términos simples:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Concepto</th>
+<th>Traducción intuitiva</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Prior</td>
+<td>Lo que creíamos antes</td>
+</tr>
+<tr class="even">
+<td>Evidencia</td>
+<td>La nueva información</td>
+</tr>
+<tr class="odd">
+<td>Posterior</td>
+<td>Lo que creemos ahora</td>
+</tr>
+</tbody>
+</table>
+<p>Bayes no reemplaza nuestras creencias. Las actualiza.</p>
+</section>
+<section id="incertidumbre-y-aprendizaje" class="level2">
+<h2 class="anchored" data-anchor-id="incertidumbre-y-aprendizaje">Incertidumbre y aprendizaje</h2>
+<p>En muchos libros tradicionales, la incertidumbre parece un problema incómodo que debe eliminarse.</p>
+<p>El enfoque bayesiano propone algo distinto:</p>
+<p><code>La incertidumbre es una parte natural del mundo real.</code></p>
+<p>En negocios, medicina, economía o marketing:</p>
+<ul>
+<li>nunca tenemos información perfecta</li>
+<li>nunca conocemos el futuro con certeza</li>
+<li>nunca observamos toda la realidad</li>
+</ul>
+<p>Por eso necesitamos aprender a pensar probabilísticamente.</p>
+<p>No para predecir perfectamente.</p>
+<p>Sino para tomar mejores decisiones bajo incertidumbre.</p>
+</section>
+<section id="contexto-de-negocio" class="level2">
+<h2 class="anchored" data-anchor-id="contexto-de-negocio">Contexto de negocio</h2>
+<section id="qué-es-una-campaña-de-marketing" class="level3">
+<h3 class="anchored" data-anchor-id="qué-es-una-campaña-de-marketing">¿Qué es una campaña de marketing?</h3>
+<p>Antes de usar el dataset, necesitamos entender algunos conceptos básicos.</p>
+<p>Las empresas constantemente intentan atraer clientes mediante campañas:</p>
+<ul>
+<li>emails</li>
+<li>promociones</li>
+<li>descuentos</li>
+<li>anuncios</li>
+<li>publicidad digital</li>
+</ul>
+<p>El objetivo suele ser simple:</p>
+<p><code>lograr que algunas personas realicen una acción.</code></p>
+<p>Por ejemplo:</p>
+<ul>
+<li>comprar un producto</li>
+<li>suscribirse</li>
+<li>registrarse</li>
+<li>responder una oferta</li>
+</ul>
+<p>Cuando una persona realiza esa acción, decimos que ocurrió una conversión.</p>
+</section>
+</section>
+<section id="conversion-rate" class="level2">
+<h2 class="anchored" data-anchor-id="conversion-rate">Conversion rate</h2>
+<p>Uno de los conceptos más importantes en marketing es el:</p>
+<section id="conversion-rate-1" class="level3">
+<h3 class="anchored" data-anchor-id="conversion-rate-1">Conversion rate</h3>
+<p>Es simplemente:</p>
+<p><code>el porcentaje de personas que realizaron la acción deseada.</code></p>
+<p>Por ejemplo:</p>
+<ul>
+<li>100 personas reciben un email</li>
+<li>20 personas compran</li>
+</ul>
+<p>Entonces:</p>
+<ul>
+<li>conversion rate = 20%</li>
+</ul>
+<p>Parece sencillo.</p>
+<p>Pero aquí aparece el problema real:</p>
+<p><code>Nunca sabemos con certeza si una campaña “funciona”.</code></p>
+<p>Incluso campañas buenas pueden tener malos días.</p>
+<p>Y campañas malas pueden parecer exitosas por azar.</p>
+<p>Aquí es donde Bayes resulta útil.</p>
+</section>
+</section>
+<section id="storytelling-central-del-capítulo" class="level2">
+<h2 class="anchored" data-anchor-id="storytelling-central-del-capítulo">Storytelling central del capítulo</h2>
+<p>Imagina una empresa que lanza una nueva campaña publicitaria.</p>
+<p>La empresa cree inicialmente que la campaña podría funcionar “moderadamente bien”.</p>
+<p>No tiene certeza.</p>
+<p>Sólo tiene expectativas previas.</p>
+<p>Ese es el prior.</p>
+<p>Luego aparecen los primeros resultados:</p>
+<ul>
+<li>algunos clientes responden</li>
+<li>otros ignoran la campaña</li>
+<li>aparecen nuevas conversiones</li>
+</ul>
+<p>Ahora la empresa debe actualizar lo que cree.</p>
+<p>Y cada nuevo dato cambia parcialmente sus expectativas.</p>
+<p>Eso es exactamente lo que hace Bayes:</p>
+<p><code>aprender continuamente a partir de nueva evidencia.</code></p>
+</section>
+<section id="introducción-visual-a-bayes" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-visual-a-bayes">Introducción visual a Bayes</h2>
+<p>Supongamos esta situación sencilla.</p>
+<p>Una empresa envía una campaña a 100 clientes.</p>
+<ul>
+<li>20 convierten</li>
+<li>80 no convierten</li>
+</ul>
+<p>La empresa inicialmente pensaba que la campaña probablemente tendría una conversión cercana al 10%.</p>
+<p>Pero los primeros resultados parecen mejores.</p>
+<p>Ahora surge una pregunta natural:</p>
+<p><code>“¿Debemos actualizar nuestras expectativas?”</code></p>
+<p>La respuesta bayesiana es:</p>
+<p>Sí.</p>
+<p>Porque la evidencia nueva importa.</p>
+</section>
+<section id="bayes-usando-frecuencias-naturales" class="level2">
+<h2 class="anchored" data-anchor-id="bayes-usando-frecuencias-naturales">Bayes usando frecuencias naturales</h2>
+<p>Las frecuencias naturales ayudan muchísimo a reducir ansiedad matemática.</p>
+<p>En lugar de pensar en símbolos abstractos, pensamos en personas reales.</p>
+<p>Por ejemplo:</p>
+<p>De 100 clientes:</p>
+<ul>
+<li>20 compran</li>
+<li>80 no compran</li>
+</ul>
+<p>Ahora imaginemos algo más específico.</p>
+<p>Supongamos que:</p>
+<ul>
+<li>muchos clientes que hicieron clic terminaron comprando</li>
+<li>pocos clientes sin clic compraron</li>
+</ul>
+<p>Entonces el clic comienza a convertirse en evidencia útil.</p>
+<p>No es prueba absoluta.</p>
+<p>Pero sí cambia lo que consideramos plausible.</p>
+</section>
+<section id="introducción-suave-a-la-fórmula-de-bayes" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-suave-a-la-fórmula-de-bayes">Introducción suave a la fórmula de Bayes</h2>
+<p>Ahora sí podemos presentar la famosa fórmula.</p>
+<p><code>P(A|B) = P(B|A)P(A) / P(B)</code></p>
+<p>Aunque visualmente parezca intimidante, la idea detrás es sorprendentemente humana.</p>
+<p>Podemos leerla así:</p>
+<ul>
+<li><p>P(A): lo que creíamos antes</p></li>
+<li><p>P(B|A): qué tan compatible es la evidencia con nuestra idea</p></li>
+<li><p>P(A|B): lo que creemos después de observar evidencia</p></li>
+</ul>
+<p>En palabras simples:</p>
+<p><code>Posterior = evidencia útil / evidencia total</code></p>
+<p>O más intuitivamente:</p>
+<p><code>“La nueva información modifica racionalmente nuestras creencias previas.”</code></p>
+</section>
+<section id="lo-importante-no-es-memorizar-la-fórmula" class="level2">
+<h2 class="anchored" data-anchor-id="lo-importante-no-es-memorizar-la-fórmula">Lo importante NO es memorizar la fórmula</h2>
+<p>Muchas personas creen que aprender Bayes significa aprender símbolos.</p>
+<p>No.</p>
+<p>La verdadera idea importante es esta:</p>
+<p><code>las probabilidades pueden cambiar racionalmente cuando aparece nueva evidencia.</code></p>
+<p>Eso es todo.</p>
+<p>La matemática sólo organiza esa intuición.</p>
+</section>
+<section id="ejemplo-intuitivo-con-clientes" class="level2">
+<h2 class="anchored" data-anchor-id="ejemplo-intuitivo-con-clientes">Ejemplo intuitivo con clientes</h2>
+<p>Supongamos nuevamente:</p>
+<ul>
+<li>100 clientes reciben una campaña</li>
+<li>20 compran</li>
+</ul>
+<p>Ahora observamos algo interesante:</p>
+<p>Entre quienes hicieron clic:</p>
+<ul>
+<li>la mayoría compró</li>
+</ul>
+<p>Entonces el clic comienza a actuar como evidencia relevante.</p>
+<p>Nuestra creencia cambia:</p>
+<p>Antes:</p>
+<p><code>“La campaña probablemente funciona moderadamente.”</code></p>
+<p>Después de observar clics y conversiones:</p>
+<p><code>“Ahora parece más plausible que la campaña funcione bien.”</code></p>
+<p>Notemos algo importante:</p>
+<p>No estamos llegando a certeza absoluta.</p>
+<p>Seguimos hablando de plausibilidad.</p>
+</section>
+<section id="primer-contacto-con-el-dataset-real" class="level2">
+<h2 class="anchored" data-anchor-id="primer-contacto-con-el-dataset-real">Primer contacto con el dataset real</h2>
+<p>Ahora conectemos estas ideas con el dataset de marketing.</p>
+<p>El objetivo NO será construir todavía modelos complejos.</p>
+<p>Queremos desarrollar intuición probabilística.</p>
+<section id="preparación-inicial" class="level3">
+<h3 class="anchored" data-anchor-id="preparación-inicial">Preparación inicial</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar la dataset de marketing</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>marketing <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"../data/marketing_campaign.csv"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">delim =</span> <span class="st">";"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#guess_max = 10000,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#show_col_types = FALSE</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="explorar-el-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="explorar-el-dataset">Explorar el dataset</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(marketing) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,240
+Columns: 29
+$ ID                  &lt;dbl&gt; 5524, 2174, 4141, 6182, 5324, 7446, 965, 6177, 485…
+$ Year_Birth          &lt;dbl&gt; 1957, 1954, 1965, 1984, 1981, 1967, 1971, 1985, 19…
+$ Education           &lt;chr&gt; "Graduation", "Graduation", "Graduation", "Graduat…
+$ Marital_Status      &lt;chr&gt; "Single", "Single", "Together", "Together", "Marri…
+$ Income              &lt;dbl&gt; 58138, 46344, 71613, 26646, 58293, 62513, 55635, 3…
+$ Kidhome             &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,…
+$ Teenhome            &lt;dbl&gt; 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1,…
+$ Dt_Customer         &lt;date&gt; 2012-09-04, 2014-03-08, 2013-08-21, 2014-02-10, 2…
+$ Recency             &lt;dbl&gt; 58, 38, 26, 26, 94, 16, 34, 32, 19, 68, 11, 59, 82…
+$ MntWines            &lt;dbl&gt; 635, 11, 426, 11, 173, 520, 235, 76, 14, 28, 5, 6,…
+$ MntFruits           &lt;dbl&gt; 88, 1, 49, 4, 43, 42, 65, 10, 0, 0, 5, 16, 61, 2, …
+$ MntMeatProducts     &lt;dbl&gt; 546, 6, 127, 20, 118, 98, 164, 56, 24, 6, 6, 11, 4…
+$ MntFishProducts     &lt;dbl&gt; 172, 2, 111, 10, 46, 0, 50, 3, 3, 1, 0, 11, 225, 3…
+$ MntSweetProducts    &lt;dbl&gt; 88, 1, 21, 3, 27, 42, 49, 1, 3, 1, 2, 1, 112, 5, 1…
+$ MntGoldProds        &lt;dbl&gt; 88, 6, 42, 5, 15, 14, 27, 23, 2, 13, 1, 16, 30, 14…
+$ NumDealsPurchases   &lt;dbl&gt; 3, 2, 1, 2, 5, 2, 4, 2, 1, 1, 1, 1, 1, 3, 1, 1, 3,…
+$ NumWebPurchases     &lt;dbl&gt; 8, 1, 8, 2, 5, 6, 7, 4, 3, 1, 1, 2, 3, 6, 1, 7, 3,…
+$ NumCatalogPurchases &lt;dbl&gt; 10, 1, 2, 0, 3, 4, 3, 0, 0, 0, 0, 0, 4, 1, 0, 6, 0…
+$ NumStorePurchases   &lt;dbl&gt; 4, 2, 10, 4, 6, 10, 7, 4, 2, 0, 2, 3, 8, 5, 3, 12,…
+$ NumWebVisitsMonth   &lt;dbl&gt; 7, 5, 4, 6, 5, 6, 6, 8, 9, 20, 7, 8, 2, 6, 8, 3, 8…
+$ AcceptedCmp3        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,…
+$ AcceptedCmp4        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ AcceptedCmp5        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ AcceptedCmp1        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ AcceptedCmp2        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Complain            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Z_CostContact       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…
+$ Z_Revenue           &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11…
+$ Response            &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,…</code></pre>
+</div>
+</div>
+<p>Objetivo:</p>
+<ul>
+<li>entender variables</li>
+<li>familiarizarse con clientes reales</li>
+<li>comenzar a pensar en incertidumbre</li>
+</ul>
+</section>
+<section id="explorar-conversiones" class="level2">
+<h2 class="anchored" data-anchor-id="explorar-conversiones">Explorar conversiones</h2>
+<p>Supongamos que el dataset incluye una variable de respuesta a campañas.</p>
+<p>Podemos comenzar calculando proporciones simples.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>marketing <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Response) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  Response     n
+     &lt;dbl&gt; &lt;int&gt;
+1        0  1906
+2        1   334</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contar las respuestas a la campaña y sacar la proporción</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>marketing <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Response) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">proporcion =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  Response     n proporcion
+     &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;
+1        0  1906      0.851
+2        1   334      0.149</code></pre>
+</div>
+</div>
+<p>Aquí todavía no estamos haciendo “estadística avanzada”.</p>
+<p>Sólo estamos aprendiendo a observar evidencia.</p>
+</section>
+<section id="visualización-simple-de-conversiones" class="level2">
+<h2 class="anchored" data-anchor-id="visualización-simple-de-conversiones">Visualización simple de conversiones</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualización simple de las conversiones</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>marketing <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Response) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Response), <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Clientes que respondieron a la campaña"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Respuesta"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Numero de clientes"</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c04_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="qué-debemos-interpretar" class="level2">
+<h2 class="anchored" data-anchor-id="qué-debemos-interpretar">Qué debemos interpretar</h2>
+<p>La parte importante NO es el gráfico en sí.</p>
+<p>La parte importante es la interpretación.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>¿las conversiones parecen frecuentes o raras?</li>
+<li>¿la campaña parece prometedora?</li>
+<li>¿cuánta incertidumbre existe?</li>
+<li>¿podríamos generalizar estos resultados?</li>
+</ul>
+<p>El pensamiento bayesiano siempre pregunta:</p>
+<p><code>“¿Qué tan fuerte es realmente esta evidencia?”</code></p>
+</section>
+<section id="un-error-muy-común" class="level2">
+<h2 class="anchored" data-anchor-id="un-error-muy-común">Un error muy común</h2>
+<p>Un error frecuente en negocios es pensar:</p>
+<p><code>“Si hubo algunas conversiones, entonces la campaña funciona.”</code></p>
+<p>Pero eso puede ser engañoso.</p>
+<p>¿Por qué?</p>
+<p>Porque:</p>
+<ul>
+<li>muestras pequeñas pueden confundirnos</li>
+<li>el azar puede producir patrones temporales</li>
+<li>necesitamos acumular evidencia gradualmente</li>
+</ul>
+<p>Bayes ayuda precisamente a evitar conclusiones exageradas.</p>
+</section>
+<section id="antes-y-después-de-nueva-evidencia" class="level2">
+<h2 class="anchored" data-anchor-id="antes-y-después-de-nueva-evidencia">Antes y después de nueva evidencia</h2>
+<p>Una visualización muy útil para este capítulo es comparar:</p>
+<ul>
+<li>creencia inicial</li>
+<li>creencia después de observar datos</li>
+</ul>
+<p>Por ejemplo:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparar creencia inicial con creencia después de observar datos</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>beliefs <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">etapa =</span> <span class="fu">c</span>(<span class="st">"Antes de la campaña"</span>, <span class="st">"Después de observar datos"</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">probabilidad =</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.149</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>beliefs <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  etapa                     probabilidad
+  &lt;chr&gt;                            &lt;dbl&gt;
+1 Antes de la campaña              0.1  
+2 Después de observar datos        0.149</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de la etapa vs la probabilidad</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(beliefs, <span class="fu">aes</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> etapa, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> probabilidad</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="co"># Para mostrarel gráfico en la escala de 0 a 1 en el</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>               <span class="co"># eje Y</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Cómo cambia una creencia con nueva evidencia"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Probabilidad estimada"</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c04_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="lo-profundo-del-pensamiento-bayesiano" class="level2">
+<h2 class="anchored" data-anchor-id="lo-profundo-del-pensamiento-bayesiano">Lo profundo del pensamiento bayesiano</h2>
+<p>Bayes tiene una implicación filosófica muy poderosa:</p>
+<p><code>nadie empieza desde cero.</code></p>
+<p>Todos tenemos:</p>
+<ul>
+<li>experiencia previa</li>
+<li>expectativas</li>
+<li>intuiciones</li>
+<li>creencias parciales</li>
+</ul>
+<p>Y eso no es un defecto.</p>
+<p>Es inevitable.</p>
+<p>La racionalidad no consiste en eliminar creencias previas.</p>
+<p>Consiste en:</p>
+<p><code>permitir que la evidencia las modifique.</code></p>
+</section>
+<section id="prior-y-posterior-en-la-vida-real" class="level2">
+<h2 class="anchored" data-anchor-id="prior-y-posterior-en-la-vida-real">Prior y posterior en la vida real</h2>
+<p>Esto ocurre constantemente:</p>
+<section id="medicina" class="level3">
+<h3 class="anchored" data-anchor-id="medicina">Medicina</h3>
+<p>Un médico tiene sospechas iniciales antes de pedir un examen.</p>
+<p>Luego el examen modifica parcialmente esas sospechas.</p>
+</section>
+<section id="negocios" class="level3">
+<h3 class="anchored" data-anchor-id="negocios">Negocios</h3>
+<p>Una empresa tiene expectativas iniciales sobre una campaña.</p>
+<p>Luego los resultados reales cambian esas expectativas.</p>
+</section>
+<section id="vida-cotidiana" class="level3">
+<h3 class="anchored" data-anchor-id="vida-cotidiana">Vida cotidiana</h3>
+<p>Las personas actualizan opiniones constantemente.</p>
+<p>Bayes simplemente formaliza algo profundamente humano:</p>
+<p><code>aprender de nueva evidencia.</code></p>
+</section>
+</section>
+<section id="visualizaciones-útiles-para-este-capítulo" class="level2">
+<h2 class="anchored" data-anchor-id="visualizaciones-útiles-para-este-capítulo">Visualizaciones útiles para este capítulo</h2>
+<p>A lo largo del capítulo, conviene priorizar gráficos como:</p>
+<ul>
+<li>barras simples</li>
+<li>proporciones</li>
+<li>frecuencias naturales</li>
+<li>comparaciones antes/después</li>
+<li>incertidumbre visible</li>
+<li>distribuciones sencillas</li>
+</ul>
+<p>Evitar:</p>
+<ul>
+<li>gráficos excesivamente técnicos</li>
+<li>visualizaciones sobrecargadas</li>
+<li>demasiadas variables simultáneamente</li>
+</ul>
+<p>La claridad es más importante que la sofisticación.</p>
+</section>
+<section id="posibles-errores-de-interpretación" class="level2">
+<h2 class="anchored" data-anchor-id="posibles-errores-de-interpretación">Posibles errores de interpretación</h2>
+<section id="error-1" class="level4">
+<h4 class="anchored" data-anchor-id="error-1">Error 1</h4>
+</section>
+<section id="confundir-probabilidad-con-certeza" class="level3">
+<h3 class="anchored" data-anchor-id="confundir-probabilidad-con-certeza">Confundir probabilidad con certeza</h3>
+<p>Una probabilidad alta NO significa garantía.</p>
+<section id="error-2" class="level4">
+<h4 class="anchored" data-anchor-id="error-2">Error 2</h4>
+</section>
+</section>
+<section id="ignorar-creencias-previas" class="level3">
+<h3 class="anchored" data-anchor-id="ignorar-creencias-previas">Ignorar creencias previas</h3>
+<p>La evidencia siempre se interpreta dentro de un contexto previo.</p>
+<section id="error-3" class="level4">
+<h4 class="anchored" data-anchor-id="error-3">Error 3</h4>
+</section>
+</section>
+<section id="sobreinterpretar-muestras-pequeñas" class="level3">
+<h3 class="anchored" data-anchor-id="sobreinterpretar-muestras-pequeñas">Sobreinterpretar muestras pequeñas</h3>
+<p>Pocos datos pueden generar conclusiones engañosas.</p>
+<section id="error-4" class="level4">
+<h4 class="anchored" data-anchor-id="error-4">Error 4</h4>
+</section>
+</section>
+<section id="pensar-que-bayes-elimina-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="pensar-que-bayes-elimina-incertidumbre">Pensar que Bayes elimina incertidumbre</h3>
+<p>No.</p>
+<p>Bayes ayuda a navegar incertidumbre.</p>
+<p>No a destruirla.</p>
+</section>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">Reflexión bayesiana</h2>
+<p>Una de las ideas más importantes de este libro es:</p>
+<p><code>cambiar de opinión con nueva evidencia no es debilidad.</code></p>
+<p>Es racionalidad.</p>
+<p>Muchas veces las personas sienten que modificar una creencia implica “equivocarse”.</p>
+<p>El pensamiento bayesiano propone algo distinto:</p>
+<p><code>las creencias siempre deben ser provisionales.</code></p>
+<p>Porque el mundo cambia.</p>
+<p>Y la información también.</p>
+</section>
+<section id="conexión-con-capítulos-futuros" class="level2">
+<h2 class="anchored" data-anchor-id="conexión-con-capítulos-futuros">Conexión con capítulos futuros</h2>
+<p>Este capítulo introduce la intuición fundamental:</p>
+<ul>
+<li>prior</li>
+<li>evidencia</li>
+<li>posterior</li>
+<li>actualización de creencias</li>
+</ul>
+<p>En los próximos capítulos veremos cómo estas ideas evolucionan hacia:</p>
+<ul>
+<li>probabilidades útiles</li>
+<li>intervalos plausibles</li>
+<li>regresión logística</li>
+<li>forecasting probabilístico</li>
+<li>toma de decisiones bajo incertidumbre</li>
+</ul>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<section id="actualizar-creencias-intuitivamente" class="level4">
+<h4 class="anchored" data-anchor-id="actualizar-creencias-intuitivamente">Actualizar creencias intuitivamente</h4>
+<p>Imagina:</p>
+<ul>
+<li>una campaña normalmente convierte 5%</li>
+<li>en una prueba pequeña convierte 15%</li>
+</ul>
+<p>Pregunta:</p>
+<ul>
+<li>¿deberías cambiar totalmente tu opinión?</li>
+<li>¿o sólo parcialmente?</li>
+</ul>
+<p>Explica intuitivamente por qué.</p>
+</section>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<section id="frecuencias-naturales" class="level4">
+<h4 class="anchored" data-anchor-id="frecuencias-naturales">Frecuencias naturales</h4>
+<p>Supongamos:</p>
+<ul>
+<li>100 clientes reciben una oferta</li>
+<li>18 compran</li>
+</ul>
+<p>Describe la situación usando:</p>
+<ul>
+<li>proporciones</li>
+<li>frecuencias naturales</li>
+<li>interpretación intuitiva</li>
+</ul>
+</section>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<section id="interpretar-evidencia" class="level4">
+<h4 class="anchored" data-anchor-id="interpretar-evidencia">Interpretar evidencia</h4>
+<p>Una campaña tiene pocas conversiones al inicio.</p>
+<p>Después mejora considerablemente.</p>
+<p>Pregunta:</p>
+<ul>
+<li>¿qué podría explicar ese cambio?</li>
+<li>¿la evidencia inicial era suficiente?</li>
+</ul>
+</section>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<section id="pequeño-experimento-en-r" class="level4">
+<h4 class="anchored" data-anchor-id="pequeño-experimento-en-r">Pequeño experimento en R</h4>
+<p>Modificar este código:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>beliefs <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">etapa =</span> <span class="fu">c</span>(<span class="st">"Antes"</span>, <span class="st">"Después"</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">probabilidad =</span> <span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.35</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>y crear distintos escenarios de actualización.</p>
+</section>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<section id="reflexión-conceptual" class="level4">
+<h4 class="anchored" data-anchor-id="reflexión-conceptual">Reflexión conceptual</h4>
+<p>Explica con tus propias palabras:</p>
+<p><code>“Bayes trata sobre plausibilidad, no sobre certeza absoluta.”</code></p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

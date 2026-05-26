@@ -1,0 +1,172 @@
+---
+title: "Prefacio"
+format: html
+editor: visual
+---
+
+## Decisiones bajo incertidumbre - Business Analytics Bayesiano con R*
+
+### Vivimos rodeados de datos.
+
+Cada día vemos gráficos, porcentajes, rankings, predicciones y métricas que prometen ayudarnos a entender el mundo. Empresas toman decisiones multimillonarias basadas en dashboards. Hospitales intentan anticipar riesgos clínicos usando modelos predictivos. Equipos de marketing optimizan campañas observando tasas de conversión. Analistas financieros proyectan escenarios futuros. Plataformas digitales intentan estimar qué veremos, qué compraremos o incluso qué podríamos abandonar.
+
+Y, sin embargo, a pesar de tener más datos que nunca, seguimos tomando decisiones bajo incertidumbre.
+
+Esa es probablemente una de las ideas más importantes de este libro.
+
+Los datos no eliminan la incertidumbre.
+Los modelos no producen certezas absolutas.
+Las predicciones no son profecías.
+
+Lo que sí pueden hacer —y lo que realmente importa— es ayudarnos a pensar mejor.
+
+Este libro nació precisamente de esa idea.
+
+Durante mucho tiempo, gran parte de la enseñanza tradicional de estadística y análisis de datos transmitió una sensación implícita de precisión excesiva. Muchas veces parecía que el objetivo era encontrar “la respuesta correcta”, “el modelo perfecto” o “la predicción exacta”. Pero el mundo real rara vez funciona así.
+
+En negocios, medicina, economía, marketing o gestión, las decisiones importantes casi siempre se toman con información incompleta. Hay ruido. Hay ambigüedad. Hay datos faltantes. Hay comportamientos humanos difíciles de predecir. Hay mercados cambiantes. Hay clientes impredecibles. Hay múltiples explicaciones plausibles para un mismo fenómeno.
+
+Y aun así, debemos decidir.
+
+Debemos decidir si una campaña de marketing vale la pena.
+Debemos decidir si un cliente tiene riesgo de abandonar un servicio.
+Debemos decidir cuánto inventario comprar.
+Debemos decidir si una tendencia es real o simplemente variabilidad aleatoria.
+Debemos decidir cuándo actuar y cuándo esperar más información.
+
+En otras palabras: debemos aprender a pensar bajo incertidumbre.
+
+Ese es el verdadero corazón de este libro.
+
+No fue escrito para enseñar matemática avanzada. Tampoco para competir en plataformas de machine learning ni para construir sistemas ultraoptimizados. No pretende ser un tratado académico de estadística bayesiana ni un manual técnico de modelado probabilístico.
+
+Existen excelentes libros para esos objetivos.
+
+Este libro busca algo diferente.
+
+Busca ayudarte a desarrollar criterio.
+
+Busca enseñarte a interpretar incertidumbre de manera más honesta y útil. Busca que aprendas a pensar probabilísticamente usando datos reales, visualizaciones claras y modelos sencillos pero poderosos.
+
+Porque, en la práctica, muchas veces el problema más importante no es técnico. Es conceptual.
+
+Con frecuencia, las personas no tienen dificultades para ejecutar código. Tienen dificultades para interpretar qué significa realmente un resultado incierto. Tienen dificultades para diferenciar señal de ruido. Tienen dificultades para entender cuándo un modelo está ayudando y cuándo está generando una falsa sensación de seguridad.
+
+Por eso este libro prioriza intuición antes que formalismo.
+
+Aquí, primero intentaremos entender una idea con lenguaje natural. Luego la visualizaremos. Después la simularemos. Y solo cuando sea útil, utilizaremos algo de matemática ligera.
+
+No necesitas cálculo avanzado para aprovechar este libro. No necesitas una formación estadística profunda. No necesitas memorizar fórmulas complejas ni entender teoría matemática sofisticada.
+
+Necesitas curiosidad.
+
+Necesitas disposición para pensar con probabilidades en lugar de certezas absolutas.
+
+Necesitas aceptar que muchas preguntas importantes no tienen respuestas exactas, pero sí tienen respuestas plausibles, útiles y accionables.
+
+Esa diferencia es profundamente importante.
+
+El pensamiento bayesiano, en esencia, trata sobre eso.
+
+Aunque la palabra “bayesiano” puede sonar intimidante al principio, la idea fundamental es sorprendentemente humana e intuitiva: actualizar nuestras creencias cuando aparece nueva información.
+
+Todos hacemos esto constantemente, incluso sin notarlo.
+
+Si un restaurante siempre está vacío, empezamos a sospechar que quizá no es tan bueno.
+Si una campaña mejora repetidamente las conversiones, nuestra confianza aumenta.
+Si un cliente muestra señales de insatisfacción, empezamos a considerar que podría abandonar el servicio.
+Si una tendencia se repite muchas veces, comenzamos a creer que probablemente no es casualidad.
+
+El pensamiento bayesiano formaliza esa intuición natural.
+
+No se trata de encontrar verdades absolutas.
+Se trata de trabajar con plausibilidades.
+
+Se trata de reconocer explícitamente la incertidumbre en lugar de esconderla.
+
+A lo largo del libro veremos que, muchas veces, pensar en distribuciones es más útil que pensar en valores únicos. Veremos por qué un intervalo plausible puede comunicar más honestamente la realidad que una sola predicción puntual. Veremos cómo incorporar incertidumbre en nuestras decisiones puede producir análisis más realistas y menos frágiles.
+
+Y también veremos algo importante: la incertidumbre no es una falla del análisis.
+
+Es parte natural del mundo.
+
+Uno de los problemas modernos del análisis de datos es que frecuentemente confundimos sofisticación técnica con comprensión real. Un modelo extremadamente complejo puede producir resultados impresionantes… y aun así ser mal interpretado. En cambio, un modelo relativamente simple, bien entendido y correctamente interpretado, puede generar decisiones mucho más útiles.
+
+Por eso el enfoque de este libro es deliberadamente práctico y pedagógico.
+
+Trabajaremos con datasets reales de negocio. Analizaremos ventas, campañas de marketing y churn de clientes. Construiremos modelos de regresión lineal y logística usando herramientas modernas de R. Aprenderemos a visualizar incertidumbre y a interpretar resultados probabilísticos de manera aplicada.
+
+Utilizaremos principalmente:
+
+- R
+- tidyverse
+- ggplot2
+- rstanarm
+- Quarto
+
+Estas herramientas fueron elegidas no porque sean las más “avanzadas”, sino porque permiten aprender de manera clara, moderna y reproducible. Además, funcionan muy bien en entornos accesibles como Posit Cloud Free, lo cual hace posible que más personas puedan experimentar y practicar sin necesidad de infraestructura compleja.
+
+A lo largo del libro evitaremos optimización excesiva, tuning complicado y teoría computacional profunda. No porque esas áreas no sean importantes, sino porque no son el foco aquí.
+
+El foco es aprender a pensar mejor usando datos.
+
+También quiero decir algo importante para quienes sienten ansiedad al escuchar palabras como “estadística”, “probabilidad” o “modelos”.
+
+Este libro no espera perfección matemática.
+
+De hecho, muchas veces la matemática más importante será simplemente aprender a interpretar una probabilidad de manera razonable. Entender qué significa realmente una predicción incierta. Reconocer cuándo un resultado es compatible con múltiples explicaciones. Saber cuándo un modelo aporta evidencia útil y cuándo todavía necesitamos más información.
+
+Las fórmulas aparecerán, pero serán pocas, simples y explicadas cuidadosamente.
+
+Por ejemplo, veremos ideas fundamentales o o modelos sencillos como:
+
+`y = β0 + β1 x + ϵ`
+
+pero siempre con un objetivo práctico: desarrollar intuición.
+
+No queremos convertirnos en calculadoras humanas. Queremos convertirnos en mejores pensadores probabilísticos.
+
+Este libro está especialmente dirigido a personas curiosas. Personas que quizá vienen de áreas no tradicionales: medicina, administración, ingeniería, economía, diseño, educación o negocios. Personas autodidactas que quieren entender analytics moderno sin quedar atrapadas en formalismos innecesarios. Personas que desean construir proyectos reales y desarrollar criterio analítico aplicable al mundo real.
+
+Si alguna vez has sentido que muchos libros técnicos explican demasiado rápido, asumen demasiadas cosas o convierten conceptos interesantes en algo innecesariamente intimidante, espero que este libro te resulte diferente.
+
+Aquí intentaremos avanzar paso a paso.
+
+Con ejemplos concretos.
+Con gráficos claros.
+Con incertidumbre visible.
+Con interpretaciones honestas.
+Con preguntas reales.
+Con limitaciones explícitas.
+
+Porque otra idea fundamental de este libro es que los modelos tienen límites.
+
+Un modelo no reemplaza el criterio humano.
+No elimina la necesidad de contexto.
+No entiende completamente la complejidad del comportamiento humano.
+No “descubre la verdad”.
+
+Pero sí puede ayudarnos a razonar mejor.
+
+Puede ayudarnos a organizar evidencia.
+Puede ayudarnos a cuantificar incertidumbre.
+Puede ayudarnos a explorar escenarios plausibles.
+Puede ayudarnos a evitar conclusiones excesivamente confiadas.
+Puede ayudarnos a tomar decisiones más informadas.
+
+Y eso ya es muchísimo.
+
+Quizá, al final, el verdadero valor del pensamiento bayesiano no sea producir mejores números, sino producir una relación más honesta con lo que no sabemos.
+
+Aceptar incertidumbre no significa resignarse a la ignorancia.
+Significa aprender a navegarla con más claridad.
+
+Esa es la invitación de este libro.
+
+Aprender a observar los datos con más humildad.
+Aprender a interpretar probabilidades con más criterio.
+Aprender a tomar decisiones sin exigir certezas imposibles.
+
+Porque el objetivo final no es eliminar la incertidumbre.
+
+El objetivo es aprender a pensar mejor dentro de ella.

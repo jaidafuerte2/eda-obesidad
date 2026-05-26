@@ -1,0 +1,767 @@
+---
+title: "3.- Simulación y mundos posibles"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(readr)
+library(dplyr)
+library(tidyverse)
+```
+
+## Introducción
+
+Hasta ahora hemos trabajado con datos del pasado.
+
+Observamos ventas que ya ocurrieron, campañas que ya terminaron y clientes que ya abandonaron una empresa. Pero las decisiones reales casi nunca se toman sobre el pasado. Se toman sobre el futuro.
+
+Y el futuro tiene un problema incómodo:
+
+no existe todavía.
+
+Las empresas nunca saben exactamente:
+
+- cuánto venderán el próximo mes,
+- cuántos clientes responderán a una campaña,
+- cuántos usuarios abandonarán un servicio,
+- cuánto dinero ingresará realmente.
+
+Aun así, deben decidir.
+
+Deben contratar personas, invertir en publicidad, planificar inventario, definir presupuestos y asumir riesgos.
+
+La incertidumbre no es una excepción en negocios.
+
+Es el estado natural de las decisiones reales.
+
+Durante mucho tiempo, muchas personas imaginaron que el objetivo del análisis de datos era “predecir perfectamente”. Pero en la práctica, eso rara vez ocurre. Incluso los mejores modelos fallan. Incluso las mejores empresas enfrentan sorpresas.
+
+La pregunta importante entonces no es:
+
+`“¿Cómo eliminamos la incertidumbre?”`
+
+La pregunta más útil es:
+
+`“¿Cómo pensamos mejor dentro de la incertidumbre?”`
+
+Ese es el objetivo de este capítulo.
+
+Aquí comenzaremos a usar simulación para explorar futuros plausibles.
+
+No intentaremos adivinar exactamente qué ocurrirá.
+
+Intentaremos algo mucho más útil:
+
+imaginar múltiples mundos posibles.
+
+## 1. Pensar en escenarios
+
+Imagina que diriges una tienda online.
+
+El próximo mes esperas vender alrededor de $50,000.
+
+Pero ¿qué significa realmente “esperas”?
+
+Tal vez vendas:
+
+- $45,000
+- $52,000
+- $60,000
+- $39,000
+
+Todos esos resultados parecen plausibles.
+
+El futuro no es un único número.
+
+Es una región de posibilidades.
+
+Eso cambia completamente la forma de pensar.
+
+Muchas decisiones empresariales se basan precisamente en esto:
+
+- escenarios optimistas,
+- escenarios pesimistas,
+- escenarios intermedios,
+- riesgos plausibles,
+- variabilidad esperada.
+
+Las empresas constantemente trabajan con incertidumbre, aunque no siempre la llamen así.
+
+## 2. ¿Qué significa simular?
+
+Simular significa crear artificialmente muchos posibles resultados.
+
+En lugar de preguntar:
+
+`“¿Qué ocurrirá exactamente?”`
+
+preguntamos:
+
+`“¿Qué cosas podrían ocurrir razonablemente?”`
+
+La simulación es una herramienta para explorar posibilidades.
+
+Por ejemplo:
+
+- lanzar una moneda muchas veces,
+- simular ventas futuras,
+- generar posibles conversiones de una campaña,
+- imaginar cuántos clientes podrían abandonar una empresa.
+
+Cada simulación representa un pequeño mundo posible.
+
+Al repetir miles de veces esos escenarios, empezamos a ver patrones.
+
+## 3. Una intuición simple de Monte Carlo
+
+El nombre “Monte Carlo” suena sofisticado, pero la idea básica es sorprendentemente sencilla.
+
+Consiste en:
+
+1. generar escenarios aleatorios,
+2. repetir muchas veces,
+3. observar qué patrones aparecen.
+
+Eso es todo.
+
+No necesitamos matemáticas avanzadas para entender la intuición.
+
+Imagina lanzar un dado una sola vez.
+
+No aprendes mucho.
+
+Pero si lo lanzas 10,000 veces:
+
+- empiezas a ver frecuencias,
+- patrones,
+- rangos plausibles,
+- variabilidad natural.
+
+La simulación transforma incertidumbre abstracta en algo visible.
+
+## 4. Simulación simple con monedas
+
+Antes de usar datasets reales, hagamos algo pequeño e intuitivo.
+
+Supongamos que una moneda tiene 50% de probabilidad de caer cara.
+
+Podemos simular 100 lanzamientos.
+
+```{r}
+# Generar semilla aleatoria
+set.seed(123)
+
+# Simular cien lanzamientos
+lanzamientos <- sample( # elige entre Cara y Sello 100 veces
+  c("Cara", "Sello"),
+  size = 100,
+  replace = TRUE # Después de elegir el resultado, vuelve a ponerlo
+                 # disponible "encéralo"  
+)
+lanzamientos[1:20] # produce:
+```
+
+```{r}
+table(lanzamientos) # produce:
+```
+
+Aquí no estamos “prediciendo” resultados exactos.
+
+Estamos generando un posible mundo.
+
+Si repetimos nuevamente, obtenemos otro mundo diferente.
+
+```{r}
+set.seed(456)
+# Simular cin nuevos lanzamientos
+lanzamientos_2 <- sample(
+  c("Cara", "Sello"),
+  size = 100,
+  replace = TRUE
+)
+lanzamientos_2[1:20] # produce:
+```
+
+```{r}
+table(lanzamientos_2) # produce:
+```
+
+Los resultados cambian.
+
+La incertidumbre sigue presente.
+
+Pero aparecen patrones.
+
+## 5. La idea importante: variabilidad
+
+Uno de los conceptos más importantes del capítulo es este:
+
+`La variabilidad no es ruido molesto.`
+`Es parte natural de la realidad.`
+
+Dos meses distintos pueden tener ventas distintas.
+
+Dos campañas similares pueden producir resultados diferentes.
+
+Dos grupos de clientes aparentemente parecidos pueden comportarse distinto.
+
+La simulación nos ayuda a aceptar esa variabilidad como algo normal.
+
+## 6 Simulación de ventas futuras
+
+Ahora usaremos el dataset de Superstore.
+
+Primero cargamos los datos.
+
+```{r}
+# Cargar la dataset de superstore sales
+sales <- read_csv("../data/superstore_sales.csv",
+                  guess_max = 10000,
+                  show_col_types = FALSE)
+```
+
+Supongamos que queremos imaginar posibles ventas futuras usando el comportamiento histórico.
+
+Primero observemos las ventas.
+
+```{r}
+# Distribución de las ventas
+sales %>%
+  ggplot(aes(x = Sales)) +
+  geom_histogram(
+    bins = 1000
+  ) +
+  coord_cartesian(xlim = c(0, 750)) +
+  labs(
+    title = "Distribución de las ventas",
+    x = "Ventas",
+    y = "Frecuencia"
+  )
+```
+
+Aquí aparece algo importante:
+
+las ventas no son constantes.
+
+Existe mucha variabilidad.
+
+Algunas ventas son pequeñas.
+
+Otras son enormes.
+
+## 7. Crear futuros plausibles
+
+Ahora simularemos posibles ventas futuras usando muestreo aleatorio.
+
+```{r}
+set.seed(123)
+
+ventas_simuladas <- sample(
+  sales$Sales,
+  size = 1000,  # Elige 1000 ventas aleatorias de Sales
+  replace = TRUE
+)
+ventas_simuladas[1:20]
+```
+
+```{r}
+sim_df <- tibble(
+  ventas_simuladas
+)
+sim_df[1:6,] # produce:
+```
+
+Visualicemos esos mundos posibles
+
+```{r}
+# Gráfico de densidad de las ventas simuladas
+sim_df %>%
+  ggplot(aes(x = ventas_simuladas)) +
+  geom_density() +
+  coord_cartesian(xlim = c(0, 1000)) +
+  labs(
+    title = "Ventas Simuladas",
+    x = "Ventas",
+    y = "Densidad"
+  )
+```
+
+Lo importante aquí no es un único valor.
+
+Lo importante es la distribución.
+
+La simulación nos dice:
+
+- qué valores parecen frecuentes,
+- qué resultados parecen raros,
+- qué rangos parecen plausibles.
+
+## 8. Simular ingresos mensuales
+
+Ahora demos un paso más interesante.
+
+Supongamos que queremos imaginar ingresos mensuales posibles.
+
+Podemos simular muchos “meses ficticios”.
+
+```{r}
+set.seed(123)
+
+# Simular ventas mensuales. Simular 1000 ventas totales que se 
+# generaron tomando al azar 100 ventas de Sales
+simulaciones_mensuales <- replicate( # Replicar
+  1000, # Replicar 1000 veces
+  sum(sample(  # Sumar 100 ventas aleatorias
+    sales$Sales,
+    size = 100, # Elige 100 ventas aleatorias
+    replace = TRUE
+  ))
+)
+simulaciones_mensuales[1:20] # produce:
+```
+
+```{r}
+mensual_df <- tibble(
+  ingresos = simulaciones_mensuales
+)
+mensual_df[1:6,] # produce:
+```
+
+Visualización
+
+```{r}
+# Gráfico de los posibles ingresos mensuales
+mensual_df %>%
+  ggplot(aes(x = ingresos)) +
+  geom_histogram(
+    bins = 40
+  ) +
+  labs(
+    title = "Posibles ingresos mensuales",
+    x = "Ingresos simulados",
+    y = "Frecuencia"
+  )
+```
+
+Ahora ya no estamos viendo ventas individuales.
+
+Estamos viendo futuros completos.
+
+Cada barra representa mundos plausibles.
+
+## 9. Interpretación empresarial
+
+Aquí aparece una idea extremadamente importante.
+
+La simulación NO dice:
+
+`“El próximo mes venderás exactamente $52,431.”`
+
+La simulación dice algo mucho más honesto:
+
+`“Estos son algunos resultados plausibles dada la información disponible.”`
+
+Eso cambia la calidad de las decisiones.
+
+Por ejemplo:
+
+- ¿qué ocurre si aparece un escenario muy bajo?
+- ¿la empresa tiene suficiente liquidez?
+- ¿qué tan frecuentes son los escenarios extremos?
+- ¿qué tan amplia es la incertidumbre?
+
+Las decisiones reales dependen mucho más de los rangos plausibles que de un único número.
+
+## 10. Introducción intuitiva al marketing
+
+Antes de continuar, necesitamos introducir algunos conceptos simples.
+
+### ¿Qué es una conversión?
+
+En marketing, una conversión ocurre cuando una persona realiza la acción que esperamos.
+
+Por ejemplo:
+
+- comprar un producto,
+- registrarse,
+- responder un anuncio,
+- descargar una app.
+
+### ¿Qué es conversion rate?
+
+Es el porcentaje de personas que realizan esa acción.
+
+Por ejemplo:
+
+si 100 personas ven un anuncio y 5 compran:
+
+`Conversion Rate= 5/100 = 0.05 = 5%`
+
+Eso parece simple, pero introduce incertidumbre enorme.
+
+Dos campañas similares pueden producir resultados muy distintos.
+
+## 11. Simulación de campañas de marketing
+
+Cargamos el dataset.
+
+```{r}
+# Cargar la dataset de marketing
+sales <- read_csv("../data/marketing_campaign.csv",
+                  guess_max = 10000,
+                  show_col_types = FALSE)
+```
+
+Supongamos que históricamente una campaña convierte aproximadamente al 10% de las personas.
+
+Podemos simular posibles resultados.
+
+```{r}
+set.seed(123)
+
+# Simular 1000 campañas distintas donde cada campaña tiene 100
+# personas y cada persona tiene 10% de probabilidad de convertir
+conversiones <- rbinom( # genera resultados binomiales aleatorios
+  n = 1000, # Crear 1000 simulaciones distintas
+  size = 100, # Cada simulación tendrá 100 personas
+  prob = 0.10 # Cada persona tiene 10% de probabilidad de convertir
+)
+conversiones[1:20] # produce:
+```
+
+```{r}
+conv_df <- tibble(
+  conversiones
+) 
+conv_df[1:6,] # produce:
+```
+
+Visualización:
+
+```{r}
+# Distribución de las conversiones simuladas
+conv_df %>%
+  ggplot(aes(x = conversiones)) +
+  geom_histogram(
+    bins = 40
+  ) + 
+  labs(
+    title = "Conversiones simuladas",
+    x = "Conversiones",
+    y = "Frecuencias"
+  )
+
+```
+
+## 12. Lo importante no es el promedio
+
+Muchos principiantes observan solamente el promedio esperado.
+
+Pero la incertidumbre alrededor del promedio es igual de importante.
+
+Tal vez:
+
+- 10 conversiones sea común,
+- 5 conversiones aún sea plausible,
+- 18 conversiones también pueda ocurrir.
+
+La simulación ayuda a visualizar esos escenarios.
+
+## 13. Introducción intuitiva al churn
+
+Ahora introduciremos un concepto empresarial muy importante.
+
+### ¿Qué es churn?
+
+“Churn” significa abandono de clientes.
+
+Por ejemplo:
+
+- cancelar Netflix,
+- cambiar de operadora telefónica,
+- dejar una suscripción,
+- abandonar un servicio.
+
+El churn es extremadamente importante porque retener clientes suele ser más barato que conseguir nuevos.
+
+## 14. Simulación de churn
+
+Cargamos el dataset.
+
+```{r}
+sales <- read_csv("../data/telco_customer_churn.csv",
+                  guess_max = 10000,
+                  show_col_types = FALSE)
+```
+
+Supongamos que una empresa tiene una probabilidad aproximada de abandono del 20%.
+
+Podemos simular posibles escenarios futuros
+
+```{r}
+set.seed(123)
+
+# Simular 100 escenarios distintos donde en cada escenario hay 500
+# clientes y cada cliente tiene 20% de probabilidad de abandonar
+clientes_abandono <- rbinom(
+  n = 100, # crear 100 mundos posibles o simulaciones
+  size = 500, # cada simulación incluye 500 clientes
+  prob = 0.2 # probabilidad de abadono o riesgo de churn 
+)
+clientes_abandono[1:20] # produce:
+```
+
+```{r}
+churn_df <- tibble(
+  abandono = clientes_abandono
+)
+churn_df[1:6,] # produce:
+```
+
+Visualización:
+
+```{r}
+# Visualizar el churn simulado
+churn_df %>%
+  ggplot(aes(x = abandono)) +
+  geom_histogram(
+    bins = 70
+  ) +
+  labs(
+    title = "Abandono simulado",
+    x = "Abandono",
+    y = "Frecuencia"
+  )
+
+```
+
+## 15 Riesgo e incertidumbre
+
+Observa lo importante que es esta idea.
+
+La empresa NO sabe exactamente:
+
+- quién abandonará,
+- cuándo abandonará,
+- cuántos abandonarán exactamente.
+
+Pero aun así puede explorar escenarios plausibles.
+
+Eso es muchísimo más útil que ignorar la incertidumbre.
+
+## 16. Visualizar mundos posibles
+
+Una de las mejores formas de entender incertidumbre es verla.
+
+Por ejemplo, podemos simular trayectorias futuras.
+
+```{r}
+set.seed(123)
+
+# Simular trayectorias futuras
+trayectorias <- tibble(
+  dia = rep(1:30, 50), # Repetir la secuencia del 1 al 30 (días del
+                       # mes) 50 veces. (porque queremos 50 simulaciones)
+                       # cada una con 30 días que tiene un mes) 
+  ventas = cumsum(rnorm(1500, mean = 100, sd = 20)), # rnorm genera
+                       # 1500 números aleatorios normales con media
+                       # esperada de 100 y desviación de 20
+                       # cumsum va acumulando cada uno de los 1500
+                       # valores (acumula los cambios diarios)
+  simulacion = rep(1:50, each = 30) # Crear los id's de simulación
+                       # significa que repita cada número, del 1 al
+                       # 50, 30 veces 
+)
+trayectorias[1:8,] # produce:
+```
+
+```{r}
+# Visualizar trayectorias futuras
+trayectorias %>%
+  ggplot(aes(
+    x = dia,
+    y = ventas,
+    group = simulacion # Cada simulación debe dibujarse como
+                       # una línea separada
+  )) +
+  #coord_cartesian(ylim = c(0, 500)) +
+  geom_line(alpha = 0.2) + # dibuja líneas conectando puntos
+  labs(
+    title = "Múltiples futuros plausibles",
+    x = "Día",
+    y = "Ventas acumuladas"
+  )
+
+```
+
+En esta gráfico de la simulación las ventas se siguen acumulando
+mes a mes (es decir, no se enceran al inicio de cada mes) así 
+que el gráfico es bastante confuso. Se puede mejorar cambiando la simulación:
+
+```{r}
+# Mejorar las trayectorias futuras para que puedan verse bien en
+# el gráfico. Este código permite  que las ventas se puedan "encerar"
+# al inicio de cada mes
+trayectorias2 <- tibble(
+  simulacion = rep(1:50, each = 30),
+  dia = rep(1:30, 50),
+  cambio = rnorm(1500, mean = 100, sd = 20)
+) %>%
+  group_by(simulacion) %>%
+  mutate(
+    ventas = cumsum(cambio)
+  )
+```
+
+```{r}
+# Visualizar trayectorias futuras
+trayectorias2 %>%
+  ggplot(aes(
+    x = dia,
+    y = ventas,
+    group = simulacion # Cada simulación debe dibujarse como
+                       # una línea separada
+  )) +
+  #coord_cartesian(ylim = c(0, 500)) +
+  geom_line(alpha = 0.2) + # dibuja líneas conectando puntos
+  labs(
+    title = "Múltiples futuros plausibles",
+    x = "Día",
+    y = "Ventas acumuladas"
+  )
+```
+
+Este gráfico es filosóficamente muy importante.
+
+No existe una única línea futura.
+
+Existen múltiples trayectorias plausibles.
+
+## 17. Mundos posibles
+
+Esta es probablemente la idea más profunda del capítulo.
+
+Cada simulación representa un pequeño universo plausible.
+
+Un posible futuro.
+
+No todos ocurrirán.
+
+Pero algunos podrían ocurrir.
+
+La simulación no elimina incertidumbre.
+
+La hace visible.
+
+Y eso cambia profundamente cómo pensamos decisiones.
+
+## 18. Conexión intuitiva con Bayes
+
+Aquí comenzamos a acercarnos suavemente al pensamiento bayesiano.
+
+Bayes no trabaja con certezas absolutas.
+
+Trabaja con plausibilidad.
+
+Trabaja con múltiples posibilidades.
+
+Trabaja con distribuciones.
+
+En capítulos posteriores veremos cómo:
+
+- nuevas evidencias modifican creencias,
+- las probabilidades cambian,
+- algunos escenarios se vuelven más plausibles,
+- otros menos plausibles.
+
+Pero la intuición central empieza aquí:
+
+`pensar probabilísticamente significa aceptar múltiples futuros posibles.`
+
+## 19. Errores comunes de interpretación
+
+### Error 1 — Creer que la simulación “predice”
+
+La simulación no garantiza resultados.
+
+Explora posibilidades plausibles.
+
+### Error 2 — Confundir incertidumbre con inutilidad
+
+Que exista incertidumbre no significa que el análisis sea inútil.
+
+De hecho, reconocer incertidumbre suele producir mejores decisiones.
+
+### Error 3 — Buscar precisión imposible
+
+Los negocios reales rara vez tienen información perfecta.
+
+La simulación ayuda precisamente cuando existe información incompleta.
+
+## 20. Reflexión bayesiana
+
+Una idea poderosa emerge de este capítulo:
+
+`el futuro no es un punto exacto.`
+
+Es una distribución de posibilidades.
+
+Ese cambio mental es enorme.
+
+Muchas personas buscan eliminar incertidumbre.
+
+El pensamiento probabilístico propone algo diferente:
+
+aprender a navegarla.
+
+Los modelos no producen verdades absolutas.
+
+Producen escenarios plausibles.
+
+Y eso suele ser suficiente para tomar mejores decisiones.
+
+## 21. Ejercicios
+
+### Ejercicio 1
+
+Simula 1000 lanzamientos de una moneda con probabilidad de cara igual a 0.7.
+
+- ¿Qué observas?
+- ¿Cómo cambia respecto a una moneda justa?
+
+### Ejercicio 2
+
+Usando el dataset de Superstore:
+
+- simula ingresos mensuales usando distintos tamaños de muestra,
+- compara la variabilidad obtenida.
+
+### Ejercicio 3
+
+Modifica la probabilidad de conversión:
+
+- 5%
+- 10%
+- 20%
+
+¿Cómo cambian las distribuciones simuladas?
+
+### Ejercicio 4
+
+Simula churn con:
+
+- 10%,
+- 20%,
+- 35%.
+
+¿Qué escenarios parecen más riesgosos?
+
+### Ejercicio 5
+
+Crea múltiples trayectorias simuladas usando diferentes niveles de variabilidad (sd).
+
+¿Qué ocurre cuando aumenta la incertidumbre?

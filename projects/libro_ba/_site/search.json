@@ -1,0 +1,934 @@
+[
+  {
+    "objectID": "index.html#bienvenido",
+    "href": "index.html#bienvenido",
+    "title": "Decisiones bajo incertidumbre - Business Analytics Bayesiano con R",
+    "section": "Bienvenido",
+    "text": "Bienvenido\nEste es el sitio web del libro “Decisiones bajo incertidumbre”, Este libro te enseñará a hacer análisis usando estadística bayesiana con R.\nEn este libro enconstrarás un manual muy práctico de habilidades para el análisis de datos bayesiano desde los temas más básicos como limpiar datos y crear gráficos, hasta crear modelos bayesianos en un contexto relacionado con la analítica de negocios usando algunas datasets de Kaggle: Superstore Sales, Customer Churn y Marketing Campaign\nEste sitio web es y siempre será gratuito, bajo la licencia CC BY-NC-ND 3.0 .",
+    "crumbs": [
+      "Decisiones bajo incertidumbre - Business Analytics Bayesiano con R"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html",
+    "href": "analysis/c00_prefacio.html",
+    "title": "Prefacio",
+    "section": "",
+    "text": "Cada día vemos gráficos, porcentajes, rankings, predicciones y métricas que prometen ayudarnos a entender el mundo. Empresas toman decisiones multimillonarias basadas en dashboards. Hospitales intentan anticipar riesgos clínicos usando modelos predictivos. Equipos de marketing optimizan campañas observando tasas de conversión. Analistas financieros proyectan escenarios futuros. Plataformas digitales intentan estimar qué veremos, qué compraremos o incluso qué podríamos abandonar.\nY, sin embargo, a pesar de tener más datos que nunca, seguimos tomando decisiones bajo incertidumbre.\nEsa es probablemente una de las ideas más importantes de este libro.\nLos datos no eliminan la incertidumbre. Los modelos no producen certezas absolutas. Las predicciones no son profecías.\nLo que sí pueden hacer —y lo que realmente importa— es ayudarnos a pensar mejor.\nEste libro nació precisamente de esa idea.\nDurante mucho tiempo, gran parte de la enseñanza tradicional de estadística y análisis de datos transmitió una sensación implícita de precisión excesiva. Muchas veces parecía que el objetivo era encontrar “la respuesta correcta”, “el modelo perfecto” o “la predicción exacta”. Pero el mundo real rara vez funciona así.\nEn negocios, medicina, economía, marketing o gestión, las decisiones importantes casi siempre se toman con información incompleta. Hay ruido. Hay ambigüedad. Hay datos faltantes. Hay comportamientos humanos difíciles de predecir. Hay mercados cambiantes. Hay clientes impredecibles. Hay múltiples explicaciones plausibles para un mismo fenómeno.\nY aun así, debemos decidir.\nDebemos decidir si una campaña de marketing vale la pena. Debemos decidir si un cliente tiene riesgo de abandonar un servicio. Debemos decidir cuánto inventario comprar. Debemos decidir si una tendencia es real o simplemente variabilidad aleatoria. Debemos decidir cuándo actuar y cuándo esperar más información.\nEn otras palabras: debemos aprender a pensar bajo incertidumbre.\nEse es el verdadero corazón de este libro.\nNo fue escrito para enseñar matemática avanzada. Tampoco para competir en plataformas de machine learning ni para construir sistemas ultraoptimizados. No pretende ser un tratado académico de estadística bayesiana ni un manual técnico de modelado probabilístico.\nExisten excelentes libros para esos objetivos.\nEste libro busca algo diferente.\nBusca ayudarte a desarrollar criterio.\nBusca enseñarte a interpretar incertidumbre de manera más honesta y útil. Busca que aprendas a pensar probabilísticamente usando datos reales, visualizaciones claras y modelos sencillos pero poderosos.\nPorque, en la práctica, muchas veces el problema más importante no es técnico. Es conceptual.\nCon frecuencia, las personas no tienen dificultades para ejecutar código. Tienen dificultades para interpretar qué significa realmente un resultado incierto. Tienen dificultades para diferenciar señal de ruido. Tienen dificultades para entender cuándo un modelo está ayudando y cuándo está generando una falsa sensación de seguridad.\nPor eso este libro prioriza intuición antes que formalismo.\nAquí, primero intentaremos entender una idea con lenguaje natural. Luego la visualizaremos. Después la simularemos. Y solo cuando sea útil, utilizaremos algo de matemática ligera.\nNo necesitas cálculo avanzado para aprovechar este libro. No necesitas una formación estadística profunda. No necesitas memorizar fórmulas complejas ni entender teoría matemática sofisticada.\nNecesitas curiosidad.\nNecesitas disposición para pensar con probabilidades en lugar de certezas absolutas.\nNecesitas aceptar que muchas preguntas importantes no tienen respuestas exactas, pero sí tienen respuestas plausibles, útiles y accionables.\nEsa diferencia es profundamente importante.\nEl pensamiento bayesiano, en esencia, trata sobre eso.\nAunque la palabra “bayesiano” puede sonar intimidante al principio, la idea fundamental es sorprendentemente humana e intuitiva: actualizar nuestras creencias cuando aparece nueva información.\nTodos hacemos esto constantemente, incluso sin notarlo.\nSi un restaurante siempre está vacío, empezamos a sospechar que quizá no es tan bueno. Si una campaña mejora repetidamente las conversiones, nuestra confianza aumenta. Si un cliente muestra señales de insatisfacción, empezamos a considerar que podría abandonar el servicio. Si una tendencia se repite muchas veces, comenzamos a creer que probablemente no es casualidad.\nEl pensamiento bayesiano formaliza esa intuición natural.\nNo se trata de encontrar verdades absolutas. Se trata de trabajar con plausibilidades.\nSe trata de reconocer explícitamente la incertidumbre en lugar de esconderla.\nA lo largo del libro veremos que, muchas veces, pensar en distribuciones es más útil que pensar en valores únicos. Veremos por qué un intervalo plausible puede comunicar más honestamente la realidad que una sola predicción puntual. Veremos cómo incorporar incertidumbre en nuestras decisiones puede producir análisis más realistas y menos frágiles.\nY también veremos algo importante: la incertidumbre no es una falla del análisis.\nEs parte natural del mundo.\nUno de los problemas modernos del análisis de datos es que frecuentemente confundimos sofisticación técnica con comprensión real. Un modelo extremadamente complejo puede producir resultados impresionantes… y aun así ser mal interpretado. En cambio, un modelo relativamente simple, bien entendido y correctamente interpretado, puede generar decisiones mucho más útiles.\nPor eso el enfoque de este libro es deliberadamente práctico y pedagógico.\nTrabajaremos con datasets reales de negocio. Analizaremos ventas, campañas de marketing y churn de clientes. Construiremos modelos de regresión lineal y logística usando herramientas modernas de R. Aprenderemos a visualizar incertidumbre y a interpretar resultados probabilísticos de manera aplicada.\nUtilizaremos principalmente:\n\nR\ntidyverse\nggplot2\nrstanarm\nQuarto\n\nEstas herramientas fueron elegidas no porque sean las más “avanzadas”, sino porque permiten aprender de manera clara, moderna y reproducible. Además, funcionan muy bien en entornos accesibles como Posit Cloud Free, lo cual hace posible que más personas puedan experimentar y practicar sin necesidad de infraestructura compleja.\nA lo largo del libro evitaremos optimización excesiva, tuning complicado y teoría computacional profunda. No porque esas áreas no sean importantes, sino porque no son el foco aquí.\nEl foco es aprender a pensar mejor usando datos.\nTambién quiero decir algo importante para quienes sienten ansiedad al escuchar palabras como “estadística”, “probabilidad” o “modelos”.\nEste libro no espera perfección matemática.\nDe hecho, muchas veces la matemática más importante será simplemente aprender a interpretar una probabilidad de manera razonable. Entender qué significa realmente una predicción incierta. Reconocer cuándo un resultado es compatible con múltiples explicaciones. Saber cuándo un modelo aporta evidencia útil y cuándo todavía necesitamos más información.\nLas fórmulas aparecerán, pero serán pocas, simples y explicadas cuidadosamente.\nPor ejemplo, veremos ideas fundamentales o o modelos sencillos como:\ny = β0 + β1 x + ϵ\npero siempre con un objetivo práctico: desarrollar intuición.\nNo queremos convertirnos en calculadoras humanas. Queremos convertirnos en mejores pensadores probabilísticos.\nEste libro está especialmente dirigido a personas curiosas. Personas que quizá vienen de áreas no tradicionales: medicina, administración, ingeniería, economía, diseño, educación o negocios. Personas autodidactas que quieren entender analytics moderno sin quedar atrapadas en formalismos innecesarios. Personas que desean construir proyectos reales y desarrollar criterio analítico aplicable al mundo real.\nSi alguna vez has sentido que muchos libros técnicos explican demasiado rápido, asumen demasiadas cosas o convierten conceptos interesantes en algo innecesariamente intimidante, espero que este libro te resulte diferente.\nAquí intentaremos avanzar paso a paso.\nCon ejemplos concretos. Con gráficos claros. Con incertidumbre visible. Con interpretaciones honestas. Con preguntas reales. Con limitaciones explícitas.\nPorque otra idea fundamental de este libro es que los modelos tienen límites.\nUn modelo no reemplaza el criterio humano. No elimina la necesidad de contexto. No entiende completamente la complejidad del comportamiento humano. No “descubre la verdad”.\nPero sí puede ayudarnos a razonar mejor.\nPuede ayudarnos a organizar evidencia. Puede ayudarnos a cuantificar incertidumbre. Puede ayudarnos a explorar escenarios plausibles. Puede ayudarnos a evitar conclusiones excesivamente confiadas. Puede ayudarnos a tomar decisiones más informadas.\nY eso ya es muchísimo.\nQuizá, al final, el verdadero valor del pensamiento bayesiano no sea producir mejores números, sino producir una relación más honesta con lo que no sabemos.\nAceptar incertidumbre no significa resignarse a la ignorancia. Significa aprender a navegarla con más claridad.\nEsa es la invitación de este libro.\nAprender a observar los datos con más humildad. Aprender a interpretar probabilidades con más criterio. Aprender a tomar decisiones sin exigir certezas imposibles.\nPorque el objetivo final no es eliminar la incertidumbre.\nEl objetivo es aprender a pensar mejor dentro de ella.",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html#decisiones-bajo-incertidumbre---business-analytics-bayesiano-con-r",
+    "href": "analysis/c00_prefacio.html#decisiones-bajo-incertidumbre---business-analytics-bayesiano-con-r",
+    "title": "Prefacio",
+    "section": "",
+    "text": "Cada día vemos gráficos, porcentajes, rankings, predicciones y métricas que prometen ayudarnos a entender el mundo. Empresas toman decisiones multimillonarias basadas en dashboards. Hospitales intentan anticipar riesgos clínicos usando modelos predictivos. Equipos de marketing optimizan campañas observando tasas de conversión. Analistas financieros proyectan escenarios futuros. Plataformas digitales intentan estimar qué veremos, qué compraremos o incluso qué podríamos abandonar.\nY, sin embargo, a pesar de tener más datos que nunca, seguimos tomando decisiones bajo incertidumbre.\nEsa es probablemente una de las ideas más importantes de este libro.\nLos datos no eliminan la incertidumbre. Los modelos no producen certezas absolutas. Las predicciones no son profecías.\nLo que sí pueden hacer —y lo que realmente importa— es ayudarnos a pensar mejor.\nEste libro nació precisamente de esa idea.\nDurante mucho tiempo, gran parte de la enseñanza tradicional de estadística y análisis de datos transmitió una sensación implícita de precisión excesiva. Muchas veces parecía que el objetivo era encontrar “la respuesta correcta”, “el modelo perfecto” o “la predicción exacta”. Pero el mundo real rara vez funciona así.\nEn negocios, medicina, economía, marketing o gestión, las decisiones importantes casi siempre se toman con información incompleta. Hay ruido. Hay ambigüedad. Hay datos faltantes. Hay comportamientos humanos difíciles de predecir. Hay mercados cambiantes. Hay clientes impredecibles. Hay múltiples explicaciones plausibles para un mismo fenómeno.\nY aun así, debemos decidir.\nDebemos decidir si una campaña de marketing vale la pena. Debemos decidir si un cliente tiene riesgo de abandonar un servicio. Debemos decidir cuánto inventario comprar. Debemos decidir si una tendencia es real o simplemente variabilidad aleatoria. Debemos decidir cuándo actuar y cuándo esperar más información.\nEn otras palabras: debemos aprender a pensar bajo incertidumbre.\nEse es el verdadero corazón de este libro.\nNo fue escrito para enseñar matemática avanzada. Tampoco para competir en plataformas de machine learning ni para construir sistemas ultraoptimizados. No pretende ser un tratado académico de estadística bayesiana ni un manual técnico de modelado probabilístico.\nExisten excelentes libros para esos objetivos.\nEste libro busca algo diferente.\nBusca ayudarte a desarrollar criterio.\nBusca enseñarte a interpretar incertidumbre de manera más honesta y útil. Busca que aprendas a pensar probabilísticamente usando datos reales, visualizaciones claras y modelos sencillos pero poderosos.\nPorque, en la práctica, muchas veces el problema más importante no es técnico. Es conceptual.\nCon frecuencia, las personas no tienen dificultades para ejecutar código. Tienen dificultades para interpretar qué significa realmente un resultado incierto. Tienen dificultades para diferenciar señal de ruido. Tienen dificultades para entender cuándo un modelo está ayudando y cuándo está generando una falsa sensación de seguridad.\nPor eso este libro prioriza intuición antes que formalismo.\nAquí, primero intentaremos entender una idea con lenguaje natural. Luego la visualizaremos. Después la simularemos. Y solo cuando sea útil, utilizaremos algo de matemática ligera.\nNo necesitas cálculo avanzado para aprovechar este libro. No necesitas una formación estadística profunda. No necesitas memorizar fórmulas complejas ni entender teoría matemática sofisticada.\nNecesitas curiosidad.\nNecesitas disposición para pensar con probabilidades en lugar de certezas absolutas.\nNecesitas aceptar que muchas preguntas importantes no tienen respuestas exactas, pero sí tienen respuestas plausibles, útiles y accionables.\nEsa diferencia es profundamente importante.\nEl pensamiento bayesiano, en esencia, trata sobre eso.\nAunque la palabra “bayesiano” puede sonar intimidante al principio, la idea fundamental es sorprendentemente humana e intuitiva: actualizar nuestras creencias cuando aparece nueva información.\nTodos hacemos esto constantemente, incluso sin notarlo.\nSi un restaurante siempre está vacío, empezamos a sospechar que quizá no es tan bueno. Si una campaña mejora repetidamente las conversiones, nuestra confianza aumenta. Si un cliente muestra señales de insatisfacción, empezamos a considerar que podría abandonar el servicio. Si una tendencia se repite muchas veces, comenzamos a creer que probablemente no es casualidad.\nEl pensamiento bayesiano formaliza esa intuición natural.\nNo se trata de encontrar verdades absolutas. Se trata de trabajar con plausibilidades.\nSe trata de reconocer explícitamente la incertidumbre en lugar de esconderla.\nA lo largo del libro veremos que, muchas veces, pensar en distribuciones es más útil que pensar en valores únicos. Veremos por qué un intervalo plausible puede comunicar más honestamente la realidad que una sola predicción puntual. Veremos cómo incorporar incertidumbre en nuestras decisiones puede producir análisis más realistas y menos frágiles.\nY también veremos algo importante: la incertidumbre no es una falla del análisis.\nEs parte natural del mundo.\nUno de los problemas modernos del análisis de datos es que frecuentemente confundimos sofisticación técnica con comprensión real. Un modelo extremadamente complejo puede producir resultados impresionantes… y aun así ser mal interpretado. En cambio, un modelo relativamente simple, bien entendido y correctamente interpretado, puede generar decisiones mucho más útiles.\nPor eso el enfoque de este libro es deliberadamente práctico y pedagógico.\nTrabajaremos con datasets reales de negocio. Analizaremos ventas, campañas de marketing y churn de clientes. Construiremos modelos de regresión lineal y logística usando herramientas modernas de R. Aprenderemos a visualizar incertidumbre y a interpretar resultados probabilísticos de manera aplicada.\nUtilizaremos principalmente:\n\nR\ntidyverse\nggplot2\nrstanarm\nQuarto\n\nEstas herramientas fueron elegidas no porque sean las más “avanzadas”, sino porque permiten aprender de manera clara, moderna y reproducible. Además, funcionan muy bien en entornos accesibles como Posit Cloud Free, lo cual hace posible que más personas puedan experimentar y practicar sin necesidad de infraestructura compleja.\nA lo largo del libro evitaremos optimización excesiva, tuning complicado y teoría computacional profunda. No porque esas áreas no sean importantes, sino porque no son el foco aquí.\nEl foco es aprender a pensar mejor usando datos.\nTambién quiero decir algo importante para quienes sienten ansiedad al escuchar palabras como “estadística”, “probabilidad” o “modelos”.\nEste libro no espera perfección matemática.\nDe hecho, muchas veces la matemática más importante será simplemente aprender a interpretar una probabilidad de manera razonable. Entender qué significa realmente una predicción incierta. Reconocer cuándo un resultado es compatible con múltiples explicaciones. Saber cuándo un modelo aporta evidencia útil y cuándo todavía necesitamos más información.\nLas fórmulas aparecerán, pero serán pocas, simples y explicadas cuidadosamente.\nPor ejemplo, veremos ideas fundamentales o o modelos sencillos como:\ny = β0 + β1 x + ϵ\npero siempre con un objetivo práctico: desarrollar intuición.\nNo queremos convertirnos en calculadoras humanas. Queremos convertirnos en mejores pensadores probabilísticos.\nEste libro está especialmente dirigido a personas curiosas. Personas que quizá vienen de áreas no tradicionales: medicina, administración, ingeniería, economía, diseño, educación o negocios. Personas autodidactas que quieren entender analytics moderno sin quedar atrapadas en formalismos innecesarios. Personas que desean construir proyectos reales y desarrollar criterio analítico aplicable al mundo real.\nSi alguna vez has sentido que muchos libros técnicos explican demasiado rápido, asumen demasiadas cosas o convierten conceptos interesantes en algo innecesariamente intimidante, espero que este libro te resulte diferente.\nAquí intentaremos avanzar paso a paso.\nCon ejemplos concretos. Con gráficos claros. Con incertidumbre visible. Con interpretaciones honestas. Con preguntas reales. Con limitaciones explícitas.\nPorque otra idea fundamental de este libro es que los modelos tienen límites.\nUn modelo no reemplaza el criterio humano. No elimina la necesidad de contexto. No entiende completamente la complejidad del comportamiento humano. No “descubre la verdad”.\nPero sí puede ayudarnos a razonar mejor.\nPuede ayudarnos a organizar evidencia. Puede ayudarnos a cuantificar incertidumbre. Puede ayudarnos a explorar escenarios plausibles. Puede ayudarnos a evitar conclusiones excesivamente confiadas. Puede ayudarnos a tomar decisiones más informadas.\nY eso ya es muchísimo.\nQuizá, al final, el verdadero valor del pensamiento bayesiano no sea producir mejores números, sino producir una relación más honesta con lo que no sabemos.\nAceptar incertidumbre no significa resignarse a la ignorancia. Significa aprender a navegarla con más claridad.\nEsa es la invitación de este libro.\nAprender a observar los datos con más humildad. Aprender a interpretar probabilidades con más criterio. Aprender a tomar decisiones sin exigir certezas imposibles.\nPorque el objetivo final no es eliminar la incertidumbre.\nEl objetivo es aprender a pensar mejor dentro de ella.",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html",
+    "href": "analysis/c01.html",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "",
+    "text": "Imagina una tienda que vende exactamente lo mismo todos los días.\nLos mismos productos. La misma cantidad de clientes. Las mismas ganancias. Los mismos descuentos. Los mismos resultados.\nSuena poco realista, ¿verdad?\nLos negocios reales son inherentemente variables.\nAlgunos días las ventas explotan. Otros días parecen desaparecer. Algunos clientes compran muchísimo. Otros apenas generan ganancias. Algunas promociones funcionan muy bien. Otras destruyen el margen de ganancia.\nY ahí aparece una de las ideas más importantes de este libro:\nLos datos no eliminan la incertidumbre. Nos ayudan a verla con mayor claridad.\nMuchas personas comienzan a aprender análisis de datos esperando encontrar respuestas exactas:\n\n“¿Cuál es el mejor producto?”\n“¿Cuál es la estrategia correcta?”\n“¿Cuál es el cliente ideal?”\n“¿Cuál será la venta del próximo mes?”\n\nPero los datos reales rara vez responden de forma absoluta.\nEn cambio, muestran:\n\npatrones,\ntendencias,\nvariabilidad,\ncomportamientos inesperados,\ny distintos niveles de incertidumbre.\n\nEse será el punto de partida de este libro.\nNo aprenderemos únicamente a calcular números.\nAprenderemos a pensar probabilísticamente.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#introducción",
+    "href": "analysis/c01.html#introducción",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "",
+    "text": "Imagina una tienda que vende exactamente lo mismo todos los días.\nLos mismos productos. La misma cantidad de clientes. Las mismas ganancias. Los mismos descuentos. Los mismos resultados.\nSuena poco realista, ¿verdad?\nLos negocios reales son inherentemente variables.\nAlgunos días las ventas explotan. Otros días parecen desaparecer. Algunos clientes compran muchísimo. Otros apenas generan ganancias. Algunas promociones funcionan muy bien. Otras destruyen el margen de ganancia.\nY ahí aparece una de las ideas más importantes de este libro:\nLos datos no eliminan la incertidumbre. Nos ayudan a verla con mayor claridad.\nMuchas personas comienzan a aprender análisis de datos esperando encontrar respuestas exactas:\n\n“¿Cuál es el mejor producto?”\n“¿Cuál es la estrategia correcta?”\n“¿Cuál es el cliente ideal?”\n“¿Cuál será la venta del próximo mes?”\n\nPero los datos reales rara vez responden de forma absoluta.\nEn cambio, muestran:\n\npatrones,\ntendencias,\nvariabilidad,\ncomportamientos inesperados,\ny distintos niveles de incertidumbre.\n\nEse será el punto de partida de este libro.\nNo aprenderemos únicamente a calcular números.\nAprenderemos a pensar probabilísticamente.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#por-qué-los-promedios-pueden-engañar",
+    "href": "analysis/c01.html#por-qué-los-promedios-pueden-engañar",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "¿Por qué los promedios pueden engañar?",
+    "text": "¿Por qué los promedios pueden engañar?\nSupongamos que una tienda tiene un promedio de ventas diarias de $500.\nEse número parece útil.\nPero todavía no sabemos:\n\nsi las ventas son estables,\nsi algunos días venden $50 y otros $5000,\nsi existen clientes extremos,\nsi algunas categorías generan pérdidas,\no si los descuentos están destruyendo las ganancias.\n\nDos negocios pueden tener exactamente el mismo promedio… y ser completamente distintos.\nPor eso necesitamos algo más que un único número.\nNecesitamos ver distribuciones.\nNecesitamos entender variabilidad.\nNecesitamos aprender a pensar bajo incertidumbre.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#contexto-de-negocio",
+    "href": "analysis/c01.html#contexto-de-negocio",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Contexto de negocio",
+    "text": "Contexto de negocio\n\nSales, Revenue y Profit\nAntes de tocar código, vale la pena aclarar algunos conceptos de negocio.\nMuchos lectores nuevos en analytics suelen asumir algo intuitivo:\n“Si vendo más, gano más.”\nPero en negocios reales eso no siempre ocurre.\n\n\nSales (ventas)\nEn este dataset, Sales representa el valor total vendido.\nPor ejemplo:\n\nsi una empresa vende una silla de $200,\nentonces las ventas son $200.\n\nLas ventas muestran movimiento comercial. Pero NO necesariamente muestran ganancia.\n\n\nProfit (ganancia)\nProfit representa cuánto dinero realmente queda después de costos, descuentos y gastos asociados.\nAquí aparece algo interesante:\nuna empresa puede vender mucho… y aun así perder dinero.\nEso ocurre frecuentemente cuando:\n\nexisten descuentos agresivos,\nmárgenes muy pequeños,\ncostos altos,\no estrategias comerciales riesgosas.\n\n\n\nDiscounts (descuentos)\nLos descuentos son una excelente forma de introducir incertidumbre empresarial.\nA veces ayudan a vender más.\nPero también pueden:\n\nreducir ganancias,\natraer clientes poco rentables,\no incluso generar pérdidas.\n\nLos negocios reales viven constantemente en estos trade-offs.\nNo existen decisiones perfectas.\nExisten decisiones con incertidumbre.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#primer-contacto-con-el-dataset",
+    "href": "analysis/c01.html#primer-contacto-con-el-dataset",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Primer contacto con el dataset",
+    "text": "Primer contacto con el dataset\nAhora sí vamos a empezar a trabajar en R.\n\nExplorar las primeras filas\n\n# Explorar las primeras filas\nhead(sales) # produce:\n\n# A tibble: 6 × 21\n  `Row ID` `Order ID`     `Order Date` `Ship Date` `Ship Mode`    `Customer ID`\n     &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;          &lt;chr&gt;        \n1        1 CA-2016-152156 11/8/2016    11/11/2016  Second Class   CG-12520     \n2        2 CA-2016-152156 11/8/2016    11/11/2016  Second Class   CG-12520     \n3        3 CA-2016-138688 6/12/2016    6/16/2016   Second Class   DV-13045     \n4        4 US-2015-108966 10/11/2015   10/18/2015  Standard Class SO-20335     \n5        5 US-2015-108966 10/11/2015   10/18/2015  Standard Class SO-20335     \n6        6 CA-2014-115812 6/9/2014     6/14/2014   Standard Class BH-11710     \n# ℹ 15 more variables: `Customer Name` &lt;chr&gt;, Segment &lt;chr&gt;, Country &lt;chr&gt;,\n#   City &lt;chr&gt;, State &lt;chr&gt;, `Postal Code` &lt;chr&gt;, Region &lt;chr&gt;,\n#   `Product ID` &lt;chr&gt;, Category &lt;chr&gt;, `Sub-Category` &lt;chr&gt;,\n#   `Product Name` &lt;chr&gt;, Sales &lt;dbl&gt;, Quantity &lt;dbl&gt;, Discount &lt;dbl&gt;,\n#   Profit &lt;dbl&gt;\n\n\nEsto nos permite ver rápidamente:\n\ncómo luce el dataset,\nqué variables existen,\ny cómo están organizados los datos.\n\n\n\nExplorar la estructura\n\n# Explorar la estructura\nglimpse(sales) # produce:\n\nRows: 9,994\nColumns: 21\n$ `Row ID`        &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,…\n$ `Order ID`      &lt;chr&gt; \"CA-2016-152156\", \"CA-2016-152156\", \"CA-2016-138688\", …\n$ `Order Date`    &lt;chr&gt; \"11/8/2016\", \"11/8/2016\", \"6/12/2016\", \"10/11/2015\", \"…\n$ `Ship Date`     &lt;chr&gt; \"11/11/2016\", \"11/11/2016\", \"6/16/2016\", \"10/18/2015\",…\n$ `Ship Mode`     &lt;chr&gt; \"Second Class\", \"Second Class\", \"Second Class\", \"Stand…\n$ `Customer ID`   &lt;chr&gt; \"CG-12520\", \"CG-12520\", \"DV-13045\", \"SO-20335\", \"SO-20…\n$ `Customer Name` &lt;chr&gt; \"Claire Gute\", \"Claire Gute\", \"Darrin Van Huff\", \"Sean…\n$ Segment         &lt;chr&gt; \"Consumer\", \"Consumer\", \"Corporate\", \"Consumer\", \"Cons…\n$ Country         &lt;chr&gt; \"United States\", \"United States\", \"United States\", \"Un…\n$ City            &lt;chr&gt; \"Henderson\", \"Henderson\", \"Los Angeles\", \"Fort Lauderd…\n$ State           &lt;chr&gt; \"Kentucky\", \"Kentucky\", \"California\", \"Florida\", \"Flor…\n$ `Postal Code`   &lt;chr&gt; \"42420\", \"42420\", \"90036\", \"33311\", \"33311\", \"90032\", …\n$ Region          &lt;chr&gt; \"South\", \"South\", \"West\", \"South\", \"South\", \"West\", \"W…\n$ `Product ID`    &lt;chr&gt; \"FUR-BO-10001798\", \"FUR-CH-10000454\", \"OFF-LA-10000240…\n$ Category        &lt;chr&gt; \"Furniture\", \"Furniture\", \"Office Supplies\", \"Furnitur…\n$ `Sub-Category`  &lt;chr&gt; \"Bookcases\", \"Chairs\", \"Labels\", \"Tables\", \"Storage\", …\n$ `Product Name`  &lt;chr&gt; \"Bush Somerset Collection Bookcase\", \"Hon Deluxe Fabri…\n$ Sales           &lt;dbl&gt; 261.9600, 731.9400, 14.6200, 957.5775, 22.3680, 48.860…\n$ Quantity        &lt;dbl&gt; 2, 3, 2, 5, 2, 7, 4, 6, 3, 5, 9, 4, 3, 3, 5, 3, 6, 2, …\n$ Discount        &lt;dbl&gt; 0.00, 0.00, 0.00, 0.45, 0.20, 0.00, 0.00, 0.20, 0.20, …\n$ Profit          &lt;dbl&gt; 41.9136, 219.5820, 6.8714, -383.0310, 2.5164, 14.1694,…\n\n\nAquí veremos:\n\nvariables numéricas,\nvariables categóricas,\nfechas,\ncategorías de productos,\nventas,\nganancias,\ndescuentos,\nsegmentos de clientes,\nregiones,\nentre otros elementos.\n\nLa idea NO es memorizar todo inmediatamente.\nLa idea es desarrollar familiaridad con los datos.\n\n\nPensar visualmente\nUno de los errores más comunes al comenzar en análisis de datos es obsesionarse demasiado rápido con fórmulas.\nLos gráficos suelen enseñarnos muchísimo antes que los modelos complejos.\nEn este libro usaremos visualización constantemente porque:\nLos gráficos ayudan a pensar.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#distribución-de-ventas",
+    "href": "analysis/c01.html#distribución-de-ventas",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Distribución de ventas",
+    "text": "Distribución de ventas\n\nNo todos los pedidos son iguales\nComencemos observando las ventas.\n\n# Visualizar las ventas\nggplot(sales, aes(x = Sales)) +\n  geom_histogram(bins = 100) +\n  labs(\n    title = \"Distribución de ventas\",\n    x = \"Ventas\",\n    y = \"Cantidad de pedidos\"\n  )\n\n\n\n\n\n\n\n\n\n\n¿Qué deberíamos observar?\nAquí el lector probablemente notará algo importante:\n\nla mayoría de ventas son pequeñas,\npero existen algunos pedidos extremadamente grandes.\n\nEso significa que las ventas NO están distribuidas uniformemente.\nExiste asimetría.\nExiste heterogeneidad.\nExiste variabilidad.\nY eso es exactamente lo que ocurre en negocios reales.\n\n\nIntroduciendo la idea de distribución\nAquí aparece una idea fundamental para todo el libro:\nLos negocios viven en distribuciones, no en números únicos.\nLa media puede resumir parte de la historia.\nPero nunca cuenta toda la historia.\nDos empresas con el mismo promedio pueden tener:\n\nriesgos distintos,\nclientes distintos,\nestabilidad distinta,\nincertidumbre distinta.\n\nPor eso veremos constantemente:\n\ndistribuciones,\ndispersión,\nincertidumbre,\nintervalos plausibles,\ny probabilidades.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#profit-vs-sales",
+    "href": "analysis/c01.html#profit-vs-sales",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Profit vs Sales",
+    "text": "Profit vs Sales\n\nMás ventas no siempre significan más ganancias\nAhora veremos algo todavía más interesante.\n\n# Diagrama de dispersión que relaciona las ventas con las ganancias\nggplot(sales, aes(x = Sales, y = Profit)) +\n  geom_point(alpha = 0.5) +\n  labs(\n    title = \"Relación entre ventas y ganancias\",\n    x = \"Ventas\",\n    y = \"Ganancia\"\n  )\n\n\n\n\n\n\n\n\n¿Qué debería notar el lector?\nProbablemente verá:\n\nmucha dispersión,\npuntos alejados,\nventas altas con ganancias bajas,\nincluso pérdidas en algunos casos.\n\nEsto rompe una intuición muy común:\nvender más no garantiza ganar más.\nY nuevamente aparece incertidumbre.\nLos negocios reales no son perfectamente lineales.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#discounts-vs-profit",
+    "href": "analysis/c01.html#discounts-vs-profit",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Discounts vs Profit",
+    "text": "Discounts vs Profit\n\nCuando vender más puede ser peligroso\nAhora exploremos descuentos y ganancias.\n\n# Diagrama de dispersión que muestra la relación entre descuentos\n# y ganacias\nggplot(sales, aes(x = Discount, y = Profit)) +\n  geom_point(alpha = 0.4) +\n  labs(\n    title = \"Descuentos y ganancias\",\n    x = \"Descuento\",\n    y = \"Ganancia\"\n  )\n\n\n\n\n\n\n\n\n\n\nReflexión importante\nMuchas empresas usan descuentos para crecer rápidamente.\nPero los datos suelen mostrar algo más complejo.\nA medida que aumentan los descuentos:\n\nalgunas ventas aumentan,\npero muchas ganancias disminuyen,\ne incluso aparecen pérdidas.\n\nEsto es extremadamente importante en analytics:\nlas decisiones comerciales casi nunca tienen efectos perfectamente predecibles.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#diferencias-entre-categorías",
+    "href": "analysis/c01.html#diferencias-entre-categorías",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Diferencias entre categorías",
+    "text": "Diferencias entre categorías\nAhora comparemos categorías de productos.\n\n# Diagrama de caja que relaciona las categorías de los productos\n# con las ventas\nggplot(sales, aes(x = Category, y = Sales)) +\n  geom_boxplot() +\n  labs(\n    title = \"Distribución de ventas por categoría\",\n    x = \"Categoría\",\n    y = \"Ventas\"\n  )\n\n\n\n\n\n\n\n\n\n¿Por qué usar boxplots?\nLos boxplots ayudan a visualizar:\n\ndispersión,\nvalores extremos,\nvariabilidad,\ndiferencias entre grupos.\n\nY nuevamente el mensaje es el mismo:\nlos datos reales tienen heterogeneidad.\nNo todos los grupos se comportan igual.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#introducción-suave-a-ggplot2",
+    "href": "analysis/c01.html#introducción-suave-a-ggplot2",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Introducción suave a ggplot2",
+    "text": "Introducción suave a ggplot2\nA lo largo del libro usaremos mucho ggplot2.\nNo porque los gráficos “se vean bonitos”.\nSino porque ayudan a pensar mejor.\n\naes()\nLa función aes() define:\n\nqué variable usamos en el eje x,\nqué variable usamos en el eje y,\ncolores,\ntamaños,\nagrupaciones visuales.\n\nEjemplo:\naes(x = Sales, y = Profit)\n\n\ngeom_histogram()\nSirve para visualizar distribuciones.\ngeom_histogram()\n\n\ngeom_point()\nSirve para visualizar relaciones entre variables.\ngeom_point()\n\n\ngeom_boxplot()\nSirve para comparar distribuciones entre grupos.\ngeom_boxplot()",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#posibles-errores-de-interpretación",
+    "href": "analysis/c01.html#posibles-errores-de-interpretación",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Posibles errores de interpretación",
+    "text": "Posibles errores de interpretación\nEste capítulo también debe enseñar prudencia.\nAlgunos errores frecuentes son:\n\nError 1: “El promedio representa a todos”\nNo necesariamente.\nLos promedios pueden ocultar:\n\nvalores extremos,\nsegmentos distintos,\nalta variabilidad,\ncomportamientos raros.\n\n\n\nError 2: “Existe una única respuesta correcta”\nLos datos reales rara vez son completamente claros.\nMuchas veces existen:\n\nseñales contradictorias,\nruido,\nincertidumbre,\ny múltiples interpretaciones plausibles.\n\n\n\nError 3: “Más datos eliminan toda incertidumbre”\nIncluso empresas gigantes toman decisiones imperfectas.\nLos datos ayudan muchísimo.\nPero nunca convierten el mundo en algo perfectamente predecible.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#reflexión-bayesiana",
+    "href": "analysis/c01.html#reflexión-bayesiana",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\n\nEl inicio del pensamiento probabilístico\nAunque todavía no estamos construyendo modelos bayesianos formales, este capítulo ya introduce la idea central del libro:\npensar en términos de incertidumbre y plausibilidad.\nEn lugar de preguntar:\n\n“¿Cuál es la respuesta exacta?”\n\ncomenzaremos a preguntar:\n\n“¿Qué patrones parecen plausibles?”\n“¿Qué tan variable es este fenómeno?”\n“¿Qué incertidumbre existe?”\n“¿Qué decisiones parecen razonables con la información disponible?”\n\nEse cambio mental es enorme.\nY es uno de los objetivos más importantes del análisis bayesiano moderno.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#ejercicios",
+    "href": "analysis/c01.html#ejercicios",
+    "title": "1.- Los datos nunca cuentan toda la historia",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1 — Explorar otra variable\nConstruye un histograma para:\n\nProfit\no Discount\n\nReflexiona:\n\n¿la distribución parece simétrica?\n¿existen valores extremos?\n¿la mayoría de observaciones están concentradas en una zona?\n\n\n\nEjercicio 2 — Comparar categorías\nCrea un boxplot usando:\n\nSegment\no Region\n\nPregunta:\n\n¿qué grupo parece más variable?\n¿qué grupo parece más estable?\n\n\n\nEjercicio 3 — Buscar pedidos extremos\nUsa:\nView(arrange(sales, desc(Sales)))\nExplora los pedidos con ventas más altas.\nPregunta:\n\n¿también generan altas ganancias?\n¿o algunos parecen poco rentables?\n\n\n\nEjercicio 4 — Reflexión conceptual\nPiensa en esta pregunta:\n¿Por qué dos negocios con el mismo promedio de ventas podrían tener riesgos completamente distintos?\nNo necesitas responder matemáticamente.\nIntenta responder usando:\n\nvariabilidad,\nestabilidad,\nincertidumbre,\ndistribución,\ny comportamiento de clientes.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "1.- Los datos nunca cuentan toda la historia"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html",
+    "href": "analysis/c02.html",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "",
+    "text": "Imagina dos tiendas.\nAmbas tienen ventas promedio diarias de 500 dólares.\nA primera vista parecen similares. Si sólo observamos el promedio, podríamos concluir que ambos negocios funcionan igual.\nPero ahora imaginemos algo más.\nLa primera tienda vende casi siempre entre 480 y 520 dólares diarios. Es estable. Predecible. Tranquila.\nLa segunda tienda alterna entre días de 50 dólares y días de 2000 dólares. Es caótica. Inestable. Difícil de anticipar.\nAunque ambas tengan exactamente el mismo promedio, vivir dentro de esos negocios sería completamente diferente.\nLas decisiones también serían distintas:\n\ninventario,\ncontratación,\nflujo de caja,\npromociones,\nriesgo,\nplanificación.\n\nAquí aparece una idea fundamental de este libro:\nLos negocios reales no existen como números únicos. Existen como distribuciones.\nY esa diferencia cambia completamente la forma de pensar.\nDurante mucho tiempo, gran parte de la educación estadística se centró en una sola pregunta:\n“¿Cuál es el promedio?”\nPero en la práctica, esa pregunta rara vez es suficiente.\nEn negocios reales necesitamos preguntas mejores:\n\n¿Qué tan variable es el sistema?\n¿Qué tan frecuentes son los extremos?\n¿Qué rango de resultados es plausible?\n¿Qué tan incierto es el futuro?\n¿Cuánto riesgo existe realmente?\n\nEste capítulo marca una transición importante en nuestra forma de pensar.\nPasaremos de ver números únicos a ver distribuciones completas.\nY eso, en el fondo, es el inicio del pensamiento probabilístico.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#introducción",
+    "href": "analysis/c02.html#introducción",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "",
+    "text": "Imagina dos tiendas.\nAmbas tienen ventas promedio diarias de 500 dólares.\nA primera vista parecen similares. Si sólo observamos el promedio, podríamos concluir que ambos negocios funcionan igual.\nPero ahora imaginemos algo más.\nLa primera tienda vende casi siempre entre 480 y 520 dólares diarios. Es estable. Predecible. Tranquila.\nLa segunda tienda alterna entre días de 50 dólares y días de 2000 dólares. Es caótica. Inestable. Difícil de anticipar.\nAunque ambas tengan exactamente el mismo promedio, vivir dentro de esos negocios sería completamente diferente.\nLas decisiones también serían distintas:\n\ninventario,\ncontratación,\nflujo de caja,\npromociones,\nriesgo,\nplanificación.\n\nAquí aparece una idea fundamental de este libro:\nLos negocios reales no existen como números únicos. Existen como distribuciones.\nY esa diferencia cambia completamente la forma de pensar.\nDurante mucho tiempo, gran parte de la educación estadística se centró en una sola pregunta:\n“¿Cuál es el promedio?”\nPero en la práctica, esa pregunta rara vez es suficiente.\nEn negocios reales necesitamos preguntas mejores:\n\n¿Qué tan variable es el sistema?\n¿Qué tan frecuentes son los extremos?\n¿Qué rango de resultados es plausible?\n¿Qué tan incierto es el futuro?\n¿Cuánto riesgo existe realmente?\n\nEste capítulo marca una transición importante en nuestra forma de pensar.\nPasaremos de ver números únicos a ver distribuciones completas.\nY eso, en el fondo, es el inicio del pensamiento probabilístico.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#pensar-en-distribuciones",
+    "href": "analysis/c02.html#pensar-en-distribuciones",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "1. Pensar en distribuciones",
+    "text": "1. Pensar en distribuciones\n\n¿Qué es una distribución?\nDe manera intuitiva, una distribución es simplemente:\nla forma en que los valores se reparten.\nNo es una fórmula complicada. No es algo exclusivamente matemático.\nEs una manera de describir cómo se comporta la realidad.\nPor ejemplo:\n\nalgunas ventas son pequeñas,\notras medianas,\nunas pocas muy grandes.\n\nUna distribución nos muestra:\n\nqué valores son comunes,\ncuáles son raros,\ndónde se concentran los datos,\nqué tan dispersos están,\ny qué tan frecuentes son los extremos.\n\nPensar en distribuciones significa aceptar algo muy importante:\nLa variabilidad no es un error del sistema. Es parte natural del sistema.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#contexto-de-negocio",
+    "href": "analysis/c02.html#contexto-de-negocio",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "2. Contexto de negocio",
+    "text": "2. Contexto de negocio\nAntes de analizar los datos, vale la pena introducir algunas ideas simples de negocio.\n\nVentas (Sales)\nLa variable Sales representa el dinero generado por una venta.\nEn retail, normalmente ocurre algo interesante:\n\nexisten muchísimas ventas pequeñas,\nalgunas ventas medianas,\ny unas pocas ventas enormes.\n\nEso produce distribuciones asimétricas.\n\n\nGanancia (Profit)\nProfit representa cuánto dinero realmente gana la empresa después de costos y descuentos.\nY aquí aparece otra realidad importante:\nvender mucho no siempre significa ganar mucho.\nA veces existen ventas con ganancias negativas.\nSí, una empresa puede vender y aun así perder dinero en ciertas transacciones.\n\n\nDescuento (Discount)\nLos descuentos pueden aumentar ventas, pero también pueden reducir ganancias.\nEn negocios reales casi nunca existe una relación simple entre variables.\nPor eso necesitamos mirar distribuciones completas y no solamente promedios.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#cargando-el-dataset",
+    "href": "analysis/c02.html#cargando-el-dataset",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "3. Cargando el dataset",
+    "text": "3. Cargando el dataset\nUsaremos el dataset clásico de retail del libro.\nPrimer vistazo:\n\n# Primer vistazo de la dataset\nglimpse(sales)\n\nRows: 9,994\nColumns: 21\n$ `Row ID`        &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,…\n$ `Order ID`      &lt;chr&gt; \"CA-2016-152156\", \"CA-2016-152156\", \"CA-2016-138688\", …\n$ `Order Date`    &lt;chr&gt; \"11/8/2016\", \"11/8/2016\", \"6/12/2016\", \"10/11/2015\", \"…\n$ `Ship Date`     &lt;chr&gt; \"11/11/2016\", \"11/11/2016\", \"6/16/2016\", \"10/18/2015\",…\n$ `Ship Mode`     &lt;chr&gt; \"Second Class\", \"Second Class\", \"Second Class\", \"Stand…\n$ `Customer ID`   &lt;chr&gt; \"CG-12520\", \"CG-12520\", \"DV-13045\", \"SO-20335\", \"SO-20…\n$ `Customer Name` &lt;chr&gt; \"Claire Gute\", \"Claire Gute\", \"Darrin Van Huff\", \"Sean…\n$ Segment         &lt;chr&gt; \"Consumer\", \"Consumer\", \"Corporate\", \"Consumer\", \"Cons…\n$ Country         &lt;chr&gt; \"United States\", \"United States\", \"United States\", \"Un…\n$ City            &lt;chr&gt; \"Henderson\", \"Henderson\", \"Los Angeles\", \"Fort Lauderd…\n$ State           &lt;chr&gt; \"Kentucky\", \"Kentucky\", \"California\", \"Florida\", \"Flor…\n$ `Postal Code`   &lt;chr&gt; \"42420\", \"42420\", \"90036\", \"33311\", \"33311\", \"90032\", …\n$ Region          &lt;chr&gt; \"South\", \"South\", \"West\", \"South\", \"South\", \"West\", \"W…\n$ `Product ID`    &lt;chr&gt; \"FUR-BO-10001798\", \"FUR-CH-10000454\", \"OFF-LA-10000240…\n$ Category        &lt;chr&gt; \"Furniture\", \"Furniture\", \"Office Supplies\", \"Furnitur…\n$ `Sub-Category`  &lt;chr&gt; \"Bookcases\", \"Chairs\", \"Labels\", \"Tables\", \"Storage\", …\n$ `Product Name`  &lt;chr&gt; \"Bush Somerset Collection Bookcase\", \"Hon Deluxe Fabri…\n$ Sales           &lt;dbl&gt; 261.9600, 731.9400, 14.6200, 957.5775, 22.3680, 48.860…\n$ Quantity        &lt;dbl&gt; 2, 3, 2, 5, 2, 7, 4, 6, 3, 5, 9, 4, 3, 3, 5, 3, 6, 2, …\n$ Discount        &lt;dbl&gt; 0.00, 0.00, 0.00, 0.45, 0.20, 0.00, 0.00, 0.20, 0.20, …\n$ Profit          &lt;dbl&gt; 41.9136, 219.5820, 6.8714, -383.0310, 2.5164, 14.1694,…\n\n\nTambién podemos revisar rápidamente algunas variables numéricas:\n\n# Revisar rápidamente algunas variables numéricas\nsales %&gt;%\n  select(Sales, Profit, Discount, Quantity) %&gt;%\n  summary() # produce:\n\n     Sales               Profit             Discount         Quantity    \n Min.   :    0.444   Min.   :-6599.978   Min.   :0.0000   Min.   : 1.00  \n 1st Qu.:   17.280   1st Qu.:    1.729   1st Qu.:0.0000   1st Qu.: 2.00  \n Median :   54.490   Median :    8.666   Median :0.2000   Median : 3.00  \n Mean   :  229.858   Mean   :   28.657   Mean   :0.1562   Mean   : 3.79  \n 3rd Qu.:  209.940   3rd Qu.:   29.364   3rd Qu.:0.2000   3rd Qu.: 5.00  \n Max.   :22638.480   Max.   : 8399.976   Max.   :0.8000   Max.   :14.00",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#la-distribución-de-las-ventas",
+    "href": "analysis/c02.html#la-distribución-de-las-ventas",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "4. La distribución de las ventas",
+    "text": "4. La distribución de las ventas\nComencemos con una pregunta simple:\n¿Cómo se distribuyen realmente las ventas?\n\nHistograma\nDistribución general de las ventas\n\n# Distribución de la ventas\nggplot(sales, aes(x = Sales)) +\n  geom_histogram(\n    bins = 100,\n    fill = \"steelblue\",\n    color = \"white\"\n  ) + \n  labs(\n    title = \"Distribución de ventas\",\n    x = \"Sales\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\nDistribución general de las ventas hecha zoom para poder ver los valores atípicos principalmente en el eje X de Sales\n\n# Distribución de la ventas\nggplot(sales, aes(x = Sales)) +\n  geom_histogram(\n    bins = 100,\n    fill = \"steelblue\",\n    color = \"white\"\n  ) + \n  #coord_cartesian(xlim = c(0, 1000)) +\n  coord_cartesian(ylim = c(0, 50)) +\n  labs(\n    title = \"Distribución de ventas\",\n    x = \"Sales\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\n\n\n¿Qué estamos viendo?\nEste gráfico suele mostrar algo muy común en negocios reales:\n\nmuchísimas ventas pequeñas,\nalgunas ventas medianas,\npocas ventas extremadamente grandes.\n\nLa distribución normalmente aparece:\n\nsesgada hacia la derecha,\ncon una cola larga,\ny con valores extremos importantes.\n\nEsto significa que:\nunas pocas ventas grandes pueden influir muchísimo en el promedio.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#densidad-una-visión-más-suave-de-la-distribución",
+    "href": "analysis/c02.html#densidad-una-visión-más-suave-de-la-distribución",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "5. Densidad: una visión más suave de la distribución",
+    "text": "5. Densidad: una visión más suave de la distribución\nLos histogramas son útiles, pero a veces la forma general se aprecia mejor con una curva de densidad.\n\n# Densidad de las ventas hecha zoom en el eje x de \n# las ventas para poder apreciar la forma de la\n# distribución\nggplot(sales, aes(x = Sales)) +\n  geom_density(\n    fill = \"skyblue\",\n    alpha = 0.5\n  ) +\n  coord_cartesian(xlim = c(0, 1000)) +\n  labs(\n    title = \"Densidad de ventas\",\n    x = \"Sales\",\n    y = \"Densidad\"\n  )\n\n\n\n\n\n\n\n\n\nInterpretación intuitiva\nUna curva de densidad nos ayuda a visualizar:\n\ndónde se concentran los datos,\nqué regiones son más plausibles,\ny qué valores son relativamente raros.\n\nNo representa probabilidades exactas individuales.\nRepresenta algo más intuitivo:\nzonas donde los datos tienden a acumularse.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#promedio-vs-mediana",
+    "href": "analysis/c02.html#promedio-vs-mediana",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "6. Promedio vs mediana",
+    "text": "6. Promedio vs mediana\nAhora aparece una pregunta importante.\nSi las ventas tienen valores extremos grandes:\n¿el promedio sigue representando bien al negocio?\nCalculemos promedio y mediana.\n\n# Resumir las ventas por media y mediana\nsales %&gt;%\n  summarise(\n    media_sales = mean(Sales),\n    mediana_sales = median(Sales)\n  )\n\n# A tibble: 1 × 2\n  media_sales mediana_sales\n        &lt;dbl&gt;         &lt;dbl&gt;\n1        230.          54.5\n\n\nEn datasets reales de retail suele ocurrir algo interesante:\n\nel promedio es mucho mayor que la mediana.\n\n¿Por qué?\nPorque unas pocas ventas enormes “arrastran” el promedio hacia arriba.\nLa mediana, en cambio, representa el punto donde:\n\nla mitad de las observaciones queda por debajo,\ny la otra mitad por encima.\n\n\nIdea importante\nDos negocios con la misma media pueden comportarse de formas completamente distintas.\nPor eso:\npensar probabilísticamente implica mirar más allá del promedio.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#cuantiles-y-percentiles",
+    "href": "analysis/c02.html#cuantiles-y-percentiles",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "7. Cuantiles y percentiles",
+    "text": "7. Cuantiles y percentiles\nLos cuantiles nos ayudan a pensar en rangos plausibles.\nPor ejemplo:\n\n# Resumen de percentiles de las ventas\nsales %&gt;%\n  summarise(\n    p25 = quantile(Sales, 0.25),\n    mediana = median(Sales),\n    p75 = quantile(Sales, 0.75)\n  ) # produce:\n\n# A tibble: 1 × 3\n    p25 mediana   p75\n  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;\n1  17.3    54.5  210.\n\n\nEsto nos permite responder preguntas muy útiles:\n\n¿qué ventas son típicas?\n¿qué valores pertenecen al 25% superior?\n¿qué tan disperso es el negocio?",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#visualizando-cuantiles",
+    "href": "analysis/c02.html#visualizando-cuantiles",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "8. Visualizando cuantiles",
+    "text": "8. Visualizando cuantiles\nLos boxplots son excelentes para visualizar dispersión y cuantiles.\nVersión del diagrama con zoom para poder observar la mediana\n\n# Diagrama de caja de las ventas\nggplot(sales, aes(y = Sales)) +\n  geom_boxplot(fill = \"tomato\") +\n  coord_cartesian(ylim = c(0, 1000)) +\n  labs(\n    title = \"Boxplot de ventas\",\n    y = \"ventas\"\n  )\n\n\n\n\n\n\n\n\nVersión del diagrama de caja sin zoom para poder observar la dispersión\n\n# Diagrama de caja de las ventas\nggplot(sales, aes(y = Sales)) +\n  geom_boxplot(fill = \"tomato\") +\n  labs(\n    title = \"Boxplot de ventas\",\n    y = \"ventas\"\n  )\n\n\n\n\n\n\n\n\n\nInterpretación intuitiva\nEl boxplot resume:\n\nmediana,\ndispersión,\nrango típico,\nposibles valores extremos.\n\nNos ayuda a pensar rápidamente:\n¿qué tan estable o inestable es el sistema?",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#distribución-de-ganancias",
+    "href": "analysis/c02.html#distribución-de-ganancias",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "9. Distribución de ganancias",
+    "text": "9. Distribución de ganancias\nAhora analicemos Profit.\n\n# Distribución de las ganancias con zoom en el eje X\nggplot(sales, aes(x = Profit)) +\n  geom_histogram(\n    bins = 500,\n    fill = \"darkgreen\",\n    color = \"white\"\n  ) + \n  coord_cartesian(xlim = c(-750, 1000)) +\n  labs(\n    title = \"Distribución de ganancias\",\n    x = \"Profit\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\n\n# Distribución de las ganancias con zoom en el eje Y\nggplot(sales, aes(x = Profit)) +\n  geom_histogram(\n    bins = 100,\n    fill = \"darkgreen\",\n    color = \"white\"\n  ) + \n  coord_cartesian(ylim = c(0, 50)) +\n  labs(\n    title = \"Distribución de ganancias\",\n    x = \"Profit\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\nAquí suele aparecer algo muy interesante:\n\nexisten ganancias positivas,\npero también pérdidas.\n\nEsto es extremadamente importante en negocios reales.\nUna empresa puede tener ventas altas y aun así experimentar pérdidas frecuentes en ciertas operaciones.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#comparando-categorías",
+    "href": "analysis/c02.html#comparando-categorías",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "10. Comparando categorías",
+    "text": "10. Comparando categorías\nLas distribuciones también permiten comparar segmentos del negocio.\n\n# Diagrama de densidad de las ventas, coloreado por Category\n# y con zoom en el eje X\nggplot(sales, aes(x = Sales, fill = Category)) +\n  geom_density(alpha = 0.4) +\n  coord_cartesian(xlim = c(0, 600)) +\n  labs(\n    title = \"Distribución de ventas por categoría\",\n    x = \"Sales\",\n    y = \"Densidad\"\n  )\n\n\n\n\n\n\n\n\n\n¿Por qué esto importa?\nPorque diferentes categorías pueden tener:\n\ndistintos niveles de riesgo,\ndiferentes patrones de ventas,\ndistintas probabilidades de valores extremos.\n\nY eso cambia las decisiones.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#introducción-ligera-a-la-variabilidad",
+    "href": "analysis/c02.html#introducción-ligera-a-la-variabilidad",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "11. Introducción ligera a la variabilidad",
+    "text": "11. Introducción ligera a la variabilidad\nHasta ahora hemos hablado mucho de dispersión.\nAhora introduzcamos una idea matemática ligera.\n\nPromedio\nEl promedio intenta representar un “centro”.\nPodemos visualizarlo como:\nun punto de equilibrio aproximado.\n\n\nDesviación estándar\nLa desviación estándar intenta medir:\nqué tan lejos suelen estar los datos respecto al promedio.\nNo necesitamos profundizar matemáticamente todavía.\nLa intuición importante es:\n\nvalores pequeños → sistema más estable,\nvalores grandes → sistema más variable.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#fórmula-mínima",
+    "href": "analysis/c02.html#fórmula-mínima",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "12. Fórmula mínima",
+    "text": "12. Fórmula mínima\nLa regresión y los modelos vendrán después. Por ahora sólo necesitamos una idea intuitiva de dispersión.\nAun así, vale la pena conocer suavemente la fórmula del promedio:\npromedio = x1 + x2 + ... + xn / n\nLa idea importante no es memorizar la fórmula.\nLa idea importante es entender sus limitaciones:\nel promedio resume, pero también oculta información.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#pensar-en-rangos-plausibles",
+    "href": "analysis/c02.html#pensar-en-rangos-plausibles",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "13. Pensar en rangos plausibles",
+    "text": "13. Pensar en rangos plausibles\nAquí aparece una transición muy importante hacia el pensamiento bayesiano.\nEn lugar de preguntar:\n“¿Cuál será exactamente la próxima venta?”\npodemos pensar:\n“¿Qué rango de ventas parece plausible?”\nEse cambio parece pequeño.\nPero filosóficamente es enorme.\nPorque el mundo real contiene incertidumbre.\nY la incertidumbre no desaparece aunque tengamos más datos.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#reflexión-bayesiana",
+    "href": "analysis/c02.html#reflexión-bayesiana",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "14. Reflexión bayesiana",
+    "text": "14. Reflexión bayesiana\nEl pensamiento probabilístico comienza cuando dejamos de buscar certezas absolutas.\nLos datos reales:\n\nfluctúan,\ncambian,\ncontienen ruido,\npresentan heterogeneidad,\ny producen resultados inesperados.\n\nPor eso las distribuciones son tan importantes.\nNos enseñan a pensar en:\n\nrangos,\nplausibilidad,\nincertidumbre,\nvariabilidad natural.\n\nMás adelante, los modelos bayesianos harán exactamente eso:\n\nproducir distribuciones,\nno respuestas únicas.\n\nY esa es una de las ideas más profundas de este libro:\nLos modelos no producen verdades exactas. Ayudan a pensar mejor bajo incertidumbre.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#posibles-errores-de-interpretación",
+    "href": "analysis/c02.html#posibles-errores-de-interpretación",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "15. Posibles errores de interpretación",
+    "text": "15. Posibles errores de interpretación\n\nError 1: confiar demasiado en el promedio\nEl promedio puede ocultar:\n\nriesgo,\ninestabilidad,\nasimetrías,\nextremos importantes.\n\n\n\nError 2: asumir normalidad automáticamente\nMuchos fenómenos reales:\n\nNO son perfectamente normales,\nNO son simétricos,\ntienen colas largas,\ncontienen extremos relevantes.\n\n\n\nError 3: ignorar la variabilidad\nDos negocios con la misma media pueden tener perfiles de riesgo completamente distintos.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#error-3-ignorar-la-variabilidad",
+    "href": "analysis/c02.html#error-3-ignorar-la-variabilidad",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "Error 3: ignorar la variabilidad",
+    "text": "Error 3: ignorar la variabilidad\nDos negocios con la misma media pueden tener perfiles de riesgo completamente distintos.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#ejercicios",
+    "href": "analysis/c02.html#ejercicios",
+    "title": "2.- Distribuciones: pensar más allá de un promedio",
+    "section": "16. Ejercicios",
+    "text": "16. Ejercicios\n\nEjercicio 1\nConstruye un histograma para Quantity.\nDescribe:\n\nforma,\ndispersión,\nposibles asimetrías.\n\n\n\nEjercicio 2\nCompara:\n\npromedio,\nmediana,\npercentil 90\n\nde Sales.\n¿Qué diferencias observas?\n\n\nEjercicio 3\nCrea boxplots de Profit por Category.\nPregunta:\n¿Qué categorías parecen más variables?\n\n\nEjercicio 4\nExplora si existen ventas extremadamente altas.\nUsa:\n\nhigh_sales &lt;- sales %&gt;% \n  select(Sales) %&gt;%\n  arrange(desc(Sales))\nhigh_sales[1:10,] # Cambiar si se desean ver más valores\n\n# A tibble: 10 × 1\n    Sales\n    &lt;dbl&gt;\n 1 22638.\n 2 17500.\n 3 14000.\n 4 11200.\n 5 10500.\n 6  9893.\n 7  9450.\n 8  9100.\n 9  8750.\n10  8400.\n\n\nPregunta:\n¿Qué implicaciones podrían tener estos extremos en decisiones reales?\n\n\nEjercicio 5\nConstruye curvas de densidad por región.\nPregunta:\n¿Todas las regiones parecen comportarse igual?",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "2.- Distribuciones: pensar más allá de un promedio"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html",
+    "href": "analysis/c03.html",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "",
+    "text": "Hasta ahora hemos trabajado con datos del pasado.\nObservamos ventas que ya ocurrieron, campañas que ya terminaron y clientes que ya abandonaron una empresa. Pero las decisiones reales casi nunca se toman sobre el pasado. Se toman sobre el futuro.\nY el futuro tiene un problema incómodo:\nno existe todavía.\nLas empresas nunca saben exactamente:\n\ncuánto venderán el próximo mes,\ncuántos clientes responderán a una campaña,\ncuántos usuarios abandonarán un servicio,\ncuánto dinero ingresará realmente.\n\nAun así, deben decidir.\nDeben contratar personas, invertir en publicidad, planificar inventario, definir presupuestos y asumir riesgos.\nLa incertidumbre no es una excepción en negocios.\nEs el estado natural de las decisiones reales.\nDurante mucho tiempo, muchas personas imaginaron que el objetivo del análisis de datos era “predecir perfectamente”. Pero en la práctica, eso rara vez ocurre. Incluso los mejores modelos fallan. Incluso las mejores empresas enfrentan sorpresas.\nLa pregunta importante entonces no es:\n“¿Cómo eliminamos la incertidumbre?”\nLa pregunta más útil es:\n“¿Cómo pensamos mejor dentro de la incertidumbre?”\nEse es el objetivo de este capítulo.\nAquí comenzaremos a usar simulación para explorar futuros plausibles.\nNo intentaremos adivinar exactamente qué ocurrirá.\nIntentaremos algo mucho más útil:\nimaginar múltiples mundos posibles.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#introducción",
+    "href": "analysis/c03.html#introducción",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "",
+    "text": "Hasta ahora hemos trabajado con datos del pasado.\nObservamos ventas que ya ocurrieron, campañas que ya terminaron y clientes que ya abandonaron una empresa. Pero las decisiones reales casi nunca se toman sobre el pasado. Se toman sobre el futuro.\nY el futuro tiene un problema incómodo:\nno existe todavía.\nLas empresas nunca saben exactamente:\n\ncuánto venderán el próximo mes,\ncuántos clientes responderán a una campaña,\ncuántos usuarios abandonarán un servicio,\ncuánto dinero ingresará realmente.\n\nAun así, deben decidir.\nDeben contratar personas, invertir en publicidad, planificar inventario, definir presupuestos y asumir riesgos.\nLa incertidumbre no es una excepción en negocios.\nEs el estado natural de las decisiones reales.\nDurante mucho tiempo, muchas personas imaginaron que el objetivo del análisis de datos era “predecir perfectamente”. Pero en la práctica, eso rara vez ocurre. Incluso los mejores modelos fallan. Incluso las mejores empresas enfrentan sorpresas.\nLa pregunta importante entonces no es:\n“¿Cómo eliminamos la incertidumbre?”\nLa pregunta más útil es:\n“¿Cómo pensamos mejor dentro de la incertidumbre?”\nEse es el objetivo de este capítulo.\nAquí comenzaremos a usar simulación para explorar futuros plausibles.\nNo intentaremos adivinar exactamente qué ocurrirá.\nIntentaremos algo mucho más útil:\nimaginar múltiples mundos posibles.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#pensar-en-escenarios",
+    "href": "analysis/c03.html#pensar-en-escenarios",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "1. Pensar en escenarios",
+    "text": "1. Pensar en escenarios\nImagina que diriges una tienda online.\nEl próximo mes esperas vender alrededor de $50,000.\nPero ¿qué significa realmente “esperas”?\nTal vez vendas:\n\n$45,000\n$52,000\n$60,000\n$39,000\n\nTodos esos resultados parecen plausibles.\nEl futuro no es un único número.\nEs una región de posibilidades.\nEso cambia completamente la forma de pensar.\nMuchas decisiones empresariales se basan precisamente en esto:\n\nescenarios optimistas,\nescenarios pesimistas,\nescenarios intermedios,\nriesgos plausibles,\nvariabilidad esperada.\n\nLas empresas constantemente trabajan con incertidumbre, aunque no siempre la llamen así.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#qué-significa-simular",
+    "href": "analysis/c03.html#qué-significa-simular",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "2. ¿Qué significa simular?",
+    "text": "2. ¿Qué significa simular?\nSimular significa crear artificialmente muchos posibles resultados.\nEn lugar de preguntar:\n“¿Qué ocurrirá exactamente?”\npreguntamos:\n“¿Qué cosas podrían ocurrir razonablemente?”\nLa simulación es una herramienta para explorar posibilidades.\nPor ejemplo:\n\nlanzar una moneda muchas veces,\nsimular ventas futuras,\ngenerar posibles conversiones de una campaña,\nimaginar cuántos clientes podrían abandonar una empresa.\n\nCada simulación representa un pequeño mundo posible.\nAl repetir miles de veces esos escenarios, empezamos a ver patrones.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#una-intuición-simple-de-monte-carlo",
+    "href": "analysis/c03.html#una-intuición-simple-de-monte-carlo",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "3. Una intuición simple de Monte Carlo",
+    "text": "3. Una intuición simple de Monte Carlo\nEl nombre “Monte Carlo” suena sofisticado, pero la idea básica es sorprendentemente sencilla.\nConsiste en:\n\ngenerar escenarios aleatorios,\nrepetir muchas veces,\nobservar qué patrones aparecen.\n\nEso es todo.\nNo necesitamos matemáticas avanzadas para entender la intuición.\nImagina lanzar un dado una sola vez.\nNo aprendes mucho.\nPero si lo lanzas 10,000 veces:\n\nempiezas a ver frecuencias,\npatrones,\nrangos plausibles,\nvariabilidad natural.\n\nLa simulación transforma incertidumbre abstracta en algo visible.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#simulación-simple-con-monedas",
+    "href": "analysis/c03.html#simulación-simple-con-monedas",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "4. Simulación simple con monedas",
+    "text": "4. Simulación simple con monedas\nAntes de usar datasets reales, hagamos algo pequeño e intuitivo.\nSupongamos que una moneda tiene 50% de probabilidad de caer cara.\nPodemos simular 100 lanzamientos.\n\n# Generar semilla aleatoria\nset.seed(123)\n\n# Simular cien lanzamientos\nlanzamientos &lt;- sample( # elige entre Cara y Sello 100 veces\n  c(\"Cara\", \"Sello\"),\n  size = 100,\n  replace = TRUE # Después de elegir el resultado, vuelve a ponerlo\n                 # disponible \"encéralo\"  \n)\nlanzamientos[1:20] # produce:\n\n [1] \"Cara\"  \"Cara\"  \"Cara\"  \"Sello\" \"Cara\"  \"Sello\" \"Sello\" \"Sello\" \"Cara\" \n[10] \"Cara\"  \"Sello\" \"Sello\" \"Sello\" \"Cara\"  \"Sello\" \"Cara\"  \"Sello\" \"Cara\" \n[19] \"Cara\"  \"Cara\" \n\n\n\ntable(lanzamientos) # produce:\n\nlanzamientos\n Cara Sello \n   57    43 \n\n\nAquí no estamos “prediciendo” resultados exactos.\nEstamos generando un posible mundo.\nSi repetimos nuevamente, obtenemos otro mundo diferente.\n\nset.seed(456)\n# Simular cin nuevos lanzamientos\nlanzamientos_2 &lt;- sample(\n  c(\"Cara\", \"Sello\"),\n  size = 100,\n  replace = TRUE\n)\nlanzamientos_2[1:20] # produce:\n\n [1] \"Cara\"  \"Cara\"  \"Cara\"  \"Sello\" \"Cara\"  \"Sello\" \"Cara\"  \"Cara\"  \"Sello\"\n[10] \"Cara\"  \"Sello\" \"Cara\"  \"Cara\"  \"Sello\" \"Cara\"  \"Cara\"  \"Cara\"  \"Sello\"\n[19] \"Sello\" \"Sello\"\n\n\n\ntable(lanzamientos_2) # produce:\n\nlanzamientos_2\n Cara Sello \n   52    48 \n\n\nLos resultados cambian.\nLa incertidumbre sigue presente.\nPero aparecen patrones.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#la-idea-importante-variabilidad",
+    "href": "analysis/c03.html#la-idea-importante-variabilidad",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "5. La idea importante: variabilidad",
+    "text": "5. La idea importante: variabilidad\nUno de los conceptos más importantes del capítulo es este:\nLa variabilidad no es ruido molesto. Es parte natural de la realidad.\nDos meses distintos pueden tener ventas distintas.\nDos campañas similares pueden producir resultados diferentes.\nDos grupos de clientes aparentemente parecidos pueden comportarse distinto.\nLa simulación nos ayuda a aceptar esa variabilidad como algo normal.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#simulación-de-ventas-futuras",
+    "href": "analysis/c03.html#simulación-de-ventas-futuras",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "6 Simulación de ventas futuras",
+    "text": "6 Simulación de ventas futuras\nAhora usaremos el dataset de Superstore.\nPrimero cargamos los datos.\n\n# Cargar la dataset de superstore sales\nsales &lt;- read_csv(\"../data/superstore_sales.csv\",\n                  guess_max = 10000,\n                  show_col_types = FALSE)\n\nSupongamos que queremos imaginar posibles ventas futuras usando el comportamiento histórico.\nPrimero observemos las ventas.\n\n# Distribución de las ventas\nsales %&gt;%\n  ggplot(aes(x = Sales)) +\n  geom_histogram(\n    bins = 1000\n  ) +\n  coord_cartesian(xlim = c(0, 750)) +\n  labs(\n    title = \"Distribución de las ventas\",\n    x = \"Ventas\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\nAquí aparece algo importante:\nlas ventas no son constantes.\nExiste mucha variabilidad.\nAlgunas ventas son pequeñas.\nOtras son enormes.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#crear-futuros-plausibles",
+    "href": "analysis/c03.html#crear-futuros-plausibles",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "7. Crear futuros plausibles",
+    "text": "7. Crear futuros plausibles\nAhora simularemos posibles ventas futuras usando muestreo aleatorio.\n\nset.seed(123)\n\nventas_simuladas &lt;- sample(\n  sales$Sales,\n  size = 1000,  # Elige 1000 ventas aleatorias de Sales\n  replace = TRUE\n)\nventas_simuladas[1:20]\n\n [1]   83.920 1117.920    6.984   24.960  140.810   14.200 1287.450    7.856\n [9]   23.920    4.448   11.960   66.360   64.900   16.060   12.960   13.360\n[17]   25.120  204.900   16.520   20.736\n\n\n\nsim_df &lt;- tibble(\n  ventas_simuladas\n)\nsim_df[1:6,] # produce:\n\n# A tibble: 6 × 1\n  ventas_simuladas\n             &lt;dbl&gt;\n1            83.9 \n2          1118.  \n3             6.98\n4            25.0 \n5           141.  \n6            14.2 \n\n\nVisualicemos esos mundos posibles\n\n# Gráfico de densidad de las ventas simuladas\nsim_df %&gt;%\n  ggplot(aes(x = ventas_simuladas)) +\n  geom_density() +\n  coord_cartesian(xlim = c(0, 1000)) +\n  labs(\n    title = \"Ventas Simuladas\",\n    x = \"Ventas\",\n    y = \"Densidad\"\n  )\n\n\n\n\n\n\n\n\nLo importante aquí no es un único valor.\nLo importante es la distribución.\nLa simulación nos dice:\n\nqué valores parecen frecuentes,\nqué resultados parecen raros,\nqué rangos parecen plausibles.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#simular-ingresos-mensuales",
+    "href": "analysis/c03.html#simular-ingresos-mensuales",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "8. Simular ingresos mensuales",
+    "text": "8. Simular ingresos mensuales\nAhora demos un paso más interesante.\nSupongamos que queremos imaginar ingresos mensuales posibles.\nPodemos simular muchos “meses ficticios”.\n\nset.seed(123)\n\n# Simular ventas mensuales. Simular 1000 ventas totales que se \n# generaron tomando al azar 100 ventas de Sales\nsimulaciones_mensuales &lt;- replicate( # Replicar\n  1000, # Replicar 1000 veces\n  sum(sample(  # Sumar 100 ventas aleatorias\n    sales$Sales,\n    size = 100, # Elige 100 ventas aleatorias\n    replace = TRUE\n  ))\n)\nsimulaciones_mensuales[1:20] # produce:\n\n [1] 27348.16 22740.11 23459.30 29241.63 23832.15 17944.46 27400.37 19143.45\n [9] 18342.91 27761.60 16626.31 13791.37 17753.29 17648.00 17563.30 28828.95\n[17] 34544.17 20210.50 14362.04 23852.87\n\n\n\nmensual_df &lt;- tibble(\n  ingresos = simulaciones_mensuales\n)\nmensual_df[1:6,] # produce:\n\n# A tibble: 6 × 1\n  ingresos\n     &lt;dbl&gt;\n1   27348.\n2   22740.\n3   23459.\n4   29242.\n5   23832.\n6   17944.\n\n\nVisualización\n\n# Gráfico de los posibles ingresos mensuales\nmensual_df %&gt;%\n  ggplot(aes(x = ingresos)) +\n  geom_histogram(\n    bins = 40\n  ) +\n  labs(\n    title = \"Posibles ingresos mensuales\",\n    x = \"Ingresos simulados\",\n    y = \"Frecuencia\"\n  )\n\n\n\n\n\n\n\n\nAhora ya no estamos viendo ventas individuales.\nEstamos viendo futuros completos.\nCada barra representa mundos plausibles.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#interpretación-empresarial",
+    "href": "analysis/c03.html#interpretación-empresarial",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "9. Interpretación empresarial",
+    "text": "9. Interpretación empresarial\nAquí aparece una idea extremadamente importante.\nLa simulación NO dice:\n“El próximo mes venderás exactamente $52,431.”\nLa simulación dice algo mucho más honesto:\n“Estos son algunos resultados plausibles dada la información disponible.”\nEso cambia la calidad de las decisiones.\nPor ejemplo:\n\n¿qué ocurre si aparece un escenario muy bajo?\n¿la empresa tiene suficiente liquidez?\n¿qué tan frecuentes son los escenarios extremos?\n¿qué tan amplia es la incertidumbre?\n\nLas decisiones reales dependen mucho más de los rangos plausibles que de un único número.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#introducción-intuitiva-al-marketing",
+    "href": "analysis/c03.html#introducción-intuitiva-al-marketing",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "10. Introducción intuitiva al marketing",
+    "text": "10. Introducción intuitiva al marketing\nAntes de continuar, necesitamos introducir algunos conceptos simples.\n\n¿Qué es una conversión?\nEn marketing, una conversión ocurre cuando una persona realiza la acción que esperamos.\nPor ejemplo:\n\ncomprar un producto,\nregistrarse,\nresponder un anuncio,\ndescargar una app.\n\n\n\n¿Qué es conversion rate?\nEs el porcentaje de personas que realizan esa acción.\nPor ejemplo:\nsi 100 personas ven un anuncio y 5 compran:\nConversion Rate= 5/100 = 0.05 = 5%\nEso parece simple, pero introduce incertidumbre enorme.\nDos campañas similares pueden producir resultados muy distintos.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#simulación-de-campañas-de-marketing",
+    "href": "analysis/c03.html#simulación-de-campañas-de-marketing",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "11. Simulación de campañas de marketing",
+    "text": "11. Simulación de campañas de marketing\nCargamos el dataset.\n\n# Cargar la dataset de marketing\nsales &lt;- read_csv(\"../data/marketing_campaign.csv\",\n                  guess_max = 10000,\n                  show_col_types = FALSE)\n\nSupongamos que históricamente una campaña convierte aproximadamente al 10% de las personas.\nPodemos simular posibles resultados.\n\nset.seed(123)\n\n# Simular 1000 campañas distintas donde cada campaña tiene 100\n# personas y cada persona tiene 10% de probabilidad de convertir\nconversiones &lt;- rbinom( # genera resultados binomiales aleatorios\n  n = 1000, # Crear 1000 simulaciones distintas\n  size = 100, # Cada simulación tendrá 100 personas\n  prob = 0.10 # Cada persona tiene 10% de probabilidad de convertir\n)\nconversiones[1:20] # produce:\n\n [1]  8 12  9 14 15  5 10 14 10 10 15 10 11 10  6 14  8  5  9 15\n\n\n\nconv_df &lt;- tibble(\n  conversiones\n) \nconv_df[1:6,] # produce:\n\n# A tibble: 6 × 1\n  conversiones\n         &lt;int&gt;\n1            8\n2           12\n3            9\n4           14\n5           15\n6            5\n\n\nVisualización:\n\n# Distribución de las conversiones simuladas\nconv_df %&gt;%\n  ggplot(aes(x = conversiones)) +\n  geom_histogram(\n    bins = 40\n  ) + \n  labs(\n    title = \"Conversiones simuladas\",\n    x = \"Conversiones\",\n    y = \"Frecuencias\"\n  )",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#lo-importante-no-es-el-promedio",
+    "href": "analysis/c03.html#lo-importante-no-es-el-promedio",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "12. Lo importante no es el promedio",
+    "text": "12. Lo importante no es el promedio\nMuchos principiantes observan solamente el promedio esperado.\nPero la incertidumbre alrededor del promedio es igual de importante.\nTal vez:\n\n10 conversiones sea común,\n5 conversiones aún sea plausible,\n18 conversiones también pueda ocurrir.\n\nLa simulación ayuda a visualizar esos escenarios.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#introducción-intuitiva-al-churn",
+    "href": "analysis/c03.html#introducción-intuitiva-al-churn",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "13. Introducción intuitiva al churn",
+    "text": "13. Introducción intuitiva al churn\nAhora introduciremos un concepto empresarial muy importante.\n\n¿Qué es churn?\n“Churn” significa abandono de clientes.\nPor ejemplo:\n\ncancelar Netflix,\ncambiar de operadora telefónica,\ndejar una suscripción,\nabandonar un servicio.\n\nEl churn es extremadamente importante porque retener clientes suele ser más barato que conseguir nuevos.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#simulación-de-churn",
+    "href": "analysis/c03.html#simulación-de-churn",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "14. Simulación de churn",
+    "text": "14. Simulación de churn\nCargamos el dataset.\n\nsales &lt;- read_csv(\"../data/telco_customer_churn.csv\",\n                  guess_max = 10000,\n                  show_col_types = FALSE)\n\nSupongamos que una empresa tiene una probabilidad aproximada de abandono del 20%.\nPodemos simular posibles escenarios futuros\n\nset.seed(123)\n\n# Simular 100 escenarios distintos donde en cada escenario hay 500\n# clientes y cada cliente tiene 20% de probabilidad de abandonar\nclientes_abandono &lt;- rbinom(\n  n = 100, # crear 100 mundos posibles o simulaciones\n  size = 500, # cada simulación incluye 500 clientes\n  prob = 0.2 # probabilidad de abadono o riesgo de churn \n)\nclientes_abandono[1:20] # produce:\n\n [1]  96  98 101  85 120  97  89 106  95  83  95 106 106 116  93 104 105  98 106\n[20] 102\n\n\n\nchurn_df &lt;- tibble(\n  abandono = clientes_abandono\n)\nchurn_df[1:6,] # produce:\n\n# A tibble: 6 × 1\n  abandono\n     &lt;int&gt;\n1       96\n2       98\n3      101\n4       85\n5      120\n6       97\n\n\nVisualización:\n\n# Visualizar el churn simulado\nchurn_df %&gt;%\n  ggplot(aes(x = abandono)) +\n  geom_histogram(\n    bins = 70\n  ) +\n  labs(\n    title = \"Abandono simulado\",\n    x = \"Abandono\",\n    y = \"Frecuencia\"\n  )",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#riesgo-e-incertidumbre",
+    "href": "analysis/c03.html#riesgo-e-incertidumbre",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "15 Riesgo e incertidumbre",
+    "text": "15 Riesgo e incertidumbre\nObserva lo importante que es esta idea.\nLa empresa NO sabe exactamente:\n\nquién abandonará,\ncuándo abandonará,\ncuántos abandonarán exactamente.\n\nPero aun así puede explorar escenarios plausibles.\nEso es muchísimo más útil que ignorar la incertidumbre.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#visualizar-mundos-posibles",
+    "href": "analysis/c03.html#visualizar-mundos-posibles",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "16. Visualizar mundos posibles",
+    "text": "16. Visualizar mundos posibles\nUna de las mejores formas de entender incertidumbre es verla.\nPor ejemplo, podemos simular trayectorias futuras.\n\nset.seed(123)\n\n# Simular trayectorias futuras\ntrayectorias &lt;- tibble(\n  dia = rep(1:30, 50), # Repetir la secuencia del 1 al 30 (días del\n                       # mes) 50 veces. (porque queremos 50 simulaciones)\n                       # cada una con 30 días que tiene un mes) \n  ventas = cumsum(rnorm(1500, mean = 100, sd = 20)), # rnorm genera\n                       # 1500 números aleatorios normales con media\n                       # esperada de 100 y desviación de 20\n                       # cumsum va acumulando cada uno de los 1500\n                       # valores (acumula los cambios diarios)\n  simulacion = rep(1:50, each = 30) # Crear los id's de simulación\n                       # significa que repita cada número, del 1 al\n                       # 50, 30 veces \n)\ntrayectorias[1:8,] # produce:\n\n# A tibble: 8 × 3\n    dia ventas simulacion\n  &lt;int&gt;  &lt;dbl&gt;      &lt;int&gt;\n1     1   88.8          1\n2     2  184.           1\n3     3  315.           1\n4     4  417.           1\n5     5  519.           1\n6     6  654.           1\n7     7  763.           1\n8     8  838.           1\n\n\n\n# Visualizar trayectorias futuras\ntrayectorias %&gt;%\n  ggplot(aes(\n    x = dia,\n    y = ventas,\n    group = simulacion # Cada simulación debe dibujarse como\n                       # una línea separada\n  )) +\n  #coord_cartesian(ylim = c(0, 500)) +\n  geom_line(alpha = 0.2) + # dibuja líneas conectando puntos\n  labs(\n    title = \"Múltiples futuros plausibles\",\n    x = \"Día\",\n    y = \"Ventas acumuladas\"\n  )\n\n\n\n\n\n\n\n\nEn esta gráfico de la simulación las ventas se siguen acumulando mes a mes (es decir, no se enceran al inicio de cada mes) así que el gráfico es bastante confuso. Se puede mejorar cambiando la simulación:\n\n# Mejorar las trayectorias futuras para que puedan verse bien en\n# el gráfico. Este código permite  que las ventas se puedan \"encerar\"\n# al inicio de cada mes\ntrayectorias2 &lt;- tibble(\n  simulacion = rep(1:50, each = 30),\n  dia = rep(1:30, 50),\n  cambio = rnorm(1500, mean = 100, sd = 20)\n) %&gt;%\n  group_by(simulacion) %&gt;%\n  mutate(\n    ventas = cumsum(cambio)\n  )\n\n\n# Visualizar trayectorias futuras\ntrayectorias2 %&gt;%\n  ggplot(aes(\n    x = dia,\n    y = ventas,\n    group = simulacion # Cada simulación debe dibujarse como\n                       # una línea separada\n  )) +\n  #coord_cartesian(ylim = c(0, 500)) +\n  geom_line(alpha = 0.2) + # dibuja líneas conectando puntos\n  labs(\n    title = \"Múltiples futuros plausibles\",\n    x = \"Día\",\n    y = \"Ventas acumuladas\"\n  )\n\n\n\n\n\n\n\n\nEste gráfico es filosóficamente muy importante.\nNo existe una única línea futura.\nExisten múltiples trayectorias plausibles.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#mundos-posibles",
+    "href": "analysis/c03.html#mundos-posibles",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "17. Mundos posibles",
+    "text": "17. Mundos posibles\nEsta es probablemente la idea más profunda del capítulo.\nCada simulación representa un pequeño universo plausible.\nUn posible futuro.\nNo todos ocurrirán.\nPero algunos podrían ocurrir.\nLa simulación no elimina incertidumbre.\nLa hace visible.\nY eso cambia profundamente cómo pensamos decisiones.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#conexión-intuitiva-con-bayes",
+    "href": "analysis/c03.html#conexión-intuitiva-con-bayes",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "18. Conexión intuitiva con Bayes",
+    "text": "18. Conexión intuitiva con Bayes\nAquí comenzamos a acercarnos suavemente al pensamiento bayesiano.\nBayes no trabaja con certezas absolutas.\nTrabaja con plausibilidad.\nTrabaja con múltiples posibilidades.\nTrabaja con distribuciones.\nEn capítulos posteriores veremos cómo:\n\nnuevas evidencias modifican creencias,\nlas probabilidades cambian,\nalgunos escenarios se vuelven más plausibles,\notros menos plausibles.\n\nPero la intuición central empieza aquí:\npensar probabilísticamente significa aceptar múltiples futuros posibles.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#errores-comunes-de-interpretación",
+    "href": "analysis/c03.html#errores-comunes-de-interpretación",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "19. Errores comunes de interpretación",
+    "text": "19. Errores comunes de interpretación\n\nError 1 — Creer que la simulación “predice”\nLa simulación no garantiza resultados.\nExplora posibilidades plausibles.\n\n\nError 2 — Confundir incertidumbre con inutilidad\nQue exista incertidumbre no significa que el análisis sea inútil.\nDe hecho, reconocer incertidumbre suele producir mejores decisiones.\n\n\nError 3 — Buscar precisión imposible\nLos negocios reales rara vez tienen información perfecta.\nLa simulación ayuda precisamente cuando existe información incompleta.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#reflexión-bayesiana",
+    "href": "analysis/c03.html#reflexión-bayesiana",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "20. Reflexión bayesiana",
+    "text": "20. Reflexión bayesiana\nUna idea poderosa emerge de este capítulo:\nel futuro no es un punto exacto.\nEs una distribución de posibilidades.\nEse cambio mental es enorme.\nMuchas personas buscan eliminar incertidumbre.\nEl pensamiento probabilístico propone algo diferente:\naprender a navegarla.\nLos modelos no producen verdades absolutas.\nProducen escenarios plausibles.\nY eso suele ser suficiente para tomar mejores decisiones.",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c03.html#ejercicios",
+    "href": "analysis/c03.html#ejercicios",
+    "title": "3.- Simulación y mundos posibles",
+    "section": "21. Ejercicios",
+    "text": "21. Ejercicios\n\nEjercicio 1\nSimula 1000 lanzamientos de una moneda con probabilidad de cara igual a 0.7.\n\n¿Qué observas?\n¿Cómo cambia respecto a una moneda justa?\n\n\n\nEjercicio 2\nUsando el dataset de Superstore:\n\nsimula ingresos mensuales usando distintos tamaños de muestra,\ncompara la variabilidad obtenida.\n\n\n\nEjercicio 3\nModifica la probabilidad de conversión:\n\n5%\n10%\n20%\n\n¿Cómo cambian las distribuciones simuladas?\n\n\nEjercicio 4\nSimula churn con:\n\n10%,\n20%,\n35%.\n\n¿Qué escenarios parecen más riesgosos?\n\n\nEjercicio 5\nCrea múltiples trayectorias simuladas usando diferentes niveles de variabilidad (sd).\n¿Qué ocurre cuando aumenta la incertidumbre?",
+    "crumbs": [
+      "PARTE I — APRENDER A VER LA INCERTIDUMBRE",
+      "3.- Simulación y mundos posibles"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html",
+    "href": "analysis/c04.html",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "",
+    "text": "Vivimos rodeados de incertidumbre.\nUn médico recibe un examen de laboratorio y cambia parcialmente su sospecha diagnóstica. Un inversionista lee una noticia económica y ajusta sus expectativas. Una empresa lanza una campaña publicitaria y empieza a preguntarse:\n“¿Está funcionando realmente?”\nNinguna de estas personas posee certeza absoluta.\nLo único que tienen es información incompleta.\nY, aun así, deben tomar decisiones.\nEl pensamiento bayesiano nace precisamente de esta realidad:\naprender a modificar racionalmente nuestras creencias cuando aparece nueva evidencia.\nEse es el corazón de Bayes.\nNo se trata de alcanzar verdades perfectas. No se trata de eliminar la incertidumbre. Se trata de aprender continuamente.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#introducción",
+    "href": "analysis/c04.html#introducción",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "",
+    "text": "Vivimos rodeados de incertidumbre.\nUn médico recibe un examen de laboratorio y cambia parcialmente su sospecha diagnóstica. Un inversionista lee una noticia económica y ajusta sus expectativas. Una empresa lanza una campaña publicitaria y empieza a preguntarse:\n“¿Está funcionando realmente?”\nNinguna de estas personas posee certeza absoluta.\nLo único que tienen es información incompleta.\nY, aun así, deben tomar decisiones.\nEl pensamiento bayesiano nace precisamente de esta realidad:\naprender a modificar racionalmente nuestras creencias cuando aparece nueva evidencia.\nEse es el corazón de Bayes.\nNo se trata de alcanzar verdades perfectas. No se trata de eliminar la incertidumbre. Se trata de aprender continuamente.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#pensar-bayesianamente-sin-darse-cuenta",
+    "href": "analysis/c04.html#pensar-bayesianamente-sin-darse-cuenta",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Pensar bayesianamente sin darse cuenta",
+    "text": "Pensar bayesianamente sin darse cuenta\nAunque muchas personas consideran a Bayes como una idea matemática compleja, en realidad todos pensamos bayesianamente todos los días.\nImagina esta situación:\n\nUn amigo normalmente llega puntual.\nHoy lleva 40 minutos de retraso.\nNo responde mensajes.\n\nTu cerebro automáticamente comienza a actualizar posibilidades:\n\nquizá hubo tráfico\nquizá olvidó la reunión\nquizá ocurrió algo importante\n\nNo tienes certeza.\nPero la nueva evidencia cambia lo que consideras plausible.\nEso es pensamiento bayesiano.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#la-idea-central-de-bayes",
+    "href": "analysis/c04.html#la-idea-central-de-bayes",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "La idea central de Bayes",
+    "text": "La idea central de Bayes\nLa esencia de Bayes puede resumirse así:\n“Lo que creemos antes puede cambiar cuando aparece nueva información.”\nEn términos simples:\n\n\n\nConcepto\nTraducción intuitiva\n\n\n\n\nPrior\nLo que creíamos antes\n\n\nEvidencia\nLa nueva información\n\n\nPosterior\nLo que creemos ahora\n\n\n\nBayes no reemplaza nuestras creencias. Las actualiza.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#incertidumbre-y-aprendizaje",
+    "href": "analysis/c04.html#incertidumbre-y-aprendizaje",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Incertidumbre y aprendizaje",
+    "text": "Incertidumbre y aprendizaje\nEn muchos libros tradicionales, la incertidumbre parece un problema incómodo que debe eliminarse.\nEl enfoque bayesiano propone algo distinto:\nLa incertidumbre es una parte natural del mundo real.\nEn negocios, medicina, economía o marketing:\n\nnunca tenemos información perfecta\nnunca conocemos el futuro con certeza\nnunca observamos toda la realidad\n\nPor eso necesitamos aprender a pensar probabilísticamente.\nNo para predecir perfectamente.\nSino para tomar mejores decisiones bajo incertidumbre.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#contexto-de-negocio",
+    "href": "analysis/c04.html#contexto-de-negocio",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Contexto de negocio",
+    "text": "Contexto de negocio\n\n¿Qué es una campaña de marketing?\nAntes de usar el dataset, necesitamos entender algunos conceptos básicos.\nLas empresas constantemente intentan atraer clientes mediante campañas:\n\nemails\npromociones\ndescuentos\nanuncios\npublicidad digital\n\nEl objetivo suele ser simple:\nlograr que algunas personas realicen una acción.\nPor ejemplo:\n\ncomprar un producto\nsuscribirse\nregistrarse\nresponder una oferta\n\nCuando una persona realiza esa acción, decimos que ocurrió una conversión.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#conversion-rate",
+    "href": "analysis/c04.html#conversion-rate",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Conversion rate",
+    "text": "Conversion rate\nUno de los conceptos más importantes en marketing es el:\n\nConversion rate\nEs simplemente:\nel porcentaje de personas que realizaron la acción deseada.\nPor ejemplo:\n\n100 personas reciben un email\n20 personas compran\n\nEntonces:\n\nconversion rate = 20%\n\nParece sencillo.\nPero aquí aparece el problema real:\nNunca sabemos con certeza si una campaña “funciona”.\nIncluso campañas buenas pueden tener malos días.\nY campañas malas pueden parecer exitosas por azar.\nAquí es donde Bayes resulta útil.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#storytelling-central-del-capítulo",
+    "href": "analysis/c04.html#storytelling-central-del-capítulo",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Storytelling central del capítulo",
+    "text": "Storytelling central del capítulo\nImagina una empresa que lanza una nueva campaña publicitaria.\nLa empresa cree inicialmente que la campaña podría funcionar “moderadamente bien”.\nNo tiene certeza.\nSólo tiene expectativas previas.\nEse es el prior.\nLuego aparecen los primeros resultados:\n\nalgunos clientes responden\notros ignoran la campaña\naparecen nuevas conversiones\n\nAhora la empresa debe actualizar lo que cree.\nY cada nuevo dato cambia parcialmente sus expectativas.\nEso es exactamente lo que hace Bayes:\naprender continuamente a partir de nueva evidencia.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#introducción-visual-a-bayes",
+    "href": "analysis/c04.html#introducción-visual-a-bayes",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Introducción visual a Bayes",
+    "text": "Introducción visual a Bayes\nSupongamos esta situación sencilla.\nUna empresa envía una campaña a 100 clientes.\n\n20 convierten\n80 no convierten\n\nLa empresa inicialmente pensaba que la campaña probablemente tendría una conversión cercana al 10%.\nPero los primeros resultados parecen mejores.\nAhora surge una pregunta natural:\n“¿Debemos actualizar nuestras expectativas?”\nLa respuesta bayesiana es:\nSí.\nPorque la evidencia nueva importa.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#bayes-usando-frecuencias-naturales",
+    "href": "analysis/c04.html#bayes-usando-frecuencias-naturales",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Bayes usando frecuencias naturales",
+    "text": "Bayes usando frecuencias naturales\nLas frecuencias naturales ayudan muchísimo a reducir ansiedad matemática.\nEn lugar de pensar en símbolos abstractos, pensamos en personas reales.\nPor ejemplo:\nDe 100 clientes:\n\n20 compran\n80 no compran\n\nAhora imaginemos algo más específico.\nSupongamos que:\n\nmuchos clientes que hicieron clic terminaron comprando\npocos clientes sin clic compraron\n\nEntonces el clic comienza a convertirse en evidencia útil.\nNo es prueba absoluta.\nPero sí cambia lo que consideramos plausible.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#introducción-suave-a-la-fórmula-de-bayes",
+    "href": "analysis/c04.html#introducción-suave-a-la-fórmula-de-bayes",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Introducción suave a la fórmula de Bayes",
+    "text": "Introducción suave a la fórmula de Bayes\nAhora sí podemos presentar la famosa fórmula.\nP(A|B) = P(B|A)P(A) / P(B)\nAunque visualmente parezca intimidante, la idea detrás es sorprendentemente humana.\nPodemos leerla así:\n\nP(A): lo que creíamos antes\nP(B|A): qué tan compatible es la evidencia con nuestra idea\nP(A|B): lo que creemos después de observar evidencia\n\nEn palabras simples:\nPosterior = evidencia útil / evidencia total\nO más intuitivamente:\n“La nueva información modifica racionalmente nuestras creencias previas.”",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#lo-importante-no-es-memorizar-la-fórmula",
+    "href": "analysis/c04.html#lo-importante-no-es-memorizar-la-fórmula",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Lo importante NO es memorizar la fórmula",
+    "text": "Lo importante NO es memorizar la fórmula\nMuchas personas creen que aprender Bayes significa aprender símbolos.\nNo.\nLa verdadera idea importante es esta:\nlas probabilidades pueden cambiar racionalmente cuando aparece nueva evidencia.\nEso es todo.\nLa matemática sólo organiza esa intuición.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#ejemplo-intuitivo-con-clientes",
+    "href": "analysis/c04.html#ejemplo-intuitivo-con-clientes",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Ejemplo intuitivo con clientes",
+    "text": "Ejemplo intuitivo con clientes\nSupongamos nuevamente:\n\n100 clientes reciben una campaña\n20 compran\n\nAhora observamos algo interesante:\nEntre quienes hicieron clic:\n\nla mayoría compró\n\nEntonces el clic comienza a actuar como evidencia relevante.\nNuestra creencia cambia:\nAntes:\n“La campaña probablemente funciona moderadamente.”\nDespués de observar clics y conversiones:\n“Ahora parece más plausible que la campaña funcione bien.”\nNotemos algo importante:\nNo estamos llegando a certeza absoluta.\nSeguimos hablando de plausibilidad.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#primer-contacto-con-el-dataset-real",
+    "href": "analysis/c04.html#primer-contacto-con-el-dataset-real",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Primer contacto con el dataset real",
+    "text": "Primer contacto con el dataset real\nAhora conectemos estas ideas con el dataset de marketing.\nEl objetivo NO será construir todavía modelos complejos.\nQueremos desarrollar intuición probabilística.\n\nPreparación inicial\n\n# Cargar la dataset de marketing\nmarketing &lt;- read_delim(\n  \"../data/marketing_campaign.csv\",\n  delim = \";\"\n  #guess_max = 10000,\n  #show_col_types = FALSE\n)",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#explorar-el-dataset",
+    "href": "analysis/c04.html#explorar-el-dataset",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Explorar el dataset",
+    "text": "Explorar el dataset\n\nglimpse(marketing) # produce:\n\nRows: 2,240\nColumns: 29\n$ ID                  &lt;dbl&gt; 5524, 2174, 4141, 6182, 5324, 7446, 965, 6177, 485…\n$ Year_Birth          &lt;dbl&gt; 1957, 1954, 1965, 1984, 1981, 1967, 1971, 1985, 19…\n$ Education           &lt;chr&gt; \"Graduation\", \"Graduation\", \"Graduation\", \"Graduat…\n$ Marital_Status      &lt;chr&gt; \"Single\", \"Single\", \"Together\", \"Together\", \"Marri…\n$ Income              &lt;dbl&gt; 58138, 46344, 71613, 26646, 58293, 62513, 55635, 3…\n$ Kidhome             &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,…\n$ Teenhome            &lt;dbl&gt; 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1,…\n$ Dt_Customer         &lt;date&gt; 2012-09-04, 2014-03-08, 2013-08-21, 2014-02-10, 2…\n$ Recency             &lt;dbl&gt; 58, 38, 26, 26, 94, 16, 34, 32, 19, 68, 11, 59, 82…\n$ MntWines            &lt;dbl&gt; 635, 11, 426, 11, 173, 520, 235, 76, 14, 28, 5, 6,…\n$ MntFruits           &lt;dbl&gt; 88, 1, 49, 4, 43, 42, 65, 10, 0, 0, 5, 16, 61, 2, …\n$ MntMeatProducts     &lt;dbl&gt; 546, 6, 127, 20, 118, 98, 164, 56, 24, 6, 6, 11, 4…\n$ MntFishProducts     &lt;dbl&gt; 172, 2, 111, 10, 46, 0, 50, 3, 3, 1, 0, 11, 225, 3…\n$ MntSweetProducts    &lt;dbl&gt; 88, 1, 21, 3, 27, 42, 49, 1, 3, 1, 2, 1, 112, 5, 1…\n$ MntGoldProds        &lt;dbl&gt; 88, 6, 42, 5, 15, 14, 27, 23, 2, 13, 1, 16, 30, 14…\n$ NumDealsPurchases   &lt;dbl&gt; 3, 2, 1, 2, 5, 2, 4, 2, 1, 1, 1, 1, 1, 3, 1, 1, 3,…\n$ NumWebPurchases     &lt;dbl&gt; 8, 1, 8, 2, 5, 6, 7, 4, 3, 1, 1, 2, 3, 6, 1, 7, 3,…\n$ NumCatalogPurchases &lt;dbl&gt; 10, 1, 2, 0, 3, 4, 3, 0, 0, 0, 0, 0, 4, 1, 0, 6, 0…\n$ NumStorePurchases   &lt;dbl&gt; 4, 2, 10, 4, 6, 10, 7, 4, 2, 0, 2, 3, 8, 5, 3, 12,…\n$ NumWebVisitsMonth   &lt;dbl&gt; 7, 5, 4, 6, 5, 6, 6, 8, 9, 20, 7, 8, 2, 6, 8, 3, 8…\n$ AcceptedCmp3        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,…\n$ AcceptedCmp4        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ AcceptedCmp5        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…\n$ AcceptedCmp1        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…\n$ AcceptedCmp2        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Complain            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Z_CostContact       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…\n$ Z_Revenue           &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11…\n$ Response            &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,…\n\n\nObjetivo:\n\nentender variables\nfamiliarizarse con clientes reales\ncomenzar a pensar en incertidumbre",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#explorar-conversiones",
+    "href": "analysis/c04.html#explorar-conversiones",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Explorar conversiones",
+    "text": "Explorar conversiones\nSupongamos que el dataset incluye una variable de respuesta a campañas.\nPodemos comenzar calculando proporciones simples.\n\nmarketing %&gt;%\n  count(Response) # produce:\n\n# A tibble: 2 × 2\n  Response     n\n     &lt;dbl&gt; &lt;int&gt;\n1        0  1906\n2        1   334\n\n\n\n# Contar las respuestas a la campaña y sacar la proporción\nmarketing %&gt;%\n  count(Response) %&gt;%\n  mutate(\n    proporcion = n / sum(n)\n  ) # produce:\n\n# A tibble: 2 × 3\n  Response     n proporcion\n     &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;\n1        0  1906      0.851\n2        1   334      0.149\n\n\nAquí todavía no estamos haciendo “estadística avanzada”.\nSólo estamos aprendiendo a observar evidencia.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#visualización-simple-de-conversiones",
+    "href": "analysis/c04.html#visualización-simple-de-conversiones",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Visualización simple de conversiones",
+    "text": "Visualización simple de conversiones\n\n# Visualización simple de las conversiones\nmarketing %&gt;%\n  count(Response) %&gt;%\n  ggplot(aes(x = factor(Response), y = n)) +\n  geom_col() +\n  labs(\n    title = \"Clientes que respondieron a la campaña\",\n    x = \"Respuesta\",\n    y = \"Numero de clientes\"\n  )",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#qué-debemos-interpretar",
+    "href": "analysis/c04.html#qué-debemos-interpretar",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Qué debemos interpretar",
+    "text": "Qué debemos interpretar\nLa parte importante NO es el gráfico en sí.\nLa parte importante es la interpretación.\nPor ejemplo:\n\n¿las conversiones parecen frecuentes o raras?\n¿la campaña parece prometedora?\n¿cuánta incertidumbre existe?\n¿podríamos generalizar estos resultados?\n\nEl pensamiento bayesiano siempre pregunta:\n“¿Qué tan fuerte es realmente esta evidencia?”",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#un-error-muy-común",
+    "href": "analysis/c04.html#un-error-muy-común",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Un error muy común",
+    "text": "Un error muy común\nUn error frecuente en negocios es pensar:\n“Si hubo algunas conversiones, entonces la campaña funciona.”\nPero eso puede ser engañoso.\n¿Por qué?\nPorque:\n\nmuestras pequeñas pueden confundirnos\nel azar puede producir patrones temporales\nnecesitamos acumular evidencia gradualmente\n\nBayes ayuda precisamente a evitar conclusiones exageradas.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#antes-y-después-de-nueva-evidencia",
+    "href": "analysis/c04.html#antes-y-después-de-nueva-evidencia",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Antes y después de nueva evidencia",
+    "text": "Antes y después de nueva evidencia\nUna visualización muy útil para este capítulo es comparar:\n\ncreencia inicial\ncreencia después de observar datos\n\nPor ejemplo:\n\n# Comparar creencia inicial con creencia después de observar datos\nbeliefs &lt;- tibble(\n  etapa = c(\"Antes de la campaña\", \"Después de observar datos\"),\n  probabilidad = c(0.10, 0.149)\n)\nbeliefs # produce:\n\n# A tibble: 2 × 2\n  etapa                     probabilidad\n  &lt;chr&gt;                            &lt;dbl&gt;\n1 Antes de la campaña              0.1  \n2 Después de observar datos        0.149\n\n\n\n# Gráfico de la etapa vs la probabilidad\nggplot(beliefs, aes(\n  x = etapa, \n  y = probabilidad\n)) +\n  geom_col() +\n  ylim(0, 1) + # Para mostrarel gráfico en la escala de 0 a 1 en el\n               # eje Y\n  labs(\n    title = \"Cómo cambia una creencia con nueva evidencia\",\n    y = \"Probabilidad estimada\"\n  )",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#lo-profundo-del-pensamiento-bayesiano",
+    "href": "analysis/c04.html#lo-profundo-del-pensamiento-bayesiano",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Lo profundo del pensamiento bayesiano",
+    "text": "Lo profundo del pensamiento bayesiano\nBayes tiene una implicación filosófica muy poderosa:\nnadie empieza desde cero.\nTodos tenemos:\n\nexperiencia previa\nexpectativas\nintuiciones\ncreencias parciales\n\nY eso no es un defecto.\nEs inevitable.\nLa racionalidad no consiste en eliminar creencias previas.\nConsiste en:\npermitir que la evidencia las modifique.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#prior-y-posterior-en-la-vida-real",
+    "href": "analysis/c04.html#prior-y-posterior-en-la-vida-real",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Prior y posterior en la vida real",
+    "text": "Prior y posterior en la vida real\nEsto ocurre constantemente:\n\nMedicina\nUn médico tiene sospechas iniciales antes de pedir un examen.\nLuego el examen modifica parcialmente esas sospechas.\n\n\nNegocios\nUna empresa tiene expectativas iniciales sobre una campaña.\nLuego los resultados reales cambian esas expectativas.\n\n\nVida cotidiana\nLas personas actualizan opiniones constantemente.\nBayes simplemente formaliza algo profundamente humano:\naprender de nueva evidencia.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#visualizaciones-útiles-para-este-capítulo",
+    "href": "analysis/c04.html#visualizaciones-útiles-para-este-capítulo",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Visualizaciones útiles para este capítulo",
+    "text": "Visualizaciones útiles para este capítulo\nA lo largo del capítulo, conviene priorizar gráficos como:\n\nbarras simples\nproporciones\nfrecuencias naturales\ncomparaciones antes/después\nincertidumbre visible\ndistribuciones sencillas\n\nEvitar:\n\ngráficos excesivamente técnicos\nvisualizaciones sobrecargadas\ndemasiadas variables simultáneamente\n\nLa claridad es más importante que la sofisticación.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#posibles-errores-de-interpretación",
+    "href": "analysis/c04.html#posibles-errores-de-interpretación",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Posibles errores de interpretación",
+    "text": "Posibles errores de interpretación\n\nError 1\n\n\nConfundir probabilidad con certeza\nUna probabilidad alta NO significa garantía.\n\nError 2\n\n\n\nIgnorar creencias previas\nLa evidencia siempre se interpreta dentro de un contexto previo.\n\nError 3\n\n\n\nSobreinterpretar muestras pequeñas\nPocos datos pueden generar conclusiones engañosas.\n\nError 4\n\n\n\nPensar que Bayes elimina incertidumbre\nNo.\nBayes ayuda a navegar incertidumbre.\nNo a destruirla.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#reflexión-bayesiana",
+    "href": "analysis/c04.html#reflexión-bayesiana",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nUna de las ideas más importantes de este libro es:\ncambiar de opinión con nueva evidencia no es debilidad.\nEs racionalidad.\nMuchas veces las personas sienten que modificar una creencia implica “equivocarse”.\nEl pensamiento bayesiano propone algo distinto:\nlas creencias siempre deben ser provisionales.\nPorque el mundo cambia.\nY la información también.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#conexión-con-capítulos-futuros",
+    "href": "analysis/c04.html#conexión-con-capítulos-futuros",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Conexión con capítulos futuros",
+    "text": "Conexión con capítulos futuros\nEste capítulo introduce la intuición fundamental:\n\nprior\nevidencia\nposterior\nactualización de creencias\n\nEn los próximos capítulos veremos cómo estas ideas evolucionan hacia:\n\nprobabilidades útiles\nintervalos plausibles\nregresión logística\nforecasting probabilístico\ntoma de decisiones bajo incertidumbre",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  },
+  {
+    "objectID": "analysis/c04.html#ejercicios",
+    "href": "analysis/c04.html#ejercicios",
+    "title": "4.- Bayes: aprender de nueva evidencia",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\n\nActualizar creencias intuitivamente\nImagina:\n\nuna campaña normalmente convierte 5%\nen una prueba pequeña convierte 15%\n\nPregunta:\n\n¿deberías cambiar totalmente tu opinión?\n¿o sólo parcialmente?\n\nExplica intuitivamente por qué.\n\n\n\nEjercicio 2\n\nFrecuencias naturales\nSupongamos:\n\n100 clientes reciben una oferta\n18 compran\n\nDescribe la situación usando:\n\nproporciones\nfrecuencias naturales\ninterpretación intuitiva\n\n\n\n\nEjercicio 3\n\nInterpretar evidencia\nUna campaña tiene pocas conversiones al inicio.\nDespués mejora considerablemente.\nPregunta:\n\n¿qué podría explicar ese cambio?\n¿la evidencia inicial era suficiente?\n\n\n\n\nEjercicio 4\n\nPequeño experimento en R\nModificar este código:\n\nbeliefs &lt;- tibble(\n  etapa = c(\"Antes\", \"Después\"),\n  probabilidad = c(0.15, 0.35)\n)\n\ny crear distintos escenarios de actualización.\n\n\n\nEjercicio 5\n\nReflexión conceptual\nExplica con tus propias palabras:\n“Bayes trata sobre plausibilidad, no sobre certeza absoluta.”",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "4.- Bayes: aprender de nueva evidencia"
+    ]
+  }
+]

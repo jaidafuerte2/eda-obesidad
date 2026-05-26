@@ -1,0 +1,514 @@
+---
+title: "1.- Los datos nunca cuentan toda la historia"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(readr)
+library(dplyr)
+library(tidyverse)
+
+sales <- read_csv("../data/superstore_sales.csv")
+```
+
+## Introducción
+
+### Los negocios reales no son perfectamente predecibles
+
+Imagina una tienda que vende exactamente lo mismo todos los días.
+
+Los mismos productos.
+La misma cantidad de clientes.
+Las mismas ganancias.
+Los mismos descuentos.
+Los mismos resultados.
+
+Suena poco realista, ¿verdad?
+
+Los negocios reales son inherentemente variables.
+
+Algunos días las ventas explotan.
+Otros días parecen desaparecer.
+Algunos clientes compran muchísimo.
+Otros apenas generan ganancias.
+Algunas promociones funcionan muy bien.
+Otras destruyen el margen de ganancia.
+
+Y ahí aparece una de las ideas más importantes de este libro:
+
+`Los datos no eliminan la incertidumbre.`
+`Nos ayudan a verla con mayor claridad.`
+
+Muchas personas comienzan a aprender análisis de datos esperando encontrar respuestas exactas:
+
+- “¿Cuál es el mejor producto?”
+- “¿Cuál es la estrategia correcta?”
+- “¿Cuál es el cliente ideal?”
+- “¿Cuál será la venta del próximo mes?”
+
+Pero los datos reales rara vez responden de forma absoluta.
+
+En cambio, muestran:
+
+- patrones,
+- tendencias,
+- variabilidad,
+- comportamientos inesperados,
+- y distintos niveles de incertidumbre.
+
+Ese será el punto de partida de este libro.
+
+No aprenderemos únicamente a calcular números.
+
+Aprenderemos a pensar probabilísticamente.
+
+## ¿Por qué los promedios pueden engañar?
+
+Supongamos que una tienda tiene un promedio de ventas diarias de $500.
+
+Ese número parece útil.
+
+Pero todavía no sabemos:
+
+- si las ventas son estables,
+- si algunos días venden $50 y otros $5000,
+- si existen clientes extremos,
+- si algunas categorías generan pérdidas,
+- o si los descuentos están destruyendo las ganancias.
+
+Dos negocios pueden tener exactamente el mismo promedio…
+y ser completamente distintos.
+
+Por eso necesitamos algo más que un único número.
+
+Necesitamos ver distribuciones.
+
+Necesitamos entender variabilidad.
+
+Necesitamos aprender a pensar bajo incertidumbre.
+
+## Contexto de negocio
+
+### Sales, Revenue y Profit
+
+Antes de tocar código, vale la pena aclarar algunos conceptos de negocio.
+
+Muchos lectores nuevos en analytics suelen asumir algo intuitivo:
+
+`“Si vendo más, gano más.”`
+
+Pero en negocios reales eso no siempre ocurre.
+
+### Sales (ventas)
+
+En este dataset, *Sales* representa el valor total vendido.
+
+Por ejemplo:
+
+- si una empresa vende una silla de $200,
+- entonces las ventas son $200.
+
+Las ventas muestran movimiento comercial.
+Pero NO necesariamente muestran ganancia.
+
+### Profit (ganancia)
+
+*Profit* representa cuánto dinero realmente queda después de costos, descuentos y gastos asociados.
+
+Aquí aparece algo interesante:
+
+una empresa puede vender mucho…
+y aun así perder dinero.
+
+Eso ocurre frecuentemente cuando:
+
+- existen descuentos agresivos,
+- márgenes muy pequeños,
+- costos altos,
+- o estrategias comerciales riesgosas.
+
+### Discounts (descuentos)
+
+Los descuentos son una excelente forma de introducir incertidumbre empresarial.
+
+A veces ayudan a vender más.
+
+Pero también pueden:
+
+- reducir ganancias,
+- atraer clientes poco rentables,
+- o incluso generar pérdidas.
+
+Los negocios reales viven constantemente en estos trade-offs.
+
+No existen decisiones perfectas.
+
+Existen decisiones con incertidumbre.
+
+## Primer contacto con el dataset
+
+Ahora sí vamos a empezar a trabajar en R.
+
+### Explorar las primeras filas
+
+```{r}
+# Explorar las primeras filas
+head(sales) # produce:
+```
+
+Esto nos permite ver rápidamente:
+
+- cómo luce el dataset,
+- qué variables existen,
+- y cómo están organizados los datos.
+
+### Explorar la estructura
+
+```{r}
+# Explorar la estructura
+glimpse(sales) # produce:
+```
+
+Aquí veremos:
+
+- variables numéricas,
+- variables categóricas,
+- fechas,
+- categorías de productos,
+- ventas,
+- ganancias,
+- descuentos,
+- segmentos de clientes,
+- regiones,
+- entre otros elementos.
+
+La idea NO es memorizar todo inmediatamente.
+
+La idea es desarrollar familiaridad con los datos.
+
+### Pensar visualmente
+
+Uno de los errores más comunes al comenzar en análisis de datos es obsesionarse demasiado rápido con fórmulas.
+
+Los gráficos suelen enseñarnos muchísimo antes que los modelos complejos.
+
+En este libro usaremos visualización constantemente porque:
+
+`Los gráficos ayudan a pensar.`
+
+## Distribución de ventas
+
+### No todos los pedidos son iguales
+
+Comencemos observando las ventas.
+
+```{r}
+# Visualizar las ventas
+ggplot(sales, aes(x = Sales)) +
+  geom_histogram(bins = 100) +
+  labs(
+    title = "Distribución de ventas",
+    x = "Ventas",
+    y = "Cantidad de pedidos"
+  )
+```
+
+### ¿Qué deberíamos observar?
+
+Aquí el lector probablemente notará algo importante:
+
+- la mayoría de ventas son pequeñas,
+- pero existen algunos pedidos extremadamente grandes.
+
+Eso significa que las ventas NO están distribuidas uniformemente.
+
+Existe asimetría.
+
+Existe heterogeneidad.
+
+Existe variabilidad.
+
+Y eso es exactamente lo que ocurre en negocios reales.
+
+### Introduciendo la idea de distribución
+
+Aquí aparece una idea fundamental para todo el libro:
+
+`Los negocios viven en distribuciones, no en números únicos.`
+
+La media puede resumir parte de la historia.
+
+Pero nunca cuenta toda la historia.
+
+Dos empresas con el mismo promedio pueden tener:
+
+- riesgos distintos,
+- clientes distintos,
+- estabilidad distinta,
+- incertidumbre distinta.
+
+Por eso veremos constantemente:
+
+- distribuciones,
+- dispersión,
+- incertidumbre,
+- intervalos plausibles,
+- y probabilidades.
+
+## Profit vs Sales
+
+### Más ventas no siempre significan más ganancias
+
+Ahora veremos algo todavía más interesante.
+
+```{r}
+# Diagrama de dispersión que relaciona las ventas con las ganancias
+ggplot(sales, aes(x = Sales, y = Profit)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    title = "Relación entre ventas y ganancias",
+    x = "Ventas",
+    y = "Ganancia"
+  )
+```
+
+¿Qué debería notar el lector?
+
+Probablemente verá:
+
+- mucha dispersión,
+- puntos alejados,
+- ventas altas con ganancias bajas,
+- incluso pérdidas en algunos casos.
+
+Esto rompe una intuición muy común:
+
+`vender más no garantiza ganar más.`
+
+Y nuevamente aparece incertidumbre.
+
+Los negocios reales no son perfectamente lineales.
+
+## Discounts vs Profit
+
+### Cuando vender más puede ser peligroso
+
+Ahora exploremos descuentos y ganancias.
+
+```{r}
+# Diagrama de dispersión que muestra la relación entre descuentos
+# y ganacias
+ggplot(sales, aes(x = Discount, y = Profit)) +
+  geom_point(alpha = 0.4) +
+  labs(
+    title = "Descuentos y ganancias",
+    x = "Descuento",
+    y = "Ganancia"
+  )
+```
+
+### Reflexión importante
+
+Muchas empresas usan descuentos para crecer rápidamente.
+
+Pero los datos suelen mostrar algo más complejo.
+
+A medida que aumentan los descuentos:
+
+- algunas ventas aumentan,
+- pero muchas ganancias disminuyen,
+- e incluso aparecen pérdidas.
+
+Esto es extremadamente importante en analytics:
+
+`las decisiones comerciales casi nunca tienen efectos perfectamente predecibles.`
+
+## Diferencias entre categorías
+
+Ahora comparemos categorías de productos.
+
+```{r}
+# Diagrama de caja que relaciona las categorías de los productos
+# con las ventas
+ggplot(sales, aes(x = Category, y = Sales)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribución de ventas por categoría",
+    x = "Categoría",
+    y = "Ventas"
+  )
+```
+
+### ¿Por qué usar boxplots?
+
+Los boxplots ayudan a visualizar:
+
+- dispersión,
+- valores extremos,
+- variabilidad,
+- diferencias entre grupos.
+
+Y nuevamente el mensaje es el mismo:
+
+los datos reales tienen heterogeneidad.
+
+No todos los grupos se comportan igual.
+
+## Introducción suave a ggplot2
+
+A lo largo del libro usaremos mucho ggplot2.
+
+No porque los gráficos “se vean bonitos”.
+
+Sino porque ayudan a pensar mejor.
+
+### aes()
+
+La función aes() define:
+
+- qué variable usamos en el eje x,
+- qué variable usamos en el eje y,
+- colores,
+- tamaños,
+- agrupaciones visuales.
+
+Ejemplo:
+
+`aes(x = Sales, y = Profit)`
+
+### geom_histogram()
+
+Sirve para visualizar distribuciones.
+
+`geom_histogram()`
+
+### geom_point()
+
+Sirve para visualizar relaciones entre variables.
+
+`geom_point()`
+
+### geom_boxplot()
+
+Sirve para comparar distribuciones entre grupos.
+
+`geom_boxplot()`
+
+## Posibles errores de interpretación
+
+Este capítulo también debe enseñar prudencia.
+
+Algunos errores frecuentes son:
+
+### Error 1: “El promedio representa a todos”
+
+No necesariamente.
+
+Los promedios pueden ocultar:
+
+- valores extremos,
+- segmentos distintos,
+- alta variabilidad,
+- comportamientos raros.
+
+### Error 2: “Existe una única respuesta correcta”
+
+Los datos reales rara vez son completamente claros.
+
+Muchas veces existen:
+
+- señales contradictorias,
+- ruido,
+- incertidumbre,
+- y múltiples interpretaciones plausibles.
+
+### Error 3: “Más datos eliminan toda incertidumbre”
+
+Incluso empresas gigantes toman decisiones imperfectas.
+
+Los datos ayudan muchísimo.
+
+Pero nunca convierten el mundo en algo perfectamente predecible.
+
+## Reflexión bayesiana
+
+### El inicio del pensamiento probabilístico
+
+Aunque todavía no estamos construyendo modelos bayesianos formales, este capítulo ya introduce la idea central del libro:
+
+`pensar en términos de incertidumbre y plausibilidad.`
+
+En lugar de preguntar:
+
+- “¿Cuál es la respuesta exacta?”
+
+comenzaremos a preguntar:
+
+- “¿Qué patrones parecen plausibles?”
+- “¿Qué tan variable es este fenómeno?”
+- “¿Qué incertidumbre existe?”
+- “¿Qué decisiones parecen razonables con la información disponible?”
+
+Ese cambio mental es enorme.
+
+Y es uno de los objetivos más importantes del análisis bayesiano moderno.
+
+## Ejercicios
+
+### Ejercicio 1 — Explorar otra variable
+
+Construye un histograma para:
+
+- Profit
+- o Discount
+
+Reflexiona:
+
+- ¿la distribución parece simétrica?
+- ¿existen valores extremos?
+- ¿la mayoría de observaciones están concentradas en una zona?
+
+### Ejercicio 2 — Comparar categorías
+
+Crea un boxplot usando:
+
+- Segment
+- o Region
+
+Pregunta:
+
+- ¿qué grupo parece más variable?
+- ¿qué grupo parece más estable?
+
+### Ejercicio 3 — Buscar pedidos extremos
+
+Usa:
+
+`View(arrange(sales, desc(Sales)))`
+
+Explora los pedidos con ventas más altas.
+
+Pregunta:
+
+- ¿también generan altas ganancias?
+- ¿o algunos parecen poco rentables?
+
+### Ejercicio 4 — Reflexión conceptual
+
+Piensa en esta pregunta:
+
+`¿Por qué dos negocios con el mismo promedio de ventas podrían tener riesgos completamente distintos?`
+
+No necesitas responder matemáticamente.
+
+Intenta responder usando:
+
+- variabilidad,
+- estabilidad,
+- incertidumbre,
+- distribución,
+- y comportamiento de clientes.
