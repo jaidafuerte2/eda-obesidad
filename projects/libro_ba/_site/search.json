@@ -930,5 +930,280 @@
       "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
       "4.- Bayes: aprender de nueva evidencia"
     ]
+  },
+  {
+    "objectID": "analysis/c05.html",
+    "href": "analysis/c05.html",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "",
+    "text": "Las empresas toman decisiones imperfectas todos los días.\nUna campaña de marketing puede funcionar muy bien este mes y mediocremente el siguiente. Un anuncio puede tener éxito en un segmento y fracasar en otro. Una promoción puede parecer prometedora… hasta que cambia el contexto económico.\nY aun así, las decisiones deben tomarse.\nEse es uno de los problemas centrales del mundo real:\nesperar certeza absoluta suele paralizar la acción.\nEn negocios reales casi nunca existen garantías completas. Lo que sí existe es evidencia parcial.\nPor eso las probabilidades son tan útiles.\nNo porque puedan predecir el futuro perfectamente, sino porque ayudan a pensar mejor sobre escenarios inciertos.\nLa pregunta importante deja de ser:\n“¿Qué va a pasar exactamente?”\ny empieza a ser:\n“¿Qué escenarios parecen más plausibles con la evidencia disponible?”\nEse cambio de mentalidad es profundamente importante.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#decidir-sin-certeza-absoluta",
+    "href": "analysis/c05.html#decidir-sin-certeza-absoluta",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "",
+    "text": "Las empresas toman decisiones imperfectas todos los días.\nUna campaña de marketing puede funcionar muy bien este mes y mediocremente el siguiente. Un anuncio puede tener éxito en un segmento y fracasar en otro. Una promoción puede parecer prometedora… hasta que cambia el contexto económico.\nY aun así, las decisiones deben tomarse.\nEse es uno de los problemas centrales del mundo real:\nesperar certeza absoluta suele paralizar la acción.\nEn negocios reales casi nunca existen garantías completas. Lo que sí existe es evidencia parcial.\nPor eso las probabilidades son tan útiles.\nNo porque puedan predecir el futuro perfectamente, sino porque ayudan a pensar mejor sobre escenarios inciertos.\nLa pregunta importante deja de ser:\n“¿Qué va a pasar exactamente?”\ny empieza a ser:\n“¿Qué escenarios parecen más plausibles con la evidencia disponible?”\nEse cambio de mentalidad es profundamente importante.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#pensamiento-probabilístico",
+    "href": "analysis/c05.html#pensamiento-probabilístico",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "2 — Pensamiento probabilístico",
+    "text": "2 — Pensamiento probabilístico\nLas personas solemos buscar respuestas binarias:\n\nfuncionará / no funcionará\ncomprar / no comprar\naprobar / rechazar\ninvertir / no invertir\n\nPero la realidad rara vez es tan clara.\nUna campaña no “funciona” o “fracasa” completamente. Más bien:\n\npuede tener una probabilidad razonable de éxito\npuede funcionar mejor en ciertos segmentos\npuede mostrar señales prometedoras, aunque todavía exista incertidumbre\n\nPensar probabilísticamente significa aceptar algo incómodo pero poderoso:\npodemos actuar racionalmente incluso cuando no sabemos todo.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#contexto-de-negocio",
+    "href": "analysis/c05.html#contexto-de-negocio",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "3 — Contexto de negocio",
+    "text": "3 — Contexto de negocio\nAntes de analizar datos, necesitamos entender algunos conceptos básicos.\n\nConversion Rate\nEl conversion rate o tasa de conversión representa el porcentaje de personas que realizan la acción deseada.\nPor ejemplo:\n\nhacer clic\ncomprar\nresponder una campaña\nregistrarse\naceptar una oferta\n\nSi una campaña llega a 100 personas y 12 responden positivamente:\nConversion Rate = 12 / 100 = 0.12 = 12%\nLa tasa de conversión sería 12%.\n\n\n¿Por qué importa?\nPorque las empresas rara vez pueden contactar a todos los clientes infinitamente.\nLas campañas cuestan dinero:\n\npublicidad\ncorreos\ndescuentos\ntiempo\npersonal\n\nPor eso interesa identificar campañas que parezcan más efectivas.\nPero aquí aparece un problema importante:\nuna campaña puede parecer mejor simplemente por variabilidad aleatoria.\nY ahí entra la incertidumbre.\n\n\nROI (Return on Investment)\nEl ROI intenta responder una pregunta simple:\n“¿Valió la pena invertir en esta campaña?”\nSimplificadamente:\nROI = (Ganancia - Inversión) / Inversión\nPero incluso el ROI está rodeado de incertidumbre:\n\nalgunos clientes compran más tarde\nalgunos compran por casualidad\nalgunos jamás iban a comprar\nalgunos resultados cambian con el tiempo\n\nPor eso en este capítulo NO buscaremos “certezas”.\nBuscaremos evidencia útil.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#cargando-y-explorando-el-dataset",
+    "href": "analysis/c05.html#cargando-y-explorando-el-dataset",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "4 — Cargando y explorando el dataset",
+    "text": "4 — Cargando y explorando el dataset\n\nCargar datos\n\n# Cargar la dataset de marketing\nmarketing &lt;- read_delim(\n  \"../data/marketing_campaign.csv\",\n  delim = \";\"\n  #guess_max = 10000,\n  #show_col_types = FALSE\n)\n\n\n\nExplorar estructura\n\nglimpse(marketing) # produce:\n\nRows: 2,240\nColumns: 29\n$ ID                  &lt;dbl&gt; 5524, 2174, 4141, 6182, 5324, 7446, 965, 6177, 485…\n$ Year_Birth          &lt;dbl&gt; 1957, 1954, 1965, 1984, 1981, 1967, 1971, 1985, 19…\n$ Education           &lt;chr&gt; \"Graduation\", \"Graduation\", \"Graduation\", \"Graduat…\n$ Marital_Status      &lt;chr&gt; \"Single\", \"Single\", \"Together\", \"Together\", \"Marri…\n$ Income              &lt;dbl&gt; 58138, 46344, 71613, 26646, 58293, 62513, 55635, 3…\n$ Kidhome             &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,…\n$ Teenhome            &lt;dbl&gt; 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1,…\n$ Dt_Customer         &lt;date&gt; 2012-09-04, 2014-03-08, 2013-08-21, 2014-02-10, 2…\n$ Recency             &lt;dbl&gt; 58, 38, 26, 26, 94, 16, 34, 32, 19, 68, 11, 59, 82…\n$ MntWines            &lt;dbl&gt; 635, 11, 426, 11, 173, 520, 235, 76, 14, 28, 5, 6,…\n$ MntFruits           &lt;dbl&gt; 88, 1, 49, 4, 43, 42, 65, 10, 0, 0, 5, 16, 61, 2, …\n$ MntMeatProducts     &lt;dbl&gt; 546, 6, 127, 20, 118, 98, 164, 56, 24, 6, 6, 11, 4…\n$ MntFishProducts     &lt;dbl&gt; 172, 2, 111, 10, 46, 0, 50, 3, 3, 1, 0, 11, 225, 3…\n$ MntSweetProducts    &lt;dbl&gt; 88, 1, 21, 3, 27, 42, 49, 1, 3, 1, 2, 1, 112, 5, 1…\n$ MntGoldProds        &lt;dbl&gt; 88, 6, 42, 5, 15, 14, 27, 23, 2, 13, 1, 16, 30, 14…\n$ NumDealsPurchases   &lt;dbl&gt; 3, 2, 1, 2, 5, 2, 4, 2, 1, 1, 1, 1, 1, 3, 1, 1, 3,…\n$ NumWebPurchases     &lt;dbl&gt; 8, 1, 8, 2, 5, 6, 7, 4, 3, 1, 1, 2, 3, 6, 1, 7, 3,…\n$ NumCatalogPurchases &lt;dbl&gt; 10, 1, 2, 0, 3, 4, 3, 0, 0, 0, 0, 0, 4, 1, 0, 6, 0…\n$ NumStorePurchases   &lt;dbl&gt; 4, 2, 10, 4, 6, 10, 7, 4, 2, 0, 2, 3, 8, 5, 3, 12,…\n$ NumWebVisitsMonth   &lt;dbl&gt; 7, 5, 4, 6, 5, 6, 6, 8, 9, 20, 7, 8, 2, 6, 8, 3, 8…\n$ AcceptedCmp3        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,…\n$ AcceptedCmp4        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ AcceptedCmp5        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…\n$ AcceptedCmp1        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…\n$ AcceptedCmp2        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Complain            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Z_CostContact       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…\n$ Z_Revenue           &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11…\n$ Response            &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,…\n\n\n\n\nResumen rápido\n\nskim(marketing) # produce:\n\n\nData summary\n\n\nName\nmarketing\n\n\nNumber of rows\n2240\n\n\nNumber of columns\n29\n\n\n_______________________\n\n\n\nColumn type frequency:\n\n\n\ncharacter\n2\n\n\nDate\n1\n\n\nnumeric\n26\n\n\n________________________\n\n\n\nGroup variables\nNone\n\n\n\nVariable type: character\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmin\nmax\nempty\nn_unique\nwhitespace\n\n\n\n\nEducation\n0\n1\n3\n10\n0\n5\n0\n\n\nMarital_Status\n0\n1\n4\n8\n0\n8\n0\n\n\n\nVariable type: Date\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmin\nmax\nmedian\nn_unique\n\n\n\n\nDt_Customer\n0\n1\n2012-07-30\n2014-06-29\n2013-07-08\n663\n\n\n\nVariable type: numeric\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nskim_variable\nn_missing\ncomplete_rate\nmean\nsd\np0\np25\np50\np75\np100\nhist\n\n\n\n\nID\n0\n1.00\n5592.16\n3246.66\n0\n2828.25\n5458.5\n8427.75\n11191\n▇▇▇▇▇\n\n\nYear_Birth\n0\n1.00\n1968.81\n11.98\n1893\n1959.00\n1970.0\n1977.00\n1996\n▁▁▂▇▅\n\n\nIncome\n24\n0.99\n52247.25\n25173.08\n1730\n35303.00\n51381.5\n68522.00\n666666\n▇▁▁▁▁\n\n\nKidhome\n0\n1.00\n0.44\n0.54\n0\n0.00\n0.0\n1.00\n2\n▇▁▆▁▁\n\n\nTeenhome\n0\n1.00\n0.51\n0.54\n0\n0.00\n0.0\n1.00\n2\n▇▁▇▁▁\n\n\nRecency\n0\n1.00\n49.11\n28.96\n0\n24.00\n49.0\n74.00\n99\n▇▇▇▇▇\n\n\nMntWines\n0\n1.00\n303.94\n336.60\n0\n23.75\n173.5\n504.25\n1493\n▇▂▂▁▁\n\n\nMntFruits\n0\n1.00\n26.30\n39.77\n0\n1.00\n8.0\n33.00\n199\n▇▁▁▁▁\n\n\nMntMeatProducts\n0\n1.00\n166.95\n225.72\n0\n16.00\n67.0\n232.00\n1725\n▇▁▁▁▁\n\n\nMntFishProducts\n0\n1.00\n37.53\n54.63\n0\n3.00\n12.0\n50.00\n259\n▇▁▁▁▁\n\n\nMntSweetProducts\n0\n1.00\n27.06\n41.28\n0\n1.00\n8.0\n33.00\n263\n▇▁▁▁▁\n\n\nMntGoldProds\n0\n1.00\n44.02\n52.17\n0\n9.00\n24.0\n56.00\n362\n▇▁▁▁▁\n\n\nNumDealsPurchases\n0\n1.00\n2.33\n1.93\n0\n1.00\n2.0\n3.00\n15\n▇▂▁▁▁\n\n\nNumWebPurchases\n0\n1.00\n4.08\n2.78\n0\n2.00\n4.0\n6.00\n27\n▇▃▁▁▁\n\n\nNumCatalogPurchases\n0\n1.00\n2.66\n2.92\n0\n0.00\n2.0\n4.00\n28\n▇▂▁▁▁\n\n\nNumStorePurchases\n0\n1.00\n5.79\n3.25\n0\n3.00\n5.0\n8.00\n13\n▂▇▂▃▂\n\n\nNumWebVisitsMonth\n0\n1.00\n5.32\n2.43\n0\n3.00\n6.0\n7.00\n20\n▅▇▁▁▁\n\n\nAcceptedCmp3\n0\n1.00\n0.07\n0.26\n0\n0.00\n0.0\n0.00\n1\n▇▁▁▁▁\n\n\nAcceptedCmp4\n0\n1.00\n0.07\n0.26\n0\n0.00\n0.0\n0.00\n1\n▇▁▁▁▁\n\n\nAcceptedCmp5\n0\n1.00\n0.07\n0.26\n0\n0.00\n0.0\n0.00\n1\n▇▁▁▁▁\n\n\nAcceptedCmp1\n0\n1.00\n0.06\n0.25\n0\n0.00\n0.0\n0.00\n1\n▇▁▁▁▁\n\n\nAcceptedCmp2\n0\n1.00\n0.01\n0.11\n0\n0.00\n0.0\n0.00\n1\n▇▁▁▁▁\n\n\nComplain\n0\n1.00\n0.01\n0.10\n0\n0.00\n0.0\n0.00\n1\n▇▁▁▁▁\n\n\nZ_CostContact\n0\n1.00\n3.00\n0.00\n3\n3.00\n3.0\n3.00\n3\n▁▁▇▁▁\n\n\nZ_Revenue\n0\n1.00\n11.00\n0.00\n11\n11.00\n11.0\n11.00\n11\n▁▁▇▁▁\n\n\nResponse\n0\n1.00\n0.15\n0.36\n0\n0.00\n0.0\n0.00\n1\n▇▁▁▁▂\n\n\n\n\n\nEste paso ayuda a:\n\ndetectar valores faltantes\nentender escalas\nobservar distribuciones\nidentificar variables útiles",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#la-variable-más-importante-response",
+    "href": "analysis/c05.html#la-variable-más-importante-response",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "5 — La variable más importante: Response",
+    "text": "5 — La variable más importante: Response\nEn este capítulo nos interesa especialmente la variable: Response\nUsualmente:\n\n1 = respondió a la campaña\n0 = no respondió\n\nEsta variable representa una decisión humana real.\nY justamente por eso es incierta.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#primera-tasa-de-conversión",
+    "href": "analysis/c05.html#primera-tasa-de-conversión",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "6 — Primera tasa de conversión",
+    "text": "6 — Primera tasa de conversión\n\nCalcular proporción general\n\n# Calcular la proporción general\nmarketing %&gt;%\n  summarise(\n    conversion_rate = mean(Response)\n  ) # produce:\n\n# A tibble: 1 × 1\n  conversion_rate\n            &lt;dbl&gt;\n1           0.149\n\n\nEsto calcula:\nConversion Rate = Clientes que respondieron / Total de clientes\n\n\nInterpretación\nSupongamos que obtenemos algo cercano a:\n0.15\nEso significa aproximadamente:\n15% de los clientes respondió positivamente.\nPero cuidado.\nEso NO significa que futuras campañas tendrán exactamente 15%.\nLa realidad tiene variabilidad.\nEse 15% es una estimación imperfecta.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#la-incertidumbre-alrededor-de-una-proporción",
+    "href": "analysis/c05.html#la-incertidumbre-alrededor-de-una-proporción",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "7 — La incertidumbre alrededor de una proporción",
+    "text": "7 — La incertidumbre alrededor de una proporción\nAquí aparece una de las ideas más importantes del libro:\nuna estimación nunca es completamente exacta.\nSi otra muestra de clientes hubiera sido seleccionada:\n\nel resultado podría ser 14%\no 17%\no 13%\n\nIncluso sin cambiar la campaña.\nLa variabilidad natural existe.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#visualizando-respuestas",
+    "href": "analysis/c05.html#visualizando-respuestas",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "8 — Visualizando respuestas",
+    "text": "8 — Visualizando respuestas\n\nConteo básico\n\n# Gráfico de barras de Conteo básico de la variable Response\nmarketing %&gt;%\n  ggplot(aes(x = factor(Response))) +\n  geom_bar() +\n  labs(\n    title = \"Respuesta a la campaña\",\n    x = \"Respuesta\",\n    y = \"Número de clientes\"\n  )\n\n\n\n\n\n\n\n\n\n\nInterpretación visual\nEste gráfico ayuda a ver:\n\ncuántas personas respondieron\ncuántas no\nqué tan rara es la conversión\n\nEn marketing real, las conversiones suelen ser relativamente bajas.\nEso es normal.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#comparando-campañas",
+    "href": "analysis/c05.html#comparando-campañas",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "9 — Comparando campañas",
+    "text": "9 — Comparando campañas\nAhora empieza la parte más importante del capítulo.\nQueremos comparar campañas probabilísticamente.\nNO queremos decir:\n❌ “esta campaña es definitivamente mejor”\nQueremos decir algo más realista:\n✅ “la evidencia sugiere que podría funcionar mejor”",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#tasas-de-conversión-por-campaña",
+    "href": "analysis/c05.html#tasas-de-conversión-por-campaña",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "10 — Tasas de conversión por campaña",
+    "text": "10 — Tasas de conversión por campaña\nSupongamos que el dataset contiene variables como:\n\nAcceptedCmp1\nAcceptedCmp2\nAcceptedCmp3\netc.\n\nPodemos explorar tasas promedio.\n\nmarketing %&gt;%\n  summarise(\n    cmp1 = mean(AcceptedCmp1),\n    cmp2 = mean(AcceptedCmp2),\n    cmp3 = mean(AcceptedCmp3),\n    cmp4 = mean(AcceptedCmp4),\n    cmp5 = mean(AcceptedCmp5)\n  ) # produce:\n\n# A tibble: 1 × 5\n    cmp1   cmp2   cmp3   cmp4   cmp5\n   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;\n1 0.0643 0.0134 0.0728 0.0746 0.0728\n\n\n\n# Alargar el resumen\nlong_marketing &lt;- marketing %&gt;%\n  summarise(\n    cmp1 = mean(AcceptedCmp1),\n    cmp2 = mean(AcceptedCmp2),\n    cmp3 = mean(AcceptedCmp3),\n    cmp4 = mean(AcceptedCmp4),\n    cmp5 = mean(AcceptedCmp5)\n  ) %&gt;%\n  pivot_longer(\n    everything(),\n    names_to = \"campania\",\n    values_to = \"conversion\"\n  )\nlong_marketing\n\n# A tibble: 5 × 2\n  campania conversion\n  &lt;chr&gt;         &lt;dbl&gt;\n1 cmp1         0.0643\n2 cmp2         0.0134\n3 cmp3         0.0728\n4 cmp4         0.0746\n5 cmp5         0.0728",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#visualización-comparativa",
+    "href": "analysis/c05.html#visualización-comparativa",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "11 — Visualización comparativa",
+    "text": "11 — Visualización comparativa\n\n# Grafico de columnas que compara las conversiones de las campañas \nlong_marketing %&gt;%\n  ggplot(aes(x = campania, y = conversion)) +\n  geom_col() +\n  labs(\n    title = \"Conversiones promedio de la campaña\",\n    x = \"Campañas\",\n    y = \"Tasa de conversión\"\n  )",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#un-error-muy-común",
+    "href": "analysis/c05.html#un-error-muy-común",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "12 — Un error muy común",
+    "text": "12 — Un error muy común\nDespués de ver este gráfico, muchas personas concluyen demasiado rápido:\n“La campaña 3 es la mejor.”\nPero eso puede ser engañoso.\nPorque todavía no hemos considerado:\n\nincertidumbre\ntamaño de muestra\nvariabilidad natural\nplausibilidad de diferencias reales\n\nAquí aparece una idea profundamente bayesiana:\ndiferencias pequeñas no siempre representan evidencia fuerte.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#introducción-intuitiva-a-rangos-plausibles",
+    "href": "analysis/c05.html#introducción-intuitiva-a-rangos-plausibles",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "13 — Introducción intuitiva a rangos plausibles",
+    "text": "13 — Introducción intuitiva a rangos plausibles\nImagina que una campaña muestra una conversión estimada de 15%.\n¿Eso significa exactamente 15%?\nNo.\nTal vez:\n\n13% también es plausible\n16% también\n17% quizá menos probable, pero posible\n\nLa estimación tiene una “zona de incertidumbre”.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#simulación-simple-de-incertidumbre",
+    "href": "analysis/c05.html#simulación-simple-de-incertidumbre",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "14 — Simulación simple de incertidumbre",
+    "text": "14 — Simulación simple de incertidumbre\nPodemos simular escenarios plausibles.\n\nset.seed(123)\n\n# Simular 1000 conversiones\nsimulaciones &lt;- tibble(\n  conversion = rbinom(\n    1000,\n    size = 100, # 100 clientes\n    prob = 0.15 # probabilidad de conversión de cada cliente\n  )\n) \nsimulaciones[1:6,] # produce:\n\n# A tibble: 6 × 1\n  conversion\n       &lt;int&gt;\n1         13\n2         18\n3         14\n4         19\n5         21\n6          9\n\n\n\nVisualización\n\n# Densidad de la conversión de las simulaciones\nsimulaciones %&gt;%\n  ggplot(aes(x = conversion)) +\n  geom_density(fill = \"skyblue\", alpha = 0.5) +\n  labs(\n    title = \"Distribución plausible de conversiones\",\n    x = \"Porcentaje de conversión\",\n    y = \"Densidad\"\n  )",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#qué-estamos-viendo",
+    "href": "analysis/c05.html#qué-estamos-viendo",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "15 — ¿Qué estamos viendo?",
+    "text": "15 — ¿Qué estamos viendo?\nEste gráfico es extremadamente importante.\nNO muestra:\n❌ un único futuro\nMuestra:\n✅ muchos futuros plausibles\nAlgunos escenarios tienen:\n\n12%\n15%\n18%\n\nTodos pueden ocurrir razonablemente.\nEse es el corazón del pensamiento probabilístico.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#introducción-intuitiva-a-intervalos-plausibles",
+    "href": "analysis/c05.html#introducción-intuitiva-a-intervalos-plausibles",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "16 — Introducción intuitiva a intervalos plausibles",
+    "text": "16 — Introducción intuitiva a intervalos plausibles\nPodemos resumir incertidumbre usando rangos plausibles.\nPor ejemplo:\n“La tasa de conversión probablemente esté entre 12% y 18%.”\nEso es mucho más honesto que fingir precisión absoluta.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#visualizando-incertidumbre-explícitamente",
+    "href": "analysis/c05.html#visualizando-incertidumbre-explícitamente",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "17 — Visualizando incertidumbre explícitamente",
+    "text": "17 — Visualizando incertidumbre explícitamente\n\n# Simular conversiones\nconversiones &lt;- tibble(\n  campania = c(\"A\", \"B\", \"C\"),\n  promedio = c(0.14, 0.16, 0.15),\n  inferior = c(0.11, 0.13, 0.12),\n  superior = c(0.17, 0.19, 0.18)\n)\n\n\nGráfico con incertidumbre\n\n# Gráfico con incertidumbre\nconversiones %&gt;%\n  ggplot(aes(x = campania, y = promedio)) + \n  geom_point(size = 3) + # size es el tamaño del punto\n  geom_errorbar(\n    aes(\n      ymin = inferior,\n      ymax = superior\n    ), \n    width = 0.2 # es el tamaño del bigote\n  ) +\n  labs(\n    title = \"Conversiones con incertidumbre\",\n    x = \"Campaña\",\n    y = \"Conversión\"\n  )",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#interpretación-importante",
+    "href": "analysis/c05.html#interpretación-importante",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "18 — Interpretación importante",
+    "text": "18 — Interpretación importante\nEste gráfico transmite algo fundamental:\nlas campañas no tienen resultados exactos.\nTienen resultados plausibles.\nY a veces esos rangos se superponen mucho.\nCuando eso ocurre:\n\nla evidencia puede ser débil\nlas diferencias pueden no ser tan claras\nconviene actuar con cautela",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#introducción-suave-a-comparación-probabilística",
+    "href": "analysis/c05.html#introducción-suave-a-comparación-probabilística",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "19 — Introducción suave a comparación probabilística",
+    "text": "19 — Introducción suave a comparación probabilística\nSupongamos:\n\nCampaña A ≈ 14%\nCampaña B ≈ 16%\n\n¿B es mejor?\nTal vez.\nPero la pregunta más útil es:\n“¿Qué tan plausible es que realmente sea mejor?”\nEse cambio parece pequeño, pero transforma completamente la manera de pensar.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#lenguaje-probabilístico-útil",
+    "href": "analysis/c05.html#lenguaje-probabilístico-útil",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "20 — Lenguaje probabilístico útil",
+    "text": "20 — Lenguaje probabilístico útil\nEn analytics moderno conviene usar lenguaje como:\n✅ “La evidencia sugiere…” ✅ “Parece plausible…” ✅ “Existe incertidumbre…” ✅ “Probablemente…” ✅ “Hay cierta evidencia de…”\nEvitar:\n❌ “Definitivamente” ❌ “Completamente demostrado” ❌ “Garantizado”",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#conexión-suave-con-bayes",
+    "href": "analysis/c05.html#conexión-suave-con-bayes",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "21 — Conexión suave con Bayes",
+    "text": "21 — Conexión suave con Bayes\nHasta ahora hemos trabajado principalmente con:\n\nproporciones\nsimulaciones\nincertidumbre visual\n\nPero ya estamos pensando bayesianamente.\nPorque estamos:\n\nconsiderando múltiples escenarios plausibles\naceptando incertidumbre\nactualizando creencias usando evidencia\nevitando conclusiones absolutas\n\nMás adelante formalizaremos estas ideas usando:\n\ndistribuciones posteriores\nmodelos probabilísticos\nrstanarm",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#posibles-errores-de-interpretación",
+    "href": "analysis/c05.html#posibles-errores-de-interpretación",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "22 — Posibles errores de interpretación",
+    "text": "22 — Posibles errores de interpretación\n\nError 1 — Confundir estimación con certeza\nUna conversión de 15% NO significa:\n“el futuro será exactamente 15%”\n\n\nError 2 — Ignorar incertidumbre\nUna diferencia pequeña puede no ser evidencia fuerte.\n\n\nError 3 — Sobreinterpretar muestras pequeñas\nPocas observaciones producen mucha variabilidad.\n\n\nError 4 — Pensamiento determinista\nLos negocios reales funcionan con incertidumbre parcial, no con garantías absolutas.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#reflexión-bayesiana",
+    "href": "analysis/c05.html#reflexión-bayesiana",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "23 — Reflexión bayesiana",
+    "text": "23 — Reflexión bayesiana\nLa incertidumbre no es un defecto del análisis.\nEs parte natural de la realidad.\nEl objetivo del análisis probabilístico no es eliminar incertidumbre completamente.\nEs aprender a:\n\ncuantificarla parcialmente\nvisualizarla\ninterpretarla\ntomar mejores decisiones a pesar de ella\n\nPensar probabilísticamente significa aceptar algo profundamente humano:\npodemos actuar racionalmente incluso sin conocer el futuro perfectamente.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
+  },
+  {
+    "objectID": "analysis/c05.html#ejercicios",
+    "href": "analysis/c05.html#ejercicios",
+    "title": "5.- Probabilidades útiles para tomar decisiones",
+    "section": "24 — Ejercicios",
+    "text": "24 — Ejercicios\n\nEjercicio 1\nCalcula la tasa general de conversión del dataset.\nInterpreta el resultado verbalmente.\n\n\nEjercicio 2\nCrea un gráfico de barras para comparar campañas.\n¿Qué campañas parecen más prometedoras?\n\n\nEjercicio 3\nSimula múltiples escenarios plausibles usando rbinom().\n¿Qué tan variable parece el futuro?\n\n\nEjercicio 4\nConstruye un gráfico con intervalos plausibles.\n¿Qué campañas muestran mayor incertidumbre?\n\n\nEjercicio 5\nReflexiona:\n¿Por qué buscar certeza absoluta puede ser peligroso en negocios?",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "5.- Probabilidades útiles para tomar decisiones"
+    ]
   }
 ]

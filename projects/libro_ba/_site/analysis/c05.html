@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5.- Probabilidades útiles para tomar decisiones – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c04.html">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</a></li><li class="breadcrumb-item"><a href="../analysis/c05.html">5.- Probabilidades útiles para tomar decisiones</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — APRENDER A VER LA INCERTIDUMBRE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Simulación y mundos posibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">5.- Probabilidades útiles para tomar decisiones</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#decidir-sin-certeza-absoluta" id="toc-decidir-sin-certeza-absoluta" class="nav-link active" data-scroll-target="#decidir-sin-certeza-absoluta">1 — Decidir sin certeza absoluta</a></li>
+  <li><a href="#pensamiento-probabilístico" id="toc-pensamiento-probabilístico" class="nav-link" data-scroll-target="#pensamiento-probabilístico">2 — Pensamiento probabilístico</a></li>
+  <li><a href="#contexto-de-negocio" id="toc-contexto-de-negocio" class="nav-link" data-scroll-target="#contexto-de-negocio">3 — Contexto de negocio</a>
+  <ul class="collapse">
+  <li><a href="#conversion-rate" id="toc-conversion-rate" class="nav-link" data-scroll-target="#conversion-rate">Conversion Rate</a></li>
+  <li><a href="#por-qué-importa" id="toc-por-qué-importa" class="nav-link" data-scroll-target="#por-qué-importa">¿Por qué importa?</a></li>
+  <li><a href="#roi-return-on-investment" id="toc-roi-return-on-investment" class="nav-link" data-scroll-target="#roi-return-on-investment">ROI (Return on Investment)</a></li>
+  </ul></li>
+  <li><a href="#cargando-y-explorando-el-dataset" id="toc-cargando-y-explorando-el-dataset" class="nav-link" data-scroll-target="#cargando-y-explorando-el-dataset">4 — Cargando y explorando el dataset</a>
+  <ul class="collapse">
+  <li><a href="#cargar-datos" id="toc-cargar-datos" class="nav-link" data-scroll-target="#cargar-datos">Cargar datos</a></li>
+  <li><a href="#explorar-estructura" id="toc-explorar-estructura" class="nav-link" data-scroll-target="#explorar-estructura">Explorar estructura</a></li>
+  <li><a href="#resumen-rápido" id="toc-resumen-rápido" class="nav-link" data-scroll-target="#resumen-rápido">Resumen rápido</a></li>
+  </ul></li>
+  <li><a href="#la-variable-más-importante-response" id="toc-la-variable-más-importante-response" class="nav-link" data-scroll-target="#la-variable-más-importante-response">5 — La variable más importante: Response</a></li>
+  <li><a href="#primera-tasa-de-conversión" id="toc-primera-tasa-de-conversión" class="nav-link" data-scroll-target="#primera-tasa-de-conversión">6 — Primera tasa de conversión</a>
+  <ul class="collapse">
+  <li><a href="#calcular-proporción-general" id="toc-calcular-proporción-general" class="nav-link" data-scroll-target="#calcular-proporción-general">Calcular proporción general</a></li>
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#la-incertidumbre-alrededor-de-una-proporción" id="toc-la-incertidumbre-alrededor-de-una-proporción" class="nav-link" data-scroll-target="#la-incertidumbre-alrededor-de-una-proporción">7 — La incertidumbre alrededor de una proporción</a></li>
+  <li><a href="#visualizando-respuestas" id="toc-visualizando-respuestas" class="nav-link" data-scroll-target="#visualizando-respuestas">8 — Visualizando respuestas</a>
+  <ul class="collapse">
+  <li><a href="#conteo-básico" id="toc-conteo-básico" class="nav-link" data-scroll-target="#conteo-básico">Conteo básico</a></li>
+  <li><a href="#interpretación-visual" id="toc-interpretación-visual" class="nav-link" data-scroll-target="#interpretación-visual">Interpretación visual</a></li>
+  </ul></li>
+  <li><a href="#comparando-campañas" id="toc-comparando-campañas" class="nav-link" data-scroll-target="#comparando-campañas">9 — Comparando campañas</a></li>
+  <li><a href="#tasas-de-conversión-por-campaña" id="toc-tasas-de-conversión-por-campaña" class="nav-link" data-scroll-target="#tasas-de-conversión-por-campaña">10 — Tasas de conversión por campaña</a></li>
+  <li><a href="#visualización-comparativa" id="toc-visualización-comparativa" class="nav-link" data-scroll-target="#visualización-comparativa">11 — Visualización comparativa</a></li>
+  <li><a href="#un-error-muy-común" id="toc-un-error-muy-común" class="nav-link" data-scroll-target="#un-error-muy-común">12 — Un error muy común</a></li>
+  <li><a href="#introducción-intuitiva-a-rangos-plausibles" id="toc-introducción-intuitiva-a-rangos-plausibles" class="nav-link" data-scroll-target="#introducción-intuitiva-a-rangos-plausibles">13 — Introducción intuitiva a rangos plausibles</a></li>
+  <li><a href="#simulación-simple-de-incertidumbre" id="toc-simulación-simple-de-incertidumbre" class="nav-link" data-scroll-target="#simulación-simple-de-incertidumbre">14 — Simulación simple de incertidumbre</a>
+  <ul class="collapse">
+  <li><a href="#visualización" id="toc-visualización" class="nav-link" data-scroll-target="#visualización">Visualización</a></li>
+  </ul></li>
+  <li><a href="#qué-estamos-viendo" id="toc-qué-estamos-viendo" class="nav-link" data-scroll-target="#qué-estamos-viendo">15 — ¿Qué estamos viendo?</a></li>
+  <li><a href="#introducción-intuitiva-a-intervalos-plausibles" id="toc-introducción-intuitiva-a-intervalos-plausibles" class="nav-link" data-scroll-target="#introducción-intuitiva-a-intervalos-plausibles">16 — Introducción intuitiva a intervalos plausibles</a></li>
+  <li><a href="#visualizando-incertidumbre-explícitamente" id="toc-visualizando-incertidumbre-explícitamente" class="nav-link" data-scroll-target="#visualizando-incertidumbre-explícitamente">17 — Visualizando incertidumbre explícitamente</a>
+  <ul class="collapse">
+  <li><a href="#gráfico-con-incertidumbre" id="toc-gráfico-con-incertidumbre" class="nav-link" data-scroll-target="#gráfico-con-incertidumbre">Gráfico con incertidumbre</a></li>
+  </ul></li>
+  <li><a href="#interpretación-importante" id="toc-interpretación-importante" class="nav-link" data-scroll-target="#interpretación-importante">18 — Interpretación importante</a></li>
+  <li><a href="#introducción-suave-a-comparación-probabilística" id="toc-introducción-suave-a-comparación-probabilística" class="nav-link" data-scroll-target="#introducción-suave-a-comparación-probabilística">19 — Introducción suave a comparación probabilística</a></li>
+  <li><a href="#lenguaje-probabilístico-útil" id="toc-lenguaje-probabilístico-útil" class="nav-link" data-scroll-target="#lenguaje-probabilístico-útil">20 — Lenguaje probabilístico útil</a></li>
+  <li><a href="#conexión-suave-con-bayes" id="toc-conexión-suave-con-bayes" class="nav-link" data-scroll-target="#conexión-suave-con-bayes">21 — Conexión suave con Bayes</a></li>
+  <li><a href="#posibles-errores-de-interpretación" id="toc-posibles-errores-de-interpretación" class="nav-link" data-scroll-target="#posibles-errores-de-interpretación">22 — Posibles errores de interpretación</a>
+  <ul class="collapse">
+  <li><a href="#error-1-confundir-estimación-con-certeza" id="toc-error-1-confundir-estimación-con-certeza" class="nav-link" data-scroll-target="#error-1-confundir-estimación-con-certeza">Error 1 — Confundir estimación con certeza</a></li>
+  <li><a href="#error-2-ignorar-incertidumbre" id="toc-error-2-ignorar-incertidumbre" class="nav-link" data-scroll-target="#error-2-ignorar-incertidumbre">Error 2 — Ignorar incertidumbre</a></li>
+  <li><a href="#error-3-sobreinterpretar-muestras-pequeñas" id="toc-error-3-sobreinterpretar-muestras-pequeñas" class="nav-link" data-scroll-target="#error-3-sobreinterpretar-muestras-pequeñas">Error 3 — Sobreinterpretar muestras pequeñas</a></li>
+  <li><a href="#error-4-pensamiento-determinista" id="toc-error-4-pensamiento-determinista" class="nav-link" data-scroll-target="#error-4-pensamiento-determinista">Error 4 — Pensamiento determinista</a></li>
+  </ul></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">23 — Reflexión bayesiana</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">24 — Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c04.html">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</a></li><li class="breadcrumb-item"><a href="../analysis/c05.html">5.- Probabilidades útiles para tomar decisiones</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">5.- Probabilidades útiles para tomar decisiones</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="decidir-sin-certeza-absoluta" class="level2">
+<h2 class="anchored" data-anchor-id="decidir-sin-certeza-absoluta">1 — Decidir sin certeza absoluta</h2>
+<p>Las empresas toman decisiones imperfectas todos los días.</p>
+<p>Una campaña de marketing puede funcionar muy bien este mes y mediocremente el siguiente. Un anuncio puede tener éxito en un segmento y fracasar en otro. Una promoción puede parecer prometedora… hasta que cambia el contexto económico.</p>
+<p>Y aun así, las decisiones deben tomarse.</p>
+<p>Ese es uno de los problemas centrales del mundo real:</p>
+<p><code>esperar certeza absoluta suele paralizar la acción.</code></p>
+<p>En negocios reales casi nunca existen garantías completas. Lo que sí existe es evidencia parcial.</p>
+<p>Por eso las probabilidades son tan útiles.</p>
+<p>No porque puedan predecir el futuro perfectamente, sino porque ayudan a pensar mejor sobre escenarios inciertos.</p>
+<p>La pregunta importante deja de ser:</p>
+<p><code>“¿Qué va a pasar exactamente?”</code></p>
+<p>y empieza a ser:</p>
+<p><code>“¿Qué escenarios parecen más plausibles con la evidencia disponible?”</code></p>
+<p>Ese cambio de mentalidad es profundamente importante.</p>
+</section>
+<section id="pensamiento-probabilístico" class="level2">
+<h2 class="anchored" data-anchor-id="pensamiento-probabilístico">2 — Pensamiento probabilístico</h2>
+<p>Las personas solemos buscar respuestas binarias:</p>
+<ul>
+<li>funcionará / no funcionará</li>
+<li>comprar / no comprar</li>
+<li>aprobar / rechazar</li>
+<li>invertir / no invertir</li>
+</ul>
+<p>Pero la realidad rara vez es tan clara.</p>
+<p>Una campaña no “funciona” o “fracasa” completamente. Más bien:</p>
+<ul>
+<li>puede tener una probabilidad razonable de éxito</li>
+<li>puede funcionar mejor en ciertos segmentos</li>
+<li>puede mostrar señales prometedoras, aunque todavía exista incertidumbre</li>
+</ul>
+<p>Pensar probabilísticamente significa aceptar algo incómodo pero poderoso:</p>
+<p><code>podemos actuar racionalmente incluso cuando no sabemos todo.</code></p>
+</section>
+<section id="contexto-de-negocio" class="level2">
+<h2 class="anchored" data-anchor-id="contexto-de-negocio">3 — Contexto de negocio</h2>
+<p>Antes de analizar datos, necesitamos entender algunos conceptos básicos.</p>
+<section id="conversion-rate" class="level3">
+<h3 class="anchored" data-anchor-id="conversion-rate">Conversion Rate</h3>
+<p>El <strong>conversion rate</strong> o tasa de conversión representa el porcentaje de personas que realizan la acción deseada.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>hacer clic</li>
+<li>comprar</li>
+<li>responder una campaña</li>
+<li>registrarse</li>
+<li>aceptar una oferta</li>
+</ul>
+<p>Si una campaña llega a 100 personas y 12 responden positivamente:</p>
+<p><code>Conversion Rate = 12 / 100 = 0.12 = 12%</code></p>
+<p>La tasa de conversión sería 12%.</p>
+</section>
+<section id="por-qué-importa" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-importa">¿Por qué importa?</h3>
+<p>Porque las empresas rara vez pueden contactar a todos los clientes infinitamente.</p>
+<p>Las campañas cuestan dinero:</p>
+<ul>
+<li>publicidad</li>
+<li>correos</li>
+<li>descuentos</li>
+<li>tiempo</li>
+<li>personal</li>
+</ul>
+<p>Por eso interesa identificar campañas que parezcan más efectivas.</p>
+<p>Pero aquí aparece un problema importante:</p>
+<p><code>una campaña puede parecer mejor simplemente por variabilidad aleatoria.</code></p>
+<p>Y ahí entra la incertidumbre.</p>
+</section>
+<section id="roi-return-on-investment" class="level3">
+<h3 class="anchored" data-anchor-id="roi-return-on-investment">ROI (Return on Investment)</h3>
+<p>El ROI intenta responder una pregunta simple:</p>
+<p><code>“¿Valió la pena invertir en esta campaña?”</code></p>
+<p>Simplificadamente:</p>
+<p>ROI = (Ganancia - Inversión) / Inversión</p>
+<p>Pero incluso el ROI está rodeado de incertidumbre:</p>
+<ul>
+<li>algunos clientes compran más tarde</li>
+<li>algunos compran por casualidad</li>
+<li>algunos jamás iban a comprar</li>
+<li>algunos resultados cambian con el tiempo</li>
+</ul>
+<p>Por eso en este capítulo NO buscaremos “certezas”.</p>
+<p>Buscaremos evidencia útil.</p>
+</section>
+</section>
+<section id="cargando-y-explorando-el-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="cargando-y-explorando-el-dataset">4 — Cargando y explorando el dataset</h2>
+<section id="cargar-datos" class="level3">
+<h3 class="anchored" data-anchor-id="cargar-datos">Cargar datos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar la dataset de marketing</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>marketing <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"../data/marketing_campaign.csv"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">delim =</span> <span class="st">";"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#guess_max = 10000,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#show_col_types = FALSE</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="explorar-estructura" class="level3">
+<h3 class="anchored" data-anchor-id="explorar-estructura">Explorar estructura</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(marketing) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,240
+Columns: 29
+$ ID                  &lt;dbl&gt; 5524, 2174, 4141, 6182, 5324, 7446, 965, 6177, 485…
+$ Year_Birth          &lt;dbl&gt; 1957, 1954, 1965, 1984, 1981, 1967, 1971, 1985, 19…
+$ Education           &lt;chr&gt; "Graduation", "Graduation", "Graduation", "Graduat…
+$ Marital_Status      &lt;chr&gt; "Single", "Single", "Together", "Together", "Marri…
+$ Income              &lt;dbl&gt; 58138, 46344, 71613, 26646, 58293, 62513, 55635, 3…
+$ Kidhome             &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,…
+$ Teenhome            &lt;dbl&gt; 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1,…
+$ Dt_Customer         &lt;date&gt; 2012-09-04, 2014-03-08, 2013-08-21, 2014-02-10, 2…
+$ Recency             &lt;dbl&gt; 58, 38, 26, 26, 94, 16, 34, 32, 19, 68, 11, 59, 82…
+$ MntWines            &lt;dbl&gt; 635, 11, 426, 11, 173, 520, 235, 76, 14, 28, 5, 6,…
+$ MntFruits           &lt;dbl&gt; 88, 1, 49, 4, 43, 42, 65, 10, 0, 0, 5, 16, 61, 2, …
+$ MntMeatProducts     &lt;dbl&gt; 546, 6, 127, 20, 118, 98, 164, 56, 24, 6, 6, 11, 4…
+$ MntFishProducts     &lt;dbl&gt; 172, 2, 111, 10, 46, 0, 50, 3, 3, 1, 0, 11, 225, 3…
+$ MntSweetProducts    &lt;dbl&gt; 88, 1, 21, 3, 27, 42, 49, 1, 3, 1, 2, 1, 112, 5, 1…
+$ MntGoldProds        &lt;dbl&gt; 88, 6, 42, 5, 15, 14, 27, 23, 2, 13, 1, 16, 30, 14…
+$ NumDealsPurchases   &lt;dbl&gt; 3, 2, 1, 2, 5, 2, 4, 2, 1, 1, 1, 1, 1, 3, 1, 1, 3,…
+$ NumWebPurchases     &lt;dbl&gt; 8, 1, 8, 2, 5, 6, 7, 4, 3, 1, 1, 2, 3, 6, 1, 7, 3,…
+$ NumCatalogPurchases &lt;dbl&gt; 10, 1, 2, 0, 3, 4, 3, 0, 0, 0, 0, 0, 4, 1, 0, 6, 0…
+$ NumStorePurchases   &lt;dbl&gt; 4, 2, 10, 4, 6, 10, 7, 4, 2, 0, 2, 3, 8, 5, 3, 12,…
+$ NumWebVisitsMonth   &lt;dbl&gt; 7, 5, 4, 6, 5, 6, 6, 8, 9, 20, 7, 8, 2, 6, 8, 3, 8…
+$ AcceptedCmp3        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,…
+$ AcceptedCmp4        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ AcceptedCmp5        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ AcceptedCmp1        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ AcceptedCmp2        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Complain            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Z_CostContact       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…
+$ Z_Revenue           &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11…
+$ Response            &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,…</code></pre>
+</div>
+</div>
+</section>
+<section id="resumen-rápido" class="level3">
+<h3 class="anchored" data-anchor-id="resumen-rápido">Resumen rápido</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(marketing) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">marketing</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">2240</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Date</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Education</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Marital_Status</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: Date</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">min</th>
+<th style="text-align: left;">max</th>
+<th style="text-align: left;">median</th>
+<th style="text-align: right;">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dt_Customer</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2012-07-30</td>
+<td style="text-align: left;">2014-06-29</td>
+<td style="text-align: left;">2013-07-08</td>
+<td style="text-align: right;">663</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 4%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ID</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">5592.16</td>
+<td style="text-align: right;">3246.66</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2828.25</td>
+<td style="text-align: right;">5458.5</td>
+<td style="text-align: right;">8427.75</td>
+<td style="text-align: right;">11191</td>
+<td style="text-align: left;">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Year_Birth</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1968.81</td>
+<td style="text-align: right;">11.98</td>
+<td style="text-align: right;">1893</td>
+<td style="text-align: right;">1959.00</td>
+<td style="text-align: right;">1970.0</td>
+<td style="text-align: right;">1977.00</td>
+<td style="text-align: right;">1996</td>
+<td style="text-align: left;">▁▁▂▇▅</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Income</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">52247.25</td>
+<td style="text-align: right;">25173.08</td>
+<td style="text-align: right;">1730</td>
+<td style="text-align: right;">35303.00</td>
+<td style="text-align: right;">51381.5</td>
+<td style="text-align: right;">68522.00</td>
+<td style="text-align: right;">666666</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kidhome</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">▇▁▆▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Teenhome</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">▇▁▇▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Recency</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">49.11</td>
+<td style="text-align: right;">28.96</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">24.00</td>
+<td style="text-align: right;">49.0</td>
+<td style="text-align: right;">74.00</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: left;">▇▇▇▇▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MntWines</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">303.94</td>
+<td style="text-align: right;">336.60</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23.75</td>
+<td style="text-align: right;">173.5</td>
+<td style="text-align: right;">504.25</td>
+<td style="text-align: right;">1493</td>
+<td style="text-align: left;">▇▂▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MntFruits</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">26.30</td>
+<td style="text-align: right;">39.77</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">33.00</td>
+<td style="text-align: right;">199</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MntMeatProducts</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">166.95</td>
+<td style="text-align: right;">225.72</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">16.00</td>
+<td style="text-align: right;">67.0</td>
+<td style="text-align: right;">232.00</td>
+<td style="text-align: right;">1725</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MntFishProducts</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">37.53</td>
+<td style="text-align: right;">54.63</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">12.0</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">259</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MntSweetProducts</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">27.06</td>
+<td style="text-align: right;">41.28</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">33.00</td>
+<td style="text-align: right;">263</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MntGoldProds</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">44.02</td>
+<td style="text-align: right;">52.17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">24.0</td>
+<td style="text-align: right;">56.00</td>
+<td style="text-align: right;">362</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NumDealsPurchases</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.33</td>
+<td style="text-align: right;">1.93</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NumWebPurchases</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">4.08</td>
+<td style="text-align: right;">2.78</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: left;">▇▃▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NumCatalogPurchases</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.66</td>
+<td style="text-align: right;">2.92</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NumStorePurchases</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">5.79</td>
+<td style="text-align: right;">3.25</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">▂▇▂▃▂</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NumWebVisitsMonth</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">5.32</td>
+<td style="text-align: right;">2.43</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">▅▇▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AcceptedCmp3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AcceptedCmp4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AcceptedCmp5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AcceptedCmp1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AcceptedCmp2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Complain</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Z_CostContact</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Z_Revenue</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">11.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">11.00</td>
+<td style="text-align: right;">11.0</td>
+<td style="text-align: right;">11.00</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Response</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▂</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Este paso ayuda a:</p>
+<ul>
+<li>detectar valores faltantes</li>
+<li>entender escalas</li>
+<li>observar distribuciones</li>
+<li>identificar variables útiles</li>
+</ul>
+</section>
+</section>
+<section id="la-variable-más-importante-response" class="level2">
+<h2 class="anchored" data-anchor-id="la-variable-más-importante-response">5 — La variable más importante: Response</h2>
+<p>En este capítulo nos interesa especialmente la variable: Response</p>
+<p>Usualmente:</p>
+<ul>
+<li>1 = respondió a la campaña</li>
+<li>0 = no respondió</li>
+</ul>
+<p>Esta variable representa una decisión humana real.</p>
+<p>Y justamente por eso es incierta.</p>
+</section>
+<section id="primera-tasa-de-conversión" class="level2">
+<h2 class="anchored" data-anchor-id="primera-tasa-de-conversión">6 — Primera tasa de conversión</h2>
+<section id="calcular-proporción-general" class="level3">
+<h3 class="anchored" data-anchor-id="calcular-proporción-general">Calcular proporción general</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular la proporción general</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>marketing <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">conversion_rate =</span> <span class="fu">mean</span>(Response)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  conversion_rate
+            &lt;dbl&gt;
+1           0.149</code></pre>
+</div>
+</div>
+<p>Esto calcula:</p>
+<p><code>Conversion Rate = Clientes que respondieron / Total de clientes</code></p>
+</section>
+<section id="interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación">Interpretación</h3>
+<p>Supongamos que obtenemos algo cercano a:</p>
+<p><code>0.15</code></p>
+<p>Eso significa aproximadamente:</p>
+<p><code>15% de los clientes respondió positivamente.</code></p>
+<p>Pero cuidado.</p>
+<p>Eso NO significa que futuras campañas tendrán exactamente 15%.</p>
+<p>La realidad tiene variabilidad.</p>
+<p>Ese 15% es una estimación imperfecta.</p>
+</section>
+</section>
+<section id="la-incertidumbre-alrededor-de-una-proporción" class="level2">
+<h2 class="anchored" data-anchor-id="la-incertidumbre-alrededor-de-una-proporción">7 — La incertidumbre alrededor de una proporción</h2>
+<p>Aquí aparece una de las ideas más importantes del libro:</p>
+<p><code>una estimación nunca es completamente exacta.</code></p>
+<p>Si otra muestra de clientes hubiera sido seleccionada:</p>
+<ul>
+<li>el resultado podría ser 14%</li>
+<li>o 17%</li>
+<li>o 13%</li>
+</ul>
+<p>Incluso sin cambiar la campaña.</p>
+<p>La variabilidad natural existe.</p>
+</section>
+<section id="visualizando-respuestas" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-respuestas">8 — Visualizando respuestas</h2>
+<section id="conteo-básico" class="level3">
+<h3 class="anchored" data-anchor-id="conteo-básico">Conteo básico</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de barras de Conteo básico de la variable Response</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>marketing <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Response))) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Respuesta a la campaña"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Respuesta"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Número de clientes"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c05_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación-visual" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-visual">Interpretación visual</h3>
+<p>Este gráfico ayuda a ver:</p>
+<ul>
+<li>cuántas personas respondieron</li>
+<li>cuántas no</li>
+<li>qué tan rara es la conversión</li>
+</ul>
+<p>En marketing real, las conversiones suelen ser relativamente bajas.</p>
+<p>Eso es normal.</p>
+</section>
+</section>
+<section id="comparando-campañas" class="level2">
+<h2 class="anchored" data-anchor-id="comparando-campañas">9 — Comparando campañas</h2>
+<p>Ahora empieza la parte más importante del capítulo.</p>
+<p>Queremos comparar campañas probabilísticamente.</p>
+<p>NO queremos decir:</p>
+<p>❌ “esta campaña es definitivamente mejor”</p>
+<p>Queremos decir algo más realista:</p>
+<p>✅ “la evidencia sugiere que podría funcionar mejor”</p>
+</section>
+<section id="tasas-de-conversión-por-campaña" class="level2">
+<h2 class="anchored" data-anchor-id="tasas-de-conversión-por-campaña">10 — Tasas de conversión por campaña</h2>
+<p>Supongamos que el dataset contiene variables como:</p>
+<ul>
+<li>AcceptedCmp1</li>
+<li>AcceptedCmp2</li>
+<li>AcceptedCmp3</li>
+<li>etc.</li>
+</ul>
+<p>Podemos explorar tasas promedio.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>marketing <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp1 =</span> <span class="fu">mean</span>(AcceptedCmp1),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp2 =</span> <span class="fu">mean</span>(AcceptedCmp2),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp3 =</span> <span class="fu">mean</span>(AcceptedCmp3),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp4 =</span> <span class="fu">mean</span>(AcceptedCmp4),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp5 =</span> <span class="fu">mean</span>(AcceptedCmp5)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+    cmp1   cmp2   cmp3   cmp4   cmp5
+   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1 0.0643 0.0134 0.0728 0.0746 0.0728</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alargar el resumen</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>long_marketing <span class="ot">&lt;-</span> marketing <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp1 =</span> <span class="fu">mean</span>(AcceptedCmp1),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp2 =</span> <span class="fu">mean</span>(AcceptedCmp2),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp3 =</span> <span class="fu">mean</span>(AcceptedCmp3),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp4 =</span> <span class="fu">mean</span>(AcceptedCmp4),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cmp5 =</span> <span class="fu">mean</span>(AcceptedCmp5)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">everything</span>(),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"campania"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"conversion"</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>long_marketing</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  campania conversion
+  &lt;chr&gt;         &lt;dbl&gt;
+1 cmp1         0.0643
+2 cmp2         0.0134
+3 cmp3         0.0728
+4 cmp4         0.0746
+5 cmp5         0.0728</code></pre>
+</div>
+</div>
+</section>
+<section id="visualización-comparativa" class="level2">
+<h2 class="anchored" data-anchor-id="visualización-comparativa">11 — Visualización comparativa</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafico de columnas que compara las conversiones de las campañas </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>long_marketing <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> campania, <span class="at">y =</span> conversion)) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Conversiones promedio de la campaña"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Campañas"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Tasa de conversión"</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c05_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="un-error-muy-común" class="level2">
+<h2 class="anchored" data-anchor-id="un-error-muy-común">12 — Un error muy común</h2>
+<p>Después de ver este gráfico, muchas personas concluyen demasiado rápido:</p>
+<p><code>“La campaña 3 es la mejor.”</code></p>
+<p>Pero eso puede ser engañoso.</p>
+<p>Porque todavía no hemos considerado:</p>
+<ul>
+<li>incertidumbre</li>
+<li>tamaño de muestra</li>
+<li>variabilidad natural</li>
+<li>plausibilidad de diferencias reales</li>
+</ul>
+<p>Aquí aparece una idea profundamente bayesiana:</p>
+<p><code>diferencias pequeñas no siempre representan evidencia fuerte.</code></p>
+</section>
+<section id="introducción-intuitiva-a-rangos-plausibles" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-intuitiva-a-rangos-plausibles">13 — Introducción intuitiva a rangos plausibles</h2>
+<p>Imagina que una campaña muestra una conversión estimada de 15%.</p>
+<p>¿Eso significa exactamente 15%?</p>
+<p>No.</p>
+<p>Tal vez:</p>
+<ul>
+<li>13% también es plausible</li>
+<li>16% también</li>
+<li>17% quizá menos probable, pero posible</li>
+</ul>
+<p>La estimación tiene una “zona de incertidumbre”.</p>
+</section>
+<section id="simulación-simple-de-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="simulación-simple-de-incertidumbre">14 — Simulación simple de incertidumbre</h2>
+<p>Podemos simular escenarios plausibles.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simular 1000 conversiones</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>simulaciones <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">conversion =</span> <span class="fu">rbinom</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1000</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">100</span>, <span class="co"># 100 clientes</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">prob =</span> <span class="fl">0.15</span> <span class="co"># probabilidad de conversión de cada cliente</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>simulaciones[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 1
+  conversion
+       &lt;int&gt;
+1         13
+2         18
+3         14
+4         19
+5         21
+6          9</code></pre>
+</div>
+</div>
+<section id="visualización" class="level3">
+<h3 class="anchored" data-anchor-id="visualización">Visualización</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Densidad de la conversión de las simulaciones</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>simulaciones <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> conversion)) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"skyblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución plausible de conversiones"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Porcentaje de conversión"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Densidad"</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c05_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="qué-estamos-viendo" class="level2">
+<h2 class="anchored" data-anchor-id="qué-estamos-viendo">15 — ¿Qué estamos viendo?</h2>
+<p>Este gráfico es extremadamente importante.</p>
+<p>NO muestra:</p>
+<p>❌ un único futuro</p>
+<p>Muestra:</p>
+<p>✅ muchos futuros plausibles</p>
+<p>Algunos escenarios tienen:</p>
+<ul>
+<li>12%</li>
+<li>15%</li>
+<li>18%</li>
+</ul>
+<p>Todos pueden ocurrir razonablemente.</p>
+<p>Ese es el corazón del pensamiento probabilístico.</p>
+</section>
+<section id="introducción-intuitiva-a-intervalos-plausibles" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-intuitiva-a-intervalos-plausibles">16 — Introducción intuitiva a intervalos plausibles</h2>
+<p>Podemos resumir incertidumbre usando rangos plausibles.</p>
+<p>Por ejemplo:</p>
+<p><code>“La tasa de conversión probablemente esté entre 12% y 18%.”</code></p>
+<p>Eso es mucho más honesto que fingir precisión absoluta.</p>
+</section>
+<section id="visualizando-incertidumbre-explícitamente" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-incertidumbre-explícitamente">17 — Visualizando incertidumbre explícitamente</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simular conversiones</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>conversiones <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">campania =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">promedio =</span> <span class="fu">c</span>(<span class="fl">0.14</span>, <span class="fl">0.16</span>, <span class="fl">0.15</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">inferior =</span> <span class="fu">c</span>(<span class="fl">0.11</span>, <span class="fl">0.13</span>, <span class="fl">0.12</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">superior =</span> <span class="fu">c</span>(<span class="fl">0.17</span>, <span class="fl">0.19</span>, <span class="fl">0.18</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="gráfico-con-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="gráfico-con-incertidumbre">Gráfico con incertidumbre</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico con incertidumbre</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>conversiones <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> campania, <span class="at">y =</span> promedio)) <span class="sc">+</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="co"># size es el tamaño del punto</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> inferior,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> superior</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    ), </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.2</span> <span class="co"># es el tamaño del bigote</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Conversiones con incertidumbre"</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Campaña"</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Conversión"</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c05_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="interpretación-importante" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-importante">18 — Interpretación importante</h2>
+<p>Este gráfico transmite algo fundamental:</p>
+<p><code>las campañas no tienen resultados exactos.</code></p>
+<p>Tienen resultados plausibles.</p>
+<p>Y a veces esos rangos se superponen mucho.</p>
+<p>Cuando eso ocurre:</p>
+<ul>
+<li>la evidencia puede ser débil</li>
+<li>las diferencias pueden no ser tan claras</li>
+<li>conviene actuar con cautela</li>
+</ul>
+</section>
+<section id="introducción-suave-a-comparación-probabilística" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-suave-a-comparación-probabilística">19 — Introducción suave a comparación probabilística</h2>
+<p>Supongamos:</p>
+<ul>
+<li>Campaña A ≈ 14%</li>
+<li>Campaña B ≈ 16%</li>
+</ul>
+<p>¿B es mejor?</p>
+<p>Tal vez.</p>
+<p>Pero la pregunta más útil es:</p>
+<p><code>“¿Qué tan plausible es que realmente sea mejor?”</code></p>
+<p>Ese cambio parece pequeño, pero transforma completamente la manera de pensar.</p>
+</section>
+<section id="lenguaje-probabilístico-útil" class="level2">
+<h2 class="anchored" data-anchor-id="lenguaje-probabilístico-útil">20 — Lenguaje probabilístico útil</h2>
+<p>En analytics moderno conviene usar lenguaje como:</p>
+<p>✅ “La evidencia sugiere…” ✅ “Parece plausible…” ✅ “Existe incertidumbre…” ✅ “Probablemente…” ✅ “Hay cierta evidencia de…”</p>
+<p>Evitar:</p>
+<p>❌ “Definitivamente” ❌ “Completamente demostrado” ❌ “Garantizado”</p>
+</section>
+<section id="conexión-suave-con-bayes" class="level2">
+<h2 class="anchored" data-anchor-id="conexión-suave-con-bayes">21 — Conexión suave con Bayes</h2>
+<p>Hasta ahora hemos trabajado principalmente con:</p>
+<ul>
+<li>proporciones</li>
+<li>simulaciones</li>
+<li>incertidumbre visual</li>
+</ul>
+<p>Pero ya estamos pensando bayesianamente.</p>
+<p>Porque estamos:</p>
+<ul>
+<li>considerando múltiples escenarios plausibles</li>
+<li>aceptando incertidumbre</li>
+<li>actualizando creencias usando evidencia</li>
+<li>evitando conclusiones absolutas</li>
+</ul>
+<p>Más adelante formalizaremos estas ideas usando:</p>
+<ul>
+<li>distribuciones posteriores</li>
+<li>modelos probabilísticos</li>
+<li>rstanarm</li>
+</ul>
+</section>
+<section id="posibles-errores-de-interpretación" class="level2">
+<h2 class="anchored" data-anchor-id="posibles-errores-de-interpretación">22 — Posibles errores de interpretación</h2>
+<section id="error-1-confundir-estimación-con-certeza" class="level3">
+<h3 class="anchored" data-anchor-id="error-1-confundir-estimación-con-certeza">Error 1 — Confundir estimación con certeza</h3>
+<p>Una conversión de 15% NO significa:</p>
+<p><code>“el futuro será exactamente 15%”</code></p>
+</section>
+<section id="error-2-ignorar-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="error-2-ignorar-incertidumbre">Error 2 — Ignorar incertidumbre</h3>
+<p>Una diferencia pequeña puede no ser evidencia fuerte.</p>
+</section>
+<section id="error-3-sobreinterpretar-muestras-pequeñas" class="level3">
+<h3 class="anchored" data-anchor-id="error-3-sobreinterpretar-muestras-pequeñas">Error 3 — Sobreinterpretar muestras pequeñas</h3>
+<p>Pocas observaciones producen mucha variabilidad.</p>
+</section>
+<section id="error-4-pensamiento-determinista" class="level3">
+<h3 class="anchored" data-anchor-id="error-4-pensamiento-determinista">Error 4 — Pensamiento determinista</h3>
+<p>Los negocios reales funcionan con incertidumbre parcial, no con garantías absolutas.</p>
+</section>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">23 — Reflexión bayesiana</h2>
+<p>La incertidumbre no es un defecto del análisis.</p>
+<p>Es parte natural de la realidad.</p>
+<p>El objetivo del análisis probabilístico no es eliminar incertidumbre completamente.</p>
+<p>Es aprender a:</p>
+<ul>
+<li>cuantificarla parcialmente</li>
+<li>visualizarla</li>
+<li>interpretarla</li>
+<li>tomar mejores decisiones a pesar de ella</li>
+</ul>
+<p>Pensar probabilísticamente significa aceptar algo profundamente humano:</p>
+<p><code>podemos actuar racionalmente incluso sin conocer el futuro perfectamente.</code></p>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">24 — Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Calcula la tasa general de conversión del dataset.</p>
+<p>Interpreta el resultado verbalmente.</p>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Crea un gráfico de barras para comparar campañas.</p>
+<p>¿Qué campañas parecen más prometedoras?</p>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Simula múltiples escenarios plausibles usando rbinom().</p>
+<p>¿Qué tan variable parece el futuro?</p>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Construye un gráfico con intervalos plausibles.</p>
+<p>¿Qué campañas muestran mayor incertidumbre?</p>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Reflexiona:</p>
+<p><code>¿Por qué buscar certeza absoluta puede ser peligroso en negocios?</code></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

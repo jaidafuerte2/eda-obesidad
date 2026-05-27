@@ -1,0 +1,599 @@
+---
+title: "5.- Probabilidades útiles para tomar decisiones"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(readr)
+library(dplyr)
+library(tidyverse)
+library(skimr)
+```
+
+## 1 — Decidir sin certeza absoluta
+
+Las empresas toman decisiones imperfectas todos los días.
+
+Una campaña de marketing puede funcionar muy bien este mes y mediocremente el siguiente.
+Un anuncio puede tener éxito en un segmento y fracasar en otro.
+Una promoción puede parecer prometedora… hasta que cambia el contexto económico.
+
+Y aun así, las decisiones deben tomarse.
+
+Ese es uno de los problemas centrales del mundo real:
+
+`esperar certeza absoluta suele paralizar la acción.`
+
+En negocios reales casi nunca existen garantías completas.
+Lo que sí existe es evidencia parcial.
+
+Por eso las probabilidades son tan útiles.
+
+No porque puedan predecir el futuro perfectamente, sino porque ayudan a pensar mejor sobre escenarios inciertos.
+
+La pregunta importante deja de ser:
+
+`“¿Qué va a pasar exactamente?”`
+
+y empieza a ser:
+
+`“¿Qué escenarios parecen más plausibles con la evidencia disponible?”`
+
+Ese cambio de mentalidad es profundamente importante.
+
+## 2 — Pensamiento probabilístico
+
+Las personas solemos buscar respuestas binarias:
+
+- funcionará / no funcionará
+- comprar / no comprar
+- aprobar / rechazar
+- invertir / no invertir
+
+Pero la realidad rara vez es tan clara.
+
+Una campaña no “funciona” o “fracasa” completamente.
+Más bien:
+
+- puede tener una probabilidad razonable de éxito
+- puede funcionar mejor en ciertos segmentos
+- puede mostrar señales prometedoras, aunque todavía exista incertidumbre
+
+Pensar probabilísticamente significa aceptar algo incómodo pero poderoso:
+
+`podemos actuar racionalmente incluso cuando no sabemos todo.`
+
+## 3 — Contexto de negocio
+
+Antes de analizar datos, necesitamos entender algunos conceptos básicos.
+
+### Conversion Rate
+
+El **conversion rate** o tasa de conversión representa el porcentaje de personas que realizan la acción deseada.
+
+Por ejemplo:
+
+- hacer clic
+- comprar
+- responder una campaña
+- registrarse
+- aceptar una oferta
+
+Si una campaña llega a 100 personas y 12 responden positivamente:
+
+`Conversion Rate = 12 / 100 = 0.12 = 12%`
+
+La tasa de conversión sería 12%.
+
+### ¿Por qué importa?
+
+Porque las empresas rara vez pueden contactar a todos los clientes infinitamente.
+
+Las campañas cuestan dinero:
+
+- publicidad
+- correos
+- descuentos
+- tiempo
+- personal
+
+Por eso interesa identificar campañas que parezcan más efectivas.
+
+Pero aquí aparece un problema importante:
+
+`una campaña puede parecer mejor simplemente por variabilidad aleatoria.`
+
+Y ahí entra la incertidumbre.
+
+### ROI (Return on Investment)
+
+El ROI intenta responder una pregunta simple:
+
+`“¿Valió la pena invertir en esta campaña?”`
+
+Simplificadamente:
+
+ROI = (Ganancia - Inversión) / Inversión
+
+Pero incluso el ROI está rodeado de incertidumbre:
+
+- algunos clientes compran más tarde
+- algunos compran por casualidad
+- algunos jamás iban a comprar
+- algunos resultados cambian con el tiempo
+
+Por eso en este capítulo NO buscaremos “certezas”.
+
+Buscaremos evidencia útil.
+
+## 4 — Cargando y explorando el dataset
+
+### Cargar datos
+
+```{r}
+#| message: false
+# Cargar la dataset de marketing
+marketing <- read_delim(
+  "../data/marketing_campaign.csv",
+  delim = ";"
+  #guess_max = 10000,
+  #show_col_types = FALSE
+)
+```
+
+### Explorar estructura
+
+```{r}
+glimpse(marketing) # produce:
+```
+
+### Resumen rápido
+
+```{r}
+skim(marketing) # produce:
+```
+
+Este paso ayuda a:
+
+- detectar valores faltantes
+- entender escalas
+- observar distribuciones
+- identificar variables útiles
+
+## 5 — La variable más importante: Response
+
+En este capítulo nos interesa especialmente la variable: Response
+
+Usualmente:
+
+- 1 = respondió a la campaña
+- 0 = no respondió
+
+Esta variable representa una decisión humana real.
+
+Y justamente por eso es incierta.
+
+## 6 — Primera tasa de conversión
+
+### Calcular proporción general
+
+```{r}
+# Calcular la proporción general
+marketing %>%
+  summarise(
+    conversion_rate = mean(Response)
+  ) # produce:
+```
+
+Esto calcula:
+
+`Conversion Rate = Clientes que respondieron / Total de clientes`
+
+### Interpretación
+
+Supongamos que obtenemos algo cercano a: 
+
+`0.15`
+
+Eso significa aproximadamente:
+
+`15% de los clientes respondió positivamente.`
+
+Pero cuidado.
+
+Eso NO significa que futuras campañas tendrán exactamente 15%.
+
+La realidad tiene variabilidad.
+
+Ese 15% es una estimación imperfecta.
+
+## 7 — La incertidumbre alrededor de una proporción
+
+Aquí aparece una de las ideas más importantes del libro:
+
+`una estimación nunca es completamente exacta.`
+
+Si otra muestra de clientes hubiera sido seleccionada:
+
+- el resultado podría ser 14%
+- o 17%
+- o 13%
+
+Incluso sin cambiar la campaña.
+
+La variabilidad natural existe.
+
+## 8 — Visualizando respuestas
+
+### Conteo básico
+
+```{r}
+# Gráfico de barras de Conteo básico de la variable Response
+marketing %>%
+  ggplot(aes(x = factor(Response))) +
+  geom_bar() +
+  labs(
+    title = "Respuesta a la campaña",
+    x = "Respuesta",
+    y = "Número de clientes"
+  )
+```
+
+### Interpretación visual
+
+Este gráfico ayuda a ver:
+
+- cuántas personas respondieron
+- cuántas no
+- qué tan rara es la conversión
+
+En marketing real, las conversiones suelen ser relativamente bajas.
+
+Eso es normal.
+
+## 9 — Comparando campañas
+
+Ahora empieza la parte más importante del capítulo.
+
+Queremos comparar campañas probabilísticamente.
+
+NO queremos decir:
+
+❌ “esta campaña es definitivamente mejor”
+
+Queremos decir algo más realista:
+
+✅ “la evidencia sugiere que podría funcionar mejor”
+
+## 10 — Tasas de conversión por campaña
+
+Supongamos que el dataset contiene variables como:
+
+- AcceptedCmp1
+- AcceptedCmp2
+- AcceptedCmp3
+- etc.
+
+Podemos explorar tasas promedio.
+
+```{r}
+marketing %>%
+  summarise(
+    cmp1 = mean(AcceptedCmp1),
+    cmp2 = mean(AcceptedCmp2),
+    cmp3 = mean(AcceptedCmp3),
+    cmp4 = mean(AcceptedCmp4),
+    cmp5 = mean(AcceptedCmp5)
+  ) # produce:
+```
+
+```{r}
+# Alargar el resumen
+long_marketing <- marketing %>%
+  summarise(
+    cmp1 = mean(AcceptedCmp1),
+    cmp2 = mean(AcceptedCmp2),
+    cmp3 = mean(AcceptedCmp3),
+    cmp4 = mean(AcceptedCmp4),
+    cmp5 = mean(AcceptedCmp5)
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_to = "campania",
+    values_to = "conversion"
+  )
+long_marketing
+```
+
+## 11 — Visualización comparativa
+
+```{r}
+# Grafico de columnas que compara las conversiones de las campañas 
+long_marketing %>%
+  ggplot(aes(x = campania, y = conversion)) +
+  geom_col() +
+  labs(
+    title = "Conversiones promedio de la campaña",
+    x = "Campañas",
+    y = "Tasa de conversión"
+  )
+```
+
+## 12 — Un error muy común
+
+Después de ver este gráfico, muchas personas concluyen demasiado rápido:
+
+`“La campaña 3 es la mejor.”`
+
+Pero eso puede ser engañoso.
+
+Porque todavía no hemos considerado:
+
+- incertidumbre
+- tamaño de muestra
+- variabilidad natural
+- plausibilidad de diferencias reales
+
+Aquí aparece una idea profundamente bayesiana:
+
+`diferencias pequeñas no siempre representan evidencia fuerte.`
+
+## 13 — Introducción intuitiva a rangos plausibles
+
+Imagina que una campaña muestra una conversión estimada de 15%.
+
+¿Eso significa exactamente 15%?
+
+No.
+
+Tal vez:
+
+- 13% también es plausible
+- 16% también
+- 17% quizá menos probable, pero posible
+
+La estimación tiene una “zona de incertidumbre”.
+
+## 14 — Simulación simple de incertidumbre
+
+Podemos simular escenarios plausibles.
+
+```{r}
+set.seed(123)
+
+# Simular 1000 conversiones
+simulaciones <- tibble(
+  conversion = rbinom(
+    1000,
+    size = 100, # 100 clientes
+    prob = 0.15 # probabilidad de conversión de cada cliente
+  )
+) 
+simulaciones[1:6,] # produce:
+```
+
+### Visualización
+
+```{r}
+# Densidad de la conversión de las simulaciones
+simulaciones %>%
+  ggplot(aes(x = conversion)) +
+  geom_density(fill = "skyblue", alpha = 0.5) +
+  labs(
+    title = "Distribución plausible de conversiones",
+    x = "Porcentaje de conversión",
+    y = "Densidad"
+  )
+```
+
+## 15 — ¿Qué estamos viendo?
+
+Este gráfico es extremadamente importante.
+
+NO muestra:
+
+❌ un único futuro
+
+Muestra:
+
+✅ muchos futuros plausibles
+
+Algunos escenarios tienen:
+
+- 12%
+- 15%
+- 18%
+
+Todos pueden ocurrir razonablemente.
+
+Ese es el corazón del pensamiento probabilístico.
+
+## 16 — Introducción intuitiva a intervalos plausibles
+
+Podemos resumir incertidumbre usando rangos plausibles.
+
+Por ejemplo:
+
+`“La tasa de conversión probablemente esté entre 12% y 18%.”`
+
+Eso es mucho más honesto que fingir precisión absoluta.
+
+## 17 — Visualizando incertidumbre explícitamente
+
+```{r}
+# Simular conversiones
+conversiones <- tibble(
+  campania = c("A", "B", "C"),
+  promedio = c(0.14, 0.16, 0.15),
+  inferior = c(0.11, 0.13, 0.12),
+  superior = c(0.17, 0.19, 0.18)
+)
+```
+
+### Gráfico con incertidumbre
+
+```{r}
+# Gráfico con incertidumbre
+conversiones %>%
+  ggplot(aes(x = campania, y = promedio)) + 
+  geom_point(size = 3) + # size es el tamaño del punto
+  geom_errorbar(
+    aes(
+      ymin = inferior,
+      ymax = superior
+    ), 
+    width = 0.2 # es el tamaño del bigote
+  ) +
+  labs(
+    title = "Conversiones con incertidumbre",
+    x = "Campaña",
+    y = "Conversión"
+  )
+```
+
+## 18 — Interpretación importante
+
+Este gráfico transmite algo fundamental:
+
+`las campañas no tienen resultados exactos.`
+
+Tienen resultados plausibles.
+
+Y a veces esos rangos se superponen mucho.
+
+Cuando eso ocurre:
+
+- la evidencia puede ser débil
+- las diferencias pueden no ser tan claras
+- conviene actuar con cautela
+
+## 19 — Introducción suave a comparación probabilística
+
+Supongamos:
+
+- Campaña A ≈ 14%
+- Campaña B ≈ 16%
+
+¿B es mejor?
+
+Tal vez.
+
+Pero la pregunta más útil es:
+
+`“¿Qué tan plausible es que realmente sea mejor?”`
+
+Ese cambio parece pequeño, pero transforma completamente la manera de pensar.
+
+## 20 — Lenguaje probabilístico útil
+
+En analytics moderno conviene usar lenguaje como:
+
+✅ “La evidencia sugiere…”
+✅ “Parece plausible…”
+✅ “Existe incertidumbre…”
+✅ “Probablemente…”
+✅ “Hay cierta evidencia de…”
+
+Evitar:
+
+❌ “Definitivamente”
+❌ “Completamente demostrado”
+❌ “Garantizado”
+
+## 21 — Conexión suave con Bayes
+
+Hasta ahora hemos trabajado principalmente con:
+
+- proporciones
+- simulaciones
+- incertidumbre visual
+
+Pero ya estamos pensando bayesianamente.
+
+Porque estamos:
+
+- considerando múltiples escenarios plausibles
+- aceptando incertidumbre
+- actualizando creencias usando evidencia
+- evitando conclusiones absolutas
+
+Más adelante formalizaremos estas ideas usando:
+
+- distribuciones posteriores
+- modelos probabilísticos
+- rstanarm
+
+## 22 — Posibles errores de interpretación
+
+### Error 1 — Confundir estimación con certeza
+
+Una conversión de 15% NO significa:
+
+`“el futuro será exactamente 15%”`
+
+### Error 2 — Ignorar incertidumbre
+
+Una diferencia pequeña puede no ser evidencia fuerte.
+
+### Error 3 — Sobreinterpretar muestras pequeñas
+
+Pocas observaciones producen mucha variabilidad.
+
+### Error 4 — Pensamiento determinista
+
+Los negocios reales funcionan con incertidumbre parcial, no con garantías absolutas.
+
+## 23 — Reflexión bayesiana
+
+La incertidumbre no es un defecto del análisis.
+
+Es parte natural de la realidad.
+
+El objetivo del análisis probabilístico no es eliminar incertidumbre completamente.
+
+Es aprender a:
+
+- cuantificarla parcialmente
+- visualizarla
+- interpretarla
+- tomar mejores decisiones a pesar de ella
+
+Pensar probabilísticamente significa aceptar algo profundamente humano:
+
+`podemos actuar racionalmente incluso sin conocer el futuro perfectamente.`
+
+## 24 — Ejercicios
+
+### Ejercicio 1
+
+Calcula la tasa general de conversión del dataset.
+
+Interpreta el resultado verbalmente.
+
+### Ejercicio 2
+
+Crea un gráfico de barras para comparar campañas.
+
+¿Qué campañas parecen más prometedoras?
+
+### Ejercicio 3
+
+Simula múltiples escenarios plausibles usando rbinom().
+
+¿Qué tan variable parece el futuro?
+
+### Ejercicio 4
+
+Construye un gráfico con intervalos plausibles.
+
+¿Qué campañas muestran mayor incertidumbre?
+
+### Ejercicio 5
+
+Reflexiona:
+
+`¿Por qué buscar certeza absoluta puede ser peligroso en negocios?`

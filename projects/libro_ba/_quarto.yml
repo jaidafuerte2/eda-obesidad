@@ -20,7 +20,7 @@ website:
         #href: analysis/m02.qmd
         contents: 
         - analysis/c04.qmd
-        #- analysis/c04.qmd
+        - analysis/c05.qmd
       #- section: "Módulo 3: Entender la Incertidumbre"
         #href: analysis/m03.qmd
         #contents:
