@@ -17,9 +17,7 @@ library(tidyverse)
 
 Vivimos rodeados de incertidumbre.
 
-Un médico recibe un examen de laboratorio y cambia parcialmente su sospecha diagnóstica.
-Un inversionista lee una noticia económica y ajusta sus expectativas.
-Una empresa lanza una campaña publicitaria y empieza a preguntarse:
+Un médico recibe un examen de laboratorio y cambia parcialmente su sospecha diagnóstica. Un inversionista lee una noticia económica y ajusta sus expectativas. Una empresa lanza una campaña publicitaria y empieza a preguntarse:
 
 `“¿Está funcionando realmente?”`
 
@@ -35,9 +33,7 @@ El pensamiento bayesiano nace precisamente de esta realidad:
 
 Ese es el corazón de Bayes.
 
-No se trata de alcanzar verdades perfectas.
-No se trata de eliminar la incertidumbre.
-Se trata de aprender continuamente.
+No se trata de alcanzar verdades perfectas. No se trata de eliminar la incertidumbre. Se trata de aprender continuamente.
 
 ## Pensar bayesianamente sin darse cuenta
 
@@ -45,15 +41,15 @@ Aunque muchas personas consideran a Bayes como una idea matemática compleja, en
 
 Imagina esta situación:
 
-- Un amigo normalmente llega puntual.
-- Hoy lleva 40 minutos de retraso.
-- No responde mensajes.
+-   Un amigo normalmente llega puntual.
+-   Hoy lleva 40 minutos de retraso.
+-   No responde mensajes.
 
 Tu cerebro automáticamente comienza a actualizar posibilidades:
 
-- quizá hubo tráfico
-- quizá olvidó la reunión
-- quizá ocurrió algo importante
+-   quizá hubo tráfico
+-   quizá olvidó la reunión
+-   quizá ocurrió algo importante
 
 No tienes certeza.
 
@@ -70,14 +66,12 @@ La esencia de Bayes puede resumirse así:
 En términos simples:
 
 | Concepto  | Traducción intuitiva  |
-| --------- | --------------------- |
+|-----------|-----------------------|
 | Prior     | Lo que creíamos antes |
 | Evidencia | La nueva información  |
 | Posterior | Lo que creemos ahora  |
 
-
-Bayes no reemplaza nuestras creencias.
-Las actualiza.
+Bayes no reemplaza nuestras creencias. Las actualiza.
 
 ## Incertidumbre y aprendizaje
 
@@ -89,9 +83,9 @@ El enfoque bayesiano propone algo distinto:
 
 En negocios, medicina, economía o marketing:
 
-- nunca tenemos información perfecta
-- nunca conocemos el futuro con certeza
-- nunca observamos toda la realidad
+-   nunca tenemos información perfecta
+-   nunca conocemos el futuro con certeza
+-   nunca observamos toda la realidad
 
 Por eso necesitamos aprender a pensar probabilísticamente.
 
@@ -107,11 +101,11 @@ Antes de usar el dataset, necesitamos entender algunos conceptos básicos.
 
 Las empresas constantemente intentan atraer clientes mediante campañas:
 
-- emails
-- promociones
-- descuentos
-- anuncios
-- publicidad digital
+-   emails
+-   promociones
+-   descuentos
+-   anuncios
+-   publicidad digital
 
 El objetivo suele ser simple:
 
@@ -119,10 +113,10 @@ El objetivo suele ser simple:
 
 Por ejemplo:
 
-- comprar un producto
-- suscribirse
-- registrarse
-- responder una oferta
+-   comprar un producto
+-   suscribirse
+-   registrarse
+-   responder una oferta
 
 Cuando una persona realiza esa acción, decimos que ocurrió una conversión.
 
@@ -138,12 +132,12 @@ Es simplemente:
 
 Por ejemplo:
 
-- 100 personas reciben un email
-- 20 personas compran
+-   100 personas reciben un email
+-   20 personas compran
 
 Entonces:
 
-- conversion rate = 20%
+-   conversion rate = 20%
 
 Parece sencillo.
 
@@ -171,9 +165,9 @@ Ese es el prior.
 
 Luego aparecen los primeros resultados:
 
-- algunos clientes responden
-- otros ignoran la campaña
-- aparecen nuevas conversiones
+-   algunos clientes responden
+-   otros ignoran la campaña
+-   aparecen nuevas conversiones
 
 Ahora la empresa debe actualizar lo que cree.
 
@@ -189,8 +183,8 @@ Supongamos esta situación sencilla.
 
 Una empresa envía una campaña a 100 clientes.
 
-- 20 convierten
-- 80 no convierten
+-   20 convierten
+-   80 no convierten
 
 La empresa inicialmente pensaba que la campaña probablemente tendría una conversión cercana al 10%.
 
@@ -216,15 +210,15 @@ Por ejemplo:
 
 De 100 clientes:
 
-- 20 compran
-- 80 no compran
+-   20 compran
+-   80 no compran
 
 Ahora imaginemos algo más específico.
 
 Supongamos que:
 
-- muchos clientes que hicieron clic terminaron comprando
-- pocos clientes sin clic compraron
+-   muchos clientes que hicieron clic terminaron comprando
+-   pocos clientes sin clic compraron
 
 Entonces el clic comienza a convertirse en evidencia útil.
 
@@ -242,11 +236,11 @@ Aunque visualmente parezca intimidante, la idea detrás es sorprendentemente hum
 
 Podemos leerla así:
 
-- P(A): lo que creíamos antes 
+-   P(A): lo que creíamos antes
 
-- P(B|A): qué tan compatible es la evidencia con nuestra idea
+-   P(B\|A): qué tan compatible es la evidencia con nuestra idea
 
-- P(A|B): lo que creemos después de observar evidencia
+-   P(A\|B): lo que creemos después de observar evidencia
 
 En palabras simples:
 
@@ -274,14 +268,14 @@ La matemática sólo organiza esa intuición.
 
 Supongamos nuevamente:
 
-- 100 clientes reciben una campaña
-- 20 compran
+-   100 clientes reciben una campaña
+-   20 compran
 
 Ahora observamos algo interesante:
 
 Entre quienes hicieron clic:
 
-- la mayoría compró
+-   la mayoría compró
 
 Entonces el clic comienza a actuar como evidencia relevante.
 
@@ -330,9 +324,9 @@ glimpse(marketing) # produce:
 
 Objetivo:
 
-- entender variables
-- familiarizarse con clientes reales
-- comenzar a pensar en incertidumbre
+-   entender variables
+-   familiarizarse con clientes reales
+-   comenzar a pensar en incertidumbre
 
 ## Explorar conversiones
 
@@ -381,10 +375,10 @@ La parte importante es la interpretación.
 
 Por ejemplo:
 
-- ¿las conversiones parecen frecuentes o raras?
-- ¿la campaña parece prometedora?
-- ¿cuánta incertidumbre existe?
-- ¿podríamos generalizar estos resultados?
+-   ¿las conversiones parecen frecuentes o raras?
+-   ¿la campaña parece prometedora?
+-   ¿cuánta incertidumbre existe?
+-   ¿podríamos generalizar estos resultados?
 
 El pensamiento bayesiano siempre pregunta:
 
@@ -402,9 +396,9 @@ Pero eso puede ser engañoso.
 
 Porque:
 
-- muestras pequeñas pueden confundirnos
-- el azar puede producir patrones temporales
-- necesitamos acumular evidencia gradualmente
+-   muestras pequeñas pueden confundirnos
+-   el azar puede producir patrones temporales
+-   necesitamos acumular evidencia gradualmente
 
 Bayes ayuda precisamente a evitar conclusiones exageradas.
 
@@ -412,8 +406,8 @@ Bayes ayuda precisamente a evitar conclusiones exageradas.
 
 Una visualización muy útil para este capítulo es comparar:
 
-- creencia inicial
-- creencia después de observar datos
+-   creencia inicial
+-   creencia después de observar datos
 
 Por ejemplo:
 
@@ -450,10 +444,10 @@ Bayes tiene una implicación filosófica muy poderosa:
 
 Todos tenemos:
 
-- experiencia previa
-- expectativas
-- intuiciones
-- creencias parciales
+-   experiencia previa
+-   expectativas
+-   intuiciones
+-   creencias parciales
 
 Y eso no es un defecto.
 
@@ -493,18 +487,18 @@ Bayes simplemente formaliza algo profundamente humano:
 
 A lo largo del capítulo, conviene priorizar gráficos como:
 
-- barras simples
-- proporciones
-- frecuencias naturales
-- comparaciones antes/después
-- incertidumbre visible
-- distribuciones sencillas
+-   barras simples
+-   proporciones
+-   frecuencias naturales
+-   comparaciones antes/después
+-   incertidumbre visible
+-   distribuciones sencillas
 
 Evitar:
 
-- gráficos excesivamente técnicos
-- visualizaciones sobrecargadas
-- demasiadas variables simultáneamente
+-   gráficos excesivamente técnicos
+-   visualizaciones sobrecargadas
+-   demasiadas variables simultáneamente
 
 La claridad es más importante que la sofisticación.
 
@@ -560,18 +554,18 @@ Y la información también.
 
 Este capítulo introduce la intuición fundamental:
 
-- prior
-- evidencia
-- posterior
-- actualización de creencias
+-   prior
+-   evidencia
+-   posterior
+-   actualización de creencias
 
 En los próximos capítulos veremos cómo estas ideas evolucionan hacia:
 
-- probabilidades útiles
-- intervalos plausibles
-- regresión logística
-- forecasting probabilístico
-- toma de decisiones bajo incertidumbre
+-   probabilidades útiles
+-   intervalos plausibles
+-   regresión logística
+-   forecasting probabilístico
+-   toma de decisiones bajo incertidumbre
 
 ## Ejercicios
 
@@ -581,13 +575,13 @@ En los próximos capítulos veremos cómo estas ideas evolucionan hacia:
 
 Imagina:
 
-- una campaña normalmente convierte 5%
-- en una prueba pequeña convierte 15%
+-   una campaña normalmente convierte 5%
+-   en una prueba pequeña convierte 15%
 
 Pregunta:
 
-- ¿deberías cambiar totalmente tu opinión?
-- ¿o sólo parcialmente?
+-   ¿deberías cambiar totalmente tu opinión?
+-   ¿o sólo parcialmente?
 
 Explica intuitivamente por qué.
 
@@ -597,14 +591,14 @@ Explica intuitivamente por qué.
 
 Supongamos:
 
-- 100 clientes reciben una oferta
-- 18 compran
+-   100 clientes reciben una oferta
+-   18 compran
 
 Describe la situación usando:
 
-- proporciones
-- frecuencias naturales
-- interpretación intuitiva
+-   proporciones
+-   frecuencias naturales
+-   interpretación intuitiva
 
 ### Ejercicio 3
 
@@ -616,8 +610,8 @@ Después mejora considerablemente.
 
 Pregunta:
 
-- ¿qué podría explicar ese cambio?
-- ¿la evidencia inicial era suficiente?
+-   ¿qué podría explicar ese cambio?
+-   ¿la evidencia inicial era suficiente?
 
 ### Ejercicio 4
 

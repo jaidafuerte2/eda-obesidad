@@ -21,6 +21,7 @@ website:
         contents: 
         - analysis/c04.qmd
         - analysis/c05.qmd
+        - analysis/c06.qmd
       #- section: "Módulo 3: Entender la Incertidumbre"
         #href: analysis/m03.qmd
         #contents:

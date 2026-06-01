@@ -18,9 +18,7 @@ library(skimr)
 
 Las empresas toman decisiones imperfectas todos los días.
 
-Una campaña de marketing puede funcionar muy bien este mes y mediocremente el siguiente.
-Un anuncio puede tener éxito en un segmento y fracasar en otro.
-Una promoción puede parecer prometedora… hasta que cambia el contexto económico.
+Una campaña de marketing puede funcionar muy bien este mes y mediocremente el siguiente. Un anuncio puede tener éxito en un segmento y fracasar en otro. Una promoción puede parecer prometedora… hasta que cambia el contexto económico.
 
 Y aun así, las decisiones deben tomarse.
 
@@ -28,8 +26,7 @@ Ese es uno de los problemas centrales del mundo real:
 
 `esperar certeza absoluta suele paralizar la acción.`
 
-En negocios reales casi nunca existen garantías completas.
-Lo que sí existe es evidencia parcial.
+En negocios reales casi nunca existen garantías completas. Lo que sí existe es evidencia parcial.
 
 Por eso las probabilidades son tan útiles.
 
@@ -49,19 +46,18 @@ Ese cambio de mentalidad es profundamente importante.
 
 Las personas solemos buscar respuestas binarias:
 
-- funcionará / no funcionará
-- comprar / no comprar
-- aprobar / rechazar
-- invertir / no invertir
+-   funcionará / no funcionará
+-   comprar / no comprar
+-   aprobar / rechazar
+-   invertir / no invertir
 
 Pero la realidad rara vez es tan clara.
 
-Una campaña no “funciona” o “fracasa” completamente.
-Más bien:
+Una campaña no “funciona” o “fracasa” completamente. Más bien:
 
-- puede tener una probabilidad razonable de éxito
-- puede funcionar mejor en ciertos segmentos
-- puede mostrar señales prometedoras, aunque todavía exista incertidumbre
+-   puede tener una probabilidad razonable de éxito
+-   puede funcionar mejor en ciertos segmentos
+-   puede mostrar señales prometedoras, aunque todavía exista incertidumbre
 
 Pensar probabilísticamente significa aceptar algo incómodo pero poderoso:
 
@@ -77,11 +73,11 @@ El **conversion rate** o tasa de conversión representa el porcentaje de persona
 
 Por ejemplo:
 
-- hacer clic
-- comprar
-- responder una campaña
-- registrarse
-- aceptar una oferta
+-   hacer clic
+-   comprar
+-   responder una campaña
+-   registrarse
+-   aceptar una oferta
 
 Si una campaña llega a 100 personas y 12 responden positivamente:
 
@@ -95,11 +91,11 @@ Porque las empresas rara vez pueden contactar a todos los clientes infinitamente
 
 Las campañas cuestan dinero:
 
-- publicidad
-- correos
-- descuentos
-- tiempo
-- personal
+-   publicidad
+-   correos
+-   descuentos
+-   tiempo
+-   personal
 
 Por eso interesa identificar campañas que parezcan más efectivas.
 
@@ -121,10 +117,10 @@ ROI = (Ganancia - Inversión) / Inversión
 
 Pero incluso el ROI está rodeado de incertidumbre:
 
-- algunos clientes compran más tarde
-- algunos compran por casualidad
-- algunos jamás iban a comprar
-- algunos resultados cambian con el tiempo
+-   algunos clientes compran más tarde
+-   algunos compran por casualidad
+-   algunos jamás iban a comprar
+-   algunos resultados cambian con el tiempo
 
 Por eso en este capítulo NO buscaremos “certezas”.
 
@@ -159,10 +155,10 @@ skim(marketing) # produce:
 
 Este paso ayuda a:
 
-- detectar valores faltantes
-- entender escalas
-- observar distribuciones
-- identificar variables útiles
+-   detectar valores faltantes
+-   entender escalas
+-   observar distribuciones
+-   identificar variables útiles
 
 ## 5 — La variable más importante: Response
 
@@ -170,8 +166,8 @@ En este capítulo nos interesa especialmente la variable: Response
 
 Usualmente:
 
-- 1 = respondió a la campaña
-- 0 = no respondió
+-   1 = respondió a la campaña
+-   0 = no respondió
 
 Esta variable representa una decisión humana real.
 
@@ -195,7 +191,7 @@ Esto calcula:
 
 ### Interpretación
 
-Supongamos que obtenemos algo cercano a: 
+Supongamos que obtenemos algo cercano a:
 
 `0.15`
 
@@ -219,9 +215,9 @@ Aquí aparece una de las ideas más importantes del libro:
 
 Si otra muestra de clientes hubiera sido seleccionada:
 
-- el resultado podría ser 14%
-- o 17%
-- o 13%
+-   el resultado podría ser 14%
+-   o 17%
+-   o 13%
 
 Incluso sin cambiar la campaña.
 
@@ -247,9 +243,9 @@ marketing %>%
 
 Este gráfico ayuda a ver:
 
-- cuántas personas respondieron
-- cuántas no
-- qué tan rara es la conversión
+-   cuántas personas respondieron
+-   cuántas no
+-   qué tan rara es la conversión
 
 En marketing real, las conversiones suelen ser relativamente bajas.
 
@@ -273,10 +269,10 @@ Queremos decir algo más realista:
 
 Supongamos que el dataset contiene variables como:
 
-- AcceptedCmp1
-- AcceptedCmp2
-- AcceptedCmp3
-- etc.
+-   AcceptedCmp1
+-   AcceptedCmp2
+-   AcceptedCmp3
+-   etc.
 
 Podemos explorar tasas promedio.
 
@@ -333,10 +329,10 @@ Pero eso puede ser engañoso.
 
 Porque todavía no hemos considerado:
 
-- incertidumbre
-- tamaño de muestra
-- variabilidad natural
-- plausibilidad de diferencias reales
+-   incertidumbre
+-   tamaño de muestra
+-   variabilidad natural
+-   plausibilidad de diferencias reales
 
 Aquí aparece una idea profundamente bayesiana:
 
@@ -352,9 +348,9 @@ No.
 
 Tal vez:
 
-- 13% también es plausible
-- 16% también
-- 17% quizá menos probable, pero posible
+-   13% también es plausible
+-   16% también
+-   17% quizá menos probable, pero posible
 
 La estimación tiene una “zona de incertidumbre”.
 
@@ -404,9 +400,9 @@ Muestra:
 
 Algunos escenarios tienen:
 
-- 12%
-- 15%
-- 18%
+-   12%
+-   15%
+-   18%
 
 Todos pueden ocurrir razonablemente.
 
@@ -467,16 +463,16 @@ Y a veces esos rangos se superponen mucho.
 
 Cuando eso ocurre:
 
-- la evidencia puede ser débil
-- las diferencias pueden no ser tan claras
-- conviene actuar con cautela
+-   la evidencia puede ser débil
+-   las diferencias pueden no ser tan claras
+-   conviene actuar con cautela
 
 ## 19 — Introducción suave a comparación probabilística
 
 Supongamos:
 
-- Campaña A ≈ 14%
-- Campaña B ≈ 16%
+-   Campaña A ≈ 14%
+-   Campaña B ≈ 16%
 
 ¿B es mejor?
 
@@ -492,40 +488,34 @@ Ese cambio parece pequeño, pero transforma completamente la manera de pensar.
 
 En analytics moderno conviene usar lenguaje como:
 
-✅ “La evidencia sugiere…”
-✅ “Parece plausible…”
-✅ “Existe incertidumbre…”
-✅ “Probablemente…”
-✅ “Hay cierta evidencia de…”
+✅ “La evidencia sugiere…” ✅ “Parece plausible…” ✅ “Existe incertidumbre…” ✅ “Probablemente…” ✅ “Hay cierta evidencia de…”
 
 Evitar:
 
-❌ “Definitivamente”
-❌ “Completamente demostrado”
-❌ “Garantizado”
+❌ “Definitivamente” ❌ “Completamente demostrado” ❌ “Garantizado”
 
 ## 21 — Conexión suave con Bayes
 
 Hasta ahora hemos trabajado principalmente con:
 
-- proporciones
-- simulaciones
-- incertidumbre visual
+-   proporciones
+-   simulaciones
+-   incertidumbre visual
 
 Pero ya estamos pensando bayesianamente.
 
 Porque estamos:
 
-- considerando múltiples escenarios plausibles
-- aceptando incertidumbre
-- actualizando creencias usando evidencia
-- evitando conclusiones absolutas
+-   considerando múltiples escenarios plausibles
+-   aceptando incertidumbre
+-   actualizando creencias usando evidencia
+-   evitando conclusiones absolutas
 
 Más adelante formalizaremos estas ideas usando:
 
-- distribuciones posteriores
-- modelos probabilísticos
-- rstanarm
+-   distribuciones posteriores
+-   modelos probabilísticos
+-   rstanarm
 
 ## 22 — Posibles errores de interpretación
 
@@ -557,10 +547,10 @@ El objetivo del análisis probabilístico no es eliminar incertidumbre completam
 
 Es aprender a:
 
-- cuantificarla parcialmente
-- visualizarla
-- interpretarla
-- tomar mejores decisiones a pesar de ella
+-   cuantificarla parcialmente
+-   visualizarla
+-   interpretarla
+-   tomar mejores decisiones a pesar de ella
 
 Pensar probabilísticamente significa aceptar algo profundamente humano:
 
