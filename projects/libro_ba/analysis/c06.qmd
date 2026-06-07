@@ -519,3 +519,61 @@ Exploraremos:
 Pero mantendremos siempre la misma filosofía:
 
 `los modelos no reemplazan el criterio humano.` `ayudan a pensar mejor bajo incertidumbre.`
+
+## 19. Ejercicios
+
+### Ejercicio 1
+
+Modifica el número de iteraciones:
+
+`iter = 500`
+
+y luego:
+
+`iter = 2000`
+
+Pregunta:
+
+- ¿cómo cambia la distribución posterior?
+- ¿qué diferencias visuales observas?
+
+### Ejercicio 2
+
+Construye otro modelo usando:
+
+- Age
+- o MntWines
+
+como predictor.
+
+Pregunta:
+
+- ¿la incertidumbre parece mayor o menor?
+
+### Ejercicio 3
+
+Visualiza múltiples escenarios plausibles usando:
+
+`posterior_linpred()`
+
+Pregunta:
+
+- ¿qué transmite visualmente el “abanico” de posibilidades?
+
+### Ejercicio 4
+
+Interpreta verbalmente un intervalo plausible.
+
+Evita lenguaje matemático complejo.
+
+Intenta explicarlo como si hablaras con:
+
+- un gerente,
+- un médico,
+- o una persona sin formación estadística.
+
+### Ejercicio 5
+
+Reflexión conceptual:
+
+¿Por qué podría ser peligroso tomar decisiones empresariales ignorando incertidumbre?

@@ -347,19 +347,41 @@ tibble(
 # hasta un 15% de Responses son unos 600 clientes, los que aumentan
 # hasta un 20% de Responses son unos 300 clientes, etc.
 
-Ejercicio 4
+#################
+##
+## Ejercicio 4
+##
+#################
 
-Interpreta verbalmente un intervalo plausible.
+# Ejercicio 4
 
-Evita lenguaje matemático complejo.
+# Interpreta verbalmente un intervalo plausible.
 
-Intenta explicarlo como si hablaras con:
+# Evita lenguaje matemático complejo.
+
+# Intenta explicarlo como si hablaras con:
   
-  un gerente,
-un médico,
-o una persona sin formación estadística.
-Ejercicio 5
+#  un gerente,
+#  un médico,
+# o una persona sin formación estadística.
 
-Reflexión conceptual:
+#                    5%         95%
+#(Intercept) -2.5779883 -2.25014870
+#Wine_10      0.0148633  0.02048194
+# Explicación: cada 10 dólares gastados en vino aumenta entre 1.4% 
+# y 2% la probabilidad de Responder a una campaña de marketing 
+
+#################
+##
+## Ejercicio 5
+##
+#################
+
+# Ejercicio 5
+
+# Reflexión conceptual:
   
-  ¿Por qué podría ser peligroso tomar decisiones empresariales ignorando incertidumbre?
+#  ¿Por qué podría ser peligroso tomar decisiones empresariales 
+# ignorando incertidumbre? Mi parecer un poco parcializado es que
+# cuando se toma en cuenta sólo el promedio se ignora el peor 
+# de los escenarios y eso es peligroso

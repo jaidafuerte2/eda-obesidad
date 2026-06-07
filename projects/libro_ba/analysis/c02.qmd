@@ -17,39 +17,34 @@ sales <- read_csv("../data/superstore_sales.csv",
                   show_col_types = FALSE)
 ```
 
-
 ## Introducción
 
 Imagina dos tiendas.
 
 Ambas tienen ventas promedio diarias de 500 dólares.
 
-A primera vista parecen similares.
-Si sólo observamos el promedio, podríamos concluir que ambos negocios funcionan igual.
+A primera vista parecen similares. Si sólo observamos el promedio, podríamos concluir que ambos negocios funcionan igual.
 
 Pero ahora imaginemos algo más.
 
-La primera tienda vende casi siempre entre 480 y 520 dólares diarios.
-Es estable. Predecible. Tranquila.
+La primera tienda vende casi siempre entre 480 y 520 dólares diarios. Es estable. Predecible. Tranquila.
 
-La segunda tienda alterna entre días de 50 dólares y días de 2000 dólares.
-Es caótica. Inestable. Difícil de anticipar.
+La segunda tienda alterna entre días de 50 dólares y días de 2000 dólares. Es caótica. Inestable. Difícil de anticipar.
 
 Aunque ambas tengan exactamente el mismo promedio, vivir dentro de esos negocios sería completamente diferente.
 
 Las decisiones también serían distintas:
 
-- inventario,
-- contratación,
-- flujo de caja,
-- promociones,
-- riesgo,
-- planificación.
+-   inventario,
+-   contratación,
+-   flujo de caja,
+-   promociones,
+-   riesgo,
+-   planificación.
 
 Aquí aparece una idea fundamental de este libro:
 
-`Los negocios reales no existen como números únicos.`
-`Existen como distribuciones.`
+`Los negocios reales no existen como números únicos.` `Existen como distribuciones.`
 
 Y esa diferencia cambia completamente la forma de pensar.
 
@@ -61,11 +56,11 @@ Pero en la práctica, esa pregunta rara vez es suficiente.
 
 En negocios reales necesitamos preguntas mejores:
 
-- ¿Qué tan variable es el sistema?
-- ¿Qué tan frecuentes son los extremos?
-- ¿Qué rango de resultados es plausible?
-- ¿Qué tan incierto es el futuro?
-- ¿Cuánto riesgo existe realmente?
+-   ¿Qué tan variable es el sistema?
+-   ¿Qué tan frecuentes son los extremos?
+-   ¿Qué rango de resultados es plausible?
+-   ¿Qué tan incierto es el futuro?
+-   ¿Cuánto riesgo existe realmente?
 
 Este capítulo marca una transición importante en nuestra forma de pensar.
 
@@ -81,29 +76,27 @@ De manera intuitiva, una distribución es simplemente:
 
 `la forma en que los valores se reparten.`
 
-No es una fórmula complicada.
-No es algo exclusivamente matemático.
+No es una fórmula complicada. No es algo exclusivamente matemático.
 
 Es una manera de describir cómo se comporta la realidad.
 
 Por ejemplo:
 
-- algunas ventas son pequeñas,
-- otras medianas,
-- unas pocas muy grandes.
+-   algunas ventas son pequeñas,
+-   otras medianas,
+-   unas pocas muy grandes.
 
 Una distribución nos muestra:
 
-- qué valores son comunes,
-- cuáles son raros,
-- dónde se concentran los datos,
-- qué tan dispersos están,
-- y qué tan frecuentes son los extremos.
+-   qué valores son comunes,
+-   cuáles son raros,
+-   dónde se concentran los datos,
+-   qué tan dispersos están,
+-   y qué tan frecuentes son los extremos.
 
 Pensar en distribuciones significa aceptar algo muy importante:
 
-`La variabilidad no es un error del sistema.`
-`Es parte natural del sistema.`
+`La variabilidad no es un error del sistema.` `Es parte natural del sistema.`
 
 ## 2. Contexto de negocio
 
@@ -115,9 +108,9 @@ La variable *Sales* representa el dinero generado por una venta.
 
 En retail, normalmente ocurre algo interesante:
 
-- existen muchísimas ventas pequeñas,
-- algunas ventas medianas,
-- y unas pocas ventas enormes.
+-   existen muchísimas ventas pequeñas,
+-   algunas ventas medianas,
+-   y unas pocas ventas enormes.
 
 Eso produce distribuciones asimétricas.
 
@@ -209,15 +202,15 @@ ggplot(sales, aes(x = Sales)) +
 
 Este gráfico suele mostrar algo muy común en negocios reales:
 
-- muchísimas ventas pequeñas,
-- algunas ventas medianas,
-- pocas ventas extremadamente grandes.
+-   muchísimas ventas pequeñas,
+-   algunas ventas medianas,
+-   pocas ventas extremadamente grandes.
 
 La distribución normalmente aparece:
 
-- sesgada hacia la derecha,
-- con una cola larga,
-- y con valores extremos importantes.
+-   sesgada hacia la derecha,
+-   con una cola larga,
+-   y con valores extremos importantes.
 
 Esto significa que:
 
@@ -248,9 +241,9 @@ ggplot(sales, aes(x = Sales)) +
 
 Una curva de densidad nos ayuda a visualizar:
 
-- dónde se concentran los datos,
-- qué regiones son más plausibles,
-- y qué valores son relativamente raros.
+-   dónde se concentran los datos,
+-   qué regiones son más plausibles,
+-   y qué valores son relativamente raros.
 
 No representa probabilidades exactas individuales.
 
@@ -279,7 +272,7 @@ sales %>%
 
 En datasets reales de retail suele ocurrir algo interesante:
 
-- el promedio es mucho mayor que la mediana.
+-   el promedio es mucho mayor que la mediana.
 
 ¿Por qué?
 
@@ -287,8 +280,8 @@ Porque unas pocas ventas enormes “arrastran” el promedio hacia arriba.
 
 La mediana, en cambio, representa el punto donde:
 
-- la mitad de las observaciones queda por debajo,
-- y la otra mitad por encima.
+-   la mitad de las observaciones queda por debajo,
+-   y la otra mitad por encima.
 
 ### Idea importante
 
@@ -316,9 +309,9 @@ sales %>%
 
 Esto nos permite responder preguntas muy útiles:
 
-- ¿qué ventas son típicas?
-- ¿qué valores pertenecen al 25% superior?
-- ¿qué tan disperso es el negocio?
+-   ¿qué ventas son típicas?
+-   ¿qué valores pertenecen al 25% superior?
+-   ¿qué tan disperso es el negocio?
 
 ## 8. Visualizando cuantiles
 
@@ -353,10 +346,10 @@ ggplot(sales, aes(y = Sales)) +
 
 El boxplot resume:
 
-- mediana,
-- dispersión,
-- rango típico,
-- posibles valores extremos.
+-   mediana,
+-   dispersión,
+-   rango típico,
+-   posibles valores extremos.
 
 Nos ayuda a pensar rápidamente:
 
@@ -400,8 +393,8 @@ ggplot(sales, aes(x = Profit)) +
 
 Aquí suele aparecer algo muy interesante:
 
-- existen ganancias positivas,
-- pero también pérdidas.
+-   existen ganancias positivas,
+-   pero también pérdidas.
 
 Esto es extremadamente importante en negocios reales.
 
@@ -428,9 +421,9 @@ ggplot(sales, aes(x = Sales, fill = Category)) +
 
 Porque diferentes categorías pueden tener:
 
-- distintos niveles de riesgo,
-- diferentes patrones de ventas,
-- distintas probabilidades de valores extremos.
+-   distintos niveles de riesgo,
+-   diferentes patrones de ventas,
+-   distintas probabilidades de valores extremos.
 
 Y eso cambia las decisiones.
 
@@ -458,17 +451,16 @@ No necesitamos profundizar matemáticamente todavía.
 
 La intuición importante es:
 
-- valores pequeños → sistema más estable,
-- valores grandes → sistema más variable.
+-   valores pequeños → sistema más estable,
+-   valores grandes → sistema más variable.
 
 ## 12. Fórmula mínima
 
-La regresión y los modelos vendrán después.
-Por ahora sólo necesitamos una idea intuitiva de dispersión.
+La regresión y los modelos vendrán después. Por ahora sólo necesitamos una idea intuitiva de dispersión.
 
 Aun así, vale la pena conocer suavemente la fórmula del promedio:
 
-`promedio = x1 + x2 + ... + xn / n `
+`promedio = x1 + x2 + ... + xn / n`
 
 La idea importante no es memorizar la fórmula.
 
@@ -502,30 +494,29 @@ El pensamiento probabilístico comienza cuando dejamos de buscar certezas absolu
 
 Los datos reales:
 
-- fluctúan,
-- cambian,
-- contienen ruido,
-- presentan heterogeneidad,
-- y producen resultados inesperados.
+-   fluctúan,
+-   cambian,
+-   contienen ruido,
+-   presentan heterogeneidad,
+-   y producen resultados inesperados.
 
 Por eso las distribuciones son tan importantes.
 
 Nos enseñan a pensar en:
 
-- rangos,
-- plausibilidad,
-- incertidumbre,
-- variabilidad natural.
+-   rangos,
+-   plausibilidad,
+-   incertidumbre,
+-   variabilidad natural.
 
 Más adelante, los modelos bayesianos harán exactamente eso:
 
-- producir distribuciones,
-- no respuestas únicas.
+-   producir distribuciones,
+-   no respuestas únicas.
 
 Y esa es una de las ideas más profundas de este libro:
 
-`Los modelos no producen verdades exactas.`
-`Ayudan a pensar mejor bajo incertidumbre.`
+`Los modelos no producen verdades exactas.` `Ayudan a pensar mejor bajo incertidumbre.`
 
 ## 15. Posibles errores de interpretación
 
@@ -533,19 +524,19 @@ Y esa es una de las ideas más profundas de este libro:
 
 El promedio puede ocultar:
 
-- riesgo,
-- inestabilidad,
-- asimetrías,
-- extremos importantes.
+-   riesgo,
+-   inestabilidad,
+-   asimetrías,
+-   extremos importantes.
 
 ### Error 2: asumir normalidad automáticamente
 
 Muchos fenómenos reales:
 
-- NO son perfectamente normales,
-- NO son simétricos,
-- tienen colas largas,
-- contienen extremos relevantes.
+-   NO son perfectamente normales,
+-   NO son simétricos,
+-   tienen colas largas,
+-   contienen extremos relevantes.
 
 ### Error 3: ignorar la variabilidad
 
@@ -559,17 +550,17 @@ Construye un histograma para *Quantity*.
 
 Describe:
 
-- forma,
-- dispersión,
-- posibles asimetrías.
+-   forma,
+-   dispersión,
+-   posibles asimetrías.
 
 ### Ejercicio 2
 
 Compara:
 
-- promedio,
-- mediana,
-- percentil 90
+-   promedio,
+-   mediana,
+-   percentil 90
 
 de *Sales*.
 
@@ -596,7 +587,6 @@ high_sales <- sales %>%
 high_sales[1:10,] # Cambiar si se desean ver más valores
 ```
 
-
 Pregunta:
 
 `¿Qué implicaciones podrían tener estos extremos en decisiones reales?`
@@ -608,4 +598,3 @@ Construye curvas de densidad por región.
 Pregunta:
 
 `¿Todas las regiones parecen comportarse igual?`
-

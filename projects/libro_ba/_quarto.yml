@@ -22,11 +22,11 @@ website:
         - analysis/c04.qmd
         - analysis/c05.qmd
         - analysis/c06.qmd
-      #- section: "Módulo 3: Entender la Incertidumbre"
+      - section: "PARTE III — MODELOS PARA ENTENDER NEGOCIOS"
         #href: analysis/m03.qmd
-        #contents:
-        #- analysis/c05.qmd
-        #- analysis/c06.qmd
+        contents:
+        - analysis/c07.qmd
+        - analysis/c08.qmd
         #- analysis/c07.qmd
       #- section: "Módulo 4: Pensamiento causal"
         #href: analysis/m04.qmd

@@ -9,7 +9,7 @@ library(readr)
 library(dplyr)
 library(tidyverse)
 
-# Cargar la dataset de obesidad
+# Cargar la dataset de ventas
 sales <- read_csv(
   "eda-obesidad/projects/libro_ba/data/superstore_sales.csv",
   guess_max = 10000,

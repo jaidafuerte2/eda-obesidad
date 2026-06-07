@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>8.- Interpretar modelos probabilísticos – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c07.html">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</a></li><li class="breadcrumb-item"><a href="../analysis/c08.html">8.- Interpretar modelos probabilísticos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — APRENDER A VER LA INCERTIDUMBRE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Simulación y mundos posibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidades útiles para tomar decisiones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Modelos bayesianos prácticos con rstanarm</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Relaciones entre variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#la-incomodidad-de-la-incertidumbre" id="toc-la-incomodidad-de-la-incertidumbre" class="nav-link" data-scroll-target="#la-incomodidad-de-la-incertidumbre">La incomodidad de la incertidumbre</a></li>
+  <li><a href="#recordatorio-filosófico-importante" id="toc-recordatorio-filosófico-importante" class="nav-link" data-scroll-target="#recordatorio-filosófico-importante">Recordatorio filosófico importante</a></li>
+  <li><a href="#qué-es-una-distribución-posterior" id="toc-qué-es-una-distribución-posterior" class="nav-link" data-scroll-target="#qué-es-una-distribución-posterior">¿Qué es una distribución posterior?</a></li>
+  <li><a href="#pensar-en-plausibilidad" id="toc-pensar-en-plausibilidad" class="nav-link" data-scroll-target="#pensar-en-plausibilidad">Pensar en plausibilidad</a></li>
+  <li><a href="#un-primer-modelo-para-interpretar" id="toc-un-primer-modelo-para-interpretar" class="nav-link" data-scroll-target="#un-primer-modelo-para-interpretar">Un primer modelo para interpretar</a></li>
+  <li><a href="#ajustando-el-modelo" id="toc-ajustando-el-modelo" class="nav-link" data-scroll-target="#ajustando-el-modelo">Ajustando el modelo</a></li>
+  <li><a href="#extrayendo-la-distribución-posterior" id="toc-extrayendo-la-distribución-posterior" class="nav-link" data-scroll-target="#extrayendo-la-distribución-posterior">Extrayendo la distribución posterior</a></li>
+  <li><a href="#visualizando-la-incertidumbre" id="toc-visualizando-la-incertidumbre" class="nav-link" data-scroll-target="#visualizando-la-incertidumbre">Visualizando la incertidumbre</a></li>
+  <li><a href="#cómo-leer-este-gráfico" id="toc-cómo-leer-este-gráfico" class="nav-link" data-scroll-target="#cómo-leer-este-gráfico">Cómo leer este gráfico</a></li>
+  <li><a href="#credible-intervals" id="toc-credible-intervals" class="nav-link" data-scroll-target="#credible-intervals">Credible Intervals</a></li>
+  <li><a href="#interpretación-intuitiva" id="toc-interpretación-intuitiva" class="nav-link" data-scroll-target="#interpretación-intuitiva">Interpretación intuitiva</a></li>
+  <li><a href="#el-lenguaje-importa" id="toc-el-lenguaje-importa" class="nav-link" data-scroll-target="#el-lenguaje-importa">El lenguaje importa</a></li>
+  <li><a href="#visualizando-intervalos-plausibles" id="toc-visualizando-intervalos-plausibles" class="nav-link" data-scroll-target="#visualizando-intervalos-plausibles">Visualizando intervalos plausibles</a></li>
+  <li><a href="#bandas-plausibles-en-una-regresión" id="toc-bandas-plausibles-en-una-regresión" class="nav-link" data-scroll-target="#bandas-plausibles-en-una-regresión">Bandas plausibles en una regresión</a></li>
+  <li><a href="#la-incertidumbre-del-modelo" id="toc-la-incertidumbre-del-modelo" class="nav-link" data-scroll-target="#la-incertidumbre-del-modelo">La incertidumbre del modelo</a></li>
+  <li><a href="#predicciones-e-incertidumbre" id="toc-predicciones-e-incertidumbre" class="nav-link" data-scroll-target="#predicciones-e-incertidumbre">Predicciones e incertidumbre</a></li>
+  <li><a href="#por-qué-esto-mejora-las-decisiones" id="toc-por-qué-esto-mejora-las-decisiones" class="nav-link" data-scroll-target="#por-qué-esto-mejora-las-decisiones">¿Por qué esto mejora las decisiones?</a></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">Reflexión bayesiana</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  <li><a href="#ejercicio-6" id="toc-ejercicio-6" class="nav-link" data-scroll-target="#ejercicio-6">Ejercicio 6</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c07.html">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</a></li><li class="breadcrumb-item"><a href="../analysis/c08.html">8.- Interpretar modelos probabilísticos</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">8.- Interpretar modelos probabilísticos</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<p>Hasta este punto del libro hemos construido simulaciones, explorado distribuciones, ajustado modelos bayesianos sencillos y aprendido a pensar en términos de incertidumbre.</p>
+<p>Sin embargo, existe una diferencia enorme entre:</p>
+<ul>
+<li>construir un modelo,</li>
+<li>y saber interpretarlo correctamente.</li>
+</ul>
+<p>De hecho, en el mundo real la mayoría de los errores analíticos no ocurren porque los modelos sean malos.</p>
+<p>Ocurren porque las personas interpretan mal los resultados.</p>
+<p>Muchas veces queremos que los datos nos entreguen una respuesta definitiva:</p>
+<ul>
+<li>¿Funcionará la campaña?</li>
+<li>¿Debemos ofrecer descuentos?</li>
+<li>¿Aumentarán las ventas?</li>
+<li>¿Es una buena decisión?</li>
+</ul>
+<p>Pero los modelos probabilísticos rara vez responden con un sí o un no absoluto.</p>
+<p>Lo que hacen es mucho más útil:</p>
+<p>Nos ayudan a comprender qué escenarios son más plausibles que otros.</p>
+<p>Y eso cambia profundamente nuestra forma de tomar decisiones.</p>
+</section>
+<section id="la-incomodidad-de-la-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="la-incomodidad-de-la-incertidumbre">La incomodidad de la incertidumbre</h2>
+<p>Las personas solemos sentirnos cómodas con respuestas definitivas.</p>
+<p>Preferimos escuchar:</p>
+<p><code>"Las ventas aumentarán."</code></p>
+<p>en lugar de:</p>
+<p><code>"Las ventas probablemente aumentarán, aunque existe incertidumbre."</code></p>
+<p>Preferimos:</p>
+<p><code>"Este tratamiento funciona."</code></p>
+<p>en lugar de:</p>
+<p><code>"Este tratamiento parece funcionar para muchos pacientes, pero existe variabilidad."</code></p>
+<p>Preferimos:</p>
+<p><code>"Este cliente abandonará la empresa."</code></p>
+<p>en lugar de:</p>
+<p><code>"Existe una probabilidad elevada de abandono."</code></p>
+<p>Sin embargo, el mundo real rara vez ofrece certezas absolutas.</p>
+<p>Los negocios, la medicina, la economía e incluso nuestra vida cotidiana están llenos de incertidumbre.</p>
+<p>La pregunta no es cómo eliminarla.</p>
+<p>La pregunta es cómo pensar mejor dentro de ella.</p>
+</section>
+<section id="recordatorio-filosófico-importante" class="level2">
+<h2 class="anchored" data-anchor-id="recordatorio-filosófico-importante">Recordatorio filosófico importante</h2>
+<p>En capítulos anteriores vimos una idea que ahora vuelve a aparecer:</p>
+<p><code>Un modelo bayesiano no produce una única respuesta.</code></p>
+<p><code>Produce una distribución de respuestas plausibles.</code></p>
+<p>Esta idea es fundamental.</p>
+<p>Cuando simulábamos múltiples futuros posibles, observábamos distintos escenarios.</p>
+<p>Algunos eran más probables.</p>
+<p>Otros menos.</p>
+<p>Pero ninguno podía descartarse completamente.</p>
+<p>Los modelos bayesianos funcionan de manera similar.</p>
+<p>No producen una verdad única.</p>
+<p>Producen una distribución de posibilidades compatibles con los datos.</p>
+</section>
+<section id="qué-es-una-distribución-posterior" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-una-distribución-posterior">¿Qué es una distribución posterior?</h2>
+<p>Imaginemos que queremos entender cómo afecta el descuento (Discount) a la ganancia (Profit).</p>
+<p>Después de observar los datos, el modelo intenta estimar la pendiente de esa relación.</p>
+<p>En estadística clásica solemos recibir algo parecido a:</p>
+<p><code>La pendiente es -85.</code></p>
+<p>Pero un modelo bayesiano responde de forma distinta:</p>
+<p><code>La pendiente probablemente está cerca de -85, aunque valores entre -100 y -70 también parecen razonables.</code></p>
+<p>En lugar de un único valor obtenemos una distribución completa.</p>
+<p>Visualmente:</p>
+<ul>
+<li>algunas zonas son muy plausibles,</li>
+<li>otras menos plausibles,</li>
+<li>algunas prácticamente incompatibles con los datos.</li>
+</ul>
+<p>La distribución posterior representa precisamente eso:</p>
+<p><code>Nuestra incertidumbre actual después de observar los datos.</code></p>
+</section>
+<section id="pensar-en-plausibilidad" class="level2">
+<h2 class="anchored" data-anchor-id="pensar-en-plausibilidad">Pensar en plausibilidad</h2>
+<p>Una forma intuitiva de interpretar una posterior es imaginar un mapa de calor.</p>
+<p>Las zonas más oscuras representan valores más compatibles con los datos.</p>
+<p>Las zonas más claras representan valores menos compatibles.</p>
+<p>No estamos preguntando:</p>
+<p><code>¿Cuál es el valor verdadero?</code></p>
+<p>Estamos preguntando:</p>
+<p><code>¿Qué valores parecen razonables dada la evidencia disponible?</code></p>
+<p>Este cambio de perspectiva es una de las mayores ventajas del pensamiento bayesiano.</p>
+</section>
+<section id="un-primer-modelo-para-interpretar" class="level2">
+<h2 class="anchored" data-anchor-id="un-primer-modelo-para-interpretar">Un primer modelo para interpretar</h2>
+<p>Utilizaremos una regresión sencilla:</p>
+<p>Profit = β0 + β1​Discount + ϵ</p>
+<p>donde:</p>
+<ul>
+<li><strong>Profit</strong> representa la ganancia.</li>
+<li><strong>Discount</strong> representa el descuento aplicado.</li>
+<li>β₀ representa la ganancia esperada cuando no existe descuento.</li>
+<li>β₁ representa cómo cambia la ganancia cuando aumentan los - descuentos.</li>
+</ul>
+<p>Nuestro objetivo no es construir el mejor modelo posible.</p>
+<p>Nuestro objetivo es aprender a interpretar incertidumbre.</p>
+</section>
+<section id="ajustando-el-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="ajustando-el-modelo">Ajustando el modelo</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>modelo_profit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  Profit <span class="sc">~</span> Discount_c,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> superstore,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_profit) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       gaussian [identity]
+ formula:      Profit ~ Discount_c
+ observations: 9994
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) 67.4    3.0  
+Discount_c  -2.5    0.1  
+
+Auxiliary parameter(s):
+      Median MAD_SD
+sigma 228.5    1.7 
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<p>Observa que utilizamos una configuración ligera.</p>
+<p>No estamos buscando máxima precisión computacional.</p>
+<p>Estamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.</p>
+<p><em>Interpretación</em>: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.</p>
+</section>
+<section id="extrayendo-la-distribución-posterior" class="level2">
+<h2 class="anchored" data-anchor-id="extrayendo-la-distribución-posterior">Extrayendo la distribución posterior</h2>
+<p>Ahora convertimos las simulaciones posteriores en un data frame.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer la distribución posterior </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>draws_profit <span class="ot">&lt;-</span> posterior<span class="sc">::</span><span class="fu">as_draws_df</span>(modelo_profit) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>draws_profit[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A draws_df: 6 iterations, 1 chains, and 3 variables
+  (Intercept) Discount_c sigma
+1          67       -2.4   229
+2          66       -2.5   231
+3          71       -2.5   227
+4          69       -2.4   227
+5          68       -2.5   229
+6          71       -2.5   227
+# ... hidden reserved variables {'.chain', '.iteration', '.draw'}</code></pre>
+</div>
+</div>
+<p>Cada fila representa un mundo plausible generado por el modelo.</p>
+<p>Cada mundo propone un valor ligeramente diferente para los parámetros.</p>
+</section>
+<section id="visualizando-la-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-la-incertidumbre">Visualizando la incertidumbre</h2>
+<p>Podemos visualizar la distribución posterior de la pendiente.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la incertidumbre</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>draws_profit <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Discount_c)) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución posterior de la pendiente"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Pendiente - Descuento"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Densidad"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c08_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este gráfico es extremadamente importante.</p>
+<p>No muestra un único resultado.</p>
+<p>Muestra una familia completa de resultados plausibles.</p>
+</section>
+<section id="cómo-leer-este-gráfico" class="level2">
+<h2 class="anchored" data-anchor-id="cómo-leer-este-gráfico">Cómo leer este gráfico</h2>
+<p>Supongamos que la distribución se concentra alrededor de valores negativos.</p>
+<p>La interpretación correcta sería:</p>
+<p><code>*Interpretación*: El gráfico muestra que es plausible que dentro de una parte considerable de la población de estudio, cada punto porcentual de descuento disminuya las ganancias entre 2.7 y 2.3 dólares.</code></p>
+<p>La interpretación incorrecta sería:</p>
+<p><code>Hemos demostrado que el efecto verdadero es exactamente -83.72.</code></p>
+<p>Los modelos probabilísticos rara vez justifican afirmaciones tan absolutas.</p>
+</section>
+<section id="credible-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="credible-intervals">Credible Intervals</h2>
+<p>Una de las herramientas más útiles para resumir incertidumbre es el intervalo creíble.</p>
+<p>Un intervalo creíble del 95% contiene la mayor parte de los valores plausibles según el modelo.</p>
+<p>Por ejemplo:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear los intervalos posteriores</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  modelo_profit,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> <span class="fl">0.95</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  2.5%     97.5%
+(Intercept)  61.475335  73.22331
+Discount_c   -2.691436  -2.26060
+sigma       225.502406 231.92616</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretación-intuitiva" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-intuitiva">Interpretación intuitiva</h2>
+<p>La interpretación práctica sería:</p>
+<p><code>Es plausible que por cada punto porcentual de descuento las ganancias disminuyan en tre 2.27 y y 2.72 dólares en la población de estudio</code></p>
+<p>Observa lo que NO estamos diciendo.</p>
+<p>No estamos diciendo:</p>
+<p>❌ “La pendiente verdadera está atrapada dentro del intervalo.”</p>
+<p>Tampoco:</p>
+<p>❌ “Existe certeza de que el valor está ahí.”</p>
+<p>Preferimos decir:</p>
+<p>✅ “Los valores plausibles se concentran en ese rango.”</p>
+</section>
+<section id="el-lenguaje-importa" class="level2">
+<h2 class="anchored" data-anchor-id="el-lenguaje-importa">El lenguaje importa</h2>
+<p>A medida que maduramos analíticamente, el lenguaje cambia.</p>
+<p>Evitamos:</p>
+<ul>
+<li>demostrar</li>
+<li>probar definitivamente</li>
+<li>confirmar con certeza</li>
+</ul>
+<p>Y comenzamos a utilizar:</p>
+<ul>
+<li>sugerir</li>
+<li>indicar</li>
+<li>ser compatible con</li>
+<li>resultar plausible</li>
+</ul>
+<p>Este cambio puede parecer pequeño.</p>
+<p>Pero refleja una comprensión mucho más profunda de la incertidumbre.</p>
+</section>
+<section id="visualizando-intervalos-plausibles" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-intervalos-plausibles">Visualizando intervalos plausibles</h2>
+<p>Una excelente práctica consiste en visualizar explícitamente la incertidumbre.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir las simulaciones posteriores del modelo en una matriz</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as.matrix</span>(modelo_profit)[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          parameters
+iterations (Intercept) Discount_c    sigma
+      [1,]    67.14558  -2.397601 229.2090
+      [2,]    66.21268  -2.474628 230.5121
+      [3,]    70.96432  -2.509756 227.4266
+      [4,]    69.02776  -2.362581 227.4321
+      [5,]    68.06122  -2.472203 228.7411
+      [6,]    70.92773  -2.529956 227.0517</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando los intervalos plausibles de la pendiente (descuento)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_intervals</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(modelo_profit),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"Discount_c"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c08_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este gráfico permite observar:</p>
+<ul>
+<li>la posición del parámetro,</li>
+<li>la amplitud de la incertidumbre,</li>
+<li>la variabilidad posterior.</li>
+</ul>
+<p>La incertidumbre deja de ser invisible.</p>
+<p>Ahora puede verse.</p>
+<p><em>Interpretación</em>: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.</p>
+<p>También podemos visualizar el intercepto de esta forma:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los intervalos plausibles y la mediana del intercepto</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (ganancias) y la pendiente (descuento)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_intervals</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(modelo_profit),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"(Intercept)"</span>,<span class="st">"Discount_c"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c08_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="bandas-plausibles-en-una-regresión" class="level2">
+<h2 class="anchored" data-anchor-id="bandas-plausibles-en-una-regresión">Bandas plausibles en una regresión</h2>
+<p>Otra visualización muy poderosa consiste en representar la incertidumbre directamente sobre la recta de regresión.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Representar la incertidumbre directamente sobre la recta de la </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># regresión</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>superstore <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Discount_c, <span class="at">y =</span> Profit)) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"lm"</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c08_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Representar la incertidumbre directamente sobre la recta de la </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># regresión con zoom en el eje Y</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>superstore <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Discount_c, <span class="at">y =</span> Profit)) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"lm"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">500</span>, <span class="dv">500</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c08_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Posteriormente podemos reemplazar la línea clásica por predicciones posteriores provenientes del modelo bayesiano.</p>
+<p>La idea central es que:</p>
+<p><code>no existe una única línea.</code></p>
+<p>Existen muchas líneas plausibles.</p>
+</section>
+<section id="la-incertidumbre-del-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="la-incertidumbre-del-modelo">La incertidumbre del modelo</h2>
+<p>Aquí llegamos a una de las ideas más importantes de todo el libro.</p>
+<p>Incluso si obtenemos:</p>
+<ul>
+<li>miles de observaciones,</li>
+<li>modelos sofisticados,</li>
+<li>computadoras rápidas,</li>
+</ul>
+<p>la incertidumbre nunca desaparece completamente.</p>
+<p>¿Por qué?</p>
+<p>Porque los modelos son simplificaciones.</p>
+<p>Siempre existen:</p>
+<ul>
+<li>variables omitidas,</li>
+<li>factores desconocidos,</li>
+<li>cambios futuros,</li>
+<li>errores de medición,</li>
+<li>fenómenos no observados.</li>
+</ul>
+<p>Por ejemplo:</p>
+<p>La ganancia de una venta probablemente depende de:</p>
+<ul>
+<li>descuentos,</li>
+<li>categoría del producto,</li>
+<li>competencia,</li>
+<li>temporada,</li>
+<li>calidad del servicio,</li>
+<li>logística.</li>
+</ul>
+<p>Nuestro modelo utiliza únicamente una pequeña parte de esa realidad.</p>
+<p>Por eso debemos interpretar cualquier resultado con humildad.</p>
+</section>
+<section id="predicciones-e-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="predicciones-e-incertidumbre">Predicciones e incertidumbre</h2>
+<p>La incertidumbre es todavía mayor cuando intentamos predecir.</p>
+<p>Explicar el pasado suele ser más fácil que anticipar el futuro.</p>
+<p>Por esta razón las predicciones deben presentarse como rangos plausibles y no como números exactos.</p>
+<p>En capítulos posteriores profundizaremos en forecasting probabilístico y escenarios futuros.</p>
+</section>
+<section id="por-qué-esto-mejora-las-decisiones" class="level2">
+<h2 class="anchored" data-anchor-id="por-qué-esto-mejora-las-decisiones">¿Por qué esto mejora las decisiones?</h2>
+<p>Una empresa nunca posee información perfecta.</p>
+<p>Aun así debe decidir.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>cuánto inventario comprar,</li>
+<li>cuánto descuento ofrecer,</li>
+<li>qué campaña lanzar,</li>
+<li>qué clientes retener.</li>
+</ul>
+<p>La alternativa no es:</p>
+<ul>
+<li>decidir con incertidumbre,</li>
+<li>o decidir con certeza.</li>
+</ul>
+<p>La realidad es:</p>
+<ul>
+<li>decidir con incertidumbre explícita,</li>
+<li>o decidir ignorándola.</li>
+</ul>
+<p>La primera opción suele producir decisiones mucho más robustas.</p>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">Reflexión bayesiana</h2>
+<p>Durante mucho tiempo la estadística fue presentada como una búsqueda de respuestas correctas.</p>
+<p>El enfoque bayesiano propone una visión distinta.</p>
+<p>Los modelos no son máquinas de verdad.</p>
+<p>Son herramientas para actualizar creencias frente a nueva evidencia.</p>
+<p>Por eso una distribución posterior no representa ignorancia.</p>
+<p>Representa algo mucho más valioso:</p>
+<p><code>una descripción honesta de lo que sabemos y de lo que todavía no sabemos.</code></p>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Ajusta nuevamente el modelo:</p>
+<p><code>Profit ~ Discount_c</code></p>
+<p>y describe verbalmente la distribución posterior de la pendiente.</p>
+<p>No menciones valores exactos.</p>
+<p>Concéntrate en interpretar plausibilidad.</p>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Obtén un intervalo creíble del 95%.</p>
+<p>Explica su significado utilizando lenguaje natural.</p>
+<p>Evita terminología técnica.</p>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Construye un gráfico de densidad posterior para la pendiente.</p>
+<p>Responde:</p>
+<ul>
+<li>¿La incertidumbre es amplia o estrecha?</li>
+<li>¿Qué podría explicar esa amplitud?</li>
+</ul>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Escribe tres interpretaciones incorrectas y tres interpretaciones correctas de un intervalo creíble.</p>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Reflexiona:</p>
+<p>¿Por qué una empresa podría tomar mejores decisiones cuando reconoce explícitamente la incertidumbre?</p>
+</section>
+<section id="ejercicio-6" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6">Ejercicio 6</h3>
+<p>Identifica al menos tres variables que podrían influir sobre Profit pero que no aparecen en el modelo.</p>
+<p>¿Cómo podría afectar esto la interpretación?</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

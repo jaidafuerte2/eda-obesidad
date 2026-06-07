@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6.- Modelos bayesianos prácticos con rstanarm – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5981b072f0a1484cd41ca480c183b6bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c04.html">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</a></li><li class="breadcrumb-item"><a href="../analysis/c06.html">6.- Modelos bayesianos prácticos con rstanarm</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — APRENDER A VER LA INCERTIDUMBRE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Simulación y mundos posibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidades útiles para tomar decisiones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">6.- Modelos bayesianos prácticos con rstanarm</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Relaciones entre variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción-del-capítulo" id="toc-introducción-del-capítulo" class="nav-link active" data-scroll-target="#introducción-del-capítulo">Introducción del capítulo</a></li>
+  <li><a href="#por-qué-los-modelos-bayesianos-suelen-intimidar" id="toc-por-qué-los-modelos-bayesianos-suelen-intimidar" class="nav-link" data-scroll-target="#por-qué-los-modelos-bayesianos-suelen-intimidar">1. ¿Por qué los modelos bayesianos suelen intimidar?</a></li>
+  <li><a href="#qué-es-rstanarm" id="toc-qué-es-rstanarm" class="nav-link" data-scroll-target="#qué-es-rstanarm">2. ¿Qué es rstanarm?</a>
+  <ul class="collapse">
+  <li><a href="#por-qué-usamos-rstanarm-en-este-libro" id="toc-por-qué-usamos-rstanarm-en-este-libro" class="nav-link" data-scroll-target="#por-qué-usamos-rstanarm-en-este-libro">¿Por qué usamos rstanarm en este libro?</a></li>
+  </ul></li>
+  <li><a href="#pensar-en-modelos-como-múltiples-futuros-plausibles" id="toc-pensar-en-modelos-como-múltiples-futuros-plausibles" class="nav-link" data-scroll-target="#pensar-en-modelos-como-múltiples-futuros-plausibles">3. Pensar en modelos como “múltiples futuros plausibles”</a></li>
+  <li><a href="#contexto-de-negocio-campañas-de-marketing" id="toc-contexto-de-negocio-campañas-de-marketing" class="nav-link" data-scroll-target="#contexto-de-negocio-campañas-de-marketing">4. Contexto de negocio: campañas de marketing</a></li>
+  <li><a href="#preparando-el-entorno-de-trabajo" id="toc-preparando-el-entorno-de-trabajo" class="nav-link" data-scroll-target="#preparando-el-entorno-de-trabajo">5. Preparando el entorno de trabajo</a></li>
+  <li><a href="#un-primer-modelo-bayesiano-sencillo" id="toc-un-primer-modelo-bayesiano-sencillo" class="nav-link" data-scroll-target="#un-primer-modelo-bayesiano-sencillo">6. Un primer modelo bayesiano sencillo</a></li>
+  <li><a href="#la-fórmula-del-modelo" id="toc-la-fórmula-del-modelo" class="nav-link" data-scroll-target="#la-fórmula-del-modelo">7. La fórmula del modelo</a></li>
+  <li><a href="#nuestro-primer-stan_glm" id="toc-nuestro-primer-stan_glm" class="nav-link" data-scroll-target="#nuestro-primer-stan_glm">8. Nuestro primer stan_glm()</a></li>
+  <li><a href="#leyendo-los-resultados-básicos" id="toc-leyendo-los-resultados-básicos" class="nav-link" data-scroll-target="#leyendo-los-resultados-básicos">9. Leyendo los resultados básicos</a></li>
+  <li><a href="#qué-es-una-distribución-posterior" id="toc-qué-es-una-distribución-posterior" class="nav-link" data-scroll-target="#qué-es-una-distribución-posterior">10. ¿Qué es una distribución posterior?</a></li>
+  <li><a href="#visualizando-incertidumbre" id="toc-visualizando-incertidumbre" class="nav-link" data-scroll-target="#visualizando-incertidumbre">11. Visualizando incertidumbre</a></li>
+  <li><a href="#interpretación-intuitiva-del-gráfico" id="toc-interpretación-intuitiva-del-gráfico" class="nav-link" data-scroll-target="#interpretación-intuitiva-del-gráfico">12. Interpretación intuitiva del gráfico</a></li>
+  <li><a href="#intervalos-plausibles" id="toc-intervalos-plausibles" class="nav-link" data-scroll-target="#intervalos-plausibles">13. Intervalos plausibles</a></li>
+  <li><a href="#visualizando-múltiples-escenarios-plausibles" id="toc-visualizando-múltiples-escenarios-plausibles" class="nav-link" data-scroll-target="#visualizando-múltiples-escenarios-plausibles">14. Visualizando múltiples escenarios plausibles</a></li>
+  <li><a href="#reflexión-importante-sobre-incertidumbre" id="toc-reflexión-importante-sobre-incertidumbre" class="nav-link" data-scroll-target="#reflexión-importante-sobre-incertidumbre">15. Reflexión importante sobre incertidumbre</a></li>
+  <li><a href="#posibles-errores-de-interpretación" id="toc-posibles-errores-de-interpretación" class="nav-link" data-scroll-target="#posibles-errores-de-interpretación">16. Posibles errores de interpretación</a>
+  <ul class="collapse">
+  <li><a href="#error-1-pensar-que-el-modelo-descubre-la-verdad" id="toc-error-1-pensar-que-el-modelo-descubre-la-verdad" class="nav-link" data-scroll-target="#error-1-pensar-que-el-modelo-descubre-la-verdad">Error 1: pensar que el modelo “descubre la verdad”</a></li>
+  <li><a href="#error-2-ignorar-incertidumbre" id="toc-error-2-ignorar-incertidumbre" class="nav-link" data-scroll-target="#error-2-ignorar-incertidumbre">Error 2: ignorar incertidumbre</a></li>
+  <li><a href="#error-3-interpretar-probabilidades-como-certezas" id="toc-error-3-interpretar-probabilidades-como-certezas" class="nav-link" data-scroll-target="#error-3-interpretar-probabilidades-como-certezas">Error 3: interpretar probabilidades como certezas</a></li>
+  </ul></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">17. Reflexión bayesiana</a></li>
+  <li><a href="#conexión-con-capítulos-futuros" id="toc-conexión-con-capítulos-futuros" class="nav-link" data-scroll-target="#conexión-con-capítulos-futuros">18. Conexión con capítulos futuros</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">19. Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c04.html">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</a></li><li class="breadcrumb-item"><a href="../analysis/c06.html">6.- Modelos bayesianos prácticos con rstanarm</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">6.- Modelos bayesianos prácticos con rstanarm</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción-del-capítulo" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-del-capítulo">Introducción del capítulo</h2>
+<p>Durante muchos años, los modelos estadísticos tuvieron una reputación intimidante.</p>
+<p>Para muchas personas, escuchar palabras como “modelo bayesiano”, “posterior”, “sampling” o “Stan” produce inmediatamente la sensación de que están entrando en un territorio reservado para matemáticos, ingenieros o especialistas extremadamente técnicos.</p>
+<p>Pero en la práctica moderna, eso ya no es necesariamente cierto.</p>
+<p>Hoy existen herramientas que permiten construir modelos útiles sin necesidad de dominar toda la matemática interna que los hace funcionar. Y eso es precisamente lo que hace tan interesante a rstanarm.</p>
+<p>Este capítulo tiene un objetivo muy específico:</p>
+<p><code>perder el miedo técnico al modelado bayesiano.</code></p>
+<p>No vamos a profundizar en teoría matemática avanzada. No vamos a estudiar algoritmos complejos de optimización. No vamos a aprender Hamiltonian Monte Carlo en detalle.</p>
+<p>En cambio, vamos a enfocarnos en algo mucho más importante para este libro:</p>
+<ul>
+<li>interpretar incertidumbre,</li>
+<li>pensar probabilísticamente,</li>
+<li>y usar modelos como herramientas para explorar escenarios plausibles.</li>
+</ul>
+<p>La idea central de este capítulo es sencilla pero profunda:</p>
+<p><code>Un modelo bayesiano no produce una única respuesta definitiva.</code></p>
+<p><code>Produce muchos mundos plausibles compatibles con los datos</code></p>
+<p>Y eso cambia completamente la manera de pensar el análisis de datos.</p>
+</section>
+<section id="por-qué-los-modelos-bayesianos-suelen-intimidar" class="level2">
+<h2 class="anchored" data-anchor-id="por-qué-los-modelos-bayesianos-suelen-intimidar">1. ¿Por qué los modelos bayesianos suelen intimidar?</h2>
+<p>Gran parte de la estadística tradicional fue enseñada durante décadas como una colección de fórmulas, pruebas de hipótesis y reglas rígidas.</p>
+<p>Muchas personas aprendieron que hacer estadística significaba:</p>
+<ul>
+<li>memorizar ecuaciones,</li>
+<li>calcular valores críticos,</li>
+<li>o interpretar p-values.</li>
+</ul>
+<p>El problema es que ese enfoque suele ocultar la parte más humana e intuitiva del análisis:</p>
+<p>la incertidumbre.</p>
+<p>En el mundo real:</p>
+<ul>
+<li>nunca tenemos información perfecta,</li>
+<li>los datos son incompletos,</li>
+<li>las personas cambian,</li>
+<li>los mercados fluctúan,</li>
+<li>y el futuro jamás está completamente determinado.</li>
+</ul>
+<p>Por eso el enfoque bayesiano resulta tan natural.</p>
+<p>En lugar de fingir certeza absoluta, los modelos bayesianos trabajan explícitamente con incertidumbre.</p>
+<p>No preguntan:</p>
+<p><code>“¿Cuál es la única respuesta correcta?”</code></p>
+<p>Preguntan:</p>
+<p><code>“¿Qué escenarios parecen plausibles dados los datos disponibles?”</code></p>
+<p>Ese cambio filosófico es enorme.</p>
+</section>
+<section id="qué-es-rstanarm" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-rstanarm">2. ¿Qué es rstanarm?</h2>
+<p>rstanarm es una librería de R diseñada para construir modelos bayesianos de manera relativamente simple.</p>
+<p>Internamente utiliza Stan, uno de los motores bayesianos más potentes y modernos disponibles actualmente. Pero una de las grandes ventajas pedagógicas de rstanarm es que nos permite usar modelos sofisticados sin tener que programar Stan directamente.</p>
+<p>En otras palabras:</p>
+<ul>
+<li>Stan hace el trabajo computacional complejo,</li>
+<li>mientras nosotros nos enfocamos en interpretar resultados.</li>
+</ul>
+<p>Eso encaja perfectamente con la filosofía de este libro.</p>
+<section id="por-qué-usamos-rstanarm-en-este-libro" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-usamos-rstanarm-en-este-libro">¿Por qué usamos rstanarm en este libro?</h3>
+<p>Porque es:</p>
+<ul>
+<li>moderno,</li>
+<li>relativamente simple,</li>
+<li>compatible con tidyverse,</li>
+<li>razonablemente rápido,</li>
+<li>y excelente para aprendizaje práctico.</li>
+</ul>
+<p>Además, funciona bastante bien en entornos modestos como Posit Cloud Free cuando usamos modelos pequeños y pedagógicos.</p>
+</section>
+</section>
+<section id="pensar-en-modelos-como-múltiples-futuros-plausibles" class="level2">
+<h2 class="anchored" data-anchor-id="pensar-en-modelos-como-múltiples-futuros-plausibles">3. Pensar en modelos como “múltiples futuros plausibles”</h2>
+<p>Imagina que una empresa ejecuta una campaña de marketing.</p>
+<p>Después de analizar los datos, queremos entender preguntas como:</p>
+<ul>
+<li>¿las personas con mayores ingresos aceptan más campañas?</li>
+<li>¿el gasto total influye en la respuesta?</li>
+<li>¿la edad cambia las probabilidades de conversión?</li>
+</ul>
+<p>Un enfoque clásico podría intentar producir:</p>
+<ul>
+<li>un único coeficiente,</li>
+<li>una única línea,</li>
+<li>o una única predicción.</li>
+</ul>
+<p>El enfoque bayesiano piensa diferente.</p>
+<p>En lugar de una sola realidad exacta, el modelo genera:</p>
+<ul>
+<li>muchas versiones plausibles del mundo,</li>
+<li>muchas líneas posibles,</li>
+<li>muchos parámetros razonables compatibles con los datos.</li>
+</ul>
+<p>Es como observar múltiples mapas incompletos del mismo territorio.</p>
+<p>Ninguno es perfecto. Pero juntos nos ayudan a entender mejor la incertidumbre.</p>
+</section>
+<section id="contexto-de-negocio-campañas-de-marketing" class="level2">
+<h2 class="anchored" data-anchor-id="contexto-de-negocio-campañas-de-marketing">4. Contexto de negocio: campañas de marketing</h2>
+<p>Antes de construir modelos, necesitamos entender el problema empresarial.</p>
+<p>El dataset de este capítulo corresponde a campañas de marketing.</p>
+<p>Una campaña de marketing es un intento organizado de persuadir clientes para que realicen una acción específica, por ejemplo:</p>
+<ul>
+<li>comprar un producto,</li>
+<li>aceptar una oferta,</li>
+<li>responder una promoción,</li>
+<li>o suscribirse a un servicio.</li>
+</ul>
+<p>En analytics, una de las preguntas más importantes es:</p>
+<p><code>¿Qué características parecen asociarse con una mayor probabilidad de respuesta?</code></p>
+<p>Eso permite:</p>
+<ul>
+<li>segmentar clientes,</li>
+<li>personalizar campañas,</li>
+<li>reducir costos,</li>
+<li>y tomar mejores decisiones comerciales.</li>
+</ul>
+<p>Pero aquí aparece algo importante:</p>
+<p>nunca podremos predecir el comportamiento humano con certeza absoluta.</p>
+<p>Por eso necesitamos modelos probabilísticos.</p>
+</section>
+<section id="preparando-el-entorno-de-trabajo" class="level2">
+<h2 class="anchored" data-anchor-id="preparando-el-entorno-de-trabajo">5. Preparando el entorno de trabajo</h2>
+<p>Primero cargamos las librerías principales.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>) <span class="co"># desactivar la notación científica</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(posterior)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Ahora cargamos el dataset</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cargar la dataset de marketing</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>marketing <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"../data/marketing_campaign.csv"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">delim =</span> <span class="st">";"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#guess_max = 10000,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#show_col_types = FALSE</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Antes de modelar, siempre conviene explorar un poco los datos</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(marketing) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,240
+Columns: 29
+$ ID                  &lt;dbl&gt; 5524, 2174, 4141, 6182, 5324, 7446, 965, 6177, 485…
+$ Year_Birth          &lt;dbl&gt; 1957, 1954, 1965, 1984, 1981, 1967, 1971, 1985, 19…
+$ Education           &lt;chr&gt; "Graduation", "Graduation", "Graduation", "Graduat…
+$ Marital_Status      &lt;chr&gt; "Single", "Single", "Together", "Together", "Marri…
+$ Income              &lt;dbl&gt; 58138, 46344, 71613, 26646, 58293, 62513, 55635, 3…
+$ Kidhome             &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,…
+$ Teenhome            &lt;dbl&gt; 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1,…
+$ Dt_Customer         &lt;date&gt; 2012-09-04, 2014-03-08, 2013-08-21, 2014-02-10, 2…
+$ Recency             &lt;dbl&gt; 58, 38, 26, 26, 94, 16, 34, 32, 19, 68, 11, 59, 82…
+$ MntWines            &lt;dbl&gt; 635, 11, 426, 11, 173, 520, 235, 76, 14, 28, 5, 6,…
+$ MntFruits           &lt;dbl&gt; 88, 1, 49, 4, 43, 42, 65, 10, 0, 0, 5, 16, 61, 2, …
+$ MntMeatProducts     &lt;dbl&gt; 546, 6, 127, 20, 118, 98, 164, 56, 24, 6, 6, 11, 4…
+$ MntFishProducts     &lt;dbl&gt; 172, 2, 111, 10, 46, 0, 50, 3, 3, 1, 0, 11, 225, 3…
+$ MntSweetProducts    &lt;dbl&gt; 88, 1, 21, 3, 27, 42, 49, 1, 3, 1, 2, 1, 112, 5, 1…
+$ MntGoldProds        &lt;dbl&gt; 88, 6, 42, 5, 15, 14, 27, 23, 2, 13, 1, 16, 30, 14…
+$ NumDealsPurchases   &lt;dbl&gt; 3, 2, 1, 2, 5, 2, 4, 2, 1, 1, 1, 1, 1, 3, 1, 1, 3,…
+$ NumWebPurchases     &lt;dbl&gt; 8, 1, 8, 2, 5, 6, 7, 4, 3, 1, 1, 2, 3, 6, 1, 7, 3,…
+$ NumCatalogPurchases &lt;dbl&gt; 10, 1, 2, 0, 3, 4, 3, 0, 0, 0, 0, 0, 4, 1, 0, 6, 0…
+$ NumStorePurchases   &lt;dbl&gt; 4, 2, 10, 4, 6, 10, 7, 4, 2, 0, 2, 3, 8, 5, 3, 12,…
+$ NumWebVisitsMonth   &lt;dbl&gt; 7, 5, 4, 6, 5, 6, 6, 8, 9, 20, 7, 8, 2, 6, 8, 3, 8…
+$ AcceptedCmp3        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,…
+$ AcceptedCmp4        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ AcceptedCmp5        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ AcceptedCmp1        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…
+$ AcceptedCmp2        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Complain            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Z_CostContact       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…
+$ Z_Revenue           &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11…
+$ Response            &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,…</code></pre>
+</div>
+</div>
+<p>El objetivo no es memorizar todas las variables.</p>
+<p>El objetivo es empezar a familiarizarnos con el “territorio” que vamos a modelar.</p>
+</section>
+<section id="un-primer-modelo-bayesiano-sencillo" class="level2">
+<h2 class="anchored" data-anchor-id="un-primer-modelo-bayesiano-sencillo">6. Un primer modelo bayesiano sencillo</h2>
+<p>Vamos a construir un modelo pequeño y pedagógico.</p>
+<p>Supongamos que queremos explorar si el ingreso anual parece relacionarse con la aceptación de una campaña.</p>
+<p>La idea intuitiva es simple:</p>
+<ul>
+<li>algunas personas tienen más ingresos,</li>
+<li>otras menos,</li>
+<li>y queremos explorar si eso parece cambiar la probabilidad de aceptar una campaña.</li>
+</ul>
+</section>
+<section id="la-fórmula-del-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="la-fórmula-del-modelo">7. La fórmula del modelo</h2>
+<p>Usaremos un modelo logístico sencillo.</p>
+<p>La estructura conceptual es:</p>
+<p><code>P(y=1) = 1 / 1 + e−(β0+β1x)</code></p>
+<p>La interpretación intuitiva es más importante que la ecuación.</p>
+<p>El modelo intenta estimar:</p>
+<ul>
+<li>cómo cambia la probabilidad de respuesta,</li>
+<li>a medida que cambia una variable como ingresos.</li>
+</ul>
+<p>No necesitamos dominar toda la matemática interna.</p>
+<p>Lo importante es entender que:</p>
+<ul>
+<li>el modelo produce probabilidades,</li>
+<li>y además produce incertidumbre alrededor de esas probabilidades.</li>
+</ul>
+</section>
+<section id="nuestro-primer-stan_glm" class="level2">
+<h2 class="anchored" data-anchor-id="nuestro-primer-stan_glm">8. Nuestro primer stan_glm()</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escalar los ingresos para que no salgan los valores de las </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># simulaciones tan pequeñas</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>marketing <span class="ot">&lt;-</span> marketing <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Income_k =</span> Income <span class="sc">/</span> <span class="dv">1000</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Entender como se relaciona Income con Response</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>modelo_ingresos <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  Response <span class="sc">~</span> Income_k,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> marketing,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span> <span class="co"># para ocultar el progreso de la ejecución</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Este bloque puede parecer técnico al inicio, pero realmente tiene pocas piezas importantes.</p>
+<p><code>Response ~ Income</code></p>
+<p>Le dice al modelo:</p>
+<p><em>“Intenta entender cómo Income se relaciona con Response.”</em></p>
+<p><code>family = binomial()</code></p>
+<p>Indica que estamos modelando:</p>
+<ul>
+<li>sí/no,</li>
+<li>respuesta/no respuesta,</li>
+<li>aceptación/no aceptación.</li>
+</ul>
+<p>Es decir:</p>
+<p>una probabilidad.</p>
+<p><code>chains = 2</code></p>
+<p>El modelo hará dos exploraciones independientes del espacio de posibilidades.</p>
+<p>Una analogía útil:</p>
+<p>imagina dos exploradores recorriendo un territorio incierto por caminos distintos.</p>
+<p>Si ambos llegan a conclusiones similares, empezamos a confiar más en que estamos entendiendo el paisaje correctamente.</p>
+<p><code>iter = 1000</code></p>
+<p>Indica cuántas simulaciones realizará el modelo.</p>
+<p>Más iteraciones producen más escenarios plausibles.</p>
+<p>Pero en este libro priorizamos:</p>
+<ul>
+<li>rapidez,</li>
+<li>claridad,</li>
+<li>y compatibilidad con Posit Cloud Free.</li>
+</ul>
+<p>Por eso usaremos configuraciones moderadas.</p>
+</section>
+<section id="leyendo-los-resultados-básicos" class="level2">
+<h2 class="anchored" data-anchor-id="leyendo-los-resultados-básicos">9. Leyendo los resultados básicos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_ingresos) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stan_glm
+ family:       binomial [logit]
+ formula:      Response ~ Income_k
+ observations: 2216
+ predictors:   2
+------
+            Median MAD_SD
+(Intercept) -2.6    0.2  
+Income_k     0.0    0.0  
+
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<p>Aquí aparece algo muy importante.</p>
+<p>El modelo NO devuelve únicamente un número.</p>
+<p>Devuelve:</p>
+<ul>
+<li>estimaciones plausibles,</li>
+<li>incertidumbre,</li>
+<li>rangos,</li>
+<li>y distribuciones posteriores.</li>
+</ul>
+<p>Eso es exactamente lo que hace especial al enfoque bayesiano.</p>
+</section>
+<section id="qué-es-una-distribución-posterior" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-una-distribución-posterior">10. ¿Qué es una distribución posterior?</h2>
+<p>Esta es una de las ideas centrales de todo el libro.</p>
+<p>Después de observar los datos, el modelo genera una distribución de posibilidades plausibles para cada parámetro.</p>
+<p>No dice:</p>
+<p><code>“El coeficiente verdadero es exactamente 0.42.”</code></p>
+<p>Dice algo más honesto:</p>
+<p><code>“Dados los datos, algunos valores parecen más plausibles que otros.”</code></p>
+<p>Eso es una distribución posterior.</p>
+</section>
+<section id="visualizando-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-incertidumbre">11. Visualizando incertidumbre</h2>
+<p>Ahora vamos a hacer visible la incertidumbre.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver las simulaciones posteriores individuales del modelo y </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># convertirlas en un dataframe</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>posterior <span class="ot">&lt;-</span> <span class="fu">as_draws_df</span>(modelo_ingresos)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>posterior[<span class="dv">0</span><span class="sc">:</span><span class="dv">6</span>, ] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A draws_df: 6 iterations, 1 chains, and 2 variables
+  (Intercept) Income_k
+1        -2.7    0.020
+2        -2.6    0.017
+3        -2.7    0.016
+4        -2.6    0.016
+5        -2.5    0.014
+6        -2.5    0.013
+# ... hidden reserved variables {'.chain', '.iteration', '.draw'}</code></pre>
+</div>
+</div>
+<p>Cada fila representa un escenario plausible generado por el modelo. La columna de income_K sugiere que cada 1000 dólares extras de ganancias o Income, aumenta un poco la probabilidad de respuesta a la campaña o Response en casi todos los escenarios. Lo que sugiere que los clientes con mayores ingresos tienden a presentar una probabilidad ligeramente superior de aceptar la campaña</p>
+<p>Ahora podemos visualizar la distribución posterior del coeficiente asociado a Income.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># visualizar la distribución posterior del coeficiente asociado a</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># income. Es decir este gráfico muestra cuánto aumenta la probabilidad</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># de Respuesta o Response cada 1000 dólares extras de ganancia</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>posterior <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Income_k)) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"skyblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución opsterior del efecto de income"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Coeficiente plausible"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Densidad"</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación-intuitiva-del-gráfico" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-intuitiva-del-gráfico">12. Interpretación intuitiva del gráfico</h2>
+<p>Este gráfico es extremadamente importante.</p>
+<p>No representa:</p>
+<ul>
+<li>datos observados directamente,</li>
+<li>ni clientes individuales.</li>
+</ul>
+<p>Representa:</p>
+<ul>
+<li>incertidumbre del modelo.</li>
+</ul>
+<p>Cada punto de la distribución representa un valor plausible para el parámetro.</p>
+<p>Algunas zonas son más plausibles que otras.</p>
+<p>Y eso nos recuerda algo fundamental:</p>
+<p><code>los modelos no eliminan incertidumbre; la hacen visible.</code></p>
+</section>
+<section id="intervalos-plausibles" class="level2">
+<h2 class="anchored" data-anchor-id="intervalos-plausibles">13. Intervalos plausibles</h2>
+<p>Uno de los conceptos más útiles del enfoque bayesiano es el intervalo plausible.</p>
+<p>Podemos calcularlo así:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_ingresos, <span class="at">prob =</span> <span class="fl">0.95</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   2.5%       97.5%
+(Intercept) -2.95246604 -2.27262622
+Income_k     0.01044604  0.02170858</code></pre>
+</div>
+</div>
+<p>La interpretación intuitiva es muchísimo más importante que la técnica.</p>
+<p>NO significa:</p>
+<p><code>“95% de probabilidad frecuentista clásica.”</code></p>
+<p>En lenguaje humano, significa algo parecido a:</p>
+<p><code>“Dados los datos y el modelo, este rango contiene valores muy plausibles para el parámetro.”</code></p>
+<p>Eso resulta extremadamente útil para decisiones reales.</p>
+<p>Porque las decisiones humanas rara vez necesitan certeza absoluta.</p>
+<p>Necesitan:</p>
+<ul>
+<li>rangos razonables,</li>
+<li>escenarios plausibles,</li>
+<li>y comprensión de incertidumbre.</li>
+</ul>
+<p>Estos intervalos posteriores realmente significan: Cada 1000 dólares de mayores ganancias, se asocian con un aumento de probabilidad de respuesta a la publicidad de entre 0.0104 y 0.0217 . También dice el modelo que cuando los ingresos son iguales a cero (algo no imposible pero sí improbable) la probabilidad de una respuesta Response a un campaña publicitaria es entre -2.95 y -2.27 (en la escala interna del modelo log-odds) es decir : <code>1 / (1 + exp(2.6)) = 0.07 +- 7%</code> entre -2.95 (5%) y -2.27 (9%). Es decir para una persona de cero de ingresos la probabilidad de respuesta Response está entre 5% y 9%</p>
+</section>
+<section id="visualizando-múltiples-escenarios-plausibles" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-múltiples-escenarios-plausibles">14. Visualizando múltiples escenarios plausibles</h2>
+<p>Una de las ideas más poderosas del modelado bayesiano es que podemos visualizar múltiples futuros compatibles con los datos.</p>
+<p>Por ejemplo:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tomar todos los escenarios plausibles del modelo y calcular  las </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># predicciones correspondientes.</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>predicciones <span class="ot">&lt;-</span> <span class="fu">posterior_linpred</span>( <span class="co"># posterior_linpred: utiliza </span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                                   <span class="co"># todas las simulaciones generadas</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                                   <span class="co"># por el modelo para calcular </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                                   <span class="co"># predicciones</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  modelo_ingresos,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">transform =</span> <span class="cn">TRUE</span> <span class="co"># no me des log-odds, dame probabilidades</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Ahora podemos visualizar las predicciones o futuros plausibles</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de densidad para Visualizar predicciones (futuros </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plausibles)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">probabilidad =</span> predicciones[<span class="dv">1</span>, ]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> probabilidad)) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"skyblue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c06_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="reflexión-importante-sobre-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-importante-sobre-incertidumbre">15. Reflexión importante sobre incertidumbre</h2>
+<p>En muchos cursos tradicionales, los modelos parecen producir respuestas exactas.</p>
+<p>Pero en la práctica:</p>
+<ul>
+<li>los datos son incompletos,</li>
+<li>las muestras son limitadas,</li>
+<li>y el futuro siempre contiene incertidumbre.</li>
+</ul>
+<p>El enfoque bayesiano no intenta ocultar eso.</p>
+<p>Lo incorpora explícitamente.</p>
+<p>Y esa honestidad probabilística es una de sus mayores fortalezas.</p>
+</section>
+<section id="posibles-errores-de-interpretación" class="level2">
+<h2 class="anchored" data-anchor-id="posibles-errores-de-interpretación">16. Posibles errores de interpretación</h2>
+<section id="error-1-pensar-que-el-modelo-descubre-la-verdad" class="level3">
+<h3 class="anchored" data-anchor-id="error-1-pensar-que-el-modelo-descubre-la-verdad">Error 1: pensar que el modelo “descubre la verdad”</h3>
+<p>Los modelos no descubren verdades absolutas.</p>
+<p>Construyen aproximaciones plausibles.</p>
+</section>
+<section id="error-2-ignorar-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="error-2-ignorar-incertidumbre">Error 2: ignorar incertidumbre</h3>
+<p>Dos coeficientes similares pueden tener incertidumbres muy distintas.</p>
+<p>La incertidumbre importa.</p>
+</section>
+<section id="error-3-interpretar-probabilidades-como-certezas" class="level3">
+<h3 class="anchored" data-anchor-id="error-3-interpretar-probabilidades-como-certezas">Error 3: interpretar probabilidades como certezas</h3>
+<p>Un cliente con probabilidad de respuesta de 70% todavía podría no responder.</p>
+<p>Las probabilidades describen tendencias plausibles, no destinos inevitables.</p>
+</section>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">17. Reflexión bayesiana</h2>
+<p>Este capítulo introduce una idea profundamente humana:</p>
+<p>vivimos tomando decisiones incompletas.</p>
+<ul>
+<li>médicos,</li>
+<li>empresas,</li>
+<li>gobiernos,</li>
+<li>inversores,</li>
+<li>y personas comunes,</li>
+</ul>
+<p>todos actuamos bajo incertidumbre.</p>
+<p>Los modelos bayesianos no eliminan esa incertidumbre.</p>
+<p>Pero pueden ayudarnos a navegarla mejor.</p>
+<p>Y eso cambia la manera de pensar el análisis de datos.</p>
+</section>
+<section id="conexión-con-capítulos-futuros" class="level2">
+<h2 class="anchored" data-anchor-id="conexión-con-capítulos-futuros">18. Conexión con capítulos futuros</h2>
+<p>En este capítulo aprendimos:</p>
+<ul>
+<li>qué es un modelo bayesiano práctico,</li>
+<li>cómo usar stan_glm(),</li>
+<li>cómo interpretar incertidumbre posterior,</li>
+<li>y cómo visualizar escenarios plausibles.</li>
+</ul>
+<p>En los próximos capítulos iremos más lejos.</p>
+<p>Exploraremos:</p>
+<ul>
+<li>relaciones entre variables,</li>
+<li>regresión lineal bayesiana,</li>
+<li>asociaciones comerciales,</li>
+<li>predicción probabilística,</li>
+<li>y forecasting bajo incertidumbre.</li>
+</ul>
+<p>Pero mantendremos siempre la misma filosofía:</p>
+<p><code>los modelos no reemplazan el criterio humano.</code> <code>ayudan a pensar mejor bajo incertidumbre.</code></p>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">19. Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Modifica el número de iteraciones:</p>
+<p><code>iter = 500</code></p>
+<p>y luego:</p>
+<p><code>iter = 2000</code></p>
+<p>Pregunta:</p>
+<ul>
+<li>¿cómo cambia la distribución posterior?</li>
+<li>¿qué diferencias visuales observas?</li>
+</ul>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Construye otro modelo usando:</p>
+<ul>
+<li>Age</li>
+<li>o MntWines</li>
+</ul>
+<p>como predictor.</p>
+<p>Pregunta:</p>
+<ul>
+<li>¿la incertidumbre parece mayor o menor?</li>
+</ul>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Visualiza múltiples escenarios plausibles usando:</p>
+<p><code>posterior_linpred()</code></p>
+<p>Pregunta:</p>
+<ul>
+<li>¿qué transmite visualmente el “abanico” de posibilidades?</li>
+</ul>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Interpreta verbalmente un intervalo plausible.</p>
+<p>Evita lenguaje matemático complejo.</p>
+<p>Intenta explicarlo como si hablaras con:</p>
+<ul>
+<li>un gerente,</li>
+<li>un médico,</li>
+<li>o una persona sin formación estadística.</li>
+</ul>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Reflexión conceptual:</p>
+<p>¿Por qué podría ser peligroso tomar decisiones empresariales ignorando incertidumbre?</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://bsky.app/">
+      <i class="bi bi-bluesky" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright, David Villafuerte MD.</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

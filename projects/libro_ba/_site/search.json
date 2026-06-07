@@ -1205,5 +1205,790 @@
       "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
       "5.- Probabilidades útiles para tomar decisiones"
     ]
+  },
+  {
+    "objectID": "analysis/c06.html",
+    "href": "analysis/c06.html",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "",
+    "text": "Durante muchos años, los modelos estadísticos tuvieron una reputación intimidante.\nPara muchas personas, escuchar palabras como “modelo bayesiano”, “posterior”, “sampling” o “Stan” produce inmediatamente la sensación de que están entrando en un territorio reservado para matemáticos, ingenieros o especialistas extremadamente técnicos.\nPero en la práctica moderna, eso ya no es necesariamente cierto.\nHoy existen herramientas que permiten construir modelos útiles sin necesidad de dominar toda la matemática interna que los hace funcionar. Y eso es precisamente lo que hace tan interesante a rstanarm.\nEste capítulo tiene un objetivo muy específico:\nperder el miedo técnico al modelado bayesiano.\nNo vamos a profundizar en teoría matemática avanzada. No vamos a estudiar algoritmos complejos de optimización. No vamos a aprender Hamiltonian Monte Carlo en detalle.\nEn cambio, vamos a enfocarnos en algo mucho más importante para este libro:\n\ninterpretar incertidumbre,\npensar probabilísticamente,\ny usar modelos como herramientas para explorar escenarios plausibles.\n\nLa idea central de este capítulo es sencilla pero profunda:\nUn modelo bayesiano no produce una única respuesta definitiva.\nProduce muchos mundos plausibles compatibles con los datos\nY eso cambia completamente la manera de pensar el análisis de datos.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#introducción-del-capítulo",
+    "href": "analysis/c06.html#introducción-del-capítulo",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "",
+    "text": "Durante muchos años, los modelos estadísticos tuvieron una reputación intimidante.\nPara muchas personas, escuchar palabras como “modelo bayesiano”, “posterior”, “sampling” o “Stan” produce inmediatamente la sensación de que están entrando en un territorio reservado para matemáticos, ingenieros o especialistas extremadamente técnicos.\nPero en la práctica moderna, eso ya no es necesariamente cierto.\nHoy existen herramientas que permiten construir modelos útiles sin necesidad de dominar toda la matemática interna que los hace funcionar. Y eso es precisamente lo que hace tan interesante a rstanarm.\nEste capítulo tiene un objetivo muy específico:\nperder el miedo técnico al modelado bayesiano.\nNo vamos a profundizar en teoría matemática avanzada. No vamos a estudiar algoritmos complejos de optimización. No vamos a aprender Hamiltonian Monte Carlo en detalle.\nEn cambio, vamos a enfocarnos en algo mucho más importante para este libro:\n\ninterpretar incertidumbre,\npensar probabilísticamente,\ny usar modelos como herramientas para explorar escenarios plausibles.\n\nLa idea central de este capítulo es sencilla pero profunda:\nUn modelo bayesiano no produce una única respuesta definitiva.\nProduce muchos mundos plausibles compatibles con los datos\nY eso cambia completamente la manera de pensar el análisis de datos.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#por-qué-los-modelos-bayesianos-suelen-intimidar",
+    "href": "analysis/c06.html#por-qué-los-modelos-bayesianos-suelen-intimidar",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "1. ¿Por qué los modelos bayesianos suelen intimidar?",
+    "text": "1. ¿Por qué los modelos bayesianos suelen intimidar?\nGran parte de la estadística tradicional fue enseñada durante décadas como una colección de fórmulas, pruebas de hipótesis y reglas rígidas.\nMuchas personas aprendieron que hacer estadística significaba:\n\nmemorizar ecuaciones,\ncalcular valores críticos,\no interpretar p-values.\n\nEl problema es que ese enfoque suele ocultar la parte más humana e intuitiva del análisis:\nla incertidumbre.\nEn el mundo real:\n\nnunca tenemos información perfecta,\nlos datos son incompletos,\nlas personas cambian,\nlos mercados fluctúan,\ny el futuro jamás está completamente determinado.\n\nPor eso el enfoque bayesiano resulta tan natural.\nEn lugar de fingir certeza absoluta, los modelos bayesianos trabajan explícitamente con incertidumbre.\nNo preguntan:\n“¿Cuál es la única respuesta correcta?”\nPreguntan:\n“¿Qué escenarios parecen plausibles dados los datos disponibles?”\nEse cambio filosófico es enorme.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#qué-es-rstanarm",
+    "href": "analysis/c06.html#qué-es-rstanarm",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "2. ¿Qué es rstanarm?",
+    "text": "2. ¿Qué es rstanarm?\nrstanarm es una librería de R diseñada para construir modelos bayesianos de manera relativamente simple.\nInternamente utiliza Stan, uno de los motores bayesianos más potentes y modernos disponibles actualmente. Pero una de las grandes ventajas pedagógicas de rstanarm es que nos permite usar modelos sofisticados sin tener que programar Stan directamente.\nEn otras palabras:\n\nStan hace el trabajo computacional complejo,\nmientras nosotros nos enfocamos en interpretar resultados.\n\nEso encaja perfectamente con la filosofía de este libro.\n\n¿Por qué usamos rstanarm en este libro?\nPorque es:\n\nmoderno,\nrelativamente simple,\ncompatible con tidyverse,\nrazonablemente rápido,\ny excelente para aprendizaje práctico.\n\nAdemás, funciona bastante bien en entornos modestos como Posit Cloud Free cuando usamos modelos pequeños y pedagógicos.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#pensar-en-modelos-como-múltiples-futuros-plausibles",
+    "href": "analysis/c06.html#pensar-en-modelos-como-múltiples-futuros-plausibles",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "3. Pensar en modelos como “múltiples futuros plausibles”",
+    "text": "3. Pensar en modelos como “múltiples futuros plausibles”\nImagina que una empresa ejecuta una campaña de marketing.\nDespués de analizar los datos, queremos entender preguntas como:\n\n¿las personas con mayores ingresos aceptan más campañas?\n¿el gasto total influye en la respuesta?\n¿la edad cambia las probabilidades de conversión?\n\nUn enfoque clásico podría intentar producir:\n\nun único coeficiente,\nuna única línea,\no una única predicción.\n\nEl enfoque bayesiano piensa diferente.\nEn lugar de una sola realidad exacta, el modelo genera:\n\nmuchas versiones plausibles del mundo,\nmuchas líneas posibles,\nmuchos parámetros razonables compatibles con los datos.\n\nEs como observar múltiples mapas incompletos del mismo territorio.\nNinguno es perfecto. Pero juntos nos ayudan a entender mejor la incertidumbre.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#contexto-de-negocio-campañas-de-marketing",
+    "href": "analysis/c06.html#contexto-de-negocio-campañas-de-marketing",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "4. Contexto de negocio: campañas de marketing",
+    "text": "4. Contexto de negocio: campañas de marketing\nAntes de construir modelos, necesitamos entender el problema empresarial.\nEl dataset de este capítulo corresponde a campañas de marketing.\nUna campaña de marketing es un intento organizado de persuadir clientes para que realicen una acción específica, por ejemplo:\n\ncomprar un producto,\naceptar una oferta,\nresponder una promoción,\no suscribirse a un servicio.\n\nEn analytics, una de las preguntas más importantes es:\n¿Qué características parecen asociarse con una mayor probabilidad de respuesta?\nEso permite:\n\nsegmentar clientes,\npersonalizar campañas,\nreducir costos,\ny tomar mejores decisiones comerciales.\n\nPero aquí aparece algo importante:\nnunca podremos predecir el comportamiento humano con certeza absoluta.\nPor eso necesitamos modelos probabilísticos.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#preparando-el-entorno-de-trabajo",
+    "href": "analysis/c06.html#preparando-el-entorno-de-trabajo",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "5. Preparando el entorno de trabajo",
+    "text": "5. Preparando el entorno de trabajo\nPrimero cargamos las librerías principales.\n\noptions(scipen = 999) # desactivar la notación científica\n\nlibrary(tidyverse)\nlibrary(rstanarm)\nlibrary(posterior)\nlibrary(bayesplot)\n\nAhora cargamos el dataset\n\n# Cargar la dataset de marketing\nmarketing &lt;- read_delim(\n  \"../data/marketing_campaign.csv\",\n  delim = \";\"\n  #guess_max = 10000,\n  #show_col_types = FALSE\n)\n\nAntes de modelar, siempre conviene explorar un poco los datos\n\nglimpse(marketing) # produce:\n\nRows: 2,240\nColumns: 29\n$ ID                  &lt;dbl&gt; 5524, 2174, 4141, 6182, 5324, 7446, 965, 6177, 485…\n$ Year_Birth          &lt;dbl&gt; 1957, 1954, 1965, 1984, 1981, 1967, 1971, 1985, 19…\n$ Education           &lt;chr&gt; \"Graduation\", \"Graduation\", \"Graduation\", \"Graduat…\n$ Marital_Status      &lt;chr&gt; \"Single\", \"Single\", \"Together\", \"Together\", \"Marri…\n$ Income              &lt;dbl&gt; 58138, 46344, 71613, 26646, 58293, 62513, 55635, 3…\n$ Kidhome             &lt;dbl&gt; 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,…\n$ Teenhome            &lt;dbl&gt; 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1,…\n$ Dt_Customer         &lt;date&gt; 2012-09-04, 2014-03-08, 2013-08-21, 2014-02-10, 2…\n$ Recency             &lt;dbl&gt; 58, 38, 26, 26, 94, 16, 34, 32, 19, 68, 11, 59, 82…\n$ MntWines            &lt;dbl&gt; 635, 11, 426, 11, 173, 520, 235, 76, 14, 28, 5, 6,…\n$ MntFruits           &lt;dbl&gt; 88, 1, 49, 4, 43, 42, 65, 10, 0, 0, 5, 16, 61, 2, …\n$ MntMeatProducts     &lt;dbl&gt; 546, 6, 127, 20, 118, 98, 164, 56, 24, 6, 6, 11, 4…\n$ MntFishProducts     &lt;dbl&gt; 172, 2, 111, 10, 46, 0, 50, 3, 3, 1, 0, 11, 225, 3…\n$ MntSweetProducts    &lt;dbl&gt; 88, 1, 21, 3, 27, 42, 49, 1, 3, 1, 2, 1, 112, 5, 1…\n$ MntGoldProds        &lt;dbl&gt; 88, 6, 42, 5, 15, 14, 27, 23, 2, 13, 1, 16, 30, 14…\n$ NumDealsPurchases   &lt;dbl&gt; 3, 2, 1, 2, 5, 2, 4, 2, 1, 1, 1, 1, 1, 3, 1, 1, 3,…\n$ NumWebPurchases     &lt;dbl&gt; 8, 1, 8, 2, 5, 6, 7, 4, 3, 1, 1, 2, 3, 6, 1, 7, 3,…\n$ NumCatalogPurchases &lt;dbl&gt; 10, 1, 2, 0, 3, 4, 3, 0, 0, 0, 0, 0, 4, 1, 0, 6, 0…\n$ NumStorePurchases   &lt;dbl&gt; 4, 2, 10, 4, 6, 10, 7, 4, 2, 0, 2, 3, 8, 5, 3, 12,…\n$ NumWebVisitsMonth   &lt;dbl&gt; 7, 5, 4, 6, 5, 6, 6, 8, 9, 20, 7, 8, 2, 6, 8, 3, 8…\n$ AcceptedCmp3        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,…\n$ AcceptedCmp4        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ AcceptedCmp5        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…\n$ AcceptedCmp1        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,…\n$ AcceptedCmp2        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Complain            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Z_CostContact       &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,…\n$ Z_Revenue           &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11…\n$ Response            &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,…\n\n\nEl objetivo no es memorizar todas las variables.\nEl objetivo es empezar a familiarizarnos con el “territorio” que vamos a modelar.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#un-primer-modelo-bayesiano-sencillo",
+    "href": "analysis/c06.html#un-primer-modelo-bayesiano-sencillo",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "6. Un primer modelo bayesiano sencillo",
+    "text": "6. Un primer modelo bayesiano sencillo\nVamos a construir un modelo pequeño y pedagógico.\nSupongamos que queremos explorar si el ingreso anual parece relacionarse con la aceptación de una campaña.\nLa idea intuitiva es simple:\n\nalgunas personas tienen más ingresos,\notras menos,\ny queremos explorar si eso parece cambiar la probabilidad de aceptar una campaña.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#la-fórmula-del-modelo",
+    "href": "analysis/c06.html#la-fórmula-del-modelo",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "7. La fórmula del modelo",
+    "text": "7. La fórmula del modelo\nUsaremos un modelo logístico sencillo.\nLa estructura conceptual es:\nP(y=1) = 1 / 1 + e−(β0+β1x)\nLa interpretación intuitiva es más importante que la ecuación.\nEl modelo intenta estimar:\n\ncómo cambia la probabilidad de respuesta,\na medida que cambia una variable como ingresos.\n\nNo necesitamos dominar toda la matemática interna.\nLo importante es entender que:\n\nel modelo produce probabilidades,\ny además produce incertidumbre alrededor de esas probabilidades.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#nuestro-primer-stan_glm",
+    "href": "analysis/c06.html#nuestro-primer-stan_glm",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "8. Nuestro primer stan_glm()",
+    "text": "8. Nuestro primer stan_glm()\n\n# Escalar los ingresos para que no salgan los valores de las \n# simulaciones tan pequeñas\nmarketing &lt;- marketing %&gt;%\n  mutate(\n    Income_k = Income / 1000\n  )\n\n# Entender como se relaciona Income con Response\nmodelo_ingresos &lt;- stan_glm(\n  Response ~ Income_k,\n  data = marketing,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  seed = 1234,\n  refresh = 0 # para ocultar el progreso de la ejecución\n)\n\nEste bloque puede parecer técnico al inicio, pero realmente tiene pocas piezas importantes.\nResponse ~ Income\nLe dice al modelo:\n“Intenta entender cómo Income se relaciona con Response.”\nfamily = binomial()\nIndica que estamos modelando:\n\nsí/no,\nrespuesta/no respuesta,\naceptación/no aceptación.\n\nEs decir:\nuna probabilidad.\nchains = 2\nEl modelo hará dos exploraciones independientes del espacio de posibilidades.\nUna analogía útil:\nimagina dos exploradores recorriendo un territorio incierto por caminos distintos.\nSi ambos llegan a conclusiones similares, empezamos a confiar más en que estamos entendiendo el paisaje correctamente.\niter = 1000\nIndica cuántas simulaciones realizará el modelo.\nMás iteraciones producen más escenarios plausibles.\nPero en este libro priorizamos:\n\nrapidez,\nclaridad,\ny compatibilidad con Posit Cloud Free.\n\nPor eso usaremos configuraciones moderadas.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#leyendo-los-resultados-básicos",
+    "href": "analysis/c06.html#leyendo-los-resultados-básicos",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "9. Leyendo los resultados básicos",
+    "text": "9. Leyendo los resultados básicos\n\nprint(modelo_ingresos) # produce:\n\nstan_glm\n family:       binomial [logit]\n formula:      Response ~ Income_k\n observations: 2216\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) -2.6    0.2  \nIncome_k     0.0    0.0  \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nAquí aparece algo muy importante.\nEl modelo NO devuelve únicamente un número.\nDevuelve:\n\nestimaciones plausibles,\nincertidumbre,\nrangos,\ny distribuciones posteriores.\n\nEso es exactamente lo que hace especial al enfoque bayesiano.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#qué-es-una-distribución-posterior",
+    "href": "analysis/c06.html#qué-es-una-distribución-posterior",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "10. ¿Qué es una distribución posterior?",
+    "text": "10. ¿Qué es una distribución posterior?\nEsta es una de las ideas centrales de todo el libro.\nDespués de observar los datos, el modelo genera una distribución de posibilidades plausibles para cada parámetro.\nNo dice:\n“El coeficiente verdadero es exactamente 0.42.”\nDice algo más honesto:\n“Dados los datos, algunos valores parecen más plausibles que otros.”\nEso es una distribución posterior.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#visualizando-incertidumbre",
+    "href": "analysis/c06.html#visualizando-incertidumbre",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "11. Visualizando incertidumbre",
+    "text": "11. Visualizando incertidumbre\nAhora vamos a hacer visible la incertidumbre.\n\n# Ver las simulaciones posteriores individuales del modelo y \n# convertirlas en un dataframe\nposterior &lt;- as_draws_df(modelo_ingresos)\nposterior[0:6, ] # produce:\n\n# A draws_df: 6 iterations, 1 chains, and 2 variables\n  (Intercept) Income_k\n1        -2.7    0.020\n2        -2.6    0.017\n3        -2.7    0.016\n4        -2.6    0.016\n5        -2.5    0.014\n6        -2.5    0.013\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}\n\n\nCada fila representa un escenario plausible generado por el modelo. La columna de income_K sugiere que cada 1000 dólares extras de ganancias o Income, aumenta un poco la probabilidad de respuesta a la campaña o Response en casi todos los escenarios. Lo que sugiere que los clientes con mayores ingresos tienden a presentar una probabilidad ligeramente superior de aceptar la campaña\nAhora podemos visualizar la distribución posterior del coeficiente asociado a Income.\n\n# visualizar la distribución posterior del coeficiente asociado a\n# income. Es decir este gráfico muestra cuánto aumenta la probabilidad\n# de Respuesta o Response cada 1000 dólares extras de ganancia\nposterior %&gt;%\n  ggplot(aes(x = Income_k)) +\n  geom_density(fill = \"skyblue\", alpha = 0.5) +\n  labs(\n    title = \"Distribución opsterior del efecto de income\",\n    x = \"Coeficiente plausible\",\n    y = \"Densidad\"\n  )",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#interpretación-intuitiva-del-gráfico",
+    "href": "analysis/c06.html#interpretación-intuitiva-del-gráfico",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "12. Interpretación intuitiva del gráfico",
+    "text": "12. Interpretación intuitiva del gráfico\nEste gráfico es extremadamente importante.\nNo representa:\n\ndatos observados directamente,\nni clientes individuales.\n\nRepresenta:\n\nincertidumbre del modelo.\n\nCada punto de la distribución representa un valor plausible para el parámetro.\nAlgunas zonas son más plausibles que otras.\nY eso nos recuerda algo fundamental:\nlos modelos no eliminan incertidumbre; la hacen visible.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#intervalos-plausibles",
+    "href": "analysis/c06.html#intervalos-plausibles",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "13. Intervalos plausibles",
+    "text": "13. Intervalos plausibles\nUno de los conceptos más útiles del enfoque bayesiano es el intervalo plausible.\nPodemos calcularlo así:\n\nposterior_interval(modelo_ingresos, prob = 0.95) # produce:\n\n                   2.5%       97.5%\n(Intercept) -2.95246604 -2.27262622\nIncome_k     0.01044604  0.02170858\n\n\nLa interpretación intuitiva es muchísimo más importante que la técnica.\nNO significa:\n“95% de probabilidad frecuentista clásica.”\nEn lenguaje humano, significa algo parecido a:\n“Dados los datos y el modelo, este rango contiene valores muy plausibles para el parámetro.”\nEso resulta extremadamente útil para decisiones reales.\nPorque las decisiones humanas rara vez necesitan certeza absoluta.\nNecesitan:\n\nrangos razonables,\nescenarios plausibles,\ny comprensión de incertidumbre.\n\nEstos intervalos posteriores realmente significan: Cada 1000 dólares de mayores ganancias, se asocian con un aumento de probabilidad de respuesta a la publicidad de entre 0.0104 y 0.0217 . También dice el modelo que cuando los ingresos son iguales a cero (algo no imposible pero sí improbable) la probabilidad de una respuesta Response a un campaña publicitaria es entre -2.95 y -2.27 (en la escala interna del modelo log-odds) es decir : 1 / (1 + exp(2.6)) = 0.07 +- 7% entre -2.95 (5%) y -2.27 (9%). Es decir para una persona de cero de ingresos la probabilidad de respuesta Response está entre 5% y 9%",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#visualizando-múltiples-escenarios-plausibles",
+    "href": "analysis/c06.html#visualizando-múltiples-escenarios-plausibles",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "14. Visualizando múltiples escenarios plausibles",
+    "text": "14. Visualizando múltiples escenarios plausibles\nUna de las ideas más poderosas del modelado bayesiano es que podemos visualizar múltiples futuros compatibles con los datos.\nPor ejemplo:\n\n# Tomar todos los escenarios plausibles del modelo y calcular  las \n# predicciones correspondientes.\npredicciones &lt;- posterior_linpred( # posterior_linpred: utiliza \n                                   # todas las simulaciones generadas\n                                   # por el modelo para calcular \n                                   # predicciones\n  modelo_ingresos,\n  transform = TRUE # no me des log-odds, dame probabilidades\n) # produce:\n\nAhora podemos visualizar las predicciones o futuros plausibles\n\n# Diagrama de densidad para Visualizar predicciones (futuros \n# plausibles)\ntibble(\n  probabilidad = predicciones[1, ]\n) %&gt;%\n  ggplot(aes(x = probabilidad)) +\n  geom_density(fill = \"skyblue\")",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#reflexión-importante-sobre-incertidumbre",
+    "href": "analysis/c06.html#reflexión-importante-sobre-incertidumbre",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "15. Reflexión importante sobre incertidumbre",
+    "text": "15. Reflexión importante sobre incertidumbre\nEn muchos cursos tradicionales, los modelos parecen producir respuestas exactas.\nPero en la práctica:\n\nlos datos son incompletos,\nlas muestras son limitadas,\ny el futuro siempre contiene incertidumbre.\n\nEl enfoque bayesiano no intenta ocultar eso.\nLo incorpora explícitamente.\nY esa honestidad probabilística es una de sus mayores fortalezas.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#posibles-errores-de-interpretación",
+    "href": "analysis/c06.html#posibles-errores-de-interpretación",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "16. Posibles errores de interpretación",
+    "text": "16. Posibles errores de interpretación\n\nError 1: pensar que el modelo “descubre la verdad”\nLos modelos no descubren verdades absolutas.\nConstruyen aproximaciones plausibles.\n\n\nError 2: ignorar incertidumbre\nDos coeficientes similares pueden tener incertidumbres muy distintas.\nLa incertidumbre importa.\n\n\nError 3: interpretar probabilidades como certezas\nUn cliente con probabilidad de respuesta de 70% todavía podría no responder.\nLas probabilidades describen tendencias plausibles, no destinos inevitables.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#reflexión-bayesiana",
+    "href": "analysis/c06.html#reflexión-bayesiana",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "17. Reflexión bayesiana",
+    "text": "17. Reflexión bayesiana\nEste capítulo introduce una idea profundamente humana:\nvivimos tomando decisiones incompletas.\n\nmédicos,\nempresas,\ngobiernos,\ninversores,\ny personas comunes,\n\ntodos actuamos bajo incertidumbre.\nLos modelos bayesianos no eliminan esa incertidumbre.\nPero pueden ayudarnos a navegarla mejor.\nY eso cambia la manera de pensar el análisis de datos.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#conexión-con-capítulos-futuros",
+    "href": "analysis/c06.html#conexión-con-capítulos-futuros",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "18. Conexión con capítulos futuros",
+    "text": "18. Conexión con capítulos futuros\nEn este capítulo aprendimos:\n\nqué es un modelo bayesiano práctico,\ncómo usar stan_glm(),\ncómo interpretar incertidumbre posterior,\ny cómo visualizar escenarios plausibles.\n\nEn los próximos capítulos iremos más lejos.\nExploraremos:\n\nrelaciones entre variables,\nregresión lineal bayesiana,\nasociaciones comerciales,\npredicción probabilística,\ny forecasting bajo incertidumbre.\n\nPero mantendremos siempre la misma filosofía:\nlos modelos no reemplazan el criterio humano. ayudan a pensar mejor bajo incertidumbre.",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c06.html#ejercicios",
+    "href": "analysis/c06.html#ejercicios",
+    "title": "6.- Modelos bayesianos prácticos con rstanarm",
+    "section": "19. Ejercicios",
+    "text": "19. Ejercicios\n\nEjercicio 1\nModifica el número de iteraciones:\niter = 500\ny luego:\niter = 2000\nPregunta:\n\n¿cómo cambia la distribución posterior?\n¿qué diferencias visuales observas?\n\n\n\nEjercicio 2\nConstruye otro modelo usando:\n\nAge\no MntWines\n\ncomo predictor.\nPregunta:\n\n¿la incertidumbre parece mayor o menor?\n\n\n\nEjercicio 3\nVisualiza múltiples escenarios plausibles usando:\nposterior_linpred()\nPregunta:\n\n¿qué transmite visualmente el “abanico” de posibilidades?\n\n\n\nEjercicio 4\nInterpreta verbalmente un intervalo plausible.\nEvita lenguaje matemático complejo.\nIntenta explicarlo como si hablaras con:\n\nun gerente,\nun médico,\no una persona sin formación estadística.\n\n\n\nEjercicio 5\nReflexión conceptual:\n¿Por qué podría ser peligroso tomar decisiones empresariales ignorando incertidumbre?",
+    "crumbs": [
+      "PARTE II — APRENDER A PENSAR BAYESIANAMENTE",
+      "6.- Modelos bayesianos prácticos con rstanarm"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html",
+    "href": "analysis/c07.html",
+    "title": "7.- Relaciones entre variables",
+    "section": "",
+    "text": "Hasta ahora hemos visto que los datos contienen variabilidad.\nLas ventas cambian.\nLos clientes se comportan de manera diferente.\nLos resultados de una campaña nunca son exactamente iguales.\nLa incertidumbre aparece en todas partes.\nSin embargo, las empresas necesitan tomar decisiones.\nY para tomar decisiones suelen hacerse preguntas como:\n\n¿Los descuentos aumentan las ventas?\n¿Los descuentos reducen las ganancias?\n¿Los pedidos grandes generan más beneficio?\n¿Existe alguna relación entre ventas y profit?\n\nDetrás de todas estas preguntas existe una misma idea:\nbuscar patrones en medio de la incertidumbre.\nPero aquí aparece una realidad importante.\nLos datos reales rara vez siguen líneas perfectas.\nDos pedidos con exactamente el mismo descuento pueden producir resultados completamente distintos.\nDos productos con ventas similares pueden generar ganancias muy diferentes.\nLa realidad está llena de ruido, variabilidad y factores que no observamos.\nPor eso necesitamos herramientas que nos permitan describir tendencias generales sin exigir perfección.\nUna de las herramientas más útiles para hacerlo es la regresión.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#introducción",
+    "href": "analysis/c07.html#introducción",
+    "title": "7.- Relaciones entre variables",
+    "section": "",
+    "text": "Hasta ahora hemos visto que los datos contienen variabilidad.\nLas ventas cambian.\nLos clientes se comportan de manera diferente.\nLos resultados de una campaña nunca son exactamente iguales.\nLa incertidumbre aparece en todas partes.\nSin embargo, las empresas necesitan tomar decisiones.\nY para tomar decisiones suelen hacerse preguntas como:\n\n¿Los descuentos aumentan las ventas?\n¿Los descuentos reducen las ganancias?\n¿Los pedidos grandes generan más beneficio?\n¿Existe alguna relación entre ventas y profit?\n\nDetrás de todas estas preguntas existe una misma idea:\nbuscar patrones en medio de la incertidumbre.\nPero aquí aparece una realidad importante.\nLos datos reales rara vez siguen líneas perfectas.\nDos pedidos con exactamente el mismo descuento pueden producir resultados completamente distintos.\nDos productos con ventas similares pueden generar ganancias muy diferentes.\nLa realidad está llena de ruido, variabilidad y factores que no observamos.\nPor eso necesitamos herramientas que nos permitan describir tendencias generales sin exigir perfección.\nUna de las herramientas más útiles para hacerlo es la regresión.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#qué-intenta-hacer-una-regresión",
+    "href": "analysis/c07.html#qué-intenta-hacer-una-regresión",
+    "title": "7.- Relaciones entre variables",
+    "section": "¿Qué intenta hacer una regresión?",
+    "text": "¿Qué intenta hacer una regresión?\nImagina que observamos cientos o miles de pedidos.\nCada pedido tiene:\n\nuna venta (Sales)\nun descuento (Discount)\nuna ganancia (Profit)\n\nSi colocamos todos esos pedidos en un gráfico veremos una nube de puntos.\nAlgunos puntos estarán arriba.\nOtros abajo.\nAlgunos muy alejados.\nOtros agrupados.\nLa regresión intenta responder una pregunta sencilla:\n¿Existe una dirección general dentro de toda esta dispersión?\nNo intenta encontrar una regla perfecta.\nNo intenta explicar cada observación individual.\nBusca identificar una tendencia promedio.\nPodemos pensar en ella como una línea que intenta atravesar una nube de puntos capturando el patrón general.\nPor eso la regresión es una herramienta para pensar.\nNo una máquina de certezas.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#contexto-de-negocio",
+    "href": "analysis/c07.html#contexto-de-negocio",
+    "title": "7.- Relaciones entre variables",
+    "section": "Contexto de negocio",
+    "text": "Contexto de negocio\nAntes de analizar relaciones, conviene entender algunos conceptos empresariales.\n\n¿Por qué las empresas ofrecen descuentos?\nUn descuento reduce temporalmente el precio de un producto.\nLas empresas suelen utilizar descuentos para:\n\naumentar ventas\nliquidar inventario\natraer nuevos clientes\nresponder a la competencia\n\nA primera vista parece una excelente idea.\nSi el precio baja, más personas podrían comprar.\nPero existe una pregunta importante:\n¿vender más significa necesariamente ganar más?\nNo siempre.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#ventas-versus-ganancias",
+    "href": "analysis/c07.html#ventas-versus-ganancias",
+    "title": "7.- Relaciones entre variables",
+    "section": "Ventas versus ganancias",
+    "text": "Ventas versus ganancias\nMuchos principiantes confunden estos conceptos.\n\nSales\nRepresenta el valor vendido.\nEs el dinero que entra por una transacción.\n\n\nProfit\nRepresenta la ganancia obtenida.\nEs lo que queda después de considerar costos.\nUna empresa puede aumentar ventas y simultáneamente reducir ganancias.\nPor ejemplo:\n\nvender más unidades\naplicar descuentos agresivos\nreducir márgenes\n\nEste tipo de situaciones genera trade-offs.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#qué-es-un-trade-off",
+    "href": "analysis/c07.html#qué-es-un-trade-off",
+    "title": "7.- Relaciones entre variables",
+    "section": "¿Qué es un trade-off?",
+    "text": "¿Qué es un trade-off?\nUn trade-off aparece cuando mejorar algo implica sacrificar parcialmente otra cosa.\nPor ejemplo:\n\nmás ventas\nmenos margen\n\no\n\nmenos ventas\nmayor rentabilidad\n\nLos negocios reales están llenos de estos equilibrios imperfectos.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#explorando-relaciones-visualmente",
+    "href": "analysis/c07.html#explorando-relaciones-visualmente",
+    "title": "7.- Relaciones entre variables",
+    "section": "Explorando relaciones visualmente",
+    "text": "Explorando relaciones visualmente\nAntes de construir modelos siempre debemos mirar los datos.\nLos gráficos suelen revelar patrones que las tablas no muestran.\n\nDiscount vs Sales\n\n# Diagrama de dispersión que relaciona las ventas con los descuentos\nsuperstore %&gt;%\n  ggplot(\n    aes(\n      x = Discount_c,\n      y = Sales\n    )\n  ) +\n  geom_point(alpha = 0.3) +\n  geom_smooth(\n    method = \"lm\",\n    se = TRUE\n  ) +\n  #coord_cartesian(ylim = c(0, 1000)) +\n  labs(\n    title = \"Descuento y ventas\",\n    x = \"Discount\",\n    y = \"Sales\"\n  )\n\n\n\n\n\n\n\n\n\n# Diagrama de dispersión que relaciona las ventas con los descuentos\n# con zoom en el eje Y\nsuperstore %&gt;%\n  ggplot(\n    aes(\n      x = Discount_c,\n      y = Sales\n    )\n  ) +\n  geom_point(alpha = 0.3) +\n  geom_smooth(\n    method = \"lm\",\n    se = TRUE\n  ) +\n  coord_cartesian(ylim = c(0, 1000)) +\n  labs(\n    title = \"Descuento y ventas\",\n    x = \"Discount\",\n    y = \"Sales\"\n  )\n\n\n\n\n\n\n\n\nQué observar\n\n¿Existe una tendencia visible?\n¿La dispersión es grande?\n¿Los descuentos altos producen siempre ventas altas?\n\nProbablemente observarás algo importante:\nexiste muchísimo ruido.\nIncluso con descuentos similares las ventas pueden variar enormemente.\n\n\nDiscount versus Profit\nEsta relación suele ser una de las más interesantes del dataset.\n\n# Diagrama de dispersión que relaciona el descuento vs las ganancias\nsuperstore %&gt;%\n  ggplot(\n    aes(x = Discount_c, y = Profit)\n  ) +\n  geom_point(alpha = 0.3) +\n  geom_smooth(\n    method = lm,\n    se = TRUE\n  ) +\n  labs(\n    title = \"Descuento vs Ganancias\"\n  )\n\n\n\n\n\n\n\n\n\n# Diagrama de dispersión que relaciona el descuento vs las ganancias\n# con zoom en el eje de las Y\nsuperstore %&gt;%\n  ggplot(\n    aes(x = Discount_c, y = Profit)\n  ) +\n  geom_point(alpha = 0.3) +\n  geom_smooth(\n    method = lm,\n    se = TRUE\n  ) +\n  coord_cartesian(ylim = c(-200, 200)) +\n  labs(\n    title = \"Descuento vs Ganancias\"\n  )\n\n\n\n\n\n\n\n\nInterpretación intuitiva\nAquí suele aparecer una tendencia negativa.\nNo significa que cada descuento produzca pérdidas.\nSignifica algo más sutil:\na medida que aumentan los descuentos, las ganancias tienden a disminuir en promedio.\nObserva la palabra clave:\ntienden.\nNo:\n\nsiempre\nnecesariamente\ninevitablemente\n\n\n\nSales versus Profit\n\n# Diagrama de dispersión y tendencia de las ventas vs las ganacias \nsuperstore %&gt;%\n  ggplot(aes(x = Sales, y = Profit)) +\n  geom_point(alpha = 0.3) +\n  geom_smooth(\n    method = \"lm\",\n    se = TRUE\n  ) +\n  labs(\n    title = \"Ventas vs Gananvias\"\n  )\n\n\n\n\n\n\n\n\nAquí suele aparecer una asociación positiva.\nPero tampoco perfecta.\nAlgunos pedidos generan:\n\nmuchas ventas\npoca ganancia\n\nOtros generan:\n\nventas moderadas\nganancias elevadas\n\nLa realidad rara vez es lineal y limpia.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#introducción-suave-a-la-ecuación-de-regresión",
+    "href": "analysis/c07.html#introducción-suave-a-la-ecuación-de-regresión",
+    "title": "7.- Relaciones entre variables",
+    "section": "Introducción suave a la ecuación de regresión",
+    "text": "Introducción suave a la ecuación de regresión\nAhora sí podemos introducir la ecuación.\ny = β0 + β1x + ϵ\nNo te preocupes por la notación.\nLa idea es mucho más sencilla de lo que parece.\n\nIntercepto (β₀)\nEs el punto de partida aproximado.\nRepresenta el valor esperado de la variable respuesta cuando x vale cero.\n\n\nPendiente (β₁)\nDescribe cuánto cambia, en promedio, la variable respuesta cuando cambia la variable explicativa.\nEs la parte más interesante del modelo.\nNos habla de la dirección de la relación.\n\n\nError (ε)\nRepresenta todo aquello que el modelo no puede explicar.\nY eso es normal.\nLos datos reales contienen:\n\nruido\nvariabilidad\nfactores ocultos\n\nLa existencia del error no es una falla.\nEs una característica natural de la realidad.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#primer-modelo-bayesiano-de-regresión",
+    "href": "analysis/c07.html#primer-modelo-bayesiano-de-regresión",
+    "title": "7.- Relaciones entre variables",
+    "section": "Primer modelo bayesiano de regresión",
+    "text": "Primer modelo bayesiano de regresión\nAhora construiremos un modelo sencillo.\nQueremos estudiar:\n¿Cómo se relaciona el descuento con la ganancia?\n\n# Relacionar el descuento con la ganancia\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  family = gaussian(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\n\nLa fórmula se lee como:\nexplicar Profit utilizando Discount.\nNada más.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#resumen-del-modelo",
+    "href": "analysis/c07.html#resumen-del-modelo",
+    "title": "7.- Relaciones entre variables",
+    "section": "Resumen del modelo",
+    "text": "Resumen del modelo\n\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.5    2.9  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.6    1.7 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nEl resultado mostrará una distribución posterior para cada parámetro.\nLo importante no es encontrar un número exacto.\nLo importante es comprender qué valores parecen plausibles.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#interpretando-pendientes",
+    "href": "analysis/c07.html#interpretando-pendientes",
+    "title": "7.- Relaciones entre variables",
+    "section": "Interpretando pendientes",
+    "text": "Interpretando pendientes\nSupongamos que la pendiente posterior resulta negativa.\nLa interpretación adecuada sería:\n✅ “Los datos sugieren una asociación negativa entre descuento y profit.”\nNo:\n❌ “Los descuentos causan pérdidas.”\nLa diferencia parece pequeña.\nPero conceptualmente es enorme.\nLa primera frase reconoce incertidumbre.\nLa segunda afirma causalidad.\nY todavía no tenemos evidencia suficiente para hacerlo.\nInterpretación: el intercepto dice que cuando el descuento es 0% la ganancia promedio esperada es 67.7 . Discount_c = -2.5 es la pendiente que se interpreta como que por cada 1 punto porcentual adicional de descuento , la ganancia promedio disminuye aproximadamente 2.5 dólares. Sigma nos dice que aunque cada punto porcentual de descuento disminuye 2.5 dólares de ganancias, hay 237 dólares de ganancias que no se pueden explicar por el descuento",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#visualizando-incertidumbre",
+    "href": "analysis/c07.html#visualizando-incertidumbre",
+    "title": "7.- Relaciones entre variables",
+    "section": "Visualizando incertidumbre",
+    "text": "Visualizando incertidumbre\nUno de los mayores beneficios del enfoque bayesiano es que podemos visualizar la incertidumbre directamente.\n\n# Conocer la incertidumbre de la relación del descuento con las\n# ganancias\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n) # produce:\n\n                  2.5%      97.5%\n(Intercept)  61.785321  73.381163\nDiscount_c   -2.714493  -2.262205\nsigma       225.499938 232.171334\n\n\nAquí obtenemos un rango de valores plausibles.\nNo un único número.\nPorque los parámetros también son inciertos.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#distribución-posterior-de-la-pendiente",
+    "href": "analysis/c07.html#distribución-posterior-de-la-pendiente",
+    "title": "7.- Relaciones entre variables",
+    "section": "Distribución posterior de la pendiente",
+    "text": "Distribución posterior de la pendiente\nInterpretación: cada 1% de descuento disminuye las ganancias entre 2.7 y 2.29 dólares. Sin embargo todavía hay entre 225 y 232 dólares de ganancias que no se pueden explicar por los descuentos\n\n# Visualizar la distribución posterior de la pendiente\nposterior::as_draws_df(modelo_profit) %&gt;%\n  ggplot(\n    aes(x = Discount_c)\n  ) +\n  geom_density() +\n  labs(\n    title = \"Distribución posterior de la pendiente\"\n  )\n\n\n\n\n\n\n\n\nAhora podemos visualizar nuestras creencias actualizadas sobre la relación.\nLa pregunta deja de ser:\n¿Cuál es la pendiente?\nY pasa a ser:\n¿Qué pendientes parecen plausibles dados los datos?\nInterpretación: El gráfico de la distribución posterior de la pendiente muestra que en el 95% de valores cada punto porcentual de descuento disminuye las ganancias entre 2.72 y 2.26 dólares con una media de disminución de lasganancias de 2.5 dólares por cada punto porcentual\nEsa es una forma profundamente bayesiana de pensar.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#relación-no-significa-causalidad",
+    "href": "analysis/c07.html#relación-no-significa-causalidad",
+    "title": "7.- Relaciones entre variables",
+    "section": "Relación no significa causalidad",
+    "text": "Relación no significa causalidad\nEsta es una de las ideas más importantes del libro.\nSupongamos que encontramos:\n\ndescuentos altos\nganancias bajas\n\n¿Podemos concluir que los descuentos causan pérdidas?\nNo necesariamente.\nPodrían existir otros factores:\n\ncategoría del producto\nregión\ncompetencia\npromociones simultáneas\nestrategia comercial\n\nLa regresión detecta asociaciones.\nLa causalidad requiere evidencia adicional.\nPor ahora basta con recordar:\nVer una relación no equivale a demostrar una causa.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#reflexión-bayesiana",
+    "href": "analysis/c07.html#reflexión-bayesiana",
+    "title": "7.- Relaciones entre variables",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nLa regresión es una herramienta para resumir patrones.\nNo elimina la incertidumbre.\nLa hace visible.\nCuando observamos una pendiente posterior estamos observando una distribución de posibilidades.\nEso nos obliga a pensar en términos de plausibilidad.\nY ese cambio de mentalidad es uno de los objetivos centrales del análisis bayesiano.\nNo buscamos certezas absolutas.\nBuscamos mejores decisiones.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c07.html#ejercicios",
+    "href": "analysis/c07.html#ejercicios",
+    "title": "7.- Relaciones entre variables",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nConstruya un scatterplot para:\n-Quantity versus Sales\nPreguntas:\n\n¿Existe una tendencia visible?\n¿Es fuerte o débil?\n¿Hay mucha dispersión?\n\n\n\nEjercicio 2\nConstruya un modelo:\nSales ~ Discount\nInterprete la pendiente utilizando lenguaje probabilístico.\n\n\nEjercicio 3\nCompare visualmente:\n\nDiscount vs Sales\nDiscount vs Profit\n\n¿Las relaciones parecen similares?\n¿En qué se diferencian?\n\n\nEjercicio 4\nObtenga el intervalo posterior de la pendiente para:\nProfit ~ Discount\n¿La incertidumbre es grande o pequeña?\n\n\nEjercicio 5\nBusque una relación que le parezca interesante dentro del dataset.\nPor ejemplo:\n\nQuantity vs Profit\nSales vs Quantity\nSales vs Discount\n\nExplique:\n\nqué observa\nqué incertidumbre existe\nqué conclusiones serían razonables\nqué conclusiones serían exageradas",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "7.- Relaciones entre variables"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html",
+    "href": "analysis/c08.html",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "",
+    "text": "Hasta este punto del libro hemos construido simulaciones, explorado distribuciones, ajustado modelos bayesianos sencillos y aprendido a pensar en términos de incertidumbre.\nSin embargo, existe una diferencia enorme entre:\n\nconstruir un modelo,\ny saber interpretarlo correctamente.\n\nDe hecho, en el mundo real la mayoría de los errores analíticos no ocurren porque los modelos sean malos.\nOcurren porque las personas interpretan mal los resultados.\nMuchas veces queremos que los datos nos entreguen una respuesta definitiva:\n\n¿Funcionará la campaña?\n¿Debemos ofrecer descuentos?\n¿Aumentarán las ventas?\n¿Es una buena decisión?\n\nPero los modelos probabilísticos rara vez responden con un sí o un no absoluto.\nLo que hacen es mucho más útil:\nNos ayudan a comprender qué escenarios son más plausibles que otros.\nY eso cambia profundamente nuestra forma de tomar decisiones.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#introducción",
+    "href": "analysis/c08.html#introducción",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "",
+    "text": "Hasta este punto del libro hemos construido simulaciones, explorado distribuciones, ajustado modelos bayesianos sencillos y aprendido a pensar en términos de incertidumbre.\nSin embargo, existe una diferencia enorme entre:\n\nconstruir un modelo,\ny saber interpretarlo correctamente.\n\nDe hecho, en el mundo real la mayoría de los errores analíticos no ocurren porque los modelos sean malos.\nOcurren porque las personas interpretan mal los resultados.\nMuchas veces queremos que los datos nos entreguen una respuesta definitiva:\n\n¿Funcionará la campaña?\n¿Debemos ofrecer descuentos?\n¿Aumentarán las ventas?\n¿Es una buena decisión?\n\nPero los modelos probabilísticos rara vez responden con un sí o un no absoluto.\nLo que hacen es mucho más útil:\nNos ayudan a comprender qué escenarios son más plausibles que otros.\nY eso cambia profundamente nuestra forma de tomar decisiones.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#la-incomodidad-de-la-incertidumbre",
+    "href": "analysis/c08.html#la-incomodidad-de-la-incertidumbre",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "La incomodidad de la incertidumbre",
+    "text": "La incomodidad de la incertidumbre\nLas personas solemos sentirnos cómodas con respuestas definitivas.\nPreferimos escuchar:\n\"Las ventas aumentarán.\"\nen lugar de:\n\"Las ventas probablemente aumentarán, aunque existe incertidumbre.\"\nPreferimos:\n\"Este tratamiento funciona.\"\nen lugar de:\n\"Este tratamiento parece funcionar para muchos pacientes, pero existe variabilidad.\"\nPreferimos:\n\"Este cliente abandonará la empresa.\"\nen lugar de:\n\"Existe una probabilidad elevada de abandono.\"\nSin embargo, el mundo real rara vez ofrece certezas absolutas.\nLos negocios, la medicina, la economía e incluso nuestra vida cotidiana están llenos de incertidumbre.\nLa pregunta no es cómo eliminarla.\nLa pregunta es cómo pensar mejor dentro de ella.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#recordatorio-filosófico-importante",
+    "href": "analysis/c08.html#recordatorio-filosófico-importante",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Recordatorio filosófico importante",
+    "text": "Recordatorio filosófico importante\nEn capítulos anteriores vimos una idea que ahora vuelve a aparecer:\nUn modelo bayesiano no produce una única respuesta.\nProduce una distribución de respuestas plausibles.\nEsta idea es fundamental.\nCuando simulábamos múltiples futuros posibles, observábamos distintos escenarios.\nAlgunos eran más probables.\nOtros menos.\nPero ninguno podía descartarse completamente.\nLos modelos bayesianos funcionan de manera similar.\nNo producen una verdad única.\nProducen una distribución de posibilidades compatibles con los datos.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#qué-es-una-distribución-posterior",
+    "href": "analysis/c08.html#qué-es-una-distribución-posterior",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "¿Qué es una distribución posterior?",
+    "text": "¿Qué es una distribución posterior?\nImaginemos que queremos entender cómo afecta el descuento (Discount) a la ganancia (Profit).\nDespués de observar los datos, el modelo intenta estimar la pendiente de esa relación.\nEn estadística clásica solemos recibir algo parecido a:\nLa pendiente es -85.\nPero un modelo bayesiano responde de forma distinta:\nLa pendiente probablemente está cerca de -85, aunque valores entre -100 y -70 también parecen razonables.\nEn lugar de un único valor obtenemos una distribución completa.\nVisualmente:\n\nalgunas zonas son muy plausibles,\notras menos plausibles,\nalgunas prácticamente incompatibles con los datos.\n\nLa distribución posterior representa precisamente eso:\nNuestra incertidumbre actual después de observar los datos.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#pensar-en-plausibilidad",
+    "href": "analysis/c08.html#pensar-en-plausibilidad",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Pensar en plausibilidad",
+    "text": "Pensar en plausibilidad\nUna forma intuitiva de interpretar una posterior es imaginar un mapa de calor.\nLas zonas más oscuras representan valores más compatibles con los datos.\nLas zonas más claras representan valores menos compatibles.\nNo estamos preguntando:\n¿Cuál es el valor verdadero?\nEstamos preguntando:\n¿Qué valores parecen razonables dada la evidencia disponible?\nEste cambio de perspectiva es una de las mayores ventajas del pensamiento bayesiano.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#un-primer-modelo-para-interpretar",
+    "href": "analysis/c08.html#un-primer-modelo-para-interpretar",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Un primer modelo para interpretar",
+    "text": "Un primer modelo para interpretar\nUtilizaremos una regresión sencilla:\nProfit = β0 + β1​Discount + ϵ\ndonde:\n\nProfit representa la ganancia.\nDiscount representa el descuento aplicado.\nβ₀ representa la ganancia esperada cuando no existe descuento.\nβ₁ representa cómo cambia la ganancia cuando aumentan los - descuentos.\n\nNuestro objetivo no es construir el mejor modelo posible.\nNuestro objetivo es aprender a interpretar incertidumbre.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#ajustando-el-modelo",
+    "href": "analysis/c08.html#ajustando-el-modelo",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Ajustando el modelo",
+    "text": "Ajustando el modelo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.4    3.0  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.5    1.7 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nObserva que utilizamos una configuración ligera.\nNo estamos buscando máxima precisión computacional.\nEstamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.\nInterpretación: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#extrayendo-la-distribución-posterior",
+    "href": "analysis/c08.html#extrayendo-la-distribución-posterior",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Extrayendo la distribución posterior",
+    "text": "Extrayendo la distribución posterior\nAhora convertimos las simulaciones posteriores en un data frame.\n\n# Extraer la distribución posterior \ndraws_profit &lt;- posterior::as_draws_df(modelo_profit) \ndraws_profit[1:6,] # produce:\n\n# A draws_df: 6 iterations, 1 chains, and 3 variables\n  (Intercept) Discount_c sigma\n1          67       -2.4   229\n2          66       -2.5   231\n3          71       -2.5   227\n4          69       -2.4   227\n5          68       -2.5   229\n6          71       -2.5   227\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}\n\n\nCada fila representa un mundo plausible generado por el modelo.\nCada mundo propone un valor ligeramente diferente para los parámetros.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#visualizando-la-incertidumbre",
+    "href": "analysis/c08.html#visualizando-la-incertidumbre",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Visualizando la incertidumbre",
+    "text": "Visualizando la incertidumbre\nPodemos visualizar la distribución posterior de la pendiente.\n\n# Visualizar la incertidumbre\ndraws_profit %&gt;%\n  ggplot(aes(x = Discount_c)) +\n  geom_density(fill = \"steelblue\", alpha = 0.5) +\n  labs(\n    title = \"Distribución posterior de la pendiente\",\n    x = \"Pendiente - Descuento\",\n    y = \"Densidad\"\n  )\n\n\n\n\n\n\n\n\nEste gráfico es extremadamente importante.\nNo muestra un único resultado.\nMuestra una familia completa de resultados plausibles.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#cómo-leer-este-gráfico",
+    "href": "analysis/c08.html#cómo-leer-este-gráfico",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Cómo leer este gráfico",
+    "text": "Cómo leer este gráfico\nSupongamos que la distribución se concentra alrededor de valores negativos.\nLa interpretación correcta sería:\n*Interpretación*: El gráfico muestra que es plausible que dentro de una parte considerable de la población de estudio, cada punto porcentual de descuento disminuya las ganancias entre 2.7 y 2.3 dólares.\nLa interpretación incorrecta sería:\nHemos demostrado que el efecto verdadero es exactamente -83.72.\nLos modelos probabilísticos rara vez justifican afirmaciones tan absolutas.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#credible-intervals",
+    "href": "analysis/c08.html#credible-intervals",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Credible Intervals",
+    "text": "Credible Intervals\nUna de las herramientas más útiles para resumir incertidumbre es el intervalo creíble.\nUn intervalo creíble del 95% contiene la mayor parte de los valores plausibles según el modelo.\nPor ejemplo:\n\n# Crear los intervalos posteriores\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n  ) # produce:\n\n                  2.5%     97.5%\n(Intercept)  61.475335  73.22331\nDiscount_c   -2.691436  -2.26060\nsigma       225.502406 231.92616",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#interpretación-intuitiva",
+    "href": "analysis/c08.html#interpretación-intuitiva",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Interpretación intuitiva",
+    "text": "Interpretación intuitiva\nLa interpretación práctica sería:\nEs plausible que por cada punto porcentual de descuento las ganancias disminuyan en tre 2.27 y y 2.72 dólares en la población de estudio\nObserva lo que NO estamos diciendo.\nNo estamos diciendo:\n❌ “La pendiente verdadera está atrapada dentro del intervalo.”\nTampoco:\n❌ “Existe certeza de que el valor está ahí.”\nPreferimos decir:\n✅ “Los valores plausibles se concentran en ese rango.”",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#el-lenguaje-importa",
+    "href": "analysis/c08.html#el-lenguaje-importa",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "El lenguaje importa",
+    "text": "El lenguaje importa\nA medida que maduramos analíticamente, el lenguaje cambia.\nEvitamos:\n\ndemostrar\nprobar definitivamente\nconfirmar con certeza\n\nY comenzamos a utilizar:\n\nsugerir\nindicar\nser compatible con\nresultar plausible\n\nEste cambio puede parecer pequeño.\nPero refleja una comprensión mucho más profunda de la incertidumbre.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#visualizando-intervalos-plausibles",
+    "href": "analysis/c08.html#visualizando-intervalos-plausibles",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Visualizando intervalos plausibles",
+    "text": "Visualizando intervalos plausibles\nUna excelente práctica consiste en visualizar explícitamente la incertidumbre.\n\n# Convertir las simulaciones posteriores del modelo en una matriz\nas.matrix(modelo_profit)[1:6,] # produce:\n\n          parameters\niterations (Intercept) Discount_c    sigma\n      [1,]    67.14558  -2.397601 229.2090\n      [2,]    66.21268  -2.474628 230.5121\n      [3,]    70.96432  -2.509756 227.4266\n      [4,]    69.02776  -2.362581 227.4321\n      [5,]    68.06122  -2.472203 228.7411\n      [6,]    70.92773  -2.529956 227.0517\n\n\n\n# Visualizando los intervalos plausibles de la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"Discount_c\")\n)\n\n\n\n\n\n\n\n\nEste gráfico permite observar:\n\nla posición del parámetro,\nla amplitud de la incertidumbre,\nla variabilidad posterior.\n\nLa incertidumbre deja de ser invisible.\nAhora puede verse.\nInterpretación: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.\nTambién podemos visualizar el intercepto de esta forma:\n\n# Visualizar los intervalos plausibles y la mediana del intercepto\n# (ganancias) y la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"(Intercept)\",\"Discount_c\")\n)",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#bandas-plausibles-en-una-regresión",
+    "href": "analysis/c08.html#bandas-plausibles-en-una-regresión",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Bandas plausibles en una regresión",
+    "text": "Bandas plausibles en una regresión\nOtra visualización muy poderosa consiste en representar la incertidumbre directamente sobre la recta de regresión.\n\n# Representar la incertidumbre directamente sobre la recta de la \n# regresión\nsuperstore %&gt;%\n  ggplot(aes(x = Discount_c, y = Profit)) +\n  geom_point(alpha = 0.2) +\n  stat_smooth(\n    method = \"lm\"\n  )\n\n\n\n\n\n\n\n\n\n# Representar la incertidumbre directamente sobre la recta de la \n# regresión con zoom en el eje Y\nsuperstore %&gt;%\n  ggplot(aes(x = Discount_c, y = Profit)) +\n  geom_point(alpha = 0.2) +\n  stat_smooth(\n    method = \"lm\"\n  ) +\n  coord_cartesian(ylim = c(-500, 500))\n\n\n\n\n\n\n\n\nPosteriormente podemos reemplazar la línea clásica por predicciones posteriores provenientes del modelo bayesiano.\nLa idea central es que:\nno existe una única línea.\nExisten muchas líneas plausibles.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#la-incertidumbre-del-modelo",
+    "href": "analysis/c08.html#la-incertidumbre-del-modelo",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "La incertidumbre del modelo",
+    "text": "La incertidumbre del modelo\nAquí llegamos a una de las ideas más importantes de todo el libro.\nIncluso si obtenemos:\n\nmiles de observaciones,\nmodelos sofisticados,\ncomputadoras rápidas,\n\nla incertidumbre nunca desaparece completamente.\n¿Por qué?\nPorque los modelos son simplificaciones.\nSiempre existen:\n\nvariables omitidas,\nfactores desconocidos,\ncambios futuros,\nerrores de medición,\nfenómenos no observados.\n\nPor ejemplo:\nLa ganancia de una venta probablemente depende de:\n\ndescuentos,\ncategoría del producto,\ncompetencia,\ntemporada,\ncalidad del servicio,\nlogística.\n\nNuestro modelo utiliza únicamente una pequeña parte de esa realidad.\nPor eso debemos interpretar cualquier resultado con humildad.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#predicciones-e-incertidumbre",
+    "href": "analysis/c08.html#predicciones-e-incertidumbre",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Predicciones e incertidumbre",
+    "text": "Predicciones e incertidumbre\nLa incertidumbre es todavía mayor cuando intentamos predecir.\nExplicar el pasado suele ser más fácil que anticipar el futuro.\nPor esta razón las predicciones deben presentarse como rangos plausibles y no como números exactos.\nEn capítulos posteriores profundizaremos en forecasting probabilístico y escenarios futuros.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#por-qué-esto-mejora-las-decisiones",
+    "href": "analysis/c08.html#por-qué-esto-mejora-las-decisiones",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "¿Por qué esto mejora las decisiones?",
+    "text": "¿Por qué esto mejora las decisiones?\nUna empresa nunca posee información perfecta.\nAun así debe decidir.\nPor ejemplo:\n\ncuánto inventario comprar,\ncuánto descuento ofrecer,\nqué campaña lanzar,\nqué clientes retener.\n\nLa alternativa no es:\n\ndecidir con incertidumbre,\no decidir con certeza.\n\nLa realidad es:\n\ndecidir con incertidumbre explícita,\no decidir ignorándola.\n\nLa primera opción suele producir decisiones mucho más robustas.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#reflexión-bayesiana",
+    "href": "analysis/c08.html#reflexión-bayesiana",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nDurante mucho tiempo la estadística fue presentada como una búsqueda de respuestas correctas.\nEl enfoque bayesiano propone una visión distinta.\nLos modelos no son máquinas de verdad.\nSon herramientas para actualizar creencias frente a nueva evidencia.\nPor eso una distribución posterior no representa ignorancia.\nRepresenta algo mucho más valioso:\nuna descripción honesta de lo que sabemos y de lo que todavía no sabemos.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c08.html#ejercicios",
+    "href": "analysis/c08.html#ejercicios",
+    "title": "8.- Interpretar modelos probabilísticos",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nAjusta nuevamente el modelo:\nProfit ~ Discount_c\ny describe verbalmente la distribución posterior de la pendiente.\nNo menciones valores exactos.\nConcéntrate en interpretar plausibilidad.\n\n\nEjercicio 2\nObtén un intervalo creíble del 95%.\nExplica su significado utilizando lenguaje natural.\nEvita terminología técnica.\n\n\nEjercicio 3\nConstruye un gráfico de densidad posterior para la pendiente.\nResponde:\n\n¿La incertidumbre es amplia o estrecha?\n¿Qué podría explicar esa amplitud?\n\n\n\nEjercicio 4\nEscribe tres interpretaciones incorrectas y tres interpretaciones correctas de un intervalo creíble.\n\n\nEjercicio 5\nReflexiona:\n¿Por qué una empresa podría tomar mejores decisiones cuando reconoce explícitamente la incertidumbre?\n\n\nEjercicio 6\nIdentifica al menos tres variables que podrían influir sobre Profit pero que no aparecen en el modelo.\n¿Cómo podría afectar esto la interpretación?",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "8.- Interpretar modelos probabilísticos"
+    ]
+  },
+  {
+    "objectID": "analysis/c09.html",
+    "href": "analysis/c09.html",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "",
+    "text": "“El futuro no es un punto exacto. Es una distribución de posibilidades plausibles.”"
+  },
+  {
+    "objectID": "analysis/c09.html#el-futuro-como-una-distribución-de-posibilidades",
+    "href": "analysis/c09.html#el-futuro-como-una-distribución-de-posibilidades",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "",
+    "text": "“El futuro no es un punto exacto. Es una distribución de posibilidades plausibles.”"
+  },
+  {
+    "objectID": "analysis/c09.html#introducción",
+    "href": "analysis/c09.html#introducción",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.1 Introducción",
+    "text": "9.1 Introducción\nLas empresas toman decisiones todos los días sobre algo que todavía no ha ocurrido.\nIntentan responder preguntas como:\n\n¿Cuánto venderemos el próximo mes?\n¿Cuánto beneficio obtendremos?\n¿Necesitamos más inventario?\n¿Vale la pena aumentar los descuentos?\n¿Qué tan probable es alcanzar nuestras metas?\n\nTodas estas preguntas comparten una característica importante:\nse refieren al futuro.\nY el futuro siempre contiene incertidumbre.\nDurante mucho tiempo, muchas organizaciones buscaron una única respuesta:\n\"Las ventas del próximo mes serán exactamente $125.000.\"\nSin embargo, la experiencia demuestra que el mundo real funciona de otra manera.\nLas ventas cambian.\nLos clientes cambian.\nLos competidores cambian.\nLa economía cambia.\nIncluso cuando hacemos un excelente análisis, nunca podemos eliminar completamente la incertidumbre.\nPor eso los modelos probabilísticos adoptan una perspectiva diferente:\nNo intentan adivinar exactamente qué ocurrirá.\nIntentan describir qué resultados son plausibles."
+  },
+  {
+    "objectID": "analysis/c09.html#predicción-no-significa-certeza",
+    "href": "analysis/c09.html#predicción-no-significa-certeza",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.2 Predicción no significa certeza",
+    "text": "9.2 Predicción no significa certeza\nImagina que mañana sales de casa.\nConsultas una aplicación meteorológica y observas:\nProbabilidad de lluvia: 70%\n¿Significa eso que necesariamente lloverá?\nNo.\nTampoco significa que necesariamente no lloverá.\nSignifica que la lluvia es un escenario plausible y relativamente probable.\nLo mismo ocurre en negocios.\nCuando una empresa predice ventas futuras, no está observando el futuro.\nEstá construyendo una descripción probabilística de escenarios posibles.\nPor ejemplo:\n\n\n\nEscenario\nVentas\n\n\n\n\nPesimista\n$9.000\n\n\nEsperado\n$12.000\n\n\nOptimista\n$15.000\n\n\n\nNinguno de estos valores es “el futuro verdadero”.\nSon posibilidades plausibles.\n\nLa diferencia es fundamental.\nPensamiento determinista:\n\"Sé exactamente lo que ocurrirá.\"\nPensamiento probabilístico:\n\"Existen múltiples futuros compatibles con la información disponible.\""
+  },
+  {
+    "objectID": "analysis/c09.html#una-breve-introducción-al-forecasting",
+    "href": "analysis/c09.html#una-breve-introducción-al-forecasting",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.3 Una breve introducción al forecasting",
+    "text": "9.3 Una breve introducción al forecasting\nAntes de continuar conviene introducir un concepto frecuente en análisis de negocios.\n\n¿Qué es forecasting?\nForecasting significa:\nrealizar estimaciones sobre eventos futuros utilizando información histórica.\nAlgunos ejemplos:\n\nventas futuras\ndemanda futura\ningresos futuros\nbeneficios futuros\nnúmero de clientes\n\nLas empresas utilizan forecasting para:\n\nplanificar inventarios\ndefinir presupuestos\ncontratar personal\nlanzar campañas\ngestionar riesgos\n\nPero incluso los mejores pronósticos contienen incertidumbre.\nPor eso resulta más útil pensar en rangos plausibles que en números exactos."
+  },
+  {
+    "objectID": "analysis/c09.html#del-modelo-a-las-predicciones",
+    "href": "analysis/c09.html#del-modelo-a-las-predicciones",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.4 Del modelo a las predicciones",
+    "text": "9.4 Del modelo a las predicciones\nEn el capítulo anterior construimos modelos para entender relaciones entre variables.\nPor ejemplo:\nProfit = β0 + β1Discount + ϵ\nLa pregunta ahora es diferente.\nYa no queremos únicamente entender la relación.\nQueremos utilizar el modelo para explorar futuros plausibles.\nAquí aparece una función muy importante de rstanarm:\nposterior_predict()"
+  },
+  {
+    "objectID": "analysis/c09.html#qué-hace-posterior_predict",
+    "href": "analysis/c09.html#qué-hace-posterior_predict",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.5 ¿Qué hace posterior_predict()?",
+    "text": "9.5 ¿Qué hace posterior_predict()?\nIntuitivamente, posterior_predict() le pregunta al modelo:\n\"Si el futuro fuera compatible con todo lo que hemos aprendido, ¿qué resultados podríamos observar?\"\nEn lugar de producir una única respuesta:\nProfit = 35\nproduce muchas respuestas plausibles:\n28 42 31 37 19 45 ...\nCada una representa un posible futuro compatible con el modelo.\n\nLa idea es muy poderosa.\nNo obtenemos:\n\nuna predicción\n\nObtenemos:\n\nuna distribución de predicciones"
+  },
+  {
+    "objectID": "analysis/c09.html#preparando-los-datos",
+    "href": "analysis/c09.html#preparando-los-datos",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.6 Preparando los datos",
+    "text": "9.6 Preparando los datos\nUtilizaremos nuevamente el descuento como predictor."
+  },
+  {
+    "objectID": "analysis/c09.html#construyendo-un-modelo-sencillo",
+    "href": "analysis/c09.html#construyendo-un-modelo-sencillo",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.7 Construyendo un modelo sencillo",
+    "text": "9.7 Construyendo un modelo sencillo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  family = gaussian(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\n\nLa pregunta de negocio es:\n¿Qué beneficios podríamos esperar bajo distintos niveles de descuento?"
+  },
+  {
+    "objectID": "analysis/c09.html#generando-escenarios-futuros",
+    "href": "analysis/c09.html#generando-escenarios-futuros",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.8 Generando escenarios futuros",
+    "text": "9.8 Generando escenarios futuros\nSupongamos que queremos estudiar varios niveles de descuento.\n\n# Generar varios niveles de descuento\nnuevos_descuentos &lt;- tibble(\n  Discount_c = seq(0, 80, by = 5)\n)\nnuevos_descuentos[1:7,] # produce:\n\n# A tibble: 7 × 1\n  Discount_c\n       &lt;dbl&gt;\n1          0\n2          5\n3         10\n4         15\n5         20\n6         25\n7         30\n\n\nAhora generamos predicciones.\n\n# Generar una matriz de predicciones\npredicciones &lt;- posterior_predict(\n  modelo_profit,\n  newdata = nuevos_descuentos\n)\npredicciones[1:4, 1:4] # produce:\n\n             1         2         3         4\n[1,]  79.35835 -204.9265 485.07072 -350.0002\n[2,] -95.92428 -255.6984 -78.63505 -217.0911\n[3,]   3.04947  248.1678 455.80452  438.6369\n[4,] 323.22550 -292.1522  24.43901 -160.9200\n\n\n[ reached ‘max’ / getOption(“max.print”) – omitted 996 rows ]\n\ndim(predicciones) # produce:\n\n[1] 1000   17\n\n\nInterprestación: Significa 17 escenarios de descuento (columnas) y 1000 futuros posibles en cada escenario (filas)\nEl resultado de posterior_predict() es una matriz.\nCada fila representa una simulación posterior (debería haber 1000 filas).\nCada columna representa un nivel o porcentaje de descuento (debería haber 17 columnas).\nConceptualmente\n\n\n\nSimulación\n0%\n5%\n10%\n\n\n\n\n1\n45\n40\n35\n\n\n2\n52\n38\n30\n\n\n3\n41\n34\n28\n\n\n\nCada fila representa un posible futuro."
+  },
+  {
+    "objectID": "analysis/c09.html#resumiendo-las-predicciones",
+    "href": "analysis/c09.html#resumiendo-las-predicciones",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.9 Resumiendo las predicciones",
+    "text": "9.9 Resumiendo las predicciones\nLas empresas normalmente desean resumir escenarios.\nPodemos calcular:\n\nmediana\nlímite inferior plausible\nlímite superior plausible\n\n\n# Crear una tabla de resumen de las predicciones (con \n# 17 filas de descuentos) \npred_resumen &lt;- tibble(\n  Discount_c = nuevos_descuentos$Discount_c, # Descuento\n  mediana = apply(predicciones, 2, median), # mediana\n  li = apply(predicciones, 2, quantile, probs = 0.05), # límite inferiror\n  ls = apply(predicciones, 2, quantile, probs = 0.95) # límite superior\n)\npred_resumen[1:7,] # produce:\n\n# A tibble: 7 × 4\n  Discount_c mediana    li    ls\n       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1          0   71.2  -297.  419.\n2          5   31.0  -328.  402.\n3         10   45.8  -312.  404.\n4         15   25.6  -344.  420.\n5         20   25.6  -335.  420.\n6         25    3.27 -361.  383.\n7         30  -17.9  -413.  366.\n\n\n\nEntendiendo el código\n\n# apply sigue este esquema apply(X, MARGIN, FUN) donde: X es la \n# matriz, MARGIN por donde recorrer (filas o columnas) y FUN es \n# la función a aplicar. Margin = 1 significa trabajar por filas y\n# Margin = 2 significa trabajar por columnas\napply(predicciones, 2, quantile, probs = 0.05) # produce: \n\n        1         2         3         4         5         6         7         8 \n-296.9334 -328.2617 -311.8690 -344.3455 -334.8719 -361.3302 -412.6808 -405.3938 \n        9        10        11        12        13        14        15        16 \n-406.3348 -412.8152 -460.8076 -455.6983 -458.4377 -483.9075 -473.3593 -475.4579 \n       17 \n-515.1864 \n\n\n\napply(predicciones, 2, quantile, probs = 0.05) # produce:\n\n        1         2         3         4         5         6         7         8 \n-296.9334 -328.2617 -311.8690 -344.3455 -334.8719 -361.3302 -412.6808 -405.3938 \n        9        10        11        12        13        14        15        16 \n-406.3348 -412.8152 -460.8076 -455.6983 -458.4377 -483.9075 -473.3593 -475.4579 \n       17 \n-515.1864 \n\n\n\napply(predicciones, 2, quantile, probs = 0.95) # produce:\n\n       1        2        3        4        5        6        7        8 \n419.2393 401.7334 404.2375 419.6809 420.0500 382.8686 365.6406 376.7687 \n       9       10       11       12       13       14       15       16 \n312.4186 344.9542 292.1190 294.4112 285.1777 283.2315 248.9420 265.2938 \n      17 \n238.0259"
+  },
+  {
+    "objectID": "analysis/c09.html#visualizando-bandas-plausibles",
+    "href": "analysis/c09.html#visualizando-bandas-plausibles",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.10 Visualizando bandas plausibles",
+    "text": "9.10 Visualizando bandas plausibles\nUna visualización muy útil consiste en mostrar:\n\nvalor central\nincertidumbre predictiva\n\n\n# Visualizar bandas (ribbons) plausibles\nggplot(pred_resumen,\n       aes(x = Discount_c,\n           y = mediana)) +\n  \n  geom_ribbon( # Crea la banda con los límites superior e inferior\n    aes(ymin = li,\n        ymax = ls),\n    alpha = 0.3\n  ) +\n  \n  geom_line(size = 1) + # Crea la línea que une los puntos\n  #geom_point() +\n  #coord_cartesian(ylim = c(-150, 100)) + # hace zoom\n  \n  labs(\n    title = \"Beneficio esperado e incertidumbre predictiva\",\n    x = \"Descuento (%)\",\n    y = \"Profit esperado\"\n  )\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n\n\n\n\n\n\n\n\nInterpretación\nLa línea central representa:\nel beneficio esperado.\nLa banda representa:\nun rango de resultados plausibles.\n\nLa banda no indica error.\nIndica incertidumbre.\nY la incertidumbre es una característica natural del futuro."
+  },
+  {
+    "objectID": "analysis/c09.html#visualizando-múltiples-futuros-plausibles",
+    "href": "analysis/c09.html#visualizando-múltiples-futuros-plausibles",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.11 Visualizando múltiples futuros plausibles",
+    "text": "9.11 Visualizando múltiples futuros plausibles\nUna manera aún más intuitiva consiste en visualizar escenarios individuales.\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100. Entonces en total\n# hay 1700 filas\nescenarios &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;% # Cambia de formato matriz a dataframe\n  slice_sample(n = 100) %&gt;% # Se toma una muestra de 100 \n  mutate(simulacion = row_number()) %&gt;% # Se crea una variable para\n                                        # numerar las filas  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\nescenarios # produce\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1          408. \n 2          1 2           79.6\n 3          1 3           46.4\n 4          1 4          -25.5\n 5          1 5          -38.1\n 6          1 6         -389. \n 7          1 7          174. \n 8          1 8          528. \n 9          1 9         -370. \n10          1 10         -34.1\n# ℹ 1,690 more rows\n\n\n\nEntendiendo el código\n\n# Matriz de predicciones posteriores para distintos tipos de \n# probabilidades. \nescenarios2 &lt;- predicciones \nescenarios2[1:4, 1:4] # produce: 17 columnas , 1000 filas\n\n             1         2         3         4\n[1,]  79.35835 -204.9265 485.07072 -350.0002\n[2,] -95.92428 -255.6984 -78.63505 -217.0911\n[3,]   3.04947  248.1678 455.80452  438.6369\n[4,] 323.22550 -292.1522  24.43901 -160.9200\n\n\n\n# Cambiar la matriz a tabla o dataframe\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() \nescenarios2[1:4, 1:4] # produce (17 columnas, 1000 filas):\n\n          1         2         3         4\n1  79.35835 -204.9265 485.07072 -350.0002\n2 -95.92428 -255.6984 -78.63505 -217.0911\n3   3.04947  248.1678 455.80452  438.6369\n4 323.22550 -292.1522  24.43901 -160.9200\n\n\n\n# Quedarse con una muestra de sólo 100 participantes\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) # escoger aleatoriamente 100 participantes\nescenarios2[1:4, 1:4] # produce (17 filas, 100 columnas) \n\n            1         2         3          4\n1  89.4032502  189.0426  186.8672   25.12711\n2   0.7864994  194.7013  226.7766 -206.16778\n3 131.9783080 -298.9283 -172.7289 -133.91356\n4 248.4952634  146.4734  208.9917 -305.37190\n\n\n\n# Crear una variable que numera cada una de las 100 filas\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) %&gt;%\n  mutate(simulacion = row_number()) # crear la variable simulacion\n                                    # y numerar las filas\nescenarios2[1:4, -14:-1] # produce:\n\n          15         16        17 simulacion\n1   38.02450 -175.08698 -128.2173          1\n2  -29.74975  -77.15793 -270.2415          2\n3  188.30061  310.98537 -185.2524          3\n4 -400.00347 -272.83221 -289.9921          4\n\n\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100\nescenarios2  %&gt;%  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1          255. \n 2          1 2           37.8\n 3          1 3         -201. \n 4          1 4         -174. \n 5          1 5          154. \n 6          1 6          -54.4\n 7          1 7          229. \n 8          1 8         -297. \n 9          1 9          312. \n10          1 10          72.7\n# ℹ 1,690 more rows\n\n\n\n\nVisualizar escenarios individuales\n\n# Visualizar escenarios idividuales\nggplot(\n  escenarios,\n  aes(\n    x = escenario,\n    y = profit,\n    group = simulacion # agrupar por simulación\n  )\n) +\n  geom_line(alpha = 0.15)"
+  },
+  {
+    "objectID": "analysis/c09.html#qué-estamos-viendo",
+    "href": "analysis/c09.html#qué-estamos-viendo",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "¿Qué estamos viendo?",
+    "text": "¿Qué estamos viendo?\nCada línea representa:\nun futuro posible.\nNinguna línea es “la correcta”.\nTodas son compatibles con lo que el modelo ha aprendido.\n\nEste gráfico suele producir una intuición muy poderosa:\nel futuro no es único."
+  },
+  {
+    "objectID": "analysis/c09.html#escenarios-de-negocio",
+    "href": "analysis/c09.html#escenarios-de-negocio",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.12 Escenarios de negocio",
+    "text": "9.12 Escenarios de negocio\nImaginemos tres niveles de descuento.\n\n\n\nEscenario\nDescuento\n\n\n\n\nConservador\n5%\n\n\nModerado\n20%\n\n\nAgresivo\n40%\n\n\n\nPodemos obtener predicciones para cada caso.\n\n# Obtener predicciones para cada caso\nescenarios_negocio &lt;- tibble(\n  Discount_c = c(5,20,40)\n)\n\npredicciones2 &lt;- posterior_predict(\n  modelo_profit,\n  newdata = escenarios_negocio\n) \npredicciones2[1:4,] # produce (3 columnas y 1000 filas):\n\n              1         2          3\n[1,]   39.90153  211.6474 -459.25979\n[2,] -178.28011  159.0315   72.46818\n[3,]  619.42593 -305.7195  294.57332\n[4,]   22.18875 -103.0864  118.33690\n\n\nAhora la conversación cambia.\nYa no preguntamos:\n¿Cuál será exactamente el beneficio?\nPreguntamos:\n¿Qué rango de beneficios es plausible bajo cada estrategia?\nEsta forma de pensar se parece mucho más a cómo toman decisiones las empresas reales."
+  },
+  {
+    "objectID": "analysis/c09.html#incertidumbre-del-modelo-e-incertidumbre-del-futuro",
+    "href": "analysis/c09.html#incertidumbre-del-modelo-e-incertidumbre-del-futuro",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.13 Incertidumbre del modelo e incertidumbre del futuro",
+    "text": "9.13 Incertidumbre del modelo e incertidumbre del futuro\nExiste una diferencia importante.\nEl modelo tiene incertidumbre sobre:\n\nlos parámetros\nla pendiente\nel intercepto\n\nPero además existe incertidumbre sobre:\n\nclientes individuales\npedidos futuros\neventos imprevistos\n\nPor eso las predicciones futuras suelen ser más inciertas que las estimaciones de parámetros.\nEn lenguaje sencillo:\ncomprender el pasado es más fácil que anticipar exactamente el futuro."
+  },
+  {
+    "objectID": "analysis/c09.html#por-qué-las-bandas-plausibles-son-más-honestas",
+    "href": "analysis/c09.html#por-qué-las-bandas-plausibles-son-más-honestas",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.14 ¿Por qué las bandas plausibles son más honestas?",
+    "text": "9.14 ¿Por qué las bandas plausibles son más honestas?\nImagina dos analistas.\nAnalista A:\n\"El beneficio será exactamente $30.\"\nAnalista B:\n\"El beneficio probablemente estará entre $10 y $50.\"\nEl segundo analista reconoce explícitamente la incertidumbre.\nY precisamente por eso suele ofrecer información más útil para la toma de decisiones.\n\nLas bandas plausibles no muestran debilidad.\nMuestran honestidad analítica."
+  },
+  {
+    "objectID": "analysis/c09.html#aplicación-en-negocios-reales",
+    "href": "analysis/c09.html#aplicación-en-negocios-reales",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "9.15 Aplicación en negocios reales",
+    "text": "9.15 Aplicación en negocios reales\nLas empresas rara vez operan con números exactos.\nNormalmente trabajan con escenarios.\nPor ejemplo:\n\nInventario\nEn lugar de asumir:\nvenderemos exactamente 1.000 unidades\nconsideran:\npodríamos vender entre 800 y 1.200 unidades.\n\n\n\nPresupuestos\nEn lugar de:\nbeneficio = $50.000\nutilizan:\nbeneficio plausible entre $40.000 y $60.000.\n\n\n\nMarketing\nEn lugar de:\nobtendremos 500 clientes\nconsideran:\nentre 400 y 650 clientes.\nLa gestión moderna consiste en prepararse para varios futuros plausibles."
+  },
+  {
+    "objectID": "analysis/c09.html#reflexión-bayesiana",
+    "href": "analysis/c09.html#reflexión-bayesiana",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nUno de los errores más frecuentes en análisis de datos es confundir una predicción con una promesa.\nLos modelos probabilísticos nos recuerdan algo importante:\nToda predicción contiene incertidumbre.\nLa incertidumbre no significa ignorancia.\nSignifica reconocer honestamente los límites de nuestro conocimiento.\nCuando mostramos distribuciones predictivas y bandas plausibles estamos comunicando una visión más realista del futuro.\nNo estamos diciendo:\n\"Esto ocurrirá.\"\nEstamos diciendo:\n\"Esto parece razonablemente plausible dada la información disponible.\"\nY esa diferencia es precisamente la esencia del pensamiento bayesiano."
+  },
+  {
+    "objectID": "analysis/c09.html#errores-frecuentes-de-interpretación",
+    "href": "analysis/c09.html#errores-frecuentes-de-interpretación",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "Errores frecuentes de interpretación",
+    "text": "Errores frecuentes de interpretación\n\nError 1\nPensar que la línea central es el futuro verdadero.\nLa línea central es solamente un resumen.\n\n\n\nError 2\nIgnorar la amplitud de la banda plausible.\nLa amplitud contiene información valiosa sobre riesgo.\n\n\n\nError 3\nComparar únicamente valores promedio.\nLos rangos también importan.\n\n\n\nError 4\nSuponer que una predicción es una garantía.\nLas predicciones describen posibilidades, no certezas."
+  },
+  {
+    "objectID": "analysis/c09.html#ejercicios",
+    "href": "analysis/c09.html#ejercicios",
+    "title": "9.- Predicciones probabilísticas",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nGenera bandas plausibles utilizando:\n\nSales como variable respuesta.\n\n¿Cómo cambia la incertidumbre?\n\n\nEjercicio 2\nCompara escenarios de descuento:\n\n0%\n10%\n30%\n50%\n\n¿Qué diferencias observas en las distribuciones predictivas?\n\n\nEjercicio 3\nConstruye un gráfico con 100 futuros plausibles utilizando posterior_predict().\n¿Qué te transmite visualmente?\n\n\nEjercicio 4\nIdentifica un escenario donde el valor promedio parezca atractivo, pero la incertidumbre sea muy amplia.\n¿Tomarías esa decisión?\n¿Por qué?\n\n\nEjercicio 5\nExplica con tus propias palabras la diferencia entre:\n\nuna predicción puntual\nuna distribución predictiva"
   }
 ]
