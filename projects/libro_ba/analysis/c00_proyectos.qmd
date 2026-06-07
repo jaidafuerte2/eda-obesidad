@@ -1,0 +1,86 @@
+---
+title: "Proyectos"
+format: html
+editor: visual
+---
+
+A lo largo de mi trayectoria profesional he participado en proyectos relacionados con salud, educación, análisis de datos y tecnología. Esta página reúne algunos de los proyectos más representativos en los que trabajo actualmente.
+
+## Análisis de datos y pensamiento bayesiano
+
+### Bayes para Obesidad
+
+**Sitio web:** [https://bayesparaobesidad.netlify.app/](https://bayesparaobesidad.netlify.app/)
+
+Proyecto de aprendizaje y divulgación centrado en el análisis de datos relacionados con obesidad utilizando herramientas de ciencia de datos, programación en R e inferencia bayesiana. El objetivo es explorar cómo los modelos probabilísticos pueden ayudar a comprender mejor fenómenos complejos relacionados con la salud.
+
+### Decisiones Bajo Incertidumbre
+
+**Sitio web:** [https://bayesparadecisiones.netlify.app/](https://bayesparadecisiones.netlify.app/)
+
+Libro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos desarrollados en R. El proyecto está orientado a profesionales interesados en utilizar herramientas cuantitativas para razonar en contextos donde la información es incompleta.
+
+---
+
+## Educación y divulgación en salud
+
+### Obesidad en Línea
+
+**Sitio web:** [https://obesidadenlinea.rf.gd/](https://obesidadenlinea.rf.gd/)
+
+Libro abierto desarrollado con Pollen y Racket que aborda temas relacionados con obesidad, nutrición, metabolismo y medicina basada en evidencia. El proyecto busca acercar información científica a pacientes y profesionales de una forma accesible.
+
+### Corporación Médica COVSA
+
+**Blog:** [https://corporacioncovsa.blogspot.com/](https://corporacioncovsa.blogspot.com/)
+
+Organización orientada al desarrollo de proyectos educativos y de salud digital. A través de esta iniciativa se han impulsado actividades de divulgación, presencia digital para profesionales de la salud y herramientas tecnológicas para mejorar la comunicación con pacientes.
+
+La Corporación Médica COVSA también ofrece tratamientos médicos naturales para tratar la obesidad y el sobrepeso.
+
+**Sitio web:** [https://corporacioncovsa.kesug.com/](https://corporacioncovsa.kesug.com/)
+
+---
+
+## Salud digital y desarrollo web
+
+### Más Pacientes
+
+**Sitio web:** [https://maspacientes.kesug.com/](https://maspacientes.kesug.com/)
+
+Proyecto orientado a ayudar a médicos y profesionales de la salud a desarrollar su presencia digital mediante sitios web, estrategias de contenido y sistemas de gestión de pacientes basados en WordPress.
+
+### Regeneris Plasma
+
+**Sitio web:** [https://regenerisplasma.kesug.com/](https://regenerisplasma.kesug.com/)
+
+Sitio web desarrollado para la promoción de servicios relacionados con medicina regenerativa y terapias biológicas.
+
+### Vital Suero
+
+**Sitio web:** [https://vitalsuero.kesug.com/](https://vitalsuero.kesug.com/)
+
+Proyecto de presencia digital orientado a servicios de sueroterapia y bienestar, desarrollado utilizando herramientas modernas de gestión de contenidos.
+
+---
+
+## Tecnologías y herramientas
+
+Entre las herramientas que utilizo con mayor frecuencia se encuentran:
+
+* R y RStudio
+* Quarto
+* Git y GitHub
+* Python
+* HTML y CSS
+* Bootstrap
+* WordPress
+* SQL
+* Pollen y Racket
+* Inteligencia Artificial aplicada a productividad y análisis de datos
+
+---
+
+## En desarrollo
+
+Actualmente continúo explorando la intersección entre salud, análisis de datos, programación e inteligencia artificial. Mi objetivo es construir herramientas y recursos educativos que ayuden a profesionales y organizaciones a tomar mejores decisiones en contextos complejos e inciertos.

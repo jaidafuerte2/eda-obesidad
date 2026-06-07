@@ -1,0 +1,58 @@
+---
+title: "Sobre el autor"
+format: html
+editor: visual
+---
+
+![](../files/images/autor.jpg){fig-alt="Portada de la práctica del borrador del análisis de la tabla obesity latin" width="20%"}
+
+Soy médico, especialista en Administración de Instituciones de Salud y Máster en Administración de Empresas (MBA). A lo largo de mi trayectoria profesional he trabajado tanto en la atención directa de pacientes como en la gestión de servicios de salud, experiencias que me han permitido comprender la importancia de tomar decisiones informadas en contextos de incertidumbre.
+
+En el ámbito clínico, una parte importante de mi trabajo ha estado relacionada con la atención de personas con sobrepeso y obesidad. Esta experiencia despertó mi interés por la medicina basada en evidencia, la evaluación crítica de la información y el uso de datos para comprender mejor los problemas de salud que enfrentan los pacientes y las organizaciones.
+
+En el ámbito administrativo he participado en iniciativas de educación y gestión sanitaria a través de la Corporación Médica COVSA, organización que impulsa proyectos de divulgación y transformación digital en salud. Entre ellos se encuentran *Obesidad en Línea*, un libro abierto desarrollado con Pollen/Racket, y diversos recursos educativos dirigidos a pacientes y profesionales.
+
+Durante los últimos años he ampliado mi interés hacia el análisis de datos, la programación y el pensamiento bayesiano. Mi objetivo es explorar cómo estas herramientas pueden ayudar a profesionales, organizaciones y tomadores de decisiones a razonar mejor frente a la incertidumbre.
+
+Actualmente desarrollo proyectos orientados a la educación, la ciencia de datos y la salud digital, entre los que destacan:
+
+## Proyectos de análisis de datos y aprendizaje bayesiano
+
+### Bayes para Obesidad
+
+Proyecto de aprendizaje y divulgación centrado en el análisis de datos relacionados con obesidad y salud metabólica mediante herramientas de ciencia de datos e inferencia bayesiana.
+
+### Decisiones Bajo Incertidumbre
+
+Libro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos y accesibles.
+
+## Proyectos de salud digital y transformación tecnológica
+
+A lo largo de mi experiencia profesional también he participado en el diseño y desarrollo de sitios web orientados a instituciones y servicios de salud, combinando conocimientos de gestión, experiencia del paciente y herramientas digitales.
+
+Entre estos proyectos se encuentran plataformas para promoción de servicios médicos, captación de pacientes y gestión clínica utilizando WordPress y sistemas especializados para administración de consultas médicas.
+
+## Intereses actuales
+
+* Ciencia de datos aplicada a la salud.
+* Inferencia bayesiana.
+* Toma de decisiones bajo incertidumbre.
+* Inteligencia artificial aplicada a problemas reales.
+* Programación para profesionales de la salud.
+* Transformación digital en organizaciones sanitarias.
+
+Este libro forma parte de ese proceso de aprendizaje continuo. Mi intención es compartir herramientas, ideas y experiencias que ayuden a comprender mejor cómo pensar, analizar y decidir cuando la información es incompleta y la incertidumbre es inevitable.
+
+## Proyectos y enlaces
+
+Si deseas explorar algunos de los proyectos mencionados en esta página, puedes visitar:
+
+* **Bayes para Obesidad**: [https://bayesparaobesidad.netlify.app/](https://bayesparaobesidad.netlify.app/)
+* **Decisiones Bajo Incertidumbre**: [https://bayesparadecisiones.netlify.app/](https://bayesparadecisiones.netlify.app/)
+* **Obesidad en Línea**: [https://obesidadenlinea.rf.gd/](https://obesidadenlinea.rf.gd/)
+* **GitHub**: [https://github.com/jaidafuerte2](https://github.com/jaidafuerte2)
+* **LinkedIn**: [https://www.linkedin.com/in/jaimedavidvillafuerte/](https://www.linkedin.com/in/jaimedavidvillafuerte/)
+
+También comparto reflexiones y avances sobre análisis de datos, salud y tecnología a través de mis redes profesionales.
+
+**David Villafuerte** *MD, MBA* 

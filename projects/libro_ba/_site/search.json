@@ -2074,5 +2074,97 @@
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
       "9.- Predicciones probabilísticas"
     ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html",
+    "href": "analysis/c00_sobre_el_autor.html",
+    "title": "Sobre el autor",
+    "section": "",
+    "text": "Soy médico, especialista en Administración de Instituciones de Salud y Máster en Administración de Empresas (MBA). A lo largo de mi trayectoria profesional he trabajado tanto en la atención directa de pacientes como en la gestión de servicios de salud, experiencias que me han permitido comprender la importancia de tomar decisiones informadas en contextos de incertidumbre.\nEn el ámbito clínico, una parte importante de mi trabajo ha estado relacionada con la atención de personas con sobrepeso y obesidad. Esta experiencia despertó mi interés por la medicina basada en evidencia, la evaluación crítica de la información y el uso de datos para comprender mejor los problemas de salud que enfrentan los pacientes y las organizaciones.\nEn el ámbito administrativo he participado en iniciativas de educación y gestión sanitaria a través de la Corporación Médica COVSA, organización que impulsa proyectos de divulgación y transformación digital en salud. Entre ellos se encuentran Obesidad en Línea, un libro abierto desarrollado con Pollen/Racket, y diversos recursos educativos dirigidos a pacientes y profesionales.\nDurante los últimos años he ampliado mi interés hacia el análisis de datos, la programación y el pensamiento bayesiano. Mi objetivo es explorar cómo estas herramientas pueden ayudar a profesionales, organizaciones y tomadores de decisiones a razonar mejor frente a la incertidumbre.\nActualmente desarrollo proyectos orientados a la educación, la ciencia de datos y la salud digital, entre los que destacan:",
+    "crumbs": [
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html#proyectos-de-análisis-de-datos-y-aprendizaje-bayesiano",
+    "href": "analysis/c00_sobre_el_autor.html#proyectos-de-análisis-de-datos-y-aprendizaje-bayesiano",
+    "title": "Sobre el autor",
+    "section": "Proyectos de análisis de datos y aprendizaje bayesiano",
+    "text": "Proyectos de análisis de datos y aprendizaje bayesiano\n\nBayes para Obesidad\nProyecto de aprendizaje y divulgación centrado en el análisis de datos relacionados con obesidad y salud metabólica mediante herramientas de ciencia de datos e inferencia bayesiana.\n\n\nDecisiones Bajo Incertidumbre\nLibro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos y accesibles.",
+    "crumbs": [
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html#proyectos-de-salud-digital-y-transformación-tecnológica",
+    "href": "analysis/c00_sobre_el_autor.html#proyectos-de-salud-digital-y-transformación-tecnológica",
+    "title": "Sobre el autor",
+    "section": "Proyectos de salud digital y transformación tecnológica",
+    "text": "Proyectos de salud digital y transformación tecnológica\nA lo largo de mi experiencia profesional también he participado en el diseño y desarrollo de sitios web orientados a instituciones y servicios de salud, combinando conocimientos de gestión, experiencia del paciente y herramientas digitales.\nEntre estos proyectos se encuentran plataformas para promoción de servicios médicos, captación de pacientes y gestión clínica utilizando WordPress y sistemas especializados para administración de consultas médicas.",
+    "crumbs": [
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html#intereses-actuales",
+    "href": "analysis/c00_sobre_el_autor.html#intereses-actuales",
+    "title": "Sobre el autor",
+    "section": "Intereses actuales",
+    "text": "Intereses actuales\n\nCiencia de datos aplicada a la salud.\nInferencia bayesiana.\nToma de decisiones bajo incertidumbre.\nInteligencia artificial aplicada a problemas reales.\nProgramación para profesionales de la salud.\nTransformación digital en organizaciones sanitarias.\n\nEste libro forma parte de ese proceso de aprendizaje continuo. Mi intención es compartir herramientas, ideas y experiencias que ayuden a comprender mejor cómo pensar, analizar y decidir cuando la información es incompleta y la incertidumbre es inevitable.",
+    "crumbs": [
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html#proyectos-y-enlaces",
+    "href": "analysis/c00_sobre_el_autor.html#proyectos-y-enlaces",
+    "title": "Sobre el autor",
+    "section": "Proyectos y enlaces",
+    "text": "Proyectos y enlaces\nSi deseas explorar algunos de los proyectos mencionados en esta página, puedes visitar:\n\nBayes para Obesidad: https://bayesparaobesidad.netlify.app/\nDecisiones Bajo Incertidumbre: https://bayesparadecisiones.netlify.app/\nObesidad en Línea: https://obesidadenlinea.rf.gd/\nGitHub: https://github.com/jaidafuerte2\nLinkedIn: https://www.linkedin.com/in/jaimedavidvillafuerte/\n\nTambién comparto reflexiones y avances sobre análisis de datos, salud y tecnología a través de mis redes profesionales.\nDavid Villafuerte MD, MBA",
+    "crumbs": [
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html",
+    "href": "analysis/c00_proyectos.html",
+    "title": "Proyectos",
+    "section": "",
+    "text": "A lo largo de mi trayectoria profesional he participado en proyectos relacionados con salud, educación, análisis de datos y tecnología. Esta página reúne algunos de los proyectos más representativos en los que trabajo actualmente."
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#análisis-de-datos-y-pensamiento-bayesiano",
+    "href": "analysis/c00_proyectos.html#análisis-de-datos-y-pensamiento-bayesiano",
+    "title": "Proyectos",
+    "section": "Análisis de datos y pensamiento bayesiano",
+    "text": "Análisis de datos y pensamiento bayesiano\n\nBayes para Obesidad\nSitio web: https://bayesparaobesidad.netlify.app/\nProyecto de aprendizaje y divulgación centrado en el análisis de datos relacionados con obesidad utilizando herramientas de ciencia de datos, programación en R e inferencia bayesiana. El objetivo es explorar cómo los modelos probabilísticos pueden ayudar a comprender mejor fenómenos complejos relacionados con la salud.\n\n\nDecisiones Bajo Incertidumbre\nSitio web: https://bayesparadecisiones.netlify.app/\nLibro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos desarrollados en R. El proyecto está orientado a profesionales interesados en utilizar herramientas cuantitativas para razonar en contextos donde la información es incompleta."
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#educación-y-divulgación-en-salud",
+    "href": "analysis/c00_proyectos.html#educación-y-divulgación-en-salud",
+    "title": "Proyectos",
+    "section": "Educación y divulgación en salud",
+    "text": "Educación y divulgación en salud\n\nObesidad en Línea\nSitio web: https://obesidadenlinea.rf.gd/\nLibro abierto desarrollado con Pollen y Racket que aborda temas relacionados con obesidad, nutrición, metabolismo y medicina basada en evidencia. El proyecto busca acercar información científica a pacientes y profesionales de una forma accesible.\n\n\nCorporación Médica COVSA\nBlog: https://corporacioncovsa.blogspot.com/\nOrganización orientada al desarrollo de proyectos educativos y de salud digital. A través de esta iniciativa se han impulsado actividades de divulgación, presencia digital para profesionales de la salud y herramientas tecnológicas para mejorar la comunicación con pacientes.\nLa Corporación Médica COVSA también ofrece tratamientos médicos naturales para tratar la obesidad y el sobrepeso.\nSitio web: https://corporacioncovsa.kesug.com/"
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#salud-digital-y-desarrollo-web",
+    "href": "analysis/c00_proyectos.html#salud-digital-y-desarrollo-web",
+    "title": "Proyectos",
+    "section": "Salud digital y desarrollo web",
+    "text": "Salud digital y desarrollo web\n\nMás Pacientes\nSitio web: https://maspacientes.kesug.com/\nProyecto orientado a ayudar a médicos y profesionales de la salud a desarrollar su presencia digital mediante sitios web, estrategias de contenido y sistemas de gestión de pacientes basados en WordPress.\n\n\nRegeneris Plasma\nSitio web: https://regenerisplasma.kesug.com/\nSitio web desarrollado para la promoción de servicios relacionados con medicina regenerativa y terapias biológicas.\n\n\nVital Suero\nSitio web: https://vitalsuero.kesug.com/\nProyecto de presencia digital orientado a servicios de sueroterapia y bienestar, desarrollado utilizando herramientas modernas de gestión de contenidos."
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#tecnologías-y-herramientas",
+    "href": "analysis/c00_proyectos.html#tecnologías-y-herramientas",
+    "title": "Proyectos",
+    "section": "Tecnologías y herramientas",
+    "text": "Tecnologías y herramientas\nEntre las herramientas que utilizo con mayor frecuencia se encuentran:\n\nR y RStudio\nQuarto\nGit y GitHub\nPython\nHTML y CSS\nBootstrap\nWordPress\nSQL\nPollen y Racket\nInteligencia Artificial aplicada a productividad y análisis de datos"
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#en-desarrollo",
+    "href": "analysis/c00_proyectos.html#en-desarrollo",
+    "title": "Proyectos",
+    "section": "En desarrollo",
+    "text": "En desarrollo\nActualmente continúo explorando la intersección entre salud, análisis de datos, programación e inteligencia artificial. Mi objetivo es construir herramientas y recursos educativos que ayuden a profesionales y organizaciones a tomar mejores decisiones en contextos complejos e inciertos."
   }
 ]

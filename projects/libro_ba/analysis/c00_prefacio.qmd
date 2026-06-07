@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Decisiones bajo incertidumbre - Business Analytics Bayesiano con R*
+## Decisiones bajo incertidumbre - Business Analytics Bayesiano con R\*
 
 ### Vivimos rodeados de datos.
 
@@ -14,9 +14,7 @@ Y, sin embargo, a pesar de tener más datos que nunca, seguimos tomando decision
 
 Esa es probablemente una de las ideas más importantes de este libro.
 
-Los datos no eliminan la incertidumbre.
-Los modelos no producen certezas absolutas.
-Las predicciones no son profecías.
+Los datos no eliminan la incertidumbre. Los modelos no producen certezas absolutas. Las predicciones no son profecías.
 
 Lo que sí pueden hacer —y lo que realmente importa— es ayudarnos a pensar mejor.
 
@@ -28,11 +26,7 @@ En negocios, medicina, economía, marketing o gestión, las decisiones important
 
 Y aun así, debemos decidir.
 
-Debemos decidir si una campaña de marketing vale la pena.
-Debemos decidir si un cliente tiene riesgo de abandonar un servicio.
-Debemos decidir cuánto inventario comprar.
-Debemos decidir si una tendencia es real o simplemente variabilidad aleatoria.
-Debemos decidir cuándo actuar y cuándo esperar más información.
+Debemos decidir si una campaña de marketing vale la pena. Debemos decidir si un cliente tiene riesgo de abandonar un servicio. Debemos decidir cuánto inventario comprar. Debemos decidir si una tendencia es real o simplemente variabilidad aleatoria. Debemos decidir cuándo actuar y cuándo esperar más información.
 
 En otras palabras: debemos aprender a pensar bajo incertidumbre.
 
@@ -72,15 +66,11 @@ Aunque la palabra “bayesiano” puede sonar intimidante al principio, la idea 
 
 Todos hacemos esto constantemente, incluso sin notarlo.
 
-Si un restaurante siempre está vacío, empezamos a sospechar que quizá no es tan bueno.
-Si una campaña mejora repetidamente las conversiones, nuestra confianza aumenta.
-Si un cliente muestra señales de insatisfacción, empezamos a considerar que podría abandonar el servicio.
-Si una tendencia se repite muchas veces, comenzamos a creer que probablemente no es casualidad.
+Si un restaurante siempre está vacío, empezamos a sospechar que quizá no es tan bueno. Si una campaña mejora repetidamente las conversiones, nuestra confianza aumenta. Si un cliente muestra señales de insatisfacción, empezamos a considerar que podría abandonar el servicio. Si una tendencia se repite muchas veces, comenzamos a creer que probablemente no es casualidad.
 
 El pensamiento bayesiano formaliza esa intuición natural.
 
-No se trata de encontrar verdades absolutas.
-Se trata de trabajar con plausibilidades.
+No se trata de encontrar verdades absolutas. Se trata de trabajar con plausibilidades.
 
 Se trata de reconocer explícitamente la incertidumbre en lugar de esconderla.
 
@@ -98,11 +88,11 @@ Trabajaremos con datasets reales de negocio. Analizaremos ventas, campañas de m
 
 Utilizaremos principalmente:
 
-- R
-- tidyverse
-- ggplot2
-- rstanarm
-- Quarto
+-   R
+-   tidyverse
+-   ggplot2
+-   rstanarm
+-   Quarto
 
 Estas herramientas fueron elegidas no porque sean las más “avanzadas”, sino porque permiten aprender de manera clara, moderna y reproducible. Además, funcionan muy bien en entornos accesibles como Posit Cloud Free, lo cual hace posible que más personas puedan experimentar y practicar sin necesidad de infraestructura compleja.
 
@@ -132,40 +122,25 @@ Si alguna vez has sentido que muchos libros técnicos explican demasiado rápido
 
 Aquí intentaremos avanzar paso a paso.
 
-Con ejemplos concretos.
-Con gráficos claros.
-Con incertidumbre visible.
-Con interpretaciones honestas.
-Con preguntas reales.
-Con limitaciones explícitas.
+Con ejemplos concretos. Con gráficos claros. Con incertidumbre visible. Con interpretaciones honestas. Con preguntas reales. Con limitaciones explícitas.
 
 Porque otra idea fundamental de este libro es que los modelos tienen límites.
 
-Un modelo no reemplaza el criterio humano.
-No elimina la necesidad de contexto.
-No entiende completamente la complejidad del comportamiento humano.
-No “descubre la verdad”.
+Un modelo no reemplaza el criterio humano. No elimina la necesidad de contexto. No entiende completamente la complejidad del comportamiento humano. No “descubre la verdad”.
 
 Pero sí puede ayudarnos a razonar mejor.
 
-Puede ayudarnos a organizar evidencia.
-Puede ayudarnos a cuantificar incertidumbre.
-Puede ayudarnos a explorar escenarios plausibles.
-Puede ayudarnos a evitar conclusiones excesivamente confiadas.
-Puede ayudarnos a tomar decisiones más informadas.
+Puede ayudarnos a organizar evidencia. Puede ayudarnos a cuantificar incertidumbre. Puede ayudarnos a explorar escenarios plausibles. Puede ayudarnos a evitar conclusiones excesivamente confiadas. Puede ayudarnos a tomar decisiones más informadas.
 
 Y eso ya es muchísimo.
 
 Quizá, al final, el verdadero valor del pensamiento bayesiano no sea producir mejores números, sino producir una relación más honesta con lo que no sabemos.
 
-Aceptar incertidumbre no significa resignarse a la ignorancia.
-Significa aprender a navegarla con más claridad.
+Aceptar incertidumbre no significa resignarse a la ignorancia. Significa aprender a navegarla con más claridad.
 
 Esa es la invitación de este libro.
 
-Aprender a observar los datos con más humildad.
-Aprender a interpretar probabilidades con más criterio.
-Aprender a tomar decisiones sin exigir certezas imposibles.
+Aprender a observar los datos con más humildad. Aprender a interpretar probabilidades con más criterio. Aprender a tomar decisiones sin exigir certezas imposibles.
 
 Porque el objetivo final no es eliminar la incertidumbre.
 
