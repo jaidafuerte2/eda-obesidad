@@ -27,7 +27,7 @@ website:
         contents:
         - analysis/c07.qmd
         - analysis/c08.qmd
-        #- analysis/c07.qmd
+        - analysis/c09.qmd
       #- section: "Módulo 4: Pensamiento causal"
         #href: analysis/m04.qmd
         #contents:
@@ -56,12 +56,14 @@ website:
   page-footer: 
     border: false
     background: light
-    center: "Copyright, David Villafuerte MD." 
-    left: 
+    left: "Decisiones bajo incertidumbre, David Villafuerte MD, MBA." 
+    center: 
+      - icon: linkedin
+        href: https://www.linkedin.com/in/jaimedavidvillafuerte/
       - icon: github
-        href: https://github.com/
-      - icon: bluesky 
-        href: https://bsky.app/ 
+        href: https://github.com/jaidafuerte2
+      - icon: twitter
+        href: https://x.com/jvillafuertemd
     
 format: 
   html: 

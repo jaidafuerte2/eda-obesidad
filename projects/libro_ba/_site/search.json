@@ -1849,146 +1849,230 @@
     "href": "analysis/c09.html",
     "title": "9.- Predicciones probabilísticas",
     "section": "",
-    "text": "“El futuro no es un punto exacto. Es una distribución de posibilidades plausibles.”"
+    "text": "“El futuro no es un punto exacto. Es una distribución de posibilidades plausibles.”",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#el-futuro-como-una-distribución-de-posibilidades",
     "href": "analysis/c09.html#el-futuro-como-una-distribución-de-posibilidades",
     "title": "9.- Predicciones probabilísticas",
     "section": "",
-    "text": "“El futuro no es un punto exacto. Es una distribución de posibilidades plausibles.”"
+    "text": "“El futuro no es un punto exacto. Es una distribución de posibilidades plausibles.”",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#introducción",
     "href": "analysis/c09.html#introducción",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.1 Introducción",
-    "text": "9.1 Introducción\nLas empresas toman decisiones todos los días sobre algo que todavía no ha ocurrido.\nIntentan responder preguntas como:\n\n¿Cuánto venderemos el próximo mes?\n¿Cuánto beneficio obtendremos?\n¿Necesitamos más inventario?\n¿Vale la pena aumentar los descuentos?\n¿Qué tan probable es alcanzar nuestras metas?\n\nTodas estas preguntas comparten una característica importante:\nse refieren al futuro.\nY el futuro siempre contiene incertidumbre.\nDurante mucho tiempo, muchas organizaciones buscaron una única respuesta:\n\"Las ventas del próximo mes serán exactamente $125.000.\"\nSin embargo, la experiencia demuestra que el mundo real funciona de otra manera.\nLas ventas cambian.\nLos clientes cambian.\nLos competidores cambian.\nLa economía cambia.\nIncluso cuando hacemos un excelente análisis, nunca podemos eliminar completamente la incertidumbre.\nPor eso los modelos probabilísticos adoptan una perspectiva diferente:\nNo intentan adivinar exactamente qué ocurrirá.\nIntentan describir qué resultados son plausibles."
+    "text": "9.1 Introducción\nLas empresas toman decisiones todos los días sobre algo que todavía no ha ocurrido.\nIntentan responder preguntas como:\n\n¿Cuánto venderemos el próximo mes?\n¿Cuánto beneficio obtendremos?\n¿Necesitamos más inventario?\n¿Vale la pena aumentar los descuentos?\n¿Qué tan probable es alcanzar nuestras metas?\n\nTodas estas preguntas comparten una característica importante:\nse refieren al futuro.\nY el futuro siempre contiene incertidumbre.\nDurante mucho tiempo, muchas organizaciones buscaron una única respuesta:\n\"Las ventas del próximo mes serán exactamente $125.000.\"\nSin embargo, la experiencia demuestra que el mundo real funciona de otra manera.\nLas ventas cambian.\nLos clientes cambian.\nLos competidores cambian.\nLa economía cambia.\nIncluso cuando hacemos un excelente análisis, nunca podemos eliminar completamente la incertidumbre.\nPor eso los modelos probabilísticos adoptan una perspectiva diferente:\nNo intentan adivinar exactamente qué ocurrirá.\nIntentan describir qué resultados son plausibles.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#predicción-no-significa-certeza",
     "href": "analysis/c09.html#predicción-no-significa-certeza",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.2 Predicción no significa certeza",
-    "text": "9.2 Predicción no significa certeza\nImagina que mañana sales de casa.\nConsultas una aplicación meteorológica y observas:\nProbabilidad de lluvia: 70%\n¿Significa eso que necesariamente lloverá?\nNo.\nTampoco significa que necesariamente no lloverá.\nSignifica que la lluvia es un escenario plausible y relativamente probable.\nLo mismo ocurre en negocios.\nCuando una empresa predice ventas futuras, no está observando el futuro.\nEstá construyendo una descripción probabilística de escenarios posibles.\nPor ejemplo:\n\n\n\nEscenario\nVentas\n\n\n\n\nPesimista\n$9.000\n\n\nEsperado\n$12.000\n\n\nOptimista\n$15.000\n\n\n\nNinguno de estos valores es “el futuro verdadero”.\nSon posibilidades plausibles.\n\nLa diferencia es fundamental.\nPensamiento determinista:\n\"Sé exactamente lo que ocurrirá.\"\nPensamiento probabilístico:\n\"Existen múltiples futuros compatibles con la información disponible.\""
+    "text": "9.2 Predicción no significa certeza\nImagina que mañana sales de casa.\nConsultas una aplicación meteorológica y observas:\nProbabilidad de lluvia: 70%\n¿Significa eso que necesariamente lloverá?\nNo.\nTampoco significa que necesariamente no lloverá.\nSignifica que la lluvia es un escenario plausible y relativamente probable.\nLo mismo ocurre en negocios.\nCuando una empresa predice ventas futuras, no está observando el futuro.\nEstá construyendo una descripción probabilística de escenarios posibles.\nPor ejemplo:\n\n\n\nEscenario\nVentas\n\n\n\n\nPesimista\n$9.000\n\n\nEsperado\n$12.000\n\n\nOptimista\n$15.000\n\n\n\nNinguno de estos valores es “el futuro verdadero”.\nSon posibilidades plausibles.\n\nLa diferencia es fundamental.\nPensamiento determinista:\n\"Sé exactamente lo que ocurrirá.\"\nPensamiento probabilístico:\n\"Existen múltiples futuros compatibles con la información disponible.\"",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#una-breve-introducción-al-forecasting",
     "href": "analysis/c09.html#una-breve-introducción-al-forecasting",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.3 Una breve introducción al forecasting",
-    "text": "9.3 Una breve introducción al forecasting\nAntes de continuar conviene introducir un concepto frecuente en análisis de negocios.\n\n¿Qué es forecasting?\nForecasting significa:\nrealizar estimaciones sobre eventos futuros utilizando información histórica.\nAlgunos ejemplos:\n\nventas futuras\ndemanda futura\ningresos futuros\nbeneficios futuros\nnúmero de clientes\n\nLas empresas utilizan forecasting para:\n\nplanificar inventarios\ndefinir presupuestos\ncontratar personal\nlanzar campañas\ngestionar riesgos\n\nPero incluso los mejores pronósticos contienen incertidumbre.\nPor eso resulta más útil pensar en rangos plausibles que en números exactos."
+    "text": "9.3 Una breve introducción al forecasting\nAntes de continuar conviene introducir un concepto frecuente en análisis de negocios.\n\n¿Qué es forecasting?\nForecasting significa:\nrealizar estimaciones sobre eventos futuros utilizando información histórica.\nAlgunos ejemplos:\n\nventas futuras\ndemanda futura\ningresos futuros\nbeneficios futuros\nnúmero de clientes\n\nLas empresas utilizan forecasting para:\n\nplanificar inventarios\ndefinir presupuestos\ncontratar personal\nlanzar campañas\ngestionar riesgos\n\nPero incluso los mejores pronósticos contienen incertidumbre.\nPor eso resulta más útil pensar en rangos plausibles que en números exactos.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#del-modelo-a-las-predicciones",
     "href": "analysis/c09.html#del-modelo-a-las-predicciones",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.4 Del modelo a las predicciones",
-    "text": "9.4 Del modelo a las predicciones\nEn el capítulo anterior construimos modelos para entender relaciones entre variables.\nPor ejemplo:\nProfit = β0 + β1Discount + ϵ\nLa pregunta ahora es diferente.\nYa no queremos únicamente entender la relación.\nQueremos utilizar el modelo para explorar futuros plausibles.\nAquí aparece una función muy importante de rstanarm:\nposterior_predict()"
+    "text": "9.4 Del modelo a las predicciones\nEn el capítulo anterior construimos modelos para entender relaciones entre variables.\nPor ejemplo:\nProfit = β0 + β1Discount + ϵ\nLa pregunta ahora es diferente.\nYa no queremos únicamente entender la relación.\nQueremos utilizar el modelo para explorar futuros plausibles.\nAquí aparece una función muy importante de rstanarm:\nposterior_predict()",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#qué-hace-posterior_predict",
     "href": "analysis/c09.html#qué-hace-posterior_predict",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.5 ¿Qué hace posterior_predict()?",
-    "text": "9.5 ¿Qué hace posterior_predict()?\nIntuitivamente, posterior_predict() le pregunta al modelo:\n\"Si el futuro fuera compatible con todo lo que hemos aprendido, ¿qué resultados podríamos observar?\"\nEn lugar de producir una única respuesta:\nProfit = 35\nproduce muchas respuestas plausibles:\n28 42 31 37 19 45 ...\nCada una representa un posible futuro compatible con el modelo.\n\nLa idea es muy poderosa.\nNo obtenemos:\n\nuna predicción\n\nObtenemos:\n\nuna distribución de predicciones"
+    "text": "9.5 ¿Qué hace posterior_predict()?\nIntuitivamente, posterior_predict() le pregunta al modelo:\n\"Si el futuro fuera compatible con todo lo que hemos aprendido, ¿qué resultados podríamos observar?\"\nEn lugar de producir una única respuesta:\nProfit = 35\nproduce muchas respuestas plausibles:\n28 42 31 37 19 45 ...\nCada una representa un posible futuro compatible con el modelo.\n\nLa idea es muy poderosa.\nNo obtenemos:\n\nuna predicción\n\nObtenemos:\n\nuna distribución de predicciones",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#preparando-los-datos",
     "href": "analysis/c09.html#preparando-los-datos",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.6 Preparando los datos",
-    "text": "9.6 Preparando los datos\nUtilizaremos nuevamente el descuento como predictor."
+    "text": "9.6 Preparando los datos\nUtilizaremos nuevamente el descuento como predictor.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#construyendo-un-modelo-sencillo",
     "href": "analysis/c09.html#construyendo-un-modelo-sencillo",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.7 Construyendo un modelo sencillo",
-    "text": "9.7 Construyendo un modelo sencillo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  family = gaussian(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\n\nLa pregunta de negocio es:\n¿Qué beneficios podríamos esperar bajo distintos niveles de descuento?"
+    "text": "9.7 Construyendo un modelo sencillo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  family = gaussian(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\n\nLa pregunta de negocio es:\n¿Qué beneficios podríamos esperar bajo distintos niveles de descuento?",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#generando-escenarios-futuros",
     "href": "analysis/c09.html#generando-escenarios-futuros",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.8 Generando escenarios futuros",
-    "text": "9.8 Generando escenarios futuros\nSupongamos que queremos estudiar varios niveles de descuento.\n\n# Generar varios niveles de descuento\nnuevos_descuentos &lt;- tibble(\n  Discount_c = seq(0, 80, by = 5)\n)\nnuevos_descuentos[1:7,] # produce:\n\n# A tibble: 7 × 1\n  Discount_c\n       &lt;dbl&gt;\n1          0\n2          5\n3         10\n4         15\n5         20\n6         25\n7         30\n\n\nAhora generamos predicciones.\n\n# Generar una matriz de predicciones\npredicciones &lt;- posterior_predict(\n  modelo_profit,\n  newdata = nuevos_descuentos\n)\npredicciones[1:4, 1:4] # produce:\n\n             1         2         3         4\n[1,]  79.35835 -204.9265 485.07072 -350.0002\n[2,] -95.92428 -255.6984 -78.63505 -217.0911\n[3,]   3.04947  248.1678 455.80452  438.6369\n[4,] 323.22550 -292.1522  24.43901 -160.9200\n\n\n[ reached ‘max’ / getOption(“max.print”) – omitted 996 rows ]\n\ndim(predicciones) # produce:\n\n[1] 1000   17\n\n\nInterprestación: Significa 17 escenarios de descuento (columnas) y 1000 futuros posibles en cada escenario (filas)\nEl resultado de posterior_predict() es una matriz.\nCada fila representa una simulación posterior (debería haber 1000 filas).\nCada columna representa un nivel o porcentaje de descuento (debería haber 17 columnas).\nConceptualmente\n\n\n\nSimulación\n0%\n5%\n10%\n\n\n\n\n1\n45\n40\n35\n\n\n2\n52\n38\n30\n\n\n3\n41\n34\n28\n\n\n\nCada fila representa un posible futuro."
+    "text": "9.8 Generando escenarios futuros\nSupongamos que queremos estudiar varios niveles de descuento.\n\n# Generar varios niveles de descuento\nnuevos_descuentos &lt;- tibble(\n  Discount_c = seq(0, 80, by = 5)\n)\nnuevos_descuentos[1:7,] # produce:\n\n# A tibble: 7 × 1\n  Discount_c\n       &lt;dbl&gt;\n1          0\n2          5\n3         10\n4         15\n5         20\n6         25\n7         30\n\n\nAhora generamos predicciones.\n\n# Generar una matriz de predicciones\npredicciones &lt;- posterior_predict(\n  modelo_profit,\n  newdata = nuevos_descuentos\n)\npredicciones[1:4, 1:4] # produce:\n\n             1         2         3          4\n[1,]  127.9585  374.8490 -236.2800 -111.45925\n[2,] -214.8982  168.3496  243.3044   60.55305\n[3,]  114.1008 -176.8744  535.4702 -164.25150\n[4,] -211.2330 -217.1305  497.8658 -111.58314\n\n\n[ reached ‘max’ / getOption(“max.print”) – omitted 996 rows ]\n\ndim(predicciones) # produce:\n\n[1] 1000   17\n\n\nInterprestación: Significa 17 escenarios de descuento (columnas) y 1000 futuros posibles en cada escenario (filas)\nEl resultado de posterior_predict() es una matriz.\nCada fila representa una simulación posterior (debería haber 1000 filas).\nCada columna representa un nivel o porcentaje de descuento (debería haber 17 columnas).\nConceptualmente\n\n\n\nSimulación\n0%\n5%\n10%\n\n\n\n\n1\n45\n40\n35\n\n\n2\n52\n38\n30\n\n\n3\n41\n34\n28\n\n\n\nCada fila representa un posible futuro.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#resumiendo-las-predicciones",
     "href": "analysis/c09.html#resumiendo-las-predicciones",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.9 Resumiendo las predicciones",
-    "text": "9.9 Resumiendo las predicciones\nLas empresas normalmente desean resumir escenarios.\nPodemos calcular:\n\nmediana\nlímite inferior plausible\nlímite superior plausible\n\n\n# Crear una tabla de resumen de las predicciones (con \n# 17 filas de descuentos) \npred_resumen &lt;- tibble(\n  Discount_c = nuevos_descuentos$Discount_c, # Descuento\n  mediana = apply(predicciones, 2, median), # mediana\n  li = apply(predicciones, 2, quantile, probs = 0.05), # límite inferiror\n  ls = apply(predicciones, 2, quantile, probs = 0.95) # límite superior\n)\npred_resumen[1:7,] # produce:\n\n# A tibble: 7 × 4\n  Discount_c mediana    li    ls\n       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1          0   71.2  -297.  419.\n2          5   31.0  -328.  402.\n3         10   45.8  -312.  404.\n4         15   25.6  -344.  420.\n5         20   25.6  -335.  420.\n6         25    3.27 -361.  383.\n7         30  -17.9  -413.  366.\n\n\n\nEntendiendo el código\n\n# apply sigue este esquema apply(X, MARGIN, FUN) donde: X es la \n# matriz, MARGIN por donde recorrer (filas o columnas) y FUN es \n# la función a aplicar. Margin = 1 significa trabajar por filas y\n# Margin = 2 significa trabajar por columnas\napply(predicciones, 2, quantile, probs = 0.05) # produce: \n\n        1         2         3         4         5         6         7         8 \n-296.9334 -328.2617 -311.8690 -344.3455 -334.8719 -361.3302 -412.6808 -405.3938 \n        9        10        11        12        13        14        15        16 \n-406.3348 -412.8152 -460.8076 -455.6983 -458.4377 -483.9075 -473.3593 -475.4579 \n       17 \n-515.1864 \n\n\n\napply(predicciones, 2, quantile, probs = 0.05) # produce:\n\n        1         2         3         4         5         6         7         8 \n-296.9334 -328.2617 -311.8690 -344.3455 -334.8719 -361.3302 -412.6808 -405.3938 \n        9        10        11        12        13        14        15        16 \n-406.3348 -412.8152 -460.8076 -455.6983 -458.4377 -483.9075 -473.3593 -475.4579 \n       17 \n-515.1864 \n\n\n\napply(predicciones, 2, quantile, probs = 0.95) # produce:\n\n       1        2        3        4        5        6        7        8 \n419.2393 401.7334 404.2375 419.6809 420.0500 382.8686 365.6406 376.7687 \n       9       10       11       12       13       14       15       16 \n312.4186 344.9542 292.1190 294.4112 285.1777 283.2315 248.9420 265.2938 \n      17 \n238.0259"
+    "text": "9.9 Resumiendo las predicciones\nLas empresas normalmente desean resumir escenarios.\nPodemos calcular:\n\nmediana\nlímite inferior plausible\nlímite superior plausible\n\n\n# Crear una tabla de resumen de las predicciones (con \n# 17 filas de descuentos) \npred_resumen &lt;- tibble(\n  Discount_c = nuevos_descuentos$Discount_c, # Descuento\n  mediana = apply(predicciones, 2, median), # mediana\n  li = apply(predicciones, 2, quantile, probs = 0.05), # límite inferiror\n  ls = apply(predicciones, 2, quantile, probs = 0.95) # límite superior\n)\npred_resumen[1:7,] # produce:\n\n# A tibble: 7 × 4\n  Discount_c mediana    li    ls\n       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1          0   80.7  -303.  438.\n2          5   44.8  -322.  441.\n3         10   28.5  -305.  395.\n4         15   24.2  -331.  427.\n5         20   33.1  -366.  395.\n6         25    2.85 -378.  366.\n7         30  -10.2  -365.  381.\n\n\n\nEntendiendo el código\n\n# apply sigue este esquema apply(X, MARGIN, FUN) donde: X es la \n# matriz, MARGIN por donde recorrer (filas o columnas) y FUN es \n# la función a aplicar. Margin = 1 significa trabajar por filas y\n# Margin = 2 significa trabajar por columnas\napply(predicciones, 2, quantile, probs = 0.05) # produce: \n\n        1         2         3         4         5         6         7         8 \n-302.6284 -321.7946 -305.0633 -330.6706 -366.0190 -378.2409 -364.6010 -391.8511 \n        9        10        11        12        13        14        15        16 \n-409.6352 -429.2318 -416.9962 -430.7802 -465.1202 -491.2621 -477.2188 -476.6683 \n       17 \n-521.1988 \n\n\n\napply(predicciones, 2, quantile, probs = 0.05) # produce:\n\n        1         2         3         4         5         6         7         8 \n-302.6284 -321.7946 -305.0633 -330.6706 -366.0190 -378.2409 -364.6010 -391.8511 \n        9        10        11        12        13        14        15        16 \n-409.6352 -429.2318 -416.9962 -430.7802 -465.1202 -491.2621 -477.2188 -476.6683 \n       17 \n-521.1988 \n\n\n\napply(predicciones, 2, quantile, probs = 0.95) # produce:\n\n       1        2        3        4        5        6        7        8 \n438.0701 440.8573 394.7750 427.4786 395.4274 365.9891 381.1589 348.5475 \n       9       10       11       12       13       14       15       16 \n350.5614 334.0927 351.2621 280.0479 292.3668 288.6414 250.2079 230.1644 \n      17 \n256.8221",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#visualizando-bandas-plausibles",
     "href": "analysis/c09.html#visualizando-bandas-plausibles",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.10 Visualizando bandas plausibles",
-    "text": "9.10 Visualizando bandas plausibles\nUna visualización muy útil consiste en mostrar:\n\nvalor central\nincertidumbre predictiva\n\n\n# Visualizar bandas (ribbons) plausibles\nggplot(pred_resumen,\n       aes(x = Discount_c,\n           y = mediana)) +\n  \n  geom_ribbon( # Crea la banda con los límites superior e inferior\n    aes(ymin = li,\n        ymax = ls),\n    alpha = 0.3\n  ) +\n  \n  geom_line(size = 1) + # Crea la línea que une los puntos\n  #geom_point() +\n  #coord_cartesian(ylim = c(-150, 100)) + # hace zoom\n  \n  labs(\n    title = \"Beneficio esperado e incertidumbre predictiva\",\n    x = \"Descuento (%)\",\n    y = \"Profit esperado\"\n  )\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n\n\n\n\n\n\n\n\nInterpretación\nLa línea central representa:\nel beneficio esperado.\nLa banda representa:\nun rango de resultados plausibles.\n\nLa banda no indica error.\nIndica incertidumbre.\nY la incertidumbre es una característica natural del futuro."
+    "text": "9.10 Visualizando bandas plausibles\nUna visualización muy útil consiste en mostrar:\n\nvalor central\nincertidumbre predictiva\n\n\n# Visualizar bandas (ribbons) plausibles\nggplot(pred_resumen,\n       aes(x = Discount_c,\n           y = mediana)) +\n  \n  geom_ribbon( # Crea la banda con los límites superior e inferior\n    aes(ymin = li,\n        ymax = ls),\n    alpha = 0.3\n  ) +\n  \n  geom_line(size = 1) + # Crea la línea que une los puntos\n  #geom_point() +\n  #coord_cartesian(ylim = c(-150, 100)) + # hace zoom\n  \n  labs(\n    title = \"Beneficio esperado e incertidumbre predictiva\",\n    x = \"Descuento (%)\",\n    y = \"Profit esperado\"\n  )\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n\n\n\n\n\n\n\n\nInterpretación\nLa línea central representa:\nel beneficio esperado.\nLa banda representa:\nun rango de resultados plausibles.\n\nLa banda no indica error.\nIndica incertidumbre.\nY la incertidumbre es una característica natural del futuro.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#visualizando-múltiples-futuros-plausibles",
     "href": "analysis/c09.html#visualizando-múltiples-futuros-plausibles",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.11 Visualizando múltiples futuros plausibles",
-    "text": "9.11 Visualizando múltiples futuros plausibles\nUna manera aún más intuitiva consiste en visualizar escenarios individuales.\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100. Entonces en total\n# hay 1700 filas\nescenarios &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;% # Cambia de formato matriz a dataframe\n  slice_sample(n = 100) %&gt;% # Se toma una muestra de 100 \n  mutate(simulacion = row_number()) %&gt;% # Se crea una variable para\n                                        # numerar las filas  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\nescenarios # produce\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1          408. \n 2          1 2           79.6\n 3          1 3           46.4\n 4          1 4          -25.5\n 5          1 5          -38.1\n 6          1 6         -389. \n 7          1 7          174. \n 8          1 8          528. \n 9          1 9         -370. \n10          1 10         -34.1\n# ℹ 1,690 more rows\n\n\n\nEntendiendo el código\n\n# Matriz de predicciones posteriores para distintos tipos de \n# probabilidades. \nescenarios2 &lt;- predicciones \nescenarios2[1:4, 1:4] # produce: 17 columnas , 1000 filas\n\n             1         2         3         4\n[1,]  79.35835 -204.9265 485.07072 -350.0002\n[2,] -95.92428 -255.6984 -78.63505 -217.0911\n[3,]   3.04947  248.1678 455.80452  438.6369\n[4,] 323.22550 -292.1522  24.43901 -160.9200\n\n\n\n# Cambiar la matriz a tabla o dataframe\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() \nescenarios2[1:4, 1:4] # produce (17 columnas, 1000 filas):\n\n          1         2         3         4\n1  79.35835 -204.9265 485.07072 -350.0002\n2 -95.92428 -255.6984 -78.63505 -217.0911\n3   3.04947  248.1678 455.80452  438.6369\n4 323.22550 -292.1522  24.43901 -160.9200\n\n\n\n# Quedarse con una muestra de sólo 100 participantes\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) # escoger aleatoriamente 100 participantes\nescenarios2[1:4, 1:4] # produce (17 filas, 100 columnas) \n\n            1         2         3          4\n1  89.4032502  189.0426  186.8672   25.12711\n2   0.7864994  194.7013  226.7766 -206.16778\n3 131.9783080 -298.9283 -172.7289 -133.91356\n4 248.4952634  146.4734  208.9917 -305.37190\n\n\n\n# Crear una variable que numera cada una de las 100 filas\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) %&gt;%\n  mutate(simulacion = row_number()) # crear la variable simulacion\n                                    # y numerar las filas\nescenarios2[1:4, -14:-1] # produce:\n\n          15         16        17 simulacion\n1   38.02450 -175.08698 -128.2173          1\n2  -29.74975  -77.15793 -270.2415          2\n3  188.30061  310.98537 -185.2524          3\n4 -400.00347 -272.83221 -289.9921          4\n\n\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100\nescenarios2  %&gt;%  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1          255. \n 2          1 2           37.8\n 3          1 3         -201. \n 4          1 4         -174. \n 5          1 5          154. \n 6          1 6          -54.4\n 7          1 7          229. \n 8          1 8         -297. \n 9          1 9          312. \n10          1 10          72.7\n# ℹ 1,690 more rows\n\n\n\n\nVisualizar escenarios individuales\n\n# Visualizar escenarios idividuales\nggplot(\n  escenarios,\n  aes(\n    x = escenario,\n    y = profit,\n    group = simulacion # agrupar por simulación\n  )\n) +\n  geom_line(alpha = 0.15)"
+    "text": "9.11 Visualizando múltiples futuros plausibles\nUna manera aún más intuitiva consiste en visualizar escenarios individuales.\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100. Entonces en total\n# hay 1700 filas\nescenarios &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;% # Cambia de formato matriz a dataframe\n  slice_sample(n = 100) %&gt;% # Se toma una muestra de 100 \n  mutate(simulacion = row_number()) %&gt;% # Se crea una variable para\n                                        # numerar las filas  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\nescenarios # produce\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1           18.6\n 2          1 2          303. \n 3          1 3         -229. \n 4          1 4          433. \n 5          1 5          -89.4\n 6          1 6          101. \n 7          1 7          272. \n 8          1 8          123. \n 9          1 9         -339. \n10          1 10        -267. \n# ℹ 1,690 more rows\n\n\n\nEntendiendo el código\n\n# Matriz de predicciones posteriores para distintos tipos de \n# probabilidades. \nescenarios2 &lt;- predicciones \nescenarios2[1:4, 1:4] # produce: 17 columnas , 1000 filas\n\n             1         2         3          4\n[1,]  127.9585  374.8490 -236.2800 -111.45925\n[2,] -214.8982  168.3496  243.3044   60.55305\n[3,]  114.1008 -176.8744  535.4702 -164.25150\n[4,] -211.2330 -217.1305  497.8658 -111.58314\n\n\n\n# Cambiar la matriz a tabla o dataframe\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() \nescenarios2[1:4, 1:4] # produce (17 columnas, 1000 filas):\n\n          1         2         3          4\n1  127.9585  374.8490 -236.2800 -111.45925\n2 -214.8982  168.3496  243.3044   60.55305\n3  114.1008 -176.8744  535.4702 -164.25150\n4 -211.2330 -217.1305  497.8658 -111.58314\n\n\n\n# Quedarse con una muestra de sólo 100 participantes\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) # escoger aleatoriamente 100 participantes\nescenarios2[1:4, 1:4] # produce (17 filas, 100 columnas) \n\n           1          2          3         4\n1  59.307484 -342.68409  -88.53183  136.6269\n2 120.395815  240.70402 -193.63095 -353.0309\n3 150.697472  -32.81547 -122.44038 -116.7228\n4   3.849249  455.69426  138.76505  -63.2346\n\n\n\n# Crear una variable que numera cada una de las 100 filas\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) %&gt;%\n  mutate(simulacion = row_number()) # crear la variable simulacion\n                                    # y numerar las filas\nescenarios2[1:4, -14:-1] # produce:\n\n           15          16        17 simulacion\n1  185.066402 -328.782740 -482.5944          1\n2 -232.494609  155.725731  -36.7883          2\n3   -2.340326    6.434715 -185.9234          3\n4  164.017554 -114.231937 -224.2209          4\n\n\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100\nescenarios2  %&gt;%  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1          243. \n 2          1 2          284. \n 3          1 3          132. \n 4          1 4         -167. \n 5          1 5         -162. \n 6          1 6         -364. \n 7          1 7          115. \n 8          1 8         -227. \n 9          1 9           35.0\n10          1 10        -366. \n# ℹ 1,690 more rows\n\n\n\n\nVisualizar escenarios individuales\n\n# Visualizar escenarios idividuales\nggplot(\n  escenarios,\n  aes(\n    x = escenario,\n    y = profit,\n    group = simulacion # agrupar por simulación\n  )\n) +\n  geom_line(alpha = 0.15)",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#qué-estamos-viendo",
     "href": "analysis/c09.html#qué-estamos-viendo",
     "title": "9.- Predicciones probabilísticas",
     "section": "¿Qué estamos viendo?",
-    "text": "¿Qué estamos viendo?\nCada línea representa:\nun futuro posible.\nNinguna línea es “la correcta”.\nTodas son compatibles con lo que el modelo ha aprendido.\n\nEste gráfico suele producir una intuición muy poderosa:\nel futuro no es único."
+    "text": "¿Qué estamos viendo?\nCada línea representa:\nun futuro posible.\nNinguna línea es “la correcta”.\nTodas son compatibles con lo que el modelo ha aprendido.\n\nEste gráfico suele producir una intuición muy poderosa:\nel futuro no es único.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#escenarios-de-negocio",
     "href": "analysis/c09.html#escenarios-de-negocio",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.12 Escenarios de negocio",
-    "text": "9.12 Escenarios de negocio\nImaginemos tres niveles de descuento.\n\n\n\nEscenario\nDescuento\n\n\n\n\nConservador\n5%\n\n\nModerado\n20%\n\n\nAgresivo\n40%\n\n\n\nPodemos obtener predicciones para cada caso.\n\n# Obtener predicciones para cada caso\nescenarios_negocio &lt;- tibble(\n  Discount_c = c(5,20,40)\n)\n\npredicciones2 &lt;- posterior_predict(\n  modelo_profit,\n  newdata = escenarios_negocio\n) \npredicciones2[1:4,] # produce (3 columnas y 1000 filas):\n\n              1         2          3\n[1,]   39.90153  211.6474 -459.25979\n[2,] -178.28011  159.0315   72.46818\n[3,]  619.42593 -305.7195  294.57332\n[4,]   22.18875 -103.0864  118.33690\n\n\nAhora la conversación cambia.\nYa no preguntamos:\n¿Cuál será exactamente el beneficio?\nPreguntamos:\n¿Qué rango de beneficios es plausible bajo cada estrategia?\nEsta forma de pensar se parece mucho más a cómo toman decisiones las empresas reales."
+    "text": "9.12 Escenarios de negocio\nImaginemos tres niveles de descuento.\n\n\n\nEscenario\nDescuento\n\n\n\n\nConservador\n5%\n\n\nModerado\n20%\n\n\nAgresivo\n40%\n\n\n\nPodemos obtener predicciones para cada caso.\n\n# Obtener predicciones para cada caso\nescenarios_negocio &lt;- tibble(\n  Discount_c = c(5,20,40)\n)\n\npredicciones2 &lt;- posterior_predict(\n  modelo_profit,\n  newdata = escenarios_negocio\n) \npredicciones2[1:4,] # produce (3 columnas y 1000 filas):\n\n             1         2          3\n[1,]  34.89809 -136.1766  -59.47916\n[2,]  23.43315 -136.3448 -103.82738\n[3,] 162.07619 -111.8476  -41.56589\n[4,] 355.17684 -302.5479   29.99618\n\n\nAhora la conversación cambia.\nYa no preguntamos:\n¿Cuál será exactamente el beneficio?\nPreguntamos:\n¿Qué rango de beneficios es plausible bajo cada estrategia?\nEsta forma de pensar se parece mucho más a cómo toman decisiones las empresas reales.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#incertidumbre-del-modelo-e-incertidumbre-del-futuro",
     "href": "analysis/c09.html#incertidumbre-del-modelo-e-incertidumbre-del-futuro",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.13 Incertidumbre del modelo e incertidumbre del futuro",
-    "text": "9.13 Incertidumbre del modelo e incertidumbre del futuro\nExiste una diferencia importante.\nEl modelo tiene incertidumbre sobre:\n\nlos parámetros\nla pendiente\nel intercepto\n\nPero además existe incertidumbre sobre:\n\nclientes individuales\npedidos futuros\neventos imprevistos\n\nPor eso las predicciones futuras suelen ser más inciertas que las estimaciones de parámetros.\nEn lenguaje sencillo:\ncomprender el pasado es más fácil que anticipar exactamente el futuro."
+    "text": "9.13 Incertidumbre del modelo e incertidumbre del futuro\nExiste una diferencia importante.\nEl modelo tiene incertidumbre sobre:\n\nlos parámetros\nla pendiente\nel intercepto\n\nPero además existe incertidumbre sobre:\n\nclientes individuales\npedidos futuros\neventos imprevistos\n\nPor eso las predicciones futuras suelen ser más inciertas que las estimaciones de parámetros.\nEn lenguaje sencillo:\ncomprender el pasado es más fácil que anticipar exactamente el futuro.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#por-qué-las-bandas-plausibles-son-más-honestas",
     "href": "analysis/c09.html#por-qué-las-bandas-plausibles-son-más-honestas",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.14 ¿Por qué las bandas plausibles son más honestas?",
-    "text": "9.14 ¿Por qué las bandas plausibles son más honestas?\nImagina dos analistas.\nAnalista A:\n\"El beneficio será exactamente $30.\"\nAnalista B:\n\"El beneficio probablemente estará entre $10 y $50.\"\nEl segundo analista reconoce explícitamente la incertidumbre.\nY precisamente por eso suele ofrecer información más útil para la toma de decisiones.\n\nLas bandas plausibles no muestran debilidad.\nMuestran honestidad analítica."
+    "text": "9.14 ¿Por qué las bandas plausibles son más honestas?\nImagina dos analistas.\nAnalista A:\n\"El beneficio será exactamente $30.\"\nAnalista B:\n\"El beneficio probablemente estará entre $10 y $50.\"\nEl segundo analista reconoce explícitamente la incertidumbre.\nY precisamente por eso suele ofrecer información más útil para la toma de decisiones.\n\nLas bandas plausibles no muestran debilidad.\nMuestran honestidad analítica.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#aplicación-en-negocios-reales",
     "href": "analysis/c09.html#aplicación-en-negocios-reales",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.15 Aplicación en negocios reales",
-    "text": "9.15 Aplicación en negocios reales\nLas empresas rara vez operan con números exactos.\nNormalmente trabajan con escenarios.\nPor ejemplo:\n\nInventario\nEn lugar de asumir:\nvenderemos exactamente 1.000 unidades\nconsideran:\npodríamos vender entre 800 y 1.200 unidades.\n\n\n\nPresupuestos\nEn lugar de:\nbeneficio = $50.000\nutilizan:\nbeneficio plausible entre $40.000 y $60.000.\n\n\n\nMarketing\nEn lugar de:\nobtendremos 500 clientes\nconsideran:\nentre 400 y 650 clientes.\nLa gestión moderna consiste en prepararse para varios futuros plausibles."
+    "text": "9.15 Aplicación en negocios reales\nLas empresas rara vez operan con números exactos.\nNormalmente trabajan con escenarios.\nPor ejemplo:\n\nInventario\nEn lugar de asumir:\nvenderemos exactamente 1.000 unidades\nconsideran:\npodríamos vender entre 800 y 1.200 unidades.\n\n\n\nPresupuestos\nEn lugar de:\nbeneficio = $50.000\nutilizan:\nbeneficio plausible entre $40.000 y $60.000.\n\n\n\nMarketing\nEn lugar de:\nobtendremos 500 clientes\nconsideran:\nentre 400 y 650 clientes.\nLa gestión moderna consiste en prepararse para varios futuros plausibles.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#reflexión-bayesiana",
     "href": "analysis/c09.html#reflexión-bayesiana",
     "title": "9.- Predicciones probabilísticas",
     "section": "Reflexión bayesiana",
-    "text": "Reflexión bayesiana\nUno de los errores más frecuentes en análisis de datos es confundir una predicción con una promesa.\nLos modelos probabilísticos nos recuerdan algo importante:\nToda predicción contiene incertidumbre.\nLa incertidumbre no significa ignorancia.\nSignifica reconocer honestamente los límites de nuestro conocimiento.\nCuando mostramos distribuciones predictivas y bandas plausibles estamos comunicando una visión más realista del futuro.\nNo estamos diciendo:\n\"Esto ocurrirá.\"\nEstamos diciendo:\n\"Esto parece razonablemente plausible dada la información disponible.\"\nY esa diferencia es precisamente la esencia del pensamiento bayesiano."
+    "text": "Reflexión bayesiana\nUno de los errores más frecuentes en análisis de datos es confundir una predicción con una promesa.\nLos modelos probabilísticos nos recuerdan algo importante:\nToda predicción contiene incertidumbre.\nLa incertidumbre no significa ignorancia.\nSignifica reconocer honestamente los límites de nuestro conocimiento.\nCuando mostramos distribuciones predictivas y bandas plausibles estamos comunicando una visión más realista del futuro.\nNo estamos diciendo:\n\"Esto ocurrirá.\"\nEstamos diciendo:\n\"Esto parece razonablemente plausible dada la información disponible.\"\nY esa diferencia es precisamente la esencia del pensamiento bayesiano.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#errores-frecuentes-de-interpretación",
     "href": "analysis/c09.html#errores-frecuentes-de-interpretación",
     "title": "9.- Predicciones probabilísticas",
     "section": "Errores frecuentes de interpretación",
-    "text": "Errores frecuentes de interpretación\n\nError 1\nPensar que la línea central es el futuro verdadero.\nLa línea central es solamente un resumen.\n\n\n\nError 2\nIgnorar la amplitud de la banda plausible.\nLa amplitud contiene información valiosa sobre riesgo.\n\n\n\nError 3\nComparar únicamente valores promedio.\nLos rangos también importan.\n\n\n\nError 4\nSuponer que una predicción es una garantía.\nLas predicciones describen posibilidades, no certezas."
+    "text": "Errores frecuentes de interpretación\n\nError 1\nPensar que la línea central es el futuro verdadero.\nLa línea central es solamente un resumen.\n\n\n\nError 2\nIgnorar la amplitud de la banda plausible.\nLa amplitud contiene información valiosa sobre riesgo.\n\n\n\nError 3\nComparar únicamente valores promedio.\nLos rangos también importan.\n\n\n\nError 4\nSuponer que una predicción es una garantía.\nLas predicciones describen posibilidades, no certezas.",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   },
   {
     "objectID": "analysis/c09.html#ejercicios",
     "href": "analysis/c09.html#ejercicios",
     "title": "9.- Predicciones probabilísticas",
     "section": "Ejercicios",
-    "text": "Ejercicios\n\nEjercicio 1\nGenera bandas plausibles utilizando:\n\nSales como variable respuesta.\n\n¿Cómo cambia la incertidumbre?\n\n\nEjercicio 2\nCompara escenarios de descuento:\n\n0%\n10%\n30%\n50%\n\n¿Qué diferencias observas en las distribuciones predictivas?\n\n\nEjercicio 3\nConstruye un gráfico con 100 futuros plausibles utilizando posterior_predict().\n¿Qué te transmite visualmente?\n\n\nEjercicio 4\nIdentifica un escenario donde el valor promedio parezca atractivo, pero la incertidumbre sea muy amplia.\n¿Tomarías esa decisión?\n¿Por qué?\n\n\nEjercicio 5\nExplica con tus propias palabras la diferencia entre:\n\nuna predicción puntual\nuna distribución predictiva"
+    "text": "Ejercicios\n\nEjercicio 1\nGenera bandas plausibles utilizando:\n\nSales como variable respuesta.\n\n¿Cómo cambia la incertidumbre?\n\n\nEjercicio 2\nCompara escenarios de descuento:\n\n0%\n10%\n30%\n50%\n\n¿Qué diferencias observas en las distribuciones predictivas?\n\n\nEjercicio 3\nConstruye un gráfico con 100 futuros plausibles utilizando posterior_predict().\n¿Qué te transmite visualmente?\n\n\nEjercicio 4\nIdentifica un escenario donde el valor promedio parezca atractivo, pero la incertidumbre sea muy amplia.\n¿Tomarías esa decisión?\n¿Por qué?\n\n\nEjercicio 5\nExplica con tus propias palabras la diferencia entre:\n\nuna predicción puntual\nuna distribución predictiva",
+    "crumbs": [
+      "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
+      "9.- Predicciones probabilísticas"
+    ]
   }
 ]

@@ -117,9 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
-      Decisiones bajo incertidumbre - Business Analytics Bayesiano con R
-      </li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c07.html">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</a></li><li class="breadcrumb-item"><a href="../analysis/c09.html">9.- Predicciones probabilísticas</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -235,6 +233,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">9.- Predicciones probabilísticas</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -304,7 +308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c07.html">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</a></li><li class="breadcrumb-item"><a href="../analysis/c09.html">9.- Predicciones probabilísticas</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">9.- Predicciones probabilísticas</h1>
 </div>
@@ -505,11 +509,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>predicciones[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>             1         2         3         4
-[1,]  79.35835 -204.9265 485.07072 -350.0002
-[2,] -95.92428 -255.6984 -78.63505 -217.0911
-[3,]   3.04947  248.1678 455.80452  438.6369
-[4,] 323.22550 -292.1522  24.43901 -160.9200</code></pre>
+<pre><code>             1         2         3          4
+[1,]  127.9585  374.8490 -236.2800 -111.45925
+[2,] -214.8982  168.3496  243.3044   60.55305
+[3,]  114.1008 -176.8744  535.4702 -164.25150
+[4,] -211.2330 -217.1305  497.8658 -111.58314</code></pre>
 </div>
 </div>
 <p>[ reached ‘max’ / getOption(“max.print”) – omitted 996 rows ]</p>
@@ -579,13 +583,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 7 × 4
   Discount_c mediana    li    ls
        &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1          0   71.2  -297.  419.
-2          5   31.0  -328.  402.
-3         10   45.8  -312.  404.
-4         15   25.6  -344.  420.
-5         20   25.6  -335.  420.
-6         25    3.27 -361.  383.
-7         30  -17.9  -413.  366.</code></pre>
+1          0   80.7  -303.  438.
+2          5   44.8  -322.  441.
+3         10   28.5  -305.  395.
+4         15   24.2  -331.  427.
+5         20   33.1  -366.  395.
+6         25    2.85 -378.  366.
+7         30  -10.2  -365.  381.</code></pre>
 </div>
 </div>
 <section id="entendiendo-el-código" class="level3">
@@ -598,33 +602,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(predicciones, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fl">0.05</span>) <span class="co"># produce: </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        1         2         3         4         5         6         7         8 
--296.9334 -328.2617 -311.8690 -344.3455 -334.8719 -361.3302 -412.6808 -405.3938 
+-302.6284 -321.7946 -305.0633 -330.6706 -366.0190 -378.2409 -364.6010 -391.8511 
         9        10        11        12        13        14        15        16 
--406.3348 -412.8152 -460.8076 -455.6983 -458.4377 -483.9075 -473.3593 -475.4579 
+-409.6352 -429.2318 -416.9962 -430.7802 -465.1202 -491.2621 -477.2188 -476.6683 
        17 
--515.1864 </code></pre>
+-521.1988 </code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(predicciones, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fl">0.05</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        1         2         3         4         5         6         7         8 
--296.9334 -328.2617 -311.8690 -344.3455 -334.8719 -361.3302 -412.6808 -405.3938 
+-302.6284 -321.7946 -305.0633 -330.6706 -366.0190 -378.2409 -364.6010 -391.8511 
         9        10        11        12        13        14        15        16 
--406.3348 -412.8152 -460.8076 -455.6983 -458.4377 -483.9075 -473.3593 -475.4579 
+-409.6352 -429.2318 -416.9962 -430.7802 -465.1202 -491.2621 -477.2188 -476.6683 
        17 
--515.1864 </code></pre>
+-521.1988 </code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(predicciones, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fl">0.95</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1        2        3        4        5        6        7        8 
-419.2393 401.7334 404.2375 419.6809 420.0500 382.8686 365.6406 376.7687 
+438.0701 440.8573 394.7750 427.4786 395.4274 365.9891 381.1589 348.5475 
        9       10       11       12       13       14       15       16 
-312.4186 344.9542 292.1190 294.4112 285.1777 283.2315 248.9420 265.2938 
+350.5614 334.0927 351.2621 280.0479 292.3668 288.6414 250.2079 230.1644 
       17 
-238.0259 </code></pre>
+256.8221 </code></pre>
 </div>
 </div>
 </section>
@@ -703,16 +707,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 1,700 × 3
    simulacion escenario profit
         &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
- 1          1 1          408. 
- 2          1 2           79.6
- 3          1 3           46.4
- 4          1 4          -25.5
- 5          1 5          -38.1
- 6          1 6         -389. 
- 7          1 7          174. 
- 8          1 8          528. 
- 9          1 9         -370. 
-10          1 10         -34.1
+ 1          1 1           18.6
+ 2          1 2          303. 
+ 3          1 3         -229. 
+ 4          1 4          433. 
+ 5          1 5          -89.4
+ 6          1 6          101. 
+ 7          1 7          272. 
+ 8          1 8          123. 
+ 9          1 9         -339. 
+10          1 10        -267. 
 # ℹ 1,690 more rows</code></pre>
 </div>
 </div>
@@ -724,11 +728,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>escenarios2 <span class="ot">&lt;-</span> predicciones </span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce: 17 columnas , 1000 filas</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>             1         2         3         4
-[1,]  79.35835 -204.9265 485.07072 -350.0002
-[2,] -95.92428 -255.6984 -78.63505 -217.0911
-[3,]   3.04947  248.1678 455.80452  438.6369
-[4,] 323.22550 -292.1522  24.43901 -160.9200</code></pre>
+<pre><code>             1         2         3          4
+[1,]  127.9585  374.8490 -236.2800 -111.45925
+[2,] -214.8982  168.3496  243.3044   60.55305
+[3,]  114.1008 -176.8744  535.4702 -164.25150
+[4,] -211.2330 -217.1305  497.8658 -111.58314</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -737,11 +741,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() </span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce (17 columnas, 1000 filas):</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          1         2         3         4
-1  79.35835 -204.9265 485.07072 -350.0002
-2 -95.92428 -255.6984 -78.63505 -217.0911
-3   3.04947  248.1678 455.80452  438.6369
-4 323.22550 -292.1522  24.43901 -160.9200</code></pre>
+<pre><code>          1         2         3          4
+1  127.9585  374.8490 -236.2800 -111.45925
+2 -214.8982  168.3496  243.3044   60.55305
+3  114.1008 -176.8744  535.4702 -164.25150
+4 -211.2330 -217.1305  497.8658 -111.58314</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -751,11 +755,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">100</span>) <span class="co"># escoger aleatoriamente 100 participantes</span></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce (17 filas, 100 columnas) </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            1         2         3          4
-1  89.4032502  189.0426  186.8672   25.12711
-2   0.7864994  194.7013  226.7766 -206.16778
-3 131.9783080 -298.9283 -172.7289 -133.91356
-4 248.4952634  146.4734  208.9917 -305.37190</code></pre>
+<pre><code>           1          2          3         4
+1  59.307484 -342.68409  -88.53183  136.6269
+2 120.395815  240.70402 -193.63095 -353.0309
+3 150.697472  -32.81547 -122.44038 -116.7228
+4   3.849249  455.69426  138.76505  -63.2346</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -767,11 +771,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="co"># y numerar las filas</span></span>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">14</span><span class="sc">:-</span><span class="dv">1</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          15         16        17 simulacion
-1   38.02450 -175.08698 -128.2173          1
-2  -29.74975  -77.15793 -270.2415          2
-3  188.30061  310.98537 -185.2524          3
-4 -400.00347 -272.83221 -289.9921          4</code></pre>
+<pre><code>           15          16        17 simulacion
+1  185.066402 -328.782740 -482.5944          1
+2 -232.494609  155.725731  -36.7883          2
+3   -2.340326    6.434715 -185.9234          3
+4  164.017554 -114.231937 -224.2209          4</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -787,16 +791,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 1,700 × 3
    simulacion escenario profit
         &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
- 1          1 1          255. 
- 2          1 2           37.8
- 3          1 3         -201. 
- 4          1 4         -174. 
- 5          1 5          154. 
- 6          1 6          -54.4
- 7          1 7          229. 
- 8          1 8         -297. 
- 9          1 9          312. 
-10          1 10          72.7
+ 1          1 1          243. 
+ 2          1 2          284. 
+ 3          1 3          132. 
+ 4          1 4         -167. 
+ 5          1 5         -162. 
+ 6          1 6         -364. 
+ 7          1 7          115. 
+ 8          1 8         -227. 
+ 9          1 9           35.0
+10          1 10        -366. 
 # ℹ 1,690 more rows</code></pre>
 </div>
 </div>
@@ -872,11 +876,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>) </span>
 <span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>predicciones2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,] <span class="co"># produce (3 columnas y 1000 filas):</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              1         2          3
-[1,]   39.90153  211.6474 -459.25979
-[2,] -178.28011  159.0315   72.46818
-[3,]  619.42593 -305.7195  294.57332
-[4,]   22.18875 -103.0864  118.33690</code></pre>
+<pre><code>             1         2          3
+[1,]  34.89809 -136.1766  -59.47916
+[2,]  23.43315 -136.3448 -103.82738
+[3,] 162.07619 -111.8476  -41.56589
+[4,] 355.17684 -302.5479   29.99618</code></pre>
 </div>
 </div>
 <p>Ahora la conversación cambia.</p>
@@ -1437,24 +1441,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
+<p>Decisiones bajo incertidumbre, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
       <ul class="footer-items list-unstyled">
     <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
       <i class="bi bi-github" role="img">
 </i> 
     </a>
   </li>  
     <li class="nav-item compact">
-    <a class="nav-link" href="https://bsky.app/">
-      <i class="bi bi-bluesky" role="img">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
 </i> 
     </a>
   </li>  
 </ul>
-    </div>   
-    <div class="nav-footer-center">
-<p>Copyright, David Villafuerte MD.</p>
-</div>
+    </div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
