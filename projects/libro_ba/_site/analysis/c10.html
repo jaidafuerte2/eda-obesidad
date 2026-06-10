@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>8.- Interpretar modelos probabilísticos – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<title>10.- Introducción al churn y al riesgo de abandono – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c07.html">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</a></li><li class="breadcrumb-item"><a href="../analysis/c08.html">8.- Interpretar modelos probabilísticos</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c10.html">PARTE IV — RIESGO, CHURN Y DECISIONES</a></li><li class="breadcrumb-item"><a href="../analysis/c10.html">10.- Introducción al churn y al riesgo de abandono</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -270,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link active">
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
   </div>
 </li>
@@ -293,7 +293,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">10.- Introducción al churn y al riesgo de abandono</span></a>
   </div>
 </li>
@@ -310,23 +310,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
-  <li><a href="#la-incomodidad-de-la-incertidumbre" id="toc-la-incomodidad-de-la-incertidumbre" class="nav-link" data-scroll-target="#la-incomodidad-de-la-incertidumbre">La incomodidad de la incertidumbre</a></li>
-  <li><a href="#recordatorio-filosófico-importante" id="toc-recordatorio-filosófico-importante" class="nav-link" data-scroll-target="#recordatorio-filosófico-importante">Recordatorio filosófico importante</a></li>
-  <li><a href="#qué-es-una-distribución-posterior" id="toc-qué-es-una-distribución-posterior" class="nav-link" data-scroll-target="#qué-es-una-distribución-posterior">¿Qué es una distribución posterior?</a></li>
-  <li><a href="#pensar-en-plausibilidad" id="toc-pensar-en-plausibilidad" class="nav-link" data-scroll-target="#pensar-en-plausibilidad">Pensar en plausibilidad</a></li>
-  <li><a href="#un-primer-modelo-para-interpretar" id="toc-un-primer-modelo-para-interpretar" class="nav-link" data-scroll-target="#un-primer-modelo-para-interpretar">Un primer modelo para interpretar</a></li>
-  <li><a href="#ajustando-el-modelo" id="toc-ajustando-el-modelo" class="nav-link" data-scroll-target="#ajustando-el-modelo">Ajustando el modelo</a></li>
-  <li><a href="#extrayendo-la-distribución-posterior" id="toc-extrayendo-la-distribución-posterior" class="nav-link" data-scroll-target="#extrayendo-la-distribución-posterior">Extrayendo la distribución posterior</a></li>
-  <li><a href="#visualizando-la-incertidumbre" id="toc-visualizando-la-incertidumbre" class="nav-link" data-scroll-target="#visualizando-la-incertidumbre">Visualizando la incertidumbre</a></li>
-  <li><a href="#cómo-leer-este-gráfico" id="toc-cómo-leer-este-gráfico" class="nav-link" data-scroll-target="#cómo-leer-este-gráfico">Cómo leer este gráfico</a></li>
-  <li><a href="#credible-intervals" id="toc-credible-intervals" class="nav-link" data-scroll-target="#credible-intervals">Credible Intervals</a></li>
-  <li><a href="#interpretación-intuitiva" id="toc-interpretación-intuitiva" class="nav-link" data-scroll-target="#interpretación-intuitiva">Interpretación intuitiva</a></li>
-  <li><a href="#el-lenguaje-importa" id="toc-el-lenguaje-importa" class="nav-link" data-scroll-target="#el-lenguaje-importa">El lenguaje importa</a></li>
-  <li><a href="#visualizando-intervalos-plausibles" id="toc-visualizando-intervalos-plausibles" class="nav-link" data-scroll-target="#visualizando-intervalos-plausibles">Visualizando intervalos plausibles</a></li>
-  <li><a href="#bandas-plausibles-en-una-regresión" id="toc-bandas-plausibles-en-una-regresión" class="nav-link" data-scroll-target="#bandas-plausibles-en-una-regresión">Bandas plausibles en una regresión</a></li>
-  <li><a href="#la-incertidumbre-del-modelo" id="toc-la-incertidumbre-del-modelo" class="nav-link" data-scroll-target="#la-incertidumbre-del-modelo">La incertidumbre del modelo</a></li>
-  <li><a href="#predicciones-e-incertidumbre" id="toc-predicciones-e-incertidumbre" class="nav-link" data-scroll-target="#predicciones-e-incertidumbre">Predicciones e incertidumbre</a></li>
-  <li><a href="#por-qué-esto-mejora-las-decisiones" id="toc-por-qué-esto-mejora-las-decisiones" class="nav-link" data-scroll-target="#por-qué-esto-mejora-las-decisiones">¿Por qué esto mejora las decisiones?</a></li>
+  <li><a href="#el-costo-de-perder-clientes" id="toc-el-costo-de-perder-clientes" class="nav-link" data-scroll-target="#el-costo-de-perder-clientes">El costo de perder clientes</a></li>
+  <li><a href="#qué-es-churn" id="toc-qué-es-churn" class="nav-link" data-scroll-target="#qué-es-churn">¿Qué es churn?</a></li>
+  <li><a href="#no-todos-los-clientes-tienen-el-mismo-riesgo" id="toc-no-todos-los-clientes-tienen-el-mismo-riesgo" class="nav-link" data-scroll-target="#no-todos-los-clientes-tienen-el-mismo-riesgo">No todos los clientes tienen el mismo riesgo</a></li>
+  <li><a href="#riesgo-individual" id="toc-riesgo-individual" class="nav-link" data-scroll-target="#riesgo-individual">Riesgo individual</a></li>
+  <li><a href="#explorando-el-dataset" id="toc-explorando-el-dataset" class="nav-link" data-scroll-target="#explorando-el-dataset">Explorando el dataset</a></li>
+  <li><a href="#cuántos-clientes-abandonaron" id="toc-cuántos-clientes-abandonaron" class="nav-link" data-scroll-target="#cuántos-clientes-abandonaron">¿Cuántos clientes abandonaron?</a>
+  <ul class="collapse">
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#churn-y-antigüedad" id="toc-churn-y-antigüedad" class="nav-link" data-scroll-target="#churn-y-antigüedad">Churn y antigüedad</a>
+  <ul class="collapse">
+  <li><a href="#interpretación-1" id="toc-interpretación-1" class="nav-link" data-scroll-target="#interpretación-1">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#churn-y-tipo-de-contrato" id="toc-churn-y-tipo-de-contrato" class="nav-link" data-scroll-target="#churn-y-tipo-de-contrato">Churn y tipo de contrato</a>
+  <ul class="collapse">
+  <li><a href="#interpretación-2" id="toc-interpretación-2" class="nav-link" data-scroll-target="#interpretación-2">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#churn-y-pagos-mensuales" id="toc-churn-y-pagos-mensuales" class="nav-link" data-scroll-target="#churn-y-pagos-mensuales">Churn y pagos mensuales</a>
+  <ul class="collapse">
+  <li><a href="#interpretación-3" id="toc-interpretación-3" class="nav-link" data-scroll-target="#interpretación-3">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#de-etiquetas-a-probabilidades" id="toc-de-etiquetas-a-probabilidades" class="nav-link" data-scroll-target="#de-etiquetas-a-probabilidades">De etiquetas a probabilidades</a></li>
+  <li><a href="#por-qué-son-útiles-las-probabilidades" id="toc-por-qué-son-útiles-las-probabilidades" class="nav-link" data-scroll-target="#por-qué-son-útiles-las-probabilidades">¿Por qué son útiles las probabilidades?</a></li>
+  <li><a href="#incertidumbre-en-clasificación" id="toc-incertidumbre-en-clasificación" class="nav-link" data-scroll-target="#incertidumbre-en-clasificación">Incertidumbre en clasificación</a></li>
   <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">Reflexión bayesiana</a></li>
   <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
   <ul class="collapse">
@@ -335,7 +342,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
   <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
   <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
-  <li><a href="#ejercicio-6" id="toc-ejercicio-6" class="nav-link" data-scroll-target="#ejercicio-6">Ejercicio 6</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -343,9 +349,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c07.html">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</a></li><li class="breadcrumb-item"><a href="../analysis/c08.html">8.- Interpretar modelos probabilísticos</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c10.html">PARTE IV — RIESGO, CHURN Y DECISIONES</a></li><li class="breadcrumb-item"><a href="../analysis/c10.html">10.- Introducción al churn y al riesgo de abandono</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">8.- Interpretar modelos probabilísticos</h1>
+<h1 class="title">10.- Introducción al churn y al riesgo de abandono</h1>
 </div>
 
 
@@ -364,456 +370,413 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introducción" class="level2">
 <h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
-<p>Hasta este punto del libro hemos construido simulaciones, explorado distribuciones, ajustado modelos bayesianos sencillos y aprendido a pensar en términos de incertidumbre.</p>
-<p>Sin embargo, existe una diferencia enorme entre:</p>
+<p>Hasta ahora hemos utilizado modelos para comprender fenómenos continuos: ventas, ingresos, ganancias y otras variables que pueden tomar muchos valores distintos.</p>
+<p>En esos problemas la pregunta principal suele ser:</p>
+<p><code>¿Cuánto esperamos vender?</code></p>
+<p>o</p>
+<p><code>¿Cuál podría ser la ganancia esperada?</code></p>
+<p>Sin embargo, muchas decisiones reales giran alrededor de una pregunta diferente:</p>
+<p><code>¿Qué tan probable es que ocurra un evento?</code></p>
+<p>Las compañías de telecomunicaciones se hacen esta pregunta todos los días.</p>
+<p>Algunos clientes permanecen durante años utilizando el mismo servicio. Otros cancelan después de pocos meses. Algunos parecen satisfechos. Otros muestran señales tempranas de abandono.</p>
+<p>El problema es que nadie conoce el futuro con certeza.</p>
+<p>Por eso las empresas no intentan adivinar exactamente qué clientes abandonarán. Lo que intentan es identificar cuáles parecen tener un mayor riesgo.</p>
+<p>Este cambio de perspectiva es importante.</p>
+<p>En lugar de predecir cantidades, comenzaremos a estimar probabilidades.</p>
+<p>En lugar de buscar certezas, aprenderemos a trabajar con grados de riesgo.</p>
+</section>
+<section id="el-costo-de-perder-clientes" class="level2">
+<h2 class="anchored" data-anchor-id="el-costo-de-perder-clientes">El costo de perder clientes</h2>
+<p>Imaginemos una empresa de telefonía móvil.</p>
+<p>Cada nuevo cliente requiere inversión:</p>
 <ul>
-<li>construir un modelo,</li>
-<li>y saber interpretarlo correctamente.</li>
+<li>publicidad</li>
+<li>promociones</li>
+<li>descuentos</li>
+<li>personal de ventas</li>
+<li>soporte inicial</li>
 </ul>
-<p>De hecho, en el mundo real la mayoría de los errores analíticos no ocurren porque los modelos sean malos.</p>
-<p>Ocurren porque las personas interpretan mal los resultados.</p>
-<p>Muchas veces queremos que los datos nos entreguen una respuesta definitiva:</p>
+<p>Conseguir nuevos clientes suele tener un costo considerable.</p>
+<p>Este costo se conoce como <strong>CAC (Customer Acquisition Cost)</strong> o costo de adquisición de clientes.</p>
+<p>Si un cliente abandona la empresa poco después de haber sido adquirido, gran parte de esa inversión puede perderse.</p>
+<p>Por esta razón, muchas organizaciones dedican una gran cantidad de recursos a la retención de clientes.</p>
+</section>
+<section id="qué-es-churn" class="level2">
+<h2 class="anchored" data-anchor-id="qué-es-churn">¿Qué es churn?</h2>
+<p>En términos simples, churn significa abandono.</p>
+<p>Un cliente presenta churn cuando:</p>
 <ul>
-<li>¿Funcionará la campaña?</li>
-<li>¿Debemos ofrecer descuentos?</li>
-<li>¿Aumentarán las ventas?</li>
-<li>¿Es una buena decisión?</li>
+<li>cancela un servicio</li>
+<li>deja de utilizar una plataforma</li>
+<li>termina una suscripción</li>
+<li>abandona una empresa para contratar a un competidor</li>
 </ul>
-<p>Pero los modelos probabilísticos rara vez responden con un sí o un no absoluto.</p>
-<p>Lo que hacen es mucho más útil:</p>
-<p>Nos ayudan a comprender qué escenarios son más plausibles que otros.</p>
-<p>Y eso cambia profundamente nuestra forma de tomar decisiones.</p>
-</section>
-<section id="la-incomodidad-de-la-incertidumbre" class="level2">
-<h2 class="anchored" data-anchor-id="la-incomodidad-de-la-incertidumbre">La incomodidad de la incertidumbre</h2>
-<p>Las personas solemos sentirnos cómodas con respuestas definitivas.</p>
-<p>Preferimos escuchar:</p>
-<p><code>"Las ventas aumentarán."</code></p>
-<p>en lugar de:</p>
-<p><code>"Las ventas probablemente aumentarán, aunque existe incertidumbre."</code></p>
-<p>Preferimos:</p>
-<p><code>"Este tratamiento funciona."</code></p>
-<p>en lugar de:</p>
-<p><code>"Este tratamiento parece funcionar para muchos pacientes, pero existe variabilidad."</code></p>
-<p>Preferimos:</p>
-<p><code>"Este cliente abandonará la empresa."</code></p>
-<p>en lugar de:</p>
-<p><code>"Existe una probabilidad elevada de abandono."</code></p>
-<p>Sin embargo, el mundo real rara vez ofrece certezas absolutas.</p>
-<p>Los negocios, la medicina, la economía e incluso nuestra vida cotidiana están llenos de incertidumbre.</p>
-<p>La pregunta no es cómo eliminarla.</p>
-<p>La pregunta es cómo pensar mejor dentro de ella.</p>
-</section>
-<section id="recordatorio-filosófico-importante" class="level2">
-<h2 class="anchored" data-anchor-id="recordatorio-filosófico-importante">Recordatorio filosófico importante</h2>
-<p>En capítulos anteriores vimos una idea que ahora vuelve a aparecer:</p>
-<p><code>Un modelo bayesiano no produce una única respuesta.</code></p>
-<p><code>Produce una distribución de respuestas plausibles.</code></p>
-<p>Esta idea es fundamental.</p>
-<p>Cuando simulábamos múltiples futuros posibles, observábamos distintos escenarios.</p>
-<p>Algunos eran más probables.</p>
-<p>Otros menos.</p>
-<p>Pero ninguno podía descartarse completamente.</p>
-<p>Los modelos bayesianos funcionan de manera similar.</p>
-<p>No producen una verdad única.</p>
-<p>Producen una distribución de posibilidades compatibles con los datos.</p>
-</section>
-<section id="qué-es-una-distribución-posterior" class="level2">
-<h2 class="anchored" data-anchor-id="qué-es-una-distribución-posterior">¿Qué es una distribución posterior?</h2>
-<p>Imaginemos que queremos entender cómo afecta el descuento (Discount) a la ganancia (Profit).</p>
-<p>Después de observar los datos, el modelo intenta estimar la pendiente de esa relación.</p>
-<p>En estadística clásica solemos recibir algo parecido a:</p>
-<p><code>La pendiente es -85.</code></p>
-<p>Pero un modelo bayesiano responde de forma distinta:</p>
-<p><code>La pendiente probablemente está cerca de -85, aunque valores entre -100 y -70 también parecen razonables.</code></p>
-<p>En lugar de un único valor obtenemos una distribución completa.</p>
-<p>Visualmente:</p>
+<p>En el dataset que utilizaremos, la variable Churn indica si un cliente abandonó o no el servicio.</p>
+<p>Aunque la variable tiene únicamente dos categorías:</p>
 <ul>
-<li>algunas zonas son muy plausibles,</li>
-<li>otras menos plausibles,</li>
-<li>algunas prácticamente incompatibles con los datos.</li>
+<li>Yes</li>
+<li>No</li>
 </ul>
-<p>La distribución posterior representa precisamente eso:</p>
-<p><code>Nuestra incertidumbre actual después de observar los datos.</code></p>
-</section>
-<section id="pensar-en-plausibilidad" class="level2">
-<h2 class="anchored" data-anchor-id="pensar-en-plausibilidad">Pensar en plausibilidad</h2>
-<p>Una forma intuitiva de interpretar una posterior es imaginar un mapa de calor.</p>
-<p>Las zonas más oscuras representan valores más compatibles con los datos.</p>
-<p>Las zonas más claras representan valores menos compatibles.</p>
-<p>No estamos preguntando:</p>
-<p><code>¿Cuál es el valor verdadero?</code></p>
-<p>Estamos preguntando:</p>
-<p><code>¿Qué valores parecen razonables dada la evidencia disponible?</code></p>
-<p>Este cambio de perspectiva es una de las mayores ventajas del pensamiento bayesiano.</p>
-</section>
-<section id="un-primer-modelo-para-interpretar" class="level2">
-<h2 class="anchored" data-anchor-id="un-primer-modelo-para-interpretar">Un primer modelo para interpretar</h2>
-<p>Utilizaremos una regresión sencilla:</p>
-<p>Profit = β0 + β1​Discount + ϵ</p>
-<p>donde:</p>
+<p>el fenómeno que representa es mucho más complejo.</p>
+<p>Detrás de cada decisión de abandono existen múltiples factores:</p>
 <ul>
-<li><strong>Profit</strong> representa la ganancia.</li>
-<li><strong>Discount</strong> representa el descuento aplicado.</li>
-<li>β₀ representa la ganancia esperada cuando no existe descuento.</li>
-<li>β₁ representa cómo cambia la ganancia cuando aumentan los - descuentos.</li>
+<li>precio</li>
+<li>satisfacción</li>
+<li>competencia</li>
+<li>calidad del servicio</li>
+<li>circunstancias personales</li>
 </ul>
-<p>Nuestro objetivo no es construir el mejor modelo posible.</p>
-<p>Nuestro objetivo es aprender a interpretar incertidumbre.</p>
+<p>Por eso el churn es, en esencia, un problema de incertidumbre.</p>
 </section>
-<section id="ajustando-el-modelo" class="level2">
-<h2 class="anchored" data-anchor-id="ajustando-el-modelo">Ajustando el modelo</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>modelo_profit <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  Profit <span class="sc">~</span> Discount_c,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> superstore,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(modelo_profit) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>stan_glm
- family:       gaussian [identity]
- formula:      Profit ~ Discount_c
- observations: 9994
- predictors:   2
-------
-            Median MAD_SD
-(Intercept) 67.4    3.0  
-Discount_c  -2.5    0.1  
-
-Auxiliary parameter(s):
-      Median MAD_SD
-sigma 228.5    1.7 
-
-------
-* For help interpreting the printed output see ?print.stanreg
-* For info on the priors used see ?prior_summary.stanreg</code></pre>
-</div>
-</div>
-<p>Observa que utilizamos una configuración ligera.</p>
-<p>No estamos buscando máxima precisión computacional.</p>
-<p>Estamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.</p>
-<p><em>Interpretación</em>: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.</p>
-</section>
-<section id="extrayendo-la-distribución-posterior" class="level2">
-<h2 class="anchored" data-anchor-id="extrayendo-la-distribución-posterior">Extrayendo la distribución posterior</h2>
-<p>Ahora convertimos las simulaciones posteriores en un data frame.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer la distribución posterior </span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>draws_profit <span class="ot">&lt;-</span> posterior<span class="sc">::</span><span class="fu">as_draws_df</span>(modelo_profit) </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>draws_profit[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A draws_df: 6 iterations, 1 chains, and 3 variables
-  (Intercept) Discount_c sigma
-1          67       -2.4   229
-2          66       -2.5   231
-3          71       -2.5   227
-4          69       -2.4   227
-5          68       -2.5   229
-6          71       -2.5   227
-# ... hidden reserved variables {'.chain', '.iteration', '.draw'}</code></pre>
-</div>
-</div>
-<p>Cada fila representa un mundo plausible generado por el modelo.</p>
-<p>Cada mundo propone un valor ligeramente diferente para los parámetros.</p>
-</section>
-<section id="visualizando-la-incertidumbre" class="level2">
-<h2 class="anchored" data-anchor-id="visualizando-la-incertidumbre">Visualizando la incertidumbre</h2>
-<p>Podemos visualizar la distribución posterior de la pendiente.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar la incertidumbre</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>draws_profit <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Discount_c)) <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución posterior de la pendiente"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Pendiente - Descuento"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Densidad"</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="c08_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Este gráfico es extremadamente importante.</p>
-<p>No muestra un único resultado.</p>
-<p>Muestra una familia completa de resultados plausibles.</p>
-</section>
-<section id="cómo-leer-este-gráfico" class="level2">
-<h2 class="anchored" data-anchor-id="cómo-leer-este-gráfico">Cómo leer este gráfico</h2>
-<p>Supongamos que la distribución se concentra alrededor de valores negativos.</p>
-<p>La interpretación correcta sería:</p>
-<p><code>*Interpretación*: El gráfico muestra que es plausible que dentro de una parte considerable de la población de estudio, cada punto porcentual de descuento disminuya las ganancias entre 2.7 y 2.3 dólares.</code></p>
-<p>La interpretación incorrecta sería:</p>
-<p><code>Hemos demostrado que el efecto verdadero es exactamente -83.72.</code></p>
-<p>Los modelos probabilísticos rara vez justifican afirmaciones tan absolutas.</p>
-</section>
-<section id="credible-intervals" class="level2">
-<h2 class="anchored" data-anchor-id="credible-intervals">Credible Intervals</h2>
-<p>Una de las herramientas más útiles para resumir incertidumbre es el intervalo creíble.</p>
-<p>Un intervalo creíble del 95% contiene la mayor parte de los valores plausibles según el modelo.</p>
-<p>Por ejemplo:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear los intervalos posteriores</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  modelo_profit,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> <span class="fl">0.95</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                  2.5%     97.5%
-(Intercept)  61.475335  73.22331
-Discount_c   -2.691436  -2.26060
-sigma       225.502406 231.92616</code></pre>
-</div>
-</div>
-</section>
-<section id="interpretación-intuitiva" class="level2">
-<h2 class="anchored" data-anchor-id="interpretación-intuitiva">Interpretación intuitiva</h2>
-<p>La interpretación práctica sería:</p>
-<p><code>Es plausible que por cada punto porcentual de descuento las ganancias disminuyan en tre 2.27 y y 2.72 dólares en la población de estudio</code></p>
-<p>Observa lo que NO estamos diciendo.</p>
-<p>No estamos diciendo:</p>
-<p>❌ “La pendiente verdadera está atrapada dentro del intervalo.”</p>
-<p>Tampoco:</p>
-<p>❌ “Existe certeza de que el valor está ahí.”</p>
-<p>Preferimos decir:</p>
-<p>✅ “Los valores plausibles se concentran en ese rango.”</p>
-</section>
-<section id="el-lenguaje-importa" class="level2">
-<h2 class="anchored" data-anchor-id="el-lenguaje-importa">El lenguaje importa</h2>
-<p>A medida que maduramos analíticamente, el lenguaje cambia.</p>
-<p>Evitamos:</p>
-<ul>
-<li>demostrar</li>
-<li>probar definitivamente</li>
-<li>confirmar con certeza</li>
-</ul>
-<p>Y comenzamos a utilizar:</p>
-<ul>
-<li>sugerir</li>
-<li>indicar</li>
-<li>ser compatible con</li>
-<li>resultar plausible</li>
-</ul>
-<p>Este cambio puede parecer pequeño.</p>
-<p>Pero refleja una comprensión mucho más profunda de la incertidumbre.</p>
-</section>
-<section id="visualizando-intervalos-plausibles" class="level2">
-<h2 class="anchored" data-anchor-id="visualizando-intervalos-plausibles">Visualizando intervalos plausibles</h2>
-<p>Una excelente práctica consiste en visualizar explícitamente la incertidumbre.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir las simulaciones posteriores del modelo en una matriz</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as.matrix</span>(modelo_profit)[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>          parameters
-iterations (Intercept) Discount_c    sigma
-      [1,]    67.14558  -2.397601 229.2090
-      [2,]    66.21268  -2.474628 230.5121
-      [3,]    70.96432  -2.509756 227.4266
-      [4,]    69.02776  -2.362581 227.4321
-      [5,]    68.06122  -2.472203 228.7411
-      [6,]    70.92773  -2.529956 227.0517</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizando los intervalos plausibles de la pendiente (descuento)</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_intervals</span>(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(modelo_profit),</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"Discount_c"</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="c08_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Este gráfico permite observar:</p>
-<ul>
-<li>la posición del parámetro,</li>
-<li>la amplitud de la incertidumbre,</li>
-<li>la variabilidad posterior.</li>
-</ul>
-<p>La incertidumbre deja de ser invisible.</p>
-<p>Ahora puede verse.</p>
-<p><em>Interpretación</em>: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.</p>
-<p>También podemos visualizar el intercepto de esta forma:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los intervalos plausibles y la mediana del intercepto</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (ganancias) y la pendiente (descuento)</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_intervals</span>(</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>(modelo_profit),</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"(Intercept)"</span>,<span class="st">"Discount_c"</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="c08_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="bandas-plausibles-en-una-regresión" class="level2">
-<h2 class="anchored" data-anchor-id="bandas-plausibles-en-una-regresión">Bandas plausibles en una regresión</h2>
-<p>Otra visualización muy poderosa consiste en representar la incertidumbre directamente sobre la recta de regresión.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Representar la incertidumbre directamente sobre la recta de la </span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># regresión</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>superstore <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Discount_c, <span class="at">y =</span> Profit)) <span class="sc">+</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"lm"</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="c08_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Representar la incertidumbre directamente sobre la recta de la </span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># regresión con zoom en el eje Y</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>superstore <span class="sc">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Discount_c, <span class="at">y =</span> Profit)) <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_smooth</span>(</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"lm"</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">500</span>, <span class="dv">500</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="c08_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Posteriormente podemos reemplazar la línea clásica por predicciones posteriores provenientes del modelo bayesiano.</p>
-<p>La idea central es que:</p>
-<p><code>no existe una única línea.</code></p>
-<p>Existen muchas líneas plausibles.</p>
-</section>
-<section id="la-incertidumbre-del-modelo" class="level2">
-<h2 class="anchored" data-anchor-id="la-incertidumbre-del-modelo">La incertidumbre del modelo</h2>
-<p>Aquí llegamos a una de las ideas más importantes de todo el libro.</p>
-<p>Incluso si obtenemos:</p>
-<ul>
-<li>miles de observaciones,</li>
-<li>modelos sofisticados,</li>
-<li>computadoras rápidas,</li>
-</ul>
-<p>la incertidumbre nunca desaparece completamente.</p>
+<section id="no-todos-los-clientes-tienen-el-mismo-riesgo" class="level2">
+<h2 class="anchored" data-anchor-id="no-todos-los-clientes-tienen-el-mismo-riesgo">No todos los clientes tienen el mismo riesgo</h2>
+<p>Supongamos que observamos dos clientes.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cliente</th>
+<th>Antigüedad</th>
+<th>Tipo de contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ana</td>
+<td>72 meses</td>
+<td>Contrato de 2 años</td>
+</tr>
+<tr class="even">
+<td>Carlos</td>
+<td>2 meses</td>
+<td>Contrato mensual</td>
+</tr>
+</tbody>
+</table>
+<p>Sin conocer nada más, muchas personas sospecharían que Carlos tiene mayor riesgo de abandonar el servicio.</p>
 <p>¿Por qué?</p>
-<p>Porque los modelos son simplificaciones.</p>
-<p>Siempre existen:</p>
-<ul>
-<li>variables omitidas,</li>
-<li>factores desconocidos,</li>
-<li>cambios futuros,</li>
-<li>errores de medición,</li>
-<li>fenómenos no observados.</li>
-</ul>
-<p>Por ejemplo:</p>
-<p>La ganancia de una venta probablemente depende de:</p>
-<ul>
-<li>descuentos,</li>
-<li>categoría del producto,</li>
-<li>competencia,</li>
-<li>temporada,</li>
-<li>calidad del servicio,</li>
-<li>logística.</li>
-</ul>
-<p>Nuestro modelo utiliza únicamente una pequeña parte de esa realidad.</p>
-<p>Por eso debemos interpretar cualquier resultado con humildad.</p>
+<p>Porque su relación con la empresa parece menos estable.</p>
+<p>Esto ilustra una idea fundamental:</p>
+<p><code>Los riesgos no son iguales para todos los individuos.</code></p>
+<p>Los clientes son heterogéneos.</p>
+<p>Tienen comportamientos distintos, necesidades distintas y niveles de compromiso distintos.</p>
 </section>
-<section id="predicciones-e-incertidumbre" class="level2">
-<h2 class="anchored" data-anchor-id="predicciones-e-incertidumbre">Predicciones e incertidumbre</h2>
-<p>La incertidumbre es todavía mayor cuando intentamos predecir.</p>
-<p>Explicar el pasado suele ser más fácil que anticipar el futuro.</p>
-<p>Por esta razón las predicciones deben presentarse como rangos plausibles y no como números exactos.</p>
-<p>En capítulos posteriores profundizaremos en forecasting probabilístico y escenarios futuros.</p>
+<section id="riesgo-individual" class="level2">
+<h2 class="anchored" data-anchor-id="riesgo-individual">Riesgo individual</h2>
+<p>La idea de riesgo individual aparece en muchos campos.</p>
+<p>En medicina, dos pacientes pueden tener riesgos cardiovasculares diferentes.</p>
+<p>En seguros, dos conductores pueden tener probabilidades distintas de sufrir un accidente.</p>
+<p>En negocios ocurre exactamente lo mismo.</p>
+<p>Dos clientes pueden generar los mismos ingresos hoy y, sin embargo, presentar riesgos completamente diferentes de abandonar la empresa mañana.</p>
+<p>El objetivo de los modelos de churn no es identificar destinos inevitables.</p>
+<p>Su objetivo es estimar niveles plausibles de riesgo.</p>
 </section>
-<section id="por-qué-esto-mejora-las-decisiones" class="level2">
-<h2 class="anchored" data-anchor-id="por-qué-esto-mejora-las-decisiones">¿Por qué esto mejora las decisiones?</h2>
-<p>Una empresa nunca posee información perfecta.</p>
-<p>Aun así debe decidir.</p>
+<section id="explorando-el-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="explorando-el-dataset">Explorando el dataset</h2>
+<p>Veamos las primeras observaciones.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(telco) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 7,043
+Columns: 21
+$ customerID       &lt;chr&gt; "7590-VHVEG", "5575-GNVDE", "3668-QPYBK", "7795-CFOCW…
+$ gender           &lt;chr&gt; "Female", "Male", "Male", "Male", "Female", "Female",…
+$ SeniorCitizen    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Partner          &lt;chr&gt; "Yes", "No", "No", "No", "No", "No", "No", "No", "Yes…
+$ Dependents       &lt;chr&gt; "No", "No", "No", "No", "No", "No", "Yes", "No", "No"…
+$ tenure           &lt;dbl&gt; 1, 34, 2, 45, 2, 8, 22, 10, 28, 62, 13, 16, 58, 49, 2…
+$ PhoneService     &lt;chr&gt; "No", "Yes", "Yes", "No", "Yes", "Yes", "Yes", "No", …
+$ MultipleLines    &lt;chr&gt; "No phone service", "No", "No", "No phone service", "…
+$ InternetService  &lt;chr&gt; "DSL", "DSL", "DSL", "DSL", "Fiber optic", "Fiber opt…
+$ OnlineSecurity   &lt;chr&gt; "No", "Yes", "Yes", "Yes", "No", "No", "No", "Yes", "…
+$ OnlineBackup     &lt;chr&gt; "Yes", "No", "Yes", "No", "No", "No", "Yes", "No", "N…
+$ DeviceProtection &lt;chr&gt; "No", "Yes", "No", "Yes", "No", "Yes", "No", "No", "Y…
+$ TechSupport      &lt;chr&gt; "No", "No", "No", "Yes", "No", "No", "No", "No", "Yes…
+$ StreamingTV      &lt;chr&gt; "No", "No", "No", "No", "No", "Yes", "Yes", "No", "Ye…
+$ StreamingMovies  &lt;chr&gt; "No", "No", "No", "No", "No", "Yes", "No", "No", "Yes…
+$ Contract         &lt;chr&gt; "Month-to-month", "One year", "Month-to-month", "One …
+$ PaperlessBilling &lt;chr&gt; "Yes", "No", "Yes", "No", "Yes", "Yes", "Yes", "No", …
+$ PaymentMethod    &lt;chr&gt; "Electronic check", "Mailed check", "Mailed check", "…
+$ MonthlyCharges   &lt;dbl&gt; 29.85, 56.95, 53.85, 42.30, 70.70, 99.65, 89.10, 29.7…
+$ TotalCharges     &lt;dbl&gt; 29.85, 1889.50, 108.15, 1840.75, 151.65, 820.50, 1949…
+$ Churn            &lt;chr&gt; "No", "No", "Yes", "No", "Yes", "Yes", "No", "No", "Y…</code></pre>
+</div>
+</div>
+<p>El dataset contiene información sobre:</p>
+<ul>
+<li>características demográficas</li>
+<li>servicios contratados</li>
+<li>métodos de pago</li>
+<li>antigüedad del cliente</li>
+<li>costos mensuales</li>
+<li>abandono</li>
+</ul>
+<p>Cada fila representa un cliente.</p>
+</section>
+<section id="cuántos-clientes-abandonaron" class="level2">
+<h2 class="anchored" data-anchor-id="cuántos-clientes-abandonaron">¿Cuántos clientes abandonaron?</h2>
+<p>Nuestro primer paso será observar la distribución general del churn.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contar el churn</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>telco <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Churn) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  Churn     n
+  &lt;chr&gt; &lt;int&gt;
+1 No     5174
+2 Yes    1869</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Observar la distribución general del churn (abandono del cliente)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>telco <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Churn) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> Churn,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> n, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> Churn</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución del Churn"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Churn"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Cantidad"</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c10_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación">Interpretación</h3>
+<p>Este gráfico muestra cuántos clientes abandonaron y cuántos permanecieron.</p>
+<p>Es importante recordar que incluso si observamos muchos abandonos, todavía no sabemos quiénes tienen mayor riesgo.</p>
+<p>Para responder esa pregunta debemos explorar otras variables.</p>
+</section>
+</section>
+<section id="churn-y-antigüedad" class="level2">
+<h2 class="anchored" data-anchor-id="churn-y-antigüedad">Churn y antigüedad</h2>
+<p>Una de las variables más intuitivas es la antigüedad del cliente.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de la antiguedad del cliente (tenure - en meses) y el </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># churn (abandono)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  telco,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> tenure,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> Churn</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.7</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">bins =</span> <span class="dv">30</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Histograma de antiguedad y cancelación o churn"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Antiguedad"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Cantidad"</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c10_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación-1" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-1">Interpretación</h3>
+<p>Este gráfico permite observar cómo se distribuyen los clientes según el tiempo que llevan utilizando el servicio.</p>
+<p>Una pregunta interesante es:</p>
+<p><code>¿Los clientes más nuevos parecen abandonar con mayor frecuencia?</code></p>
+<p>No estamos buscando respuestas definitivas.</p>
+<p>Estamos buscando patrones plausibles.</p>
+</section>
+</section>
+<section id="churn-y-tipo-de-contrato" class="level2">
+<h2 class="anchored" data-anchor-id="churn-y-tipo-de-contrato">Churn y tipo de contrato</h2>
+<p>El tipo de contrato suele estar relacionado con el compromiso del cliente.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Grafico de barras del tipo de contrato y la cancelación o churn</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  telco,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> Contract,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> Churn</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">"fill"</span> <span class="co"># para ver las barras en proporción</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Proporción de Contratos y Cancelación o churn"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Tipo de contrato"</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Proporción"</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c10_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación-2" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-2">Interpretación</h3>
+<p>Las barras muestran proporciones.</p>
+<p>Si observamos diferencias importantes entre tipos de contrato, podríamos sospechar que algunos grupos presentan mayores niveles de riesgo.</p>
+<p>Sin embargo, debemos evitar una interpretación causal apresurada.</p>
+<p>Un patrón observado no demuestra automáticamente una causa.</p>
+</section>
+</section>
+<section id="churn-y-pagos-mensuales" class="level2">
+<h2 class="anchored" data-anchor-id="churn-y-pagos-mensuales">Churn y pagos mensuales</h2>
+<p>Otra variable relevante es el costo mensual.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagrama de densidad de los pagos mensuales y la cancelación o </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># churn</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  telco,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> MonthlyCharges,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> Churn</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Pagos mensuales y cancelación (churn)"</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Pagos mensuales"</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Densidad"</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c10_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación-3" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-3">Interpretación</h3>
+<p>Este gráfico permite comparar las distribuciones de pagos mensuales entre clientes que abandonaron y clientes que permanecieron.</p>
+<p>Las diferencias observadas pueden sugerir asociaciones interesantes que exploraremos con mayor profundidad en capítulos posteriores.</p>
+</section>
+</section>
+<section id="de-etiquetas-a-probabilidades" class="level2">
+<h2 class="anchored" data-anchor-id="de-etiquetas-a-probabilidades">De etiquetas a probabilidades</h2>
+<p>Tradicionalmente, podríamos pensar en churn como una etiqueta:</p>
+<ul>
+<li>abandona</li>
+<li>no abandona</li>
+</ul>
+<p>Sin embargo, esta visión es demasiado rígida.</p>
+<p>Consideremos tres clientes hipotéticos.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cliente</th>
+<th>Riesgo estimado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ana</td>
+<td>8%</td>
+</tr>
+<tr class="even">
+<td>Luis</td>
+<td>35%</td>
+</tr>
+<tr class="odd">
+<td>Carlos</td>
+<td>78%</td>
+</tr>
+</tbody>
+</table>
+<p>Ninguno de estos valores representa una certeza.</p>
+<p>Representan distintos niveles de plausibilidad.</p>
+<p>Esta es una idea central del pensamiento probabilístico:</p>
+<p><code>La incertidumbre puede expresarse mediante grados de creencia.</code></p>
+</section>
+<section id="por-qué-son-útiles-las-probabilidades" class="level2">
+<h2 class="anchored" data-anchor-id="por-qué-son-útiles-las-probabilidades">¿Por qué son útiles las probabilidades?</h2>
+<p>Supongamos que el departamento de retención dispone de recursos limitados.</p>
+<p>Solo puede contactar a cien clientes esta semana.</p>
+<p>¿Qué clientes deberían recibir atención primero?</p>
+<p>Las probabilidades ayudan a responder esta pregunta.</p>
+<p>No eliminan la incertidumbre.</p>
+<p>Pero permiten priorizar mejor las decisiones.</p>
+</section>
+<section id="incertidumbre-en-clasificación" class="level2">
+<h2 class="anchored" data-anchor-id="incertidumbre-en-clasificación">Incertidumbre en clasificación</h2>
+<p>Un error frecuente consiste en interpretar las predicciones como verdades absolutas.</p>
 <p>Por ejemplo:</p>
-<ul>
-<li>cuánto inventario comprar,</li>
-<li>cuánto descuento ofrecer,</li>
-<li>qué campaña lanzar,</li>
-<li>qué clientes retener.</li>
-</ul>
-<p>La alternativa no es:</p>
-<ul>
-<li>decidir con incertidumbre,</li>
-<li>o decidir con certeza.</li>
-</ul>
-<p>La realidad es:</p>
-<ul>
-<li>decidir con incertidumbre explícita,</li>
-<li>o decidir ignorándola.</li>
-</ul>
-<p>La primera opción suele producir decisiones mucho más robustas.</p>
+<p>❌ Este cliente abandonará.</p>
+<p>Una interpretación más apropiada sería:</p>
+<p>✅ Este cliente parece tener un riesgo relativamente alto de abandono.</p>
+<p>La diferencia puede parecer pequeña.</p>
+<p>Sin embargo, representa una filosofía completamente distinta.</p>
+<p>Los modelos trabajan con incertidumbre.</p>
+<p>Las personas siguen tomando las decisiones.</p>
 </section>
 <section id="reflexión-bayesiana" class="level2">
 <h2 class="anchored" data-anchor-id="reflexión-bayesiana">Reflexión bayesiana</h2>
-<p>Durante mucho tiempo la estadística fue presentada como una búsqueda de respuestas correctas.</p>
-<p>El enfoque bayesiano propone una visión distinta.</p>
-<p>Los modelos no son máquinas de verdad.</p>
-<p>Son herramientas para actualizar creencias frente a nueva evidencia.</p>
-<p>Por eso una distribución posterior no representa ignorancia.</p>
-<p>Representa algo mucho más valioso:</p>
-<p><code>una descripción honesta de lo que sabemos y de lo que todavía no sabemos.</code></p>
+<p>A lo largo de este libro hemos visto que la incertidumbre aparece en múltiples contextos.</p>
+<p>La incertidumbre no desaparece cuando cambiamos de ventas a churn.</p>
+<p>Simplemente adopta una nueva forma.</p>
+<p>Ahora ya no nos preguntamos cuánto ocurrirá.</p>
+<p>Nos preguntamos qué tan probable parece que ocurra algo.</p>
+<p>Desde una perspectiva bayesiana, las probabilidades no son certezas ocultas esperando ser descubiertas.</p>
+<p>Son herramientas para representar plausibilidad a partir de la información disponible.</p>
+<p>Por eso:</p>
+<p><code>El riesgo no es una etiqueta fija.</code></p>
+<p>Es una evaluación probabilística que puede cambiar cuando obtenemos nueva información.</p>
 </section>
 <section id="ejercicios" class="level2">
 <h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
 <section id="ejercicio-1" class="level3">
 <h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
-<p>Ajusta nuevamente el modelo:</p>
-<p><code>Profit ~ Discount_c</code></p>
-<p>y describe verbalmente la distribución posterior de la pendiente.</p>
-<p>No menciones valores exactos.</p>
-<p>Concéntrate en interpretar plausibilidad.</p>
+<p>Explora la distribución de la variable tenure.</p>
+<ul>
+<li>¿Existen muchos clientes nuevos?</li>
+<li>¿Existen muchos clientes antiguos?</li>
+</ul>
 </section>
 <section id="ejercicio-2" class="level3">
 <h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
-<p>Obtén un intervalo creíble del 95%.</p>
-<p>Explica su significado utilizando lenguaje natural.</p>
-<p>Evita terminología técnica.</p>
+<p>Construye un gráfico que compare churn según el método de pago.</p>
+<ul>
+<li>¿Observas diferencias entre grupos?</li>
+<li>¿Qué interpretaciones serían razonables?</li>
+<li>¿Qué interpretaciones serían exageradas?</li>
+</ul>
 </section>
 <section id="ejercicio-3" class="level3">
 <h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
-<p>Construye un gráfico de densidad posterior para la pendiente.</p>
-<p>Responde:</p>
-<ul>
-<li>¿La incertidumbre es amplia o estrecha?</li>
-<li>¿Qué podría explicar esa amplitud?</li>
-</ul>
+<p>Identifica tres variables que creas que podrían estar relacionadas con churn.</p>
+<p>Justifica tu respuesta utilizando intuición de negocio.</p>
 </section>
 <section id="ejercicio-4" class="level3">
 <h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
-<p>Escribe tres interpretaciones incorrectas y tres interpretaciones correctas de un intervalo creíble.</p>
+<p>Supón que dos clientes presentan probabilidades de churn de:</p>
+<ul>
+<li>15%</li>
+<li>60%</li>
+</ul>
+<p>Si solo pudieras contactar a uno de ellos, ¿a cuál elegirías y por qué?</p>
 </section>
 <section id="ejercicio-5" class="level3">
 <h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
-<p>Reflexiona:</p>
-<p>¿Por qué una empresa podría tomar mejores decisiones cuando reconoce explícitamente la incertidumbre?</p>
-</section>
-<section id="ejercicio-6" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-6">Ejercicio 6</h3>
-<p>Identifica al menos tres variables que podrían influir sobre Profit pero que no aparecen en el modelo.</p>
-<p>¿Cómo podría afectar esto la interpretación?</p>
+<p>Reflexiona sobre la siguiente afirmación:</p>
+<p><code>"Un modelo que asigna 80% de riesgo a un cliente no está afirmando que abandonará con certeza."</code></p>
+<p>¿Qué significa realmente esa probabilidad?</p>
 
 
 </section>

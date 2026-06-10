@@ -1,0 +1,415 @@
+---
+title: "10.- Introducción al churn y al riesgo de abandono"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+options(scipen = 999) # desactivar la notación científica
+
+library(tidyverse)
+
+telco <- read_csv("../data/telco_customer_churn.csv",
+                  guess_max = 10000,
+                  show_col_types = FALSE)
+#glimpse(superstore) # produce:
+```
+
+## Introducción
+
+Hasta ahora hemos utilizado modelos para comprender fenómenos continuos: ventas, ingresos, ganancias y otras variables que pueden tomar muchos valores distintos.
+
+En esos problemas la pregunta principal suele ser:
+
+`¿Cuánto esperamos vender?`
+
+o
+
+`¿Cuál podría ser la ganancia esperada?`
+
+Sin embargo, muchas decisiones reales giran alrededor de una pregunta diferente:
+
+`¿Qué tan probable es que ocurra un evento?`
+
+Las compañías de telecomunicaciones se hacen esta pregunta todos los días.
+
+Algunos clientes permanecen durante años utilizando el mismo servicio. Otros cancelan después de pocos meses. Algunos parecen satisfechos. Otros muestran señales tempranas de abandono.
+
+El problema es que nadie conoce el futuro con certeza.
+
+Por eso las empresas no intentan adivinar exactamente qué clientes abandonarán. Lo que intentan es identificar cuáles parecen tener un mayor riesgo.
+
+Este cambio de perspectiva es importante.
+
+En lugar de predecir cantidades, comenzaremos a estimar probabilidades.
+
+En lugar de buscar certezas, aprenderemos a trabajar con grados de riesgo.
+
+## El costo de perder clientes
+
+Imaginemos una empresa de telefonía móvil.
+
+Cada nuevo cliente requiere inversión:
+
+- publicidad
+- promociones
+- descuentos
+- personal de ventas
+- soporte inicial
+
+Conseguir nuevos clientes suele tener un costo considerable.
+
+Este costo se conoce como **CAC (Customer Acquisition Cost)** o costo de adquisición de clientes.
+
+Si un cliente abandona la empresa poco después de haber sido adquirido, gran parte de esa inversión puede perderse.
+
+Por esta razón, muchas organizaciones dedican una gran cantidad de recursos a la retención de clientes.
+
+## ¿Qué es churn?
+
+En términos simples, churn significa abandono.
+
+Un cliente presenta churn cuando:
+
+- cancela un servicio
+- deja de utilizar una plataforma
+- termina una suscripción
+- abandona una empresa para contratar a un competidor
+
+En el dataset que utilizaremos, la variable Churn indica si un cliente abandonó o no el servicio.
+
+Aunque la variable tiene únicamente dos categorías:
+
+- Yes
+- No
+
+el fenómeno que representa es mucho más complejo.
+
+Detrás de cada decisión de abandono existen múltiples factores:
+
+- precio
+- satisfacción
+- competencia
+- calidad del servicio
+- circunstancias personales
+
+Por eso el churn es, en esencia, un problema de incertidumbre.
+
+## No todos los clientes tienen el mismo riesgo
+
+Supongamos que observamos dos clientes.
+
+| Cliente | Antigüedad | Tipo de contrato   |
+| ------- | ---------- | ------------------ |
+| Ana     | 72 meses   | Contrato de 2 años |
+| Carlos  | 2 meses    | Contrato mensual   |
+
+Sin conocer nada más, muchas personas sospecharían que Carlos tiene mayor riesgo de abandonar el servicio.
+
+¿Por qué?
+
+Porque su relación con la empresa parece menos estable.
+
+Esto ilustra una idea fundamental:
+
+`Los riesgos no son iguales para todos los individuos.`
+
+Los clientes son heterogéneos.
+
+Tienen comportamientos distintos, necesidades distintas y niveles de compromiso distintos.
+
+## Riesgo individual
+
+La idea de riesgo individual aparece en muchos campos.
+
+En medicina, dos pacientes pueden tener riesgos cardiovasculares diferentes.
+
+En seguros, dos conductores pueden tener probabilidades distintas de sufrir un accidente.
+
+En negocios ocurre exactamente lo mismo.
+
+Dos clientes pueden generar los mismos ingresos hoy y, sin embargo, presentar riesgos completamente diferentes de abandonar la empresa mañana.
+
+El objetivo de los modelos de churn no es identificar destinos inevitables.
+
+Su objetivo es estimar niveles plausibles de riesgo.
+
+## Explorando el dataset
+
+Veamos las primeras observaciones.
+
+```{r}
+glimpse(telco) # produce:
+```
+
+El dataset contiene información sobre:
+
+- características demográficas
+- servicios contratados
+- métodos de pago
+- antigüedad del cliente
+- costos mensuales
+- abandono
+
+Cada fila representa un cliente.
+
+## ¿Cuántos clientes abandonaron?
+
+Nuestro primer paso será observar la distribución general del churn.
+
+```{r}
+# Contar el churn
+telco %>%
+  count(Churn) # produce:
+```
+
+```{r}
+# Observar la distribución general del churn (abandono del cliente)
+telco %>%
+  count(Churn) %>%
+  ggplot(
+    aes(
+      x = Churn,
+      y = n, 
+      fill = Churn
+    )
+  ) +
+  geom_col() +
+  labs(
+    title = "Distribución del Churn",
+    x = "Churn",
+    y = "Cantidad"
+  )
+```
+
+### Interpretación
+
+Este gráfico muestra cuántos clientes abandonaron y cuántos permanecieron.
+
+Es importante recordar que incluso si observamos muchos abandonos, todavía no sabemos quiénes tienen mayor riesgo.
+
+Para responder esa pregunta debemos explorar otras variables.
+
+## Churn y antigüedad
+
+Una de las variables más intuitivas es la antigüedad del cliente.
+
+```{r}
+# Histograma de la antiguedad del cliente (tenure - en meses) y el 
+# churn (abandono)
+ggplot(
+  telco,
+  aes(
+    x = tenure,
+    fill = Churn
+    )
+) +
+  geom_histogram(
+    alpha = 0.7,
+    bins = 30
+  ) + 
+  labs(
+    title = "Histograma de antiguedad y cancelación o churn",
+    x = "Antiguedad",
+    y = "Cantidad"
+  )
+```
+
+### Interpretación
+
+Este gráfico permite observar cómo se distribuyen los clientes según el tiempo que llevan utilizando el servicio.
+
+Una pregunta interesante es:
+
+`¿Los clientes más nuevos parecen abandonar con mayor frecuencia?`
+
+No estamos buscando respuestas definitivas.
+
+Estamos buscando patrones plausibles.
+
+## Churn y tipo de contrato
+
+El tipo de contrato suele estar relacionado con el compromiso del cliente.
+
+```{r}
+# Grafico de barras del tipo de contrato y la cancelación o churn
+ggplot(
+  telco,
+  aes(
+    x = Contract,
+    fill = Churn
+  )
+) +
+  geom_bar(
+    position = "fill" # para ver las barras en proporción
+  ) +
+  labs(
+    title = "Proporción de Contratos y Cancelación o churn",
+    x = "Tipo de contrato",
+    y = "Proporción"
+  )
+```
+
+### Interpretación
+
+Las barras muestran proporciones.
+
+Si observamos diferencias importantes entre tipos de contrato, podríamos sospechar que algunos grupos presentan mayores niveles de riesgo.
+
+Sin embargo, debemos evitar una interpretación causal apresurada.
+
+Un patrón observado no demuestra automáticamente una causa.
+
+## Churn y pagos mensuales
+
+Otra variable relevante es el costo mensual.
+
+```{r}
+# Diagrama de densidad de los pagos mensuales y la cancelación o 
+# churn
+ggplot(
+  telco,
+  aes(
+    x = MonthlyCharges,
+    fill = Churn
+  ) 
+) +
+  geom_density(
+    alpha = 0.4
+  ) +
+  labs(
+    title = "Pagos mensuales y cancelación (churn)",
+    x = "Pagos mensuales",
+    y = "Densidad"
+  )
+```
+
+### Interpretación
+
+Este gráfico permite comparar las distribuciones de pagos mensuales entre clientes que abandonaron y clientes que permanecieron.
+
+Las diferencias observadas pueden sugerir asociaciones interesantes que exploraremos con mayor profundidad en capítulos posteriores.
+
+## De etiquetas a probabilidades
+
+Tradicionalmente, podríamos pensar en churn como una etiqueta:
+
+- abandona
+- no abandona
+
+Sin embargo, esta visión es demasiado rígida.
+
+Consideremos tres clientes hipotéticos.
+
+| Cliente | Riesgo estimado |
+| ------- | --------------- |
+| Ana     | 8%              |
+| Luis    | 35%             |
+| Carlos  | 78%             |
+
+Ninguno de estos valores representa una certeza.
+
+Representan distintos niveles de plausibilidad.
+
+Esta es una idea central del pensamiento probabilístico:
+
+`La incertidumbre puede expresarse mediante grados de creencia.`
+
+## ¿Por qué son útiles las probabilidades?
+
+Supongamos que el departamento de retención dispone de recursos limitados.
+
+Solo puede contactar a cien clientes esta semana.
+
+¿Qué clientes deberían recibir atención primero?
+
+Las probabilidades ayudan a responder esta pregunta.
+
+No eliminan la incertidumbre.
+
+Pero permiten priorizar mejor las decisiones.
+
+## Incertidumbre en clasificación
+
+Un error frecuente consiste en interpretar las predicciones como verdades absolutas.
+
+Por ejemplo:
+
+❌ Este cliente abandonará.
+
+Una interpretación más apropiada sería:
+
+✅ Este cliente parece tener un riesgo relativamente alto de abandono.
+
+La diferencia puede parecer pequeña.
+
+Sin embargo, representa una filosofía completamente distinta.
+
+Los modelos trabajan con incertidumbre.
+
+Las personas siguen tomando las decisiones.
+
+## Reflexión bayesiana
+
+A lo largo de este libro hemos visto que la incertidumbre aparece en múltiples contextos.
+
+La incertidumbre no desaparece cuando cambiamos de ventas a churn.
+
+Simplemente adopta una nueva forma.
+
+Ahora ya no nos preguntamos cuánto ocurrirá.
+
+Nos preguntamos qué tan probable parece que ocurra algo.
+
+Desde una perspectiva bayesiana, las probabilidades no son certezas ocultas esperando ser descubiertas.
+
+Son herramientas para representar plausibilidad a partir de la información disponible.
+
+Por eso:
+
+`El riesgo no es una etiqueta fija.`
+
+Es una evaluación probabilística que puede cambiar cuando obtenemos nueva información.
+
+## Ejercicios
+
+### Ejercicio 1
+
+Explora la distribución de la variable tenure.
+
+- ¿Existen muchos clientes nuevos?
+- ¿Existen muchos clientes antiguos?
+
+### Ejercicio 2
+
+Construye un gráfico que compare churn según el método de pago.
+
+- ¿Observas diferencias entre grupos?
+- ¿Qué interpretaciones serían razonables?
+- ¿Qué interpretaciones serían exageradas?
+
+### Ejercicio 3
+
+Identifica tres variables que creas que podrían estar relacionadas con churn.
+
+Justifica tu respuesta utilizando intuición de negocio.
+
+### Ejercicio 4
+
+Supón que dos clientes presentan probabilidades de churn de:
+
+- 15%
+- 60%
+
+Si solo pudieras contactar a uno de ellos, ¿a cuál elegirías y por qué?
+
+### Ejercicio 5
+
+Reflexiona sobre la siguiente afirmación:
+
+`"Un modelo que asigna 80% de riesgo a un cliente no está afirmando que abandonará con certeza."`
+
+¿Qué significa realmente esa probabilidad?

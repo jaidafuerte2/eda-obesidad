@@ -5,14 +5,14 @@ website:
   title: "Decisiones bajo incertidumbre - Business Analytics Bayesiano con R"   
   favicon: favicon.ico
   navbar:
-    right:
+    left:
       - text: Inicio
         href: index.qmd
       - text: Sobre el autor
         href: analysis/c00_sobre_el_autor.qmd
       - text: Proyectos
         href: analysis/c00_proyectos.qmd
-    left:
+    right:
     - icon: linkedin
       href: https://www.linkedin.com/in/jaimedavidvillafuerte/
     - icon: github
@@ -44,11 +44,11 @@ website:
         - analysis/c07.qmd
         - analysis/c08.qmd
         - analysis/c09.qmd
-      #- section: "Módulo 4: Pensamiento causal"
+      - section: "PARTE IV — RIESGO, CHURN Y DECISIONES"
         #href: analysis/m04.qmd
-        #contents:
-        #- analysis/c08.qmd
-        #- analysis/c09.qmd
+        contents:
+        - analysis/c10.qmd
+        - analysis/c11.qmd
         #- analysis/c10.qmd
       #- section: "Módulo 5: Modelos Bayesianos en R"
         #href: analysis/m05.qmd
