@@ -28,11 +28,9 @@ superstore <- superstore %>%
   )
 ```
 
-
 ## El futuro como una distribución de posibilidades
 
-`“El futuro no es un punto exacto.`
-`Es una distribución de posibilidades plausibles.”`
+`“El futuro no es un punto exacto.` `Es una distribución de posibilidades plausibles.”`
 
 ## 9.1 Introducción
 
@@ -98,17 +96,17 @@ Está construyendo una descripción probabilística de escenarios posibles.
 
 Por ejemplo:
 
-| Escenario | Ventas  |
-| --------- | ------- |
-| Pesimista | $9.000  |
-| Esperado  | $12.000 |
-| Optimista | $15.000 |
+| Escenario | Ventas   |
+|-----------|----------|
+| Pesimista | \$9.000  |
+| Esperado  | \$12.000 |
+| Optimista | \$15.000 |
 
 Ninguno de estos valores es "el futuro verdadero".
 
 Son posibilidades plausibles.
 
----
+------------------------------------------------------------------------
 
 La diferencia es fundamental.
 
@@ -180,17 +178,11 @@ En lugar de producir una única respuesta:
 
 produce muchas respuestas plausibles:
 
-`28`
-`42`
-`31`
-`37`
-`19`
-`45`
-`...`
+`28` `42` `31` `37` `19` `45` `...`
 
 Cada una representa un posible futuro compatible con el modelo.
 
---- 
+------------------------------------------------------------------------
 
 La idea es muy poderosa.
 
@@ -245,15 +237,15 @@ predicciones <- posterior_predict(
 )
 predicciones[1:4, 1:4] # produce:
 ```
-[ reached 'max' / getOption("max.print") -- omitted 996 rows ]
+
+\[ reached 'max' / getOption("max.print") -- omitted 996 rows \]
 
 ```{r}
 
 dim(predicciones) # produce:
 ```
 
-
-*Interprestación*: Significa 17 escenarios de descuento (columnas) y 1000 futuros posibles en cada escenario (filas) 
+*Interprestación*: Significa 17 escenarios de descuento (columnas) y 1000 futuros posibles en cada escenario (filas)
 
 El resultado de posterior_predict() es una matriz.
 
@@ -263,11 +255,11 @@ Cada columna representa un nivel o porcentaje de descuento (debería haber 17 co
 
 Conceptualmente
 
-| Simulación | 0% | 5% | 10% |
-| ---------- | -- | -- | --- |
-| 1          | 45 | 40 | 35  |
-| 2          | 52 | 38 | 30  |
-| 3          | 41 | 34 | 28  |
+| Simulación | 0%  | 5%  | 10% |
+|------------|-----|-----|-----|
+| 1          | 45  | 40  | 35  |
+| 2          | 52  | 38  | 30  |
+| 3          | 41  | 34  | 28  |
 
 Cada fila representa un posible futuro.
 
@@ -353,7 +345,7 @@ La banda representa:
 
 `un rango de resultados plausibles.`
 
----
+------------------------------------------------------------------------
 
 La banda no indica error.
 
@@ -452,7 +444,7 @@ Ninguna línea es "la correcta".
 
 Todas son compatibles con lo que el modelo ha aprendido.
 
----
+------------------------------------------------------------------------
 
 Este gráfico suele producir una intuición muy poderosa:
 
@@ -463,7 +455,7 @@ Este gráfico suele producir una intuición muy poderosa:
 Imaginemos tres niveles de descuento.
 
 | Escenario   | Descuento |
-| ----------- | --------- |
+|-------------|-----------|
 | Conservador | 5%        |
 | Moderado    | 20%       |
 | Agresivo    | 40%       |
@@ -533,7 +525,7 @@ El segundo analista reconoce explícitamente la incertidumbre.
 
 Y precisamente por eso suele ofrecer información más útil para la toma de decisiones.
 
---- 
+------------------------------------------------------------------------
 
 Las bandas plausibles no muestran debilidad.
 
@@ -557,7 +549,7 @@ consideran:
 
 `podríamos vender entre 800 y 1.200 unidades.`
 
----
+------------------------------------------------------------------------
 
 ### Presupuestos
 
@@ -569,7 +561,7 @@ utilizan:
 
 `beneficio plausible entre $40.000 y $60.000.`
 
----
+------------------------------------------------------------------------
 
 ### Marketing
 
@@ -615,7 +607,7 @@ Pensar que la línea central es el futuro verdadero.
 
 La línea central es solamente un resumen.
 
----
+------------------------------------------------------------------------
 
 ### Error 2
 
@@ -623,7 +615,7 @@ Ignorar la amplitud de la banda plausible.
 
 La amplitud contiene información valiosa sobre riesgo.
 
----
+------------------------------------------------------------------------
 
 ### Error 3
 
@@ -631,7 +623,7 @@ Comparar únicamente valores promedio.
 
 Los rangos también importan.
 
----
+------------------------------------------------------------------------
 
 ### Error 4
 
@@ -680,4 +672,3 @@ Explica con tus propias palabras la diferencia entre:
 
 - una predicción puntual
 - una distribución predictiva
-

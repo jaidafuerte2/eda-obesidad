@@ -103,7 +103,7 @@ Por eso el churn es, en esencia, un problema de incertidumbre.
 Supongamos que observamos dos clientes.
 
 | Cliente | Antigüedad | Tipo de contrato   |
-| ------- | ---------- | ------------------ |
+|---------|------------|--------------------|
 | Ana     | 72 meses   | Contrato de 2 años |
 | Carlos  | 2 meses    | Contrato mensual   |
 
@@ -305,7 +305,7 @@ Sin embargo, esta visión es demasiado rígida.
 Consideremos tres clientes hipotéticos.
 
 | Cliente | Riesgo estimado |
-| ------- | --------------- |
+|---------|-----------------|
 | Ana     | 8%              |
 | Luis    | 35%             |
 | Carlos  | 78%             |

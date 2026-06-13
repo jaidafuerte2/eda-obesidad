@@ -1848,7 +1848,7 @@
     "href": "analysis/c08.html#ajustando-el-modelo",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Ajustando el modelo",
-    "text": "Ajustando el modelo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.4    3.0  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.5    1.7 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nObserva que utilizamos una configuración ligera.\nNo estamos buscando máxima precisión computacional.\nEstamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.\nInterpretación: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.",
+    "text": "Ajustando el modelo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.6    2.6  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.6    1.5 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nObserva que utilizamos una configuración ligera.\nNo estamos buscando máxima precisión computacional.\nEstamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.\nInterpretación: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -1860,7 +1860,7 @@
     "href": "analysis/c08.html#extrayendo-la-distribución-posterior",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Extrayendo la distribución posterior",
-    "text": "Extrayendo la distribución posterior\nAhora convertimos las simulaciones posteriores en un data frame.\n\n# Extraer la distribución posterior \ndraws_profit &lt;- posterior::as_draws_df(modelo_profit) \ndraws_profit[1:6,] # produce:\n\n# A draws_df: 6 iterations, 1 chains, and 3 variables\n  (Intercept) Discount_c sigma\n1          67       -2.4   229\n2          66       -2.5   231\n3          71       -2.5   227\n4          69       -2.4   227\n5          68       -2.5   229\n6          71       -2.5   227\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}\n\n\nCada fila representa un mundo plausible generado por el modelo.\nCada mundo propone un valor ligeramente diferente para los parámetros.",
+    "text": "Extrayendo la distribución posterior\nAhora convertimos las simulaciones posteriores en un data frame.\n\n# Extraer la distribución posterior \ndraws_profit &lt;- posterior::as_draws_df(modelo_profit) \ndraws_profit[1:6,] # produce:\n\n# A draws_df: 6 iterations, 1 chains, and 3 variables\n  (Intercept) Discount_c sigma\n1          65       -2.5   228\n2          64       -2.5   228\n3          70       -2.4   230\n4          73       -2.6   230\n5          71       -2.5   230\n6          73       -2.6   229\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}\n\n\nCada fila representa un mundo plausible generado por el modelo.\nCada mundo propone un valor ligeramente diferente para los parámetros.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -1896,7 +1896,7 @@
     "href": "analysis/c08.html#credible-intervals",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Credible Intervals",
-    "text": "Credible Intervals\nUna de las herramientas más útiles para resumir incertidumbre es el intervalo creíble.\nUn intervalo creíble del 95% contiene la mayor parte de los valores plausibles según el modelo.\nPor ejemplo:\n\n# Crear los intervalos posteriores\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n  ) # produce:\n\n                  2.5%     97.5%\n(Intercept)  61.475335  73.22331\nDiscount_c   -2.691436  -2.26060\nsigma       225.502406 231.92616",
+    "text": "Credible Intervals\nUna de las herramientas más útiles para resumir incertidumbre es el intervalo creíble.\nUn intervalo creíble del 95% contiene la mayor parte de los valores plausibles según el modelo.\nPor ejemplo:\n\n# Crear los intervalos posteriores\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n  ) # produce:\n\n                 2.5%      97.5%\n(Intercept)  62.80286  72.975692\nDiscount_c   -2.71890  -2.288233\nsigma       225.72589 231.769009",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -1932,7 +1932,7 @@
     "href": "analysis/c08.html#visualizando-intervalos-plausibles",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Visualizando intervalos plausibles",
-    "text": "Visualizando intervalos plausibles\nUna excelente práctica consiste en visualizar explícitamente la incertidumbre.\n\n# Convertir las simulaciones posteriores del modelo en una matriz\nas.matrix(modelo_profit)[1:6,] # produce:\n\n          parameters\niterations (Intercept) Discount_c    sigma\n      [1,]    67.14558  -2.397601 229.2090\n      [2,]    66.21268  -2.474628 230.5121\n      [3,]    70.96432  -2.509756 227.4266\n      [4,]    69.02776  -2.362581 227.4321\n      [5,]    68.06122  -2.472203 228.7411\n      [6,]    70.92773  -2.529956 227.0517\n\n\n\n# Visualizando los intervalos plausibles de la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"Discount_c\")\n)\n\n\n\n\n\n\n\n\nEste gráfico permite observar:\n\nla posición del parámetro,\nla amplitud de la incertidumbre,\nla variabilidad posterior.\n\nLa incertidumbre deja de ser invisible.\nAhora puede verse.\nInterpretación: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.\nTambién podemos visualizar el intercepto de esta forma:\n\n# Visualizar los intervalos plausibles y la mediana del intercepto\n# (ganancias) y la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"(Intercept)\",\"Discount_c\")\n)",
+    "text": "Visualizando intervalos plausibles\nUna excelente práctica consiste en visualizar explícitamente la incertidumbre.\n\n# Convertir las simulaciones posteriores del modelo en una matriz\nas.matrix(modelo_profit)[1:6,] # produce:\n\n          parameters\niterations (Intercept) Discount_c    sigma\n      [1,]    64.77979  -2.535965 227.7724\n      [2,]    64.38032  -2.547310 228.1099\n      [3,]    70.10419  -2.400268 229.7840\n      [4,]    72.73953  -2.606957 229.7066\n      [5,]    71.21778  -2.503377 229.8394\n      [6,]    73.36225  -2.631020 229.4712\n\n\n\n# Visualizando los intervalos plausibles de la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"Discount_c\")\n)\n\n\n\n\n\n\n\n\nEste gráfico permite observar:\n\nla posición del parámetro,\nla amplitud de la incertidumbre,\nla variabilidad posterior.\n\nLa incertidumbre deja de ser invisible.\nAhora puede verse.\nInterpretación: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.\nTambién podemos visualizar el intercepto de esta forma:\n\n# Visualizar los intervalos plausibles y la mediana del intercepto\n# (ganancias) y la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"(Intercept)\",\"Discount_c\")\n)",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -2598,6 +2598,222 @@
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
       "10.- Introducción al churn y al riesgo de abandono"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html",
+    "href": "analysis/c11.html",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "",
+    "text": "En los capítulos anteriores utilizamos modelos para comprender relaciones entre variables numéricas. Por ejemplo, analizamos cómo cambian las ventas, cómo varían las ganancias o cómo evoluciona una métrica de negocio cuando otra variable cambia.\nSin embargo, muchas decisiones reales no giran alrededor de cantidades continuas.\nCon frecuencia las organizaciones se enfrentan a preguntas como:\n\n¿Comprará este cliente?\n¿Responderá a una campaña?\n¿Pagará un préstamo?\n¿Abandonará el servicio?\n\nEstas preguntas tienen algo en común: la respuesta final suele expresarse como un resultado binario.\nPor ejemplo:\nResultado\nSí No\no\nEstado\nChurn No Churn\nA primera vista parecería que estos problemas son más simples que predecir ventas o ingresos.\nEn realidad suelen ser más difíciles.\nLos seres humanos son impredecibles. Dos clientes aparentemente similares pueden tomar decisiones completamente distintas.\nPor esta razón, en lugar de intentar predecir destinos inevitables, resulta más útil estimar probabilidades.\nLa regresión logística bayesiana nos permite precisamente eso:\nestimar qué tan plausible es que ocurra un determinado evento.\nNo busca eliminar la incertidumbre.\nBusca cuantificarla.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#introducción",
+    "href": "analysis/c11.html#introducción",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "",
+    "text": "En los capítulos anteriores utilizamos modelos para comprender relaciones entre variables numéricas. Por ejemplo, analizamos cómo cambian las ventas, cómo varían las ganancias o cómo evoluciona una métrica de negocio cuando otra variable cambia.\nSin embargo, muchas decisiones reales no giran alrededor de cantidades continuas.\nCon frecuencia las organizaciones se enfrentan a preguntas como:\n\n¿Comprará este cliente?\n¿Responderá a una campaña?\n¿Pagará un préstamo?\n¿Abandonará el servicio?\n\nEstas preguntas tienen algo en común: la respuesta final suele expresarse como un resultado binario.\nPor ejemplo:\nResultado\nSí No\no\nEstado\nChurn No Churn\nA primera vista parecería que estos problemas son más simples que predecir ventas o ingresos.\nEn realidad suelen ser más difíciles.\nLos seres humanos son impredecibles. Dos clientes aparentemente similares pueden tomar decisiones completamente distintas.\nPor esta razón, en lugar de intentar predecir destinos inevitables, resulta más útil estimar probabilidades.\nLa regresión logística bayesiana nos permite precisamente eso:\nestimar qué tan plausible es que ocurra un determinado evento.\nNo busca eliminar la incertidumbre.\nBusca cuantificarla.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#el-problema-empresarial-churn",
+    "href": "analysis/c11.html#el-problema-empresarial-churn",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "El problema empresarial: churn",
+    "text": "El problema empresarial: churn\nAntes de construir modelos necesitamos entender el problema de negocio.\n\n¿Qué es churn?\nEl término churn describe la pérdida de clientes.\nUn cliente entra en churn cuando:\n\ncancela una suscripción;\ndeja de utilizar un servicio;\nabandona una plataforma;\ncambia de proveedor.\n\nPara una empresa esto puede ser costoso.\nCaptar nuevos clientes suele requerir:\n\npublicidad;\npromociones;\ndescuentos;\nesfuerzo comercial.\n\nPor ello muchas organizaciones invierten recursos en retener clientes existentes.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#por-qué-importa-identificar-clientes-de-riesgo",
+    "href": "analysis/c11.html#por-qué-importa-identificar-clientes-de-riesgo",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "¿Por qué importa identificar clientes de riesgo?",
+    "text": "¿Por qué importa identificar clientes de riesgo?\nSupongamos que una empresa tiene 10.000 clientes.\nSería imposible llamar personalmente a todos cada semana.\nLos recursos son limitados.\nPor eso resulta útil responder preguntas como:\n\n¿Qué clientes parecen tener mayor riesgo?\n¿Dónde conviene invertir esfuerzos de retención?\n¿Qué perfiles merecen seguimiento prioritario?\n\nLa regresión logística ayuda precisamente a priorizar.\nNo dice:\n\"Este cliente abandonará.\"\nDice algo más útil:\n\"Este cliente parece tener una probabilidad relativamente alta de abandono.\"",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#por-qué-no-usar-regresión-lineal",
+    "href": "analysis/c11.html#por-qué-no-usar-regresión-lineal",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "¿Por qué no usar regresión lineal?",
+    "text": "¿Por qué no usar regresión lineal?\nHasta ahora hemos utilizado modelos lineales para variables continuas.\nPor ejemplo:\ny = β0 + β1x + ϵ\nEste tipo de modelo funciona bien cuando queremos predecir:\n\nventas;\ningresos;\nganancias;\ncostos.\n\nPero aparece un problema cuando intentamos predecir probabilidades.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#un-experimento-mental",
+    "href": "analysis/c11.html#un-experimento-mental",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Un experimento mental",
+    "text": "Un experimento mental\nSupongamos que codificamos:\nChurn_num &lt;- if_else( Churn == “Yes”, 1, 0 )\nAhora podríamos intentar ajustar una regresión lineal.\nlm( Churn_num ~ tenure, data = telco )\nSin embargo, una recta puede producir predicciones como:\n\n-0.15\n1.20\n1.45\n\nEstas cantidades no tienen sentido como probabilidades.\nUna probabilidad debe permanecer siempre entre:\n\n0\n1\n\nNecesitamos un modelo que respete ese límite.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#la-idea-detrás-de-la-regresión-logística",
+    "href": "analysis/c11.html#la-idea-detrás-de-la-regresión-logística",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "La idea detrás de la regresión logística",
+    "text": "La idea detrás de la regresión logística\nLa solución consiste en transformar una relación lineal en una probabilidad.\nLa regresión logística toma una combinación de variables y la convierte en un valor entre 0 y 1.\nAsí obtenemos resultados interpretables como probabilidades.\n\nRiesgo gradual\nLa idea más importante del capítulo es la siguiente:\nEl riesgo no es absoluto.\nNo existen únicamente dos tipos de clientes:\n\nseguros;\npeligrosos.\n\nLa realidad suele verse más así:\n\n\n\nCliente\nRiesgo\n\n\n\n\nA\n0.05\n\n\nB\n0.25\n\n\nC\n0.48\n\n\nD\n0.73\n\n\nE\n0.91\n\n\n\nTodos pueden abandonar.\nSimplemente algunos parecen más vulnerables que otros.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#una-mirada-suave-a-la-función-logística",
+    "href": "analysis/c11.html#una-mirada-suave-a-la-función-logística",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Una mirada suave a la función logística",
+    "text": "Una mirada suave a la función logística\nLa función logística puede escribirse como:\nP(y=1) = 1 / 1 + e−(β0 + β1x)\nNo es necesario memorizarla.\nLo importante es entender su papel.\nLa fórmula recibe una combinación de variables:\n\nantigüedad;\ncontrato;\ncargos mensuales;\netc.\n\nY devuelve:\nuna probabilidad entre 0 y 1.\nEn otras palabras:\nEntrada: información del cliente.\nSalida: riesgo plausible de abandono.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#exploración-inicial-del-dataset",
+    "href": "analysis/c11.html#exploración-inicial-del-dataset",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Exploración inicial del dataset",
+    "text": "Exploración inicial del dataset\n\nDistribución de churn\n\n# Ver la distribución del Churn\nggplot(telco, aes(x = Churn)) +\n  geom_bar() +\n  labs(\n    title = \"Distribución del Churn\"\n  )\n\n\n\n\n\n\n\n\nPreguntas:\n\n¿Qué proporción abandona?\n¿Qué proporción permanece?\n\n\n\nAntigüedad del cliente\n\n# Ver la antiguedad del cliente en meses\nggplot(telco, aes(x= tenure)) +\n  geom_histogram(bins = 30) + \n  labs(\n    title = \"Distribución de la antiguedad de los clientes\",\n    x = \"Antiguedad\",\n    y = \"Cantidad\"\n  )\n\n\n\n\n\n\n\n\nLa variable tenure indica cuántos meses lleva un cliente con la empresa.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#tenure-y-churn",
+    "href": "analysis/c11.html#tenure-y-churn",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Tenure y churn",
+    "text": "Tenure y churn\n\n# Ver los que cancelan suscripción en la distribución de antiguedad\n# del cliente\nggplot(telco, aes(x= tenure, fill = Churn)) +\n  geom_histogram(bins = 30) +\n  labs(\n    title = \"Cancelación en la distribución de la antiguedad\",\n    x = \"Antiguedad\",\n    y = \"Cantidad\"\n  )\n\n\n\n\n\n\n\n\n\nMonthly Charges y churn\n\n# Ver los que cancelan suscripción en la distribución de pagos\n# mensuales del cliente\nggplot(telco, aes(x= MonthlyCharges, fill = Churn)) +\n  geom_histogram(bins = 30, position = \"fill\") + \n  labs(\n    title = \"Churn con respecto a los pagos mensuales\",\n    x = \"Pagos Mensuales\",\n    y = \"Cantidad\"\n  )",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#tipo-de-contrato",
+    "href": "analysis/c11.html#tipo-de-contrato",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Tipo de contrato",
+    "text": "Tipo de contrato\n\n# Ver los que cancelan según el tipo de contrato\nggplot(telco, aes(x= Contract, fill = Churn)) +\n  geom_bar(position = \"fill\") +\n  labs(\n    title = \"Churn según el tipo de contrato\",\n    x = \"Tipo de contrato\",\n    y = \"Cantidad\"\n  )\n\n\n\n\n\n\n\n\nProbablemente aparezca uno de los patrones más fuertes del dataset.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#primer-modelo-logístico-bayesiano",
+    "href": "analysis/c11.html#primer-modelo-logístico-bayesiano",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Primer modelo logístico bayesiano",
+    "text": "Primer modelo logístico bayesiano\nComenzaremos con una sola variable.\n\nPreparación\n\n# Crear una variable Churn numérica\ntelco &lt;- telco %&gt;%\n  mutate(\n    Churn_num =\n      if_else(\n        Churn == \"Yes\",\n        1,\n        0\n      )\n  )\nclass(telco$Churn_num)\n\n[1] \"numeric\"\n\n\n\n\nModelo\n\n# Crear un modelo logístico bayesiano para conocer cuanto influye \n# la antiguedad en la cancelación de suscripción\nmodelo_churn &lt;- stan_glm(\n  Churn_num ~ tenure,\n  data = telco,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  seed = 1234,\n  refresh = 0\n)\n\n\n\n¿Qué significa family = binomial()?\nLe indica a stan_glm() que:\n\nla variable respuesta es binaria;\nel modelo debe producir probabilidades;\nse utilizará una función logística.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#interpretación-inicial",
+    "href": "analysis/c11.html#interpretación-inicial",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Interpretación inicial",
+    "text": "Interpretación inicial\n\n# Imprimir el modelo\ncoef(modelo_churn) # produce:\n\n(Intercept)      tenure \n 0.02615887 -0.03881346 \n\n\n\nInterpretación:\nA medida que aumenta la antigüedad del cliente, el riesgo de abandono parece disminuir o más específicamente: por cada mes de antiguedad, parece disminuir el churn o probabilidad de cancelación en 0.0388 puntos en la escala logística interna (NO en probabilidad, NO significa 3.8% de disminución del churn)\nObsérvese el lenguaje.\nNo decimos:\n❌ “Los clientes antiguos nunca abandonan.”\nDecimos:\n✅ “Parecen tener menor riesgo.”\n\n\nIntervalo posterior\nTambién podríamos obetener el intervalo posterior\n\n# Obtener el intervalo posterio\nposterior_interval(modelo_churn) # produce:\n\n                     5%         95%\n(Intercept) -0.03609829  0.09296688\ntenure      -0.04111115 -0.03648721\n\n\nInterpretación: La evidencia bayesiana de que cada mes de antiguedad disminuye el churn es bastante fuerte pues el intervalo no incluye al cero y es negativo. Además la incertidumbre es pequeña\n\n\nConocer la probabilidad\nPara pasar los datos del modelo (que están en la escala logística interna) a probabilidades se puede hacer los siguiente:\n\n# Crear una tabla con meses de antiguedad\nclientes &lt;- tibble(\n  tenure = c(10, 30, 50) # meses de antiguedad, no porcentajes\n)\n\n\n#\npred_tenure &lt;- posterior_epred(\n  modelo_churn,\n  newdata = clientes\n)\n# Imprimir 6 de 1000 filas de probabilidades para 10, 30 y 50 meses\n# de antiguedad\npred_tenure[1:6,] # produce:\n\n          \niterations         1         2         3\n      [1,] 0.4193887 0.2426769 0.1244624\n      [2,] 0.4037240 0.2468024 0.1368732\n      [3,] 0.4187250 0.2394392 0.1209458\n      [4,] 0.4095082 0.2455129 0.1324603\n      [5,] 0.4104124 0.2484844 0.1357364\n      [6,] 0.4140159 0.2479087 0.1332867\n\n\n\n# Aplicar la función median() a pred_tenure. 2 dice que trabaje \n# por columnas (1 significaría que trabaje por filas)\napply(pred_tenure, 2, median) # produce:\n\n        1         2         3 \n0.4105544 0.2429537 0.1287064 \n\n\nInterpretación: Con 10 meses de antiguedad la probabilidad de churn es 41%, con 30 meses de antiguedad la probabilidad de churn es 24% y con 50 meses de antiguedad la probabilidad de churn es 12,8%\n\n\nResumen del modelo\nSi obtenemos el resumen del modelo podemos observar algunos datos interesantes\n\n# Resumen del modelo\nposterior::summarise_draws(\n  as.matrix(modelo_churn)\n) # produce:\n\n# A tibble: 2 × 10\n  variable       mean  median      sd     mad      q5     q95  rhat ess_bulk\n  &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;\n1 (Intercept)  0.0273  0.0262 0.0406  0.0398  -0.0361  0.0930  1.00     623.\n2 tenure      -0.0388 -0.0388 0.00141 0.00140 -0.0411 -0.0365  1.00     429.\n# ℹ 1 more variable: ess_tail &lt;dbl&gt;\n\n\nInterpretación: la incertidumbre es pequeña pues la desviación estándar del modelo es sólo 0.00140\n\n\nVisualización de los intervalos del modelo\n\n# Intervalos del modelo\nbayesplot::mcmc_intervals(\n  as.matrix(modelo_churn),\n  pars = c(\"tenure\")\n)\n\n\n\n\n\n\n\n\nInterpretación: el gráfico muestra que el punto central o mediana de la disminución del churn por cada mes de antiguedad es negativo y el 50% de la población está entre -0.040 y 0.038 en la escala logística interna y el 90% está entre -0.041 y 0.036.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#visualización-del-riesgo",
+    "href": "analysis/c11.html#visualización-del-riesgo",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Visualización del riesgo",
+    "text": "Visualización del riesgo\n\nProbabilidades predichas\n\ngrid_tenure &lt;- tibble(\n  tenure = seq(\n    min(telco$tenure),\n    max(telco$tenure),\n    length.out = 100\n  )\n)\ngrid_tenure[1:6,] # produce:\n\n# A tibble: 6 × 1\n  tenure\n   &lt;dbl&gt;\n1  0    \n2  0.727\n3  1.45 \n4  2.18 \n5  2.91 \n6  3.64 \n\n\n\npred &lt;- posterior_epred(\n  modelo_churn,\n  newdata = grid_tenure\n)\n# Visualizar 4 columnas (de las 100) y 6 filas (de las 1000)\npred[1:6, 1:4] # produce:\n\n          \niterations         1         2         3         4\n      [1,] 0.5202650 0.5128843 0.5054981 0.4981095\n      [2,] 0.4932283 0.4866331 0.4800427 0.4734592\n      [3,] 0.5214528 0.5139374 0.5064157 0.4988911\n      [4,] 0.5030864 0.4962075 0.4893301 0.4824567\n      [5,] 0.5024912 0.4957236 0.4889575 0.4821955\n      [6,] 0.5084533 0.5015231 0.4945923 0.4876636\n\n\n\n# Crear el límite inferior, el límite superior\n# y la mediana de grid tenure\nprobabilidades &lt;- grid_tenure %&gt;%\n  mutate(\n    mediana = apply(\n      pred,\n      2,\n      median\n    ),\n    li = apply(\n      pred,\n      2,\n      quantile,\n      probs = 0.05\n    ),\n    ls = apply(\n      pred,\n      2,\n      quantile,\n      probs = 0.95\n    )\n  )\n\n\n\nCurva logística\n\n# Curva logística\nggplot(\n  probabilidades,\n  aes(\n    x = tenure,\n    y = mediana\n  )\n) +\n  geom_ribbon(\n    aes(\n      ymin = li,\n      ymax = ls\n    ),\n    alpha = 0.2\n  ) +\n  geom_line()\n\n\n\n\n\n\n\n\nEste gráfico resume gran parte del espíritu bayesiano.\nMuestra:\n\ntendencia central;\nincertidumbre;\ncambio gradual del riesgo.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#interpretación-de-coeficientes",
+    "href": "analysis/c11.html#interpretación-de-coeficientes",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Interpretación de coeficientes",
+    "text": "Interpretación de coeficientes\nNo necesitamos profundizar en odds ratios.\nPara este libro basta responder:\n\n¿El efecto aumenta o disminuye el riesgo?\n¿Cuánta incertidumbre existe?\n¿El patrón parece consistente?",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#incertidumbre-en-clasificación",
+    "href": "analysis/c11.html#incertidumbre-en-clasificación",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Incertidumbre en clasificación",
+    "text": "Incertidumbre en clasificación\nUn error frecuente consiste en pensar:\n0.80 significa que el cliente abandonará.\nNo.\nSignifica algo diferente.\nSi observáramos muchos clientes similares, aproximadamente el 80% podría abandonar.\nLa probabilidad describe incertidumbre.\nNo destino.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#reflexión-bayesiana",
+    "href": "analysis/c11.html#reflexión-bayesiana",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nLa clasificación tradicional suele transmitir una ilusión de certeza.\nCliente A:\n\nchurn\n\nCliente B:\n\nno churn\n\nLa realidad es más compleja.\nLos clientes cambian.\nLas circunstancias cambian.\nLos mercados cambian.\nLa regresión logística bayesiana reconoce explícitamente esa incertidumbre.\nEn lugar de ocultarla, la incorpora al análisis.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c11.html#ejercicios",
+    "href": "analysis/c11.html#ejercicios",
+    "title": "11.- Regresión logística bayesiana",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nConstruya un modelo:\nChurn_num ~ MonthlyCharges\n¿Cómo cambia el riesgo al aumentar los cargos mensuales?\n\n\nEjercicio 2\nConstruya un modelo:\nChurn_num ~ Contract\n¿Qué tipo de contrato parece asociado con menor riesgo?\n\n\nEjercicio 3\nGenere una curva logística para MonthlyCharges.\nInterprete la incertidumbre posterior.\n\n\nEjercicio 4\nCompare dos clientes:\n\ntenure = 5\ntenure = 60\n\n¿Quién parece tener mayor riesgo?\n¿Con cuánta certeza puede afirmarlo?\n\n\nEjercicio 5\nExplique con sus propias palabras la diferencia entre:\n\nuna etiqueta de clasificación;\nuna probabilidad de clasificación.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "11.- Regresión logística bayesiana"
     ]
   }
 ]

@@ -297,6 +297,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">10.- Introducción al churn y al riesgo de abandono</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11.- Regresión logística bayesiana</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -714,12 +720,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  predictors:   2
 ------
             Median MAD_SD
-(Intercept) 67.5    2.9  
+(Intercept) 67.6    2.8  
 Discount_c  -2.5    0.1  
 
 Auxiliary parameter(s):
       Median MAD_SD
-sigma 228.6    1.7 
+sigma 228.5    1.7 
 
 ------
 * For help interpreting the printed output see ?print.stanreg
@@ -756,9 +762,9 @@ sigma 228.6    1.7
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  2.5%      97.5%
-(Intercept)  61.785321  73.381163
-Discount_c   -2.714493  -2.262205
-sigma       225.499938 232.171334</code></pre>
+(Intercept)  61.695013  72.965586
+Discount_c   -2.702717  -2.272576
+sigma       225.162535 231.814223</code></pre>
 </div>
 </div>
 <p>Aquí obtenemos un rango de valores plausibles.</p>

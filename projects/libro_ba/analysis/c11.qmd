@@ -12,6 +12,8 @@ options(scipen = 999) # desactivar la notación científica
 
 library(tidyverse)
 library(rstanarm)
+library(bayesplot)
+library(posterior) 
 
 telco <- read_csv("../data/telco_customer_churn.csv",
                   guess_max = 10000,
@@ -38,15 +40,13 @@ Por ejemplo:
 
 **Resultado**
 
-Sí
-No
+Sí No
 
 o
 
 **Estado**
 
-Churn
-No Churn
+Churn No Churn
 
 A primera vista parecería que estos problemas son más simples que predecir ventas o ingresos.
 
@@ -135,18 +135,11 @@ Pero aparece un problema cuando intentamos predecir probabilidades.
 
 Supongamos que codificamos:
 
-Churn_num <- if_else(
-  Churn == "Yes",
-  1,
-  0
-)
+Churn_num \<- if_else( Churn == "Yes", 1, 0 )
 
 Ahora podríamos intentar ajustar una regresión lineal.
 
-lm(
-  Churn_num ~ tenure,
-  data = telco
-)
+lm( Churn_num \~ tenure, data = telco )
 
 Sin embargo, una recta puede producir predicciones como:
 
@@ -185,7 +178,7 @@ No existen únicamente dos tipos de clientes:
 La realidad suele verse más así:
 
 | Cliente | Riesgo |
-| ------- | ------ |
+|---------|--------|
 | A       | 0.05   |
 | B       | 0.25   |
 | C       | 0.48   |
@@ -364,11 +357,9 @@ Decimos:
 
 ✅ "Parecen tener menor riesgo."
 
----
-
 ### Intervalo posterior
 
-También podríamos obetener el intervalo posterior 
+También podríamos obetener el intervalo posterior
 
 ```{r}
 # Obtener el intervalo posterio
@@ -376,6 +367,36 @@ posterior_interval(modelo_churn) # produce:
 ```
 
 Interpretación: La evidencia bayesiana de que cada mes de antiguedad disminuye el churn es bastante fuerte pues el intervalo no incluye al cero y es negativo. Además la incertidumbre es pequeña
+
+### Conocer la probabilidad
+
+Para pasar los datos del modelo (que están en la escala logística interna) a probabilidades se puede hacer los siguiente:
+
+```{r}
+# Crear una tabla con meses de antiguedad
+clientes <- tibble(
+  tenure = c(10, 30, 50) # meses de antiguedad, no porcentajes
+)
+```
+
+```{r}
+#
+pred_tenure <- posterior_epred(
+  modelo_churn,
+  newdata = clientes
+)
+# Imprimir 6 de 1000 filas de probabilidades para 10, 30 y 50 meses
+# de antiguedad
+pred_tenure[1:6,] # produce:
+```
+
+```{r}
+# Aplicar la función median() a pred_tenure. 2 dice que trabaje 
+# por columnas (1 significaría que trabaje por filas)
+apply(pred_tenure, 2, median) # produce:
+```
+
+Interpretación: Con 10 meses de antiguedad la probabilidad de churn es 41%, con 30 meses de antiguedad la probabilidad de churn es 24% y con 50 meses de antiguedad la probabilidad de churn es 12,8%
 
 ### Resumen del modelo
 
@@ -401,6 +422,174 @@ bayesplot::mcmc_intervals(
 ```
 
 Interpretación: el gráfico muestra que el punto central o mediana de la disminución del churn por cada mes de antiguedad es negativo y el 50% de la población está entre -0.040 y 0.038 en la escala logística interna y el 90% está entre -0.041 y 0.036.
+
 ## Visualización del riesgo
 
 ### Probabilidades predichas
+
+```{r}
+grid_tenure <- tibble(
+  tenure = seq(
+    min(telco$tenure),
+    max(telco$tenure),
+    length.out = 100
+  )
+)
+grid_tenure[1:6,] # produce:
+```
+
+```{r}
+pred <- posterior_epred(
+  modelo_churn,
+  newdata = grid_tenure
+)
+# Visualizar 4 columnas (de las 100) y 6 filas (de las 1000)
+pred[1:6, 1:4] # produce:
+```
+
+```{r}
+# Crear el límite inferior, el límite superior
+# y la mediana de grid tenure
+probabilidades <- grid_tenure %>%
+  mutate(
+    mediana = apply(
+      pred,
+      2,
+      median
+    ),
+    li = apply(
+      pred,
+      2,
+      quantile,
+      probs = 0.05
+    ),
+    ls = apply(
+      pred,
+      2,
+      quantile,
+      probs = 0.95
+    )
+  )
+```
+
+### Curva logística
+
+```{r}
+# Curva logística
+ggplot(
+  probabilidades,
+  aes(
+    x = tenure,
+    y = mediana
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = li,
+      ymax = ls
+    ),
+    alpha = 0.2
+  ) +
+  geom_line()
+```
+
+Este gráfico resume gran parte del espíritu bayesiano.
+
+Muestra:
+
+- tendencia central;
+- incertidumbre;
+- cambio gradual del riesgo.
+
+## Interpretación de coeficientes
+
+No necesitamos profundizar en odds ratios.
+
+Para este libro basta responder:
+
+1.  ¿El efecto aumenta o disminuye el riesgo?
+2.  ¿Cuánta incertidumbre existe?
+3.  ¿El patrón parece consistente?
+
+## Incertidumbre en clasificación
+
+Un error frecuente consiste en pensar:
+
+`0.80 significa que el cliente abandonará.`
+
+No.
+
+Significa algo diferente.
+
+Si observáramos muchos clientes similares, aproximadamente el 80% podría abandonar.
+
+La probabilidad describe incertidumbre.
+
+No destino.
+
+## Reflexión bayesiana
+
+La clasificación tradicional suele transmitir una ilusión de certeza.
+
+Cliente A:
+
+- churn
+
+Cliente B:
+
+- no churn
+
+La realidad es más compleja.
+
+Los clientes cambian.
+
+Las circunstancias cambian.
+
+Los mercados cambian.
+
+La regresión logística bayesiana reconoce explícitamente esa incertidumbre.
+
+En lugar de ocultarla, la incorpora al análisis.
+
+## Ejercicios
+
+### Ejercicio 1
+
+Construya un modelo:
+
+`Churn_num ~ MonthlyCharges`
+
+¿Cómo cambia el riesgo al aumentar los cargos mensuales?
+
+### Ejercicio 2
+
+Construya un modelo:
+
+`Churn_num ~ Contract`
+
+¿Qué tipo de contrato parece asociado con menor riesgo?
+
+### Ejercicio 3
+
+Genere una curva logística para MonthlyCharges.
+
+Interprete la incertidumbre posterior.
+
+### Ejercicio 4
+
+Compare dos clientes:
+
+- tenure = 5
+
+- tenure = 60
+
+¿Quién parece tener mayor riesgo?
+
+¿Con cuánta certeza puede afirmarlo?
+
+### Ejercicio 5
+
+Explique con sus propias palabras la diferencia entre:
+
+- una etiqueta de clasificación;
+- una probabilidad de clasificación.
