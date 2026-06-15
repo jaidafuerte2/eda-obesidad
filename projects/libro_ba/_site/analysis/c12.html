@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12.- Interpretar riesgo individual – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_sobre_el_autor.html"> 
+<span class="menu-text">Sobre el autor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_proyectos.html"> 
+<span class="menu-text">Proyectos</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c10.html">PARTE IV — RIESGO, CHURN Y DECISIONES</a></li><li class="breadcrumb-item"><a href="../analysis/c12.html">12.- Interpretar riesgo individual</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sobre el autor</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — APRENDER A VER LA INCERTIDUMBRE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Simulación y mundos posibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidades útiles para tomar decisiones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Modelos bayesianos prácticos con rstanarm</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Relaciones entre variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9.- Predicciones probabilísticas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE IV — RIESGO, CHURN Y DECISIONES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10.- Introducción al churn y al riesgo de abandono</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11.- Regresión logística bayesiana</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">12.- Interpretar riesgo individual</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#del-modelo-a-la-decisión" id="toc-del-modelo-a-la-decisión" class="nav-link" data-scroll-target="#del-modelo-a-la-decisión">12.1 Del modelo a la decisión</a></li>
+  <li><a href="#qué-significa-una-probabilidad-individual" id="toc-qué-significa-una-probabilidad-individual" class="nav-link" data-scroll-target="#qué-significa-una-probabilidad-individual">12.2 ¿Qué significa una probabilidad individual?</a></li>
+  <li><a href="#obteniendo-probabilidades-individuales" id="toc-obteniendo-probabilidades-individuales" class="nav-link" data-scroll-target="#obteniendo-probabilidades-individuales">12.3 Obteniendo probabilidades individuales</a>
+  <ul class="collapse">
+  <li><a href="#probabilidad-posterior-promedio" id="toc-probabilidad-posterior-promedio" class="nav-link" data-scroll-target="#probabilidad-posterior-promedio">Probabilidad posterior promedio</a></li>
+  </ul></li>
+  <li><a href="#visualizando-la-distribución-del-riesgo" id="toc-visualizando-la-distribución-del-riesgo" class="nav-link" data-scroll-target="#visualizando-la-distribución-del-riesgo">12.4 Visualizando la distribución del riesgo</a></li>
+  <li><a href="#ordenando-clientes-por-riesgo" id="toc-ordenando-clientes-por-riesgo" class="nav-link" data-scroll-target="#ordenando-clientes-por-riesgo">12.5 Ordenando clientes por riesgo</a></li>
+  <li><a href="#segmentos-de-riesgo" id="toc-segmentos-de-riesgo" class="nav-link" data-scroll-target="#segmentos-de-riesgo">12.6 Segmentos de riesgo</a></li>
+  <li><a href="#visualizando-segmentos" id="toc-visualizando-segmentos" class="nav-link" data-scroll-target="#visualizando-segmentos">12.7 Visualizando segmentos</a></li>
+  <li><a href="#incertidumbre-individual" id="toc-incertidumbre-individual" class="nav-link" data-scroll-target="#incertidumbre-individual">12.8 Incertidumbre individual</a></li>
+  <li><a href="#comparando-la-incertidumbre-de-dos-clientes" id="toc-comparando-la-incertidumbre-de-dos-clientes" class="nav-link" data-scroll-target="#comparando-la-incertidumbre-de-dos-clientes">12.9 Comparando la incertidumbre de dos clientes</a></li>
+  <li><a href="#contexto-de-negocio-retención-y-priorización" id="toc-contexto-de-negocio-retención-y-priorización" class="nav-link" data-scroll-target="#contexto-de-negocio-retención-y-priorización">12.10 Contexto de negocio: retención y priorización</a>
+  <ul class="collapse">
+  <li><a href="#retención" id="toc-retención" class="nav-link" data-scroll-target="#retención">Retención</a></li>
+  <li><a href="#priorización" id="toc-priorización" class="nav-link" data-scroll-target="#priorización">Priorización</a></li>
+  <li><a href="#escenarios-concretos" id="toc-escenarios-concretos" class="nav-link" data-scroll-target="#escenarios-concretos">Escenarios Concretos</a></li>
+  </ul></li>
+  <li><a href="#trade-offs" id="toc-trade-offs" class="nav-link" data-scroll-target="#trade-offs">12.11 Trade-offs</a></li>
+  <li><a href="#riesgo-y-decisiones-humanas" id="toc-riesgo-y-decisiones-humanas" class="nav-link" data-scroll-target="#riesgo-y-decisiones-humanas">12.12 Riesgo y decisiones humanas</a></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">Reflexión bayesiana</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c10.html">PARTE IV — RIESGO, CHURN Y DECISIONES</a></li><li class="breadcrumb-item"><a href="../analysis/c12.html">12.- Interpretar riesgo individual</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">12.- Interpretar riesgo individual</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<p>Historia inicial:</p>
+<p>Imaginemos una empresa de telecomunicaciones con diez mil clientes.</p>
+<p>Cada mes algunos clientes cancelan su contrato.</p>
+<p>La empresa dispone de un presupuesto limitado para programas de retención:</p>
+<ul>
+<li>descuentos,</li>
+<li>llamadas de seguimiento,</li>
+<li>soporte personalizado,</li>
+<li>promociones especiales.</li>
+</ul>
+<p>Sin embargo, no puede ofrecer estos beneficios a todos los clientes.</p>
+<p>La pregunta ya no es:</p>
+<p><code>¿Quién abandonará?</code></p>
+<p>La pregunta real es:</p>
+<p><code>¿A quién deberíamos prestar atención primero?</code></p>
+<p>Aquí es donde las probabilidades individuales se vuelven valiosas.</p>
+<p>No porque permitan ver el futuro con certeza.</p>
+<p>Sino porque ayudan a asignar recursos de manera más inteligente bajo incertidumbre.</p>
+</section>
+<section id="del-modelo-a-la-decisión" class="level2">
+<h2 class="anchored" data-anchor-id="del-modelo-a-la-decisión">12.1 Del modelo a la decisión</h2>
+<p>En capítulos anteriores construimos modelos para estimar probabilidades de abandono.</p>
+<p>Ahora debemos dar un paso adicional.</p>
+<p>Un modelo por sí solo no toma decisiones.</p>
+<p>Un modelo simplemente genera información.</p>
+<p>Las decisiones siguen siendo responsabilidad de las personas.</p>
+<p>Por eso el verdadero valor de un modelo no está en su capacidad para producir números.</p>
+<p>Está en ayudarnos a interpretar mejor situaciones inciertas.</p>
+</section>
+<section id="qué-significa-una-probabilidad-individual" class="level2">
+<h2 class="anchored" data-anchor-id="qué-significa-una-probabilidad-individual">12.2 ¿Qué significa una probabilidad individual?</h2>
+<p>Supongamos tres clientes.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cliente</th>
+<th>Riesgo estimado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>0.10</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0.40</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0.80</td>
+</tr>
+</tbody>
+</table>
+<p>Interpretación:</p>
+<p>Cliente A:</p>
+<p><code>El modelo considera relativamente poco plausible que abandone la empresa.</code></p>
+<p>Cliente B:</p>
+<p><code>Existe una incertidumbre considerable. El riesgo es moderado.</code></p>
+<p>Cliente C:</p>
+<p><code>El modelo considera bastante plausible que abandone la empresa.</code></p>
+<p>Observa algo importante.</p>
+<p>No estamos diciendo:</p>
+<p>❌ “El cliente C abandonará.”</p>
+<p>Estamos diciendo:</p>
+<p>✅ “El cliente C presenta un riesgo más elevado.”</p>
+<p>La diferencia parece pequeña.</p>
+<p>Pero conceptualmente es enorme.</p>
+</section>
+<section id="obteniendo-probabilidades-individuales" class="level2">
+<h2 class="anchored" data-anchor-id="obteniendo-probabilidades-individuales">12.3 Obteniendo probabilidades individuales</h2>
+<p>Aquí reutilizamos el modelo logístico construido en capítulos anteriores.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una variable Churn numérica</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>telco <span class="ot">&lt;-</span> telco <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Churn_num =</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">if_else</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        Churn <span class="sc">==</span> <span class="st">"Yes"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(telco<span class="sc">$</span>Churn_num) <span class="co"># produce: numeric</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un modelo logístico bayesiano para conocer cuanto influye </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># la antiguedad en la cancelación de suscripción</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>modelo_churn <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  Churn_num <span class="sc">~</span> tenure,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> telco,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">1234</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_churn) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     5%         95%
+(Intercept) -0.03609829  0.09296688
+tenure      -0.04111115 -0.03648721</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>prob_churn <span class="ot">&lt;-</span> <span class="fu">posterior_epred</span>(modelo_churn)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver esta tabla de 7043 clientes (cols) y 1000 simulaciones </span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># posteriores (filas) por  cliente. Y en probabilidades</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>prob_churn[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          
+iterations         1         2         3         4         5
+      [1,] 0.5101150 0.2140617 0.4999567 0.1483450 0.4999567
+      [2,] 0.4841610 0.2208202 0.4751043 0.1597533 0.4751043
+      [3,] 0.5111173 0.2106011 0.5007723 0.1447276 0.5007723
+      [4,] 0.4936282 0.2185688 0.4841745 0.1557488 0.4841745
+      [5,] 0.4931860 0.2217319 0.4838855 0.1590852 0.4838855
+      [6,] 0.4989240 0.2205819 0.4893955 0.1568832 0.4893955</code></pre>
+</div>
+</div>
+<p>Recordatorio:</p>
+<p>Cada fila representa una simulación posterior.</p>
+<p>Cada columna representa un cliente.</p>
+<p>Probabilidad posterior promedio</p>
+<section id="probabilidad-posterior-promedio" class="level3">
+<h3 class="anchored" data-anchor-id="probabilidad-posterior-promedio">Probabilidad posterior promedio</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>riesgo_promedio <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(prob_churn)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar el riesgo promedio por cada uno de los 7043 clientes</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>riesgo_promedio[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1         2         3         4         5 
+0.4971375 0.2156246 0.4874451 0.1521633 0.4874451 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una nueva tabla con una nueva variable de riesgo promedio</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>telco_riesgo <span class="ot">&lt;-</span> telco <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">riesgo =</span> riesgo_promedio</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(telco_riesgo) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 7,043
+Columns: 23
+$ customerID       &lt;chr&gt; "7590-VHVEG", "5575-GNVDE", "3668-QPYBK", "7795-CFOCW…
+$ gender           &lt;chr&gt; "Female", "Male", "Male", "Male", "Female", "Female",…
+$ SeniorCitizen    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ Partner          &lt;chr&gt; "Yes", "No", "No", "No", "No", "No", "No", "No", "Yes…
+$ Dependents       &lt;chr&gt; "No", "No", "No", "No", "No", "No", "Yes", "No", "No"…
+$ tenure           &lt;dbl&gt; 1, 34, 2, 45, 2, 8, 22, 10, 28, 62, 13, 16, 58, 49, 2…
+$ PhoneService     &lt;chr&gt; "No", "Yes", "Yes", "No", "Yes", "Yes", "Yes", "No", …
+$ MultipleLines    &lt;chr&gt; "No phone service", "No", "No", "No phone service", "…
+$ InternetService  &lt;chr&gt; "DSL", "DSL", "DSL", "DSL", "Fiber optic", "Fiber opt…
+$ OnlineSecurity   &lt;chr&gt; "No", "Yes", "Yes", "Yes", "No", "No", "No", "Yes", "…
+$ OnlineBackup     &lt;chr&gt; "Yes", "No", "Yes", "No", "No", "No", "Yes", "No", "N…
+$ DeviceProtection &lt;chr&gt; "No", "Yes", "No", "Yes", "No", "Yes", "No", "No", "Y…
+$ TechSupport      &lt;chr&gt; "No", "No", "No", "Yes", "No", "No", "No", "No", "Yes…
+$ StreamingTV      &lt;chr&gt; "No", "No", "No", "No", "No", "Yes", "Yes", "No", "Ye…
+$ StreamingMovies  &lt;chr&gt; "No", "No", "No", "No", "No", "Yes", "No", "No", "Yes…
+$ Contract         &lt;chr&gt; "Month-to-month", "One year", "Month-to-month", "One …
+$ PaperlessBilling &lt;chr&gt; "Yes", "No", "Yes", "No", "Yes", "Yes", "Yes", "No", …
+$ PaymentMethod    &lt;chr&gt; "Electronic check", "Mailed check", "Mailed check", "…
+$ MonthlyCharges   &lt;dbl&gt; 29.85, 56.95, 53.85, 42.30, 70.70, 99.65, 89.10, 29.7…
+$ TotalCharges     &lt;dbl&gt; 29.85, 1889.50, 108.15, 1840.75, 151.65, 820.50, 1949…
+$ Churn            &lt;chr&gt; "No", "No", "Yes", "No", "Yes", "Yes", "No", "No", "Y…
+$ Churn_num        &lt;dbl&gt; 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,…
+$ riesgo           &lt;dbl&gt; 0.49713754, 0.21562457, 0.48744510, 0.15216332, 0.487…</code></pre>
+</div>
+</div>
+<p>Ahora cada cliente tiene una probabilidad estimada de abandono.</p>
+</section>
+</section>
+<section id="visualizando-la-distribución-del-riesgo" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-la-distribución-del-riesgo">12.4 Visualizando la distribución del riesgo</h2>
+<p>Primer gráfico importante.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de riesgo de churn por antiguedad. Este gráfico responde,</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cómo se distribuye el churn en toda la cartera de clientes</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  telco_riesgo,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> riesgo)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">bins =</span> <span class="dv">30</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c12_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interpretación:</p>
+<p>Este gráfico responde una pregunta muy útil:</p>
+<p><code>¿Cómo se distribuye el riesgo en toda la cartera de clientes?</code></p>
+<p>Posibles observaciones:</p>
+<ul>
+<li>muchos clientes con riesgo bajo;</li>
+<li>un grupo intermedio con bajo riesgo;</li>
+<li>muchos clientes con riesgo muy elevado. (Esto es un poco sorprendente porque esperábamos intuitivamente un riesgo más bajo)</li>
+</ul>
+<p>La empresa rara vez enfrenta una situación donde todos los clientes tengan el mismo riesgo.</p>
+<p>La heterogeneidad es la norma.</p>
+</section>
+<section id="ordenando-clientes-por-riesgo" class="level2">
+<h2 class="anchored" data-anchor-id="ordenando-clientes-por-riesgo">12.5 Ordenando clientes por riesgo</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordenar los clientes por riesgo</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>telco_risk <span class="ot">&lt;-</span> telco_riesgo <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(riesgo))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>telco_risk[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,<span class="sc">-</span><span class="dv">20</span><span class="sc">:-</span><span class="dv">1</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  Churn Churn_num riesgo
+  &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+1 No            0  0.507
+2 No            0  0.507
+3 No            0  0.507
+4 No            0  0.507
+5 No            0  0.507
+6 No            0  0.507</code></pre>
+</div>
+</div>
+<p>Aquí aparece una idea poderosa.</p>
+<p>La empresa no necesita identificar exactamente quién abandonará.</p>
+<p>Puede simplemente priorizar los clientes con mayor riesgo.</p>
+<hr>
+<p>Visualización:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver como cambia el riesgo a través de l cartera completa</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>telco_riesgo <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(riesgo)) <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">cliente =</span> <span class="fu">row_number</span>()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> cliente,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> riesgo</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.9</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c12_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este gráfico suele generar mucho impacto visual.</p>
+<p>Permite ver cómo cambia el riesgo a través de la cartera completa.</p>
+</section>
+<section id="segmentos-de-riesgo" class="level2">
+<h2 class="anchored" data-anchor-id="segmentos-de-riesgo">12.6 Segmentos de riesgo</h2>
+<p>Las empresas suelen trabajar con categorías prácticas.</p>
+<p>Por ejemplo:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Segmentar el riesgo</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>telco_riesgo <span class="ot">&lt;-</span> telco_riesgo <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">segmento =</span> <span class="fu">case_when</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>      riesgo <span class="sc">&lt;</span> <span class="fl">0.20</span> <span class="sc">~</span> <span class="st">"Bajo"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>      riesgo <span class="sc">&lt;</span> <span class="fl">0.40</span> <span class="sc">~</span> <span class="st">"Moderado"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Alto"</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Importante:</p>
+<p>Los puntos de corte son decisiones humanas.</p>
+<p>No leyes naturales.</p>
+<hr>
+<p>Interpretación:</p>
+<p><strong>Riesgo bajo</strong></p>
+<p>Clientes relativamente estables.</p>
+<p><strong>Riesgo moderado</strong></p>
+<p>Clientes que merecen seguimiento.</p>
+<p><strong>Riesgo alto</strong></p>
+<p>Clientes candidatos a intervenciones prioritarias.</p>
+<hr>
+<p>Reflexión importante:</p>
+<p>Los límites son arbitrarios.</p>
+<p>Un cliente con riesgo 0.59 no es radicalmente distinto de uno con riesgo 0.61.</p>
+<p>La realidad es continua.</p>
+<p>Los segmentos son simplificaciones útiles.</p>
+</section>
+<section id="visualizando-segmentos" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-segmentos">12.7 Visualizando segmentos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma de la probabilidad de churn según la antiguedad</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  telco_riesgo,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> riesgo,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> segmento</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">bins =</span> <span class="dv">40</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c12_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Aquí los segmentos dejan de ser una tabla y se convierten en una historia visual.</p>
+</section>
+<section id="incertidumbre-individual" class="level2">
+<h2 class="anchored" data-anchor-id="incertidumbre-individual">12.8 Incertidumbre individual</h2>
+<p>Esta es probablemente la sección más importante del capítulo.</p>
+<p>Hasta ahora hemos trabajado con probabilidades promedio.</p>
+<p>Pero el análisis bayesiano nos permite ver algo más profundo:</p>
+<p>la incertidumbre alrededor de cada individuo.</p>
+<hr>
+<p>Tomemos un cliente.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las 1000) simulaciones posteriores </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># del cliente número 25 (de 7043)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#prob_churn[25,]</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las  5 primeras (de las 1000) simulaciones posteriores </span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># del cliente número 25 (de 7043) </span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>prob_churn[<span class="dv">25</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1         2         3         4         5 
+0.5033470 0.2144154 0.4934088 0.1498455 0.4934088 </code></pre>
+</div>
+</div>
+<p>Obtendremos cientos de simulaciones posteriores para ese cliente.</p>
+<p>Podemos resumirlas así:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Resumir las simulaciones posteriores</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  prob_churn[, <span class="dv">25</span>],</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       5%       50%       95% 
+0.1240423 0.1331091 0.1429131 </code></pre>
+</div>
+</div>
+<p>Interpretación:</p>
+<p>El modelo no entrega un único riesgo.</p>
+<p>Entrega un rango plausible de riesgos.</p>
+<hr>
+<p>Esta idea conecta perfectamente con la filosofía del libro:</p>
+<p><code>La incertidumbre no desaparece cuando construimos un modelo.</code></p>
+<p><code>Simplemente aprendemos a describirla mejor.</code></p>
+</section>
+<section id="comparando-la-incertidumbre-de-dos-clientes" class="level2">
+<h2 class="anchored" data-anchor-id="comparando-la-incertidumbre-de-dos-clientes">12.9 Comparando la incertidumbre de dos clientes</h2>
+<p>Hasta ahora hemos trabajado con probabilidades promedio. Sin embargo, una de las ventajas del enfoque bayesiano es que podemos examinar toda la distribución posterior de riesgo para un cliente específico.</p>
+<p>Supongamos que queremos comparar dos clientes de nuestra base de datos.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer todas las probabilidades posteriores</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># del Cliente A (observación 25)</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>riesgo_cliente_a <span class="ot">&lt;-</span> prob_churn[, <span class="dv">25</span>]</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer todas las probabilidades posteriores</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># del Cliente B (observación 1200)</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>riesgo_cliente_b <span class="ot">&lt;-</span> prob_churn[, <span class="dv">1200</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Cada objeto contiene miles de probabilidades plausibles de churn obtenidas a partir de las simulaciones posteriores del modelo.</p>
+<p>Ahora construimos una tabla que identifique claramente a qué cliente pertenece cada simulación:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una tabla con las probabilidades de churn del cliente A</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># y el cliente B. Con las probabilidades en la variable riesgo</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># y los cientes en la variable cliente</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>comparacion_clientes <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">riesgo =</span> <span class="fu">c</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    riesgo_cliente_a,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    riesgo_cliente_b</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cliente =</span> <span class="fu">c</span>(</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>( <span class="co"># Repetir "Cliente A" 1000 veces</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Cliente A"</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">length</span>(riesgo_cliente_a)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>( <span class="co"># Repetir "Cliente B" 1000 veces</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Cliente B"</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">length</span>(riesgo_cliente_b)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>comparacion_clientes[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  riesgo cliente  
+   &lt;dbl&gt; &lt;chr&gt;    
+1  0.129 Cliente A
+2  0.141 Cliente A
+3  0.125 Cliente A
+4  0.137 Cliente A
+5  0.140 Cliente A
+6  0.138 Cliente A</code></pre>
+</div>
+</div>
+<p>Finalmente visualizamos ambas distribuciones:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graficar las distribuciones  de de los clientes A y B</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  comparacion_clientes,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> riesgo,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> cliente</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c12_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este gráfico no compara dos probabilidades puntuales.</p>
+<p>Compara dos distribuciones completas de riesgo.</p>
+<p>Cada curva representa el conjunto de probabilidades plausibles que el modelo asigna a un cliente específico.</p>
+<p>Si las curvas están muy separadas, existe evidencia de que ambos clientes presentan perfiles de riesgo distintos.</p>
+<p>Si las curvas se superponen considerablemente, la incertidumbre es suficientemente grande como para que las diferencias entre ambos clientes sean menos claras.</p>
+<p>Esta visualización refleja una idea central del pensamiento bayesiano: en lugar de resumir cada cliente mediante un único número, analizamos la distribución completa de riesgos plausibles asociada a cada individuo.</p>
+</section>
+<section id="contexto-de-negocio-retención-y-priorización" class="level2">
+<h2 class="anchored" data-anchor-id="contexto-de-negocio-retención-y-priorización">12.10 Contexto de negocio: retención y priorización</h2>
+<p>Antes de continuar debemos entender dos conceptos importantes.</p>
+<section id="retención" class="level3">
+<h3 class="anchored" data-anchor-id="retención">Retención</h3>
+<p>Conjunto de acciones destinadas a evitar que un cliente abandone la empresa.</p>
+<p>Ejemplos:</p>
+<ul>
+<li>descuentos;</li>
+<li>promociones;</li>
+<li>soporte personalizado;</li>
+<li>programas de fidelización.</li>
+</ul>
+</section>
+<section id="priorización" class="level3">
+<h3 class="anchored" data-anchor-id="priorización">Priorización</h3>
+<p>Los recursos son limitados.</p>
+<p>Por ello las empresas deben decidir:</p>
+<ul>
+<li>quién recibe atención primero;</li>
+<li>cuánto invertir;</li>
+<li>dónde es más probable obtener beneficios.</li>
+</ul>
+<p>Las probabilidades ayudan precisamente en esa tarea.</p>
+</section>
+<section id="escenarios-concretos" class="level3">
+<h3 class="anchored" data-anchor-id="escenarios-concretos">Escenarios Concretos</h3>
+<p>Por ejemplo, podríamos tener escenarios concretos de antiguedad o tenure de los clientes</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear tabla con una columna de meses</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>nuevo <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tenure =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">24</span>, <span class="dv">36</span>, <span class="dv">48</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Y con estos escenarios concretos de antiguedad podríamos calcular la probabilidad de churn</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una matriz de 1000 simulaciones posteriores para </span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># antiguedades de 12, 24, 36 y 48 meses</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>probs_concretas <span class="ot">&lt;-</span> <span class="fu">posterior_epred</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  modelo_churn,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> nuevo</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>probs_concretas[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          
+iterations         1         2         3         4
+      [1,] 0.3997370 0.2902384 0.2007054 0.1335930
+      [2,] 0.3863813 0.2894598 0.2085860 0.1456755
+      [3,] 0.3987241 0.2875255 0.1971694 0.1300260
+      [4,] 0.3913436 0.2899387 0.2059202 0.1414001
+      [5,] 0.3925262 0.2924785 0.2091515 0.1447089
+      [6,] 0.3956487 0.2929552 0.2077536 0.1423430</code></pre>
+</div>
+</div>
+<p>Y esta matriz se podría resumir de esta manera:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una matriz de simulaciones posteriores para antiguedades de</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 12, 24, 36 y 48 meses y sacar los promedios</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_epred</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  modelo_churn,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> nuevo</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colMeans</span>() <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1         2         3         4 
+0.3921958 0.2883205 0.2027992 0.1377650 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="trade-offs" class="level2">
+<h2 class="anchored" data-anchor-id="trade-offs">12.11 Trade-offs</h2>
+<p>Una empresa podría intervenir sobre todos los clientes.</p>
+<p>Pero eso sería costoso.</p>
+<p>También podría no intervenir sobre nadie.</p>
+<p>Pero perdería clientes valiosos.</p>
+<p>Las decisiones reales ocurren entre esos dos extremos.</p>
+<p>Por eso el riesgo individual debe interpretarse dentro de un contexto económico y operativo.</p>
+</section>
+<section id="riesgo-y-decisiones-humanas" class="level2">
+<h2 class="anchored" data-anchor-id="riesgo-y-decisiones-humanas">12.12 Riesgo y decisiones humanas</h2>
+<p>Un error frecuente es creer que:</p>
+<p><code>El modelo sabe quién abandonará.</code></p>
+<p>No es cierto.</p>
+<p>Los modelos trabajan con incertidumbre.</p>
+<p>Las personas cambian.</p>
+<p>Las circunstancias cambian.</p>
+<p>Los mercados cambian.</p>
+<p>Por eso una probabilidad elevada nunca debe interpretarse como un destino inevitable.</p>
+<p>Debe interpretarse como una señal para prestar atención.</p>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">Reflexión bayesiana</h2>
+<p>Una probabilidad individual no es una etiqueta.</p>
+<p>Es una descripción imperfecta de nuestra incertidumbre actual.</p>
+<p>Mañana podría cambiar si aparece nueva información.</p>
+<p>En ese sentido, pensar probabilísticamente significa aceptar que nuestro conocimiento siempre es provisional.</p>
+<p>Los modelos no eliminan la incertidumbre.</p>
+<p>Nos ayudan a navegarla.</p>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Seleccione tres clientes:</p>
+<ul>
+<li>uno de riesgo bajo;</li>
+<li>uno de riesgo moderado;</li>
+<li>uno de riesgo alto.</li>
+</ul>
+<p>Describa cómo interpretaría cada probabilidad.</p>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Construya un histograma de riesgos.</p>
+<p>¿Qué le dice sobre la distribución del riesgo en la cartera de clientes?</p>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Compare las distribuciones posteriores de dos clientes distintos.</p>
+<p>¿Existe superposición?</p>
+<p>¿Qué implica esa superposición?</p>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Modifique los puntos de corte de los segmentos.</p>
+<p>¿Cómo cambia el número de clientes clasificados como de alto riesgo?</p>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Suponga que sólo puede intervenir sobre el 10% de los clientes.</p>
+<p>¿Cómo los seleccionaría?</p>
+<p>¿Utilizaría únicamente la probabilidad de abandono?</p>
+<p>¿Por qué?</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Decisiones bajo incertidumbre, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

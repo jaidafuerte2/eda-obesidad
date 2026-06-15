@@ -1,0 +1,593 @@
+---
+title: "12.- Interpretar riesgo individual"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+options(scipen = 999) # desactivar la notación científica
+
+library(tidyverse)
+library(rstanarm)
+library(bayesplot)
+library(posterior) 
+
+telco <- read_csv("../data/telco_customer_churn.csv",
+                  guess_max = 10000,
+                  show_col_types = FALSE)
+#glimpse(superstore) # produce:
+```
+
+## Introducción
+
+Historia inicial:
+
+Imaginemos una empresa de telecomunicaciones con diez mil clientes.
+
+Cada mes algunos clientes cancelan su contrato.
+
+La empresa dispone de un presupuesto limitado para programas de retención:
+
+- descuentos,
+- llamadas de seguimiento,
+- soporte personalizado,
+- promociones especiales.
+
+Sin embargo, no puede ofrecer estos beneficios a todos los clientes.
+
+La pregunta ya no es:
+
+`¿Quién abandonará?`
+
+La pregunta real es:
+
+`¿A quién deberíamos prestar atención primero?`
+
+Aquí es donde las probabilidades individuales se vuelven valiosas.
+
+No porque permitan ver el futuro con certeza.
+
+Sino porque ayudan a asignar recursos de manera más inteligente bajo incertidumbre.
+
+## 12.1 Del modelo a la decisión
+
+En capítulos anteriores construimos modelos para estimar probabilidades de abandono.
+
+Ahora debemos dar un paso adicional.
+
+Un modelo por sí solo no toma decisiones.
+
+Un modelo simplemente genera información.
+
+Las decisiones siguen siendo responsabilidad de las personas.
+
+Por eso el verdadero valor de un modelo no está en su capacidad para producir números.
+
+Está en ayudarnos a interpretar mejor situaciones inciertas.
+
+## 12.2 ¿Qué significa una probabilidad individual?
+
+Supongamos tres clientes.
+
+| Cliente | Riesgo estimado |
+|---------|-----------------|
+| A       | 0.10            |
+| B       | 0.40            |
+| C       | 0.80            |
+
+Interpretación:
+
+Cliente A:
+
+`El modelo considera relativamente poco plausible que abandone la empresa.`
+
+Cliente B:
+
+`Existe una incertidumbre considerable. El riesgo es moderado.`
+
+Cliente C:
+
+`El modelo considera bastante plausible que abandone la empresa.`
+
+Observa algo importante.
+
+No estamos diciendo:
+
+❌ "El cliente C abandonará."
+
+Estamos diciendo:
+
+✅ "El cliente C presenta un riesgo más elevado."
+
+La diferencia parece pequeña.
+
+Pero conceptualmente es enorme.
+
+## 12.3 Obteniendo probabilidades individuales
+
+Aquí reutilizamos el modelo logístico construido en capítulos anteriores.
+
+```{r}
+# Crear una variable Churn numérica
+telco <- telco %>%
+  mutate(
+    Churn_num =
+      if_else(
+        Churn == "Yes",
+        1,
+        0
+      )
+  )
+class(telco$Churn_num) # produce: numeric
+```
+
+```{r}
+# Crear un modelo logístico bayesiano para conocer cuanto influye 
+# la antiguedad en la cancelación de suscripción
+modelo_churn <- stan_glm(
+  Churn_num ~ tenure,
+  data = telco,
+  family = binomial(),
+  chains = 2,
+  iter = 1000,
+  seed = 1234,
+  refresh = 0
+) 
+posterior_interval(modelo_churn) # produce:
+```
+
+```{r}
+prob_churn <- posterior_epred(modelo_churn)
+# Ver esta tabla de 7043 clientes (cols) y 1000 simulaciones 
+# posteriores (filas) por  cliente. Y en probabilidades
+prob_churn[1:6, 1:5] # produce:
+```
+
+
+Recordatorio:
+
+Cada fila representa una simulación posterior.
+
+Cada columna representa un cliente.
+
+Probabilidad posterior promedio
+
+### Probabilidad posterior promedio
+
+```{r}
+riesgo_promedio <- colMeans(prob_churn)
+# Mostrar el riesgo promedio por cada uno de los 7043 clientes
+riesgo_promedio[1:5] # produce:
+```
+
+```{r}
+# Crear una nueva tabla con una nueva variable de riesgo promedio
+telco_riesgo <- telco |>
+  mutate(
+    riesgo = riesgo_promedio
+  )
+glimpse(telco_riesgo) # produce:
+```
+
+Ahora cada cliente tiene una probabilidad estimada de abandono.
+
+## 12.4 Visualizando la distribución del riesgo
+
+Primer gráfico importante.
+
+```{r}
+# Histograma de riesgo de churn por antiguedad. Este gráfico responde,
+# cómo se distribuye el churn en toda la cartera de clientes
+ggplot(
+  telco_riesgo,
+  aes(x = riesgo)
+) +
+  geom_histogram(
+    bins = 30
+  )
+```
+
+Interpretación:
+
+Este gráfico responde una pregunta muy útil:
+
+`¿Cómo se distribuye el riesgo en toda la cartera de clientes?`
+
+Posibles observaciones:
+
+- muchos clientes con riesgo bajo;
+- un grupo intermedio con bajo riesgo;
+- muchos clientes con riesgo muy elevado. (Esto es un poco sorprendente porque esperábamos intuitivamente un riesgo más bajo)
+
+La empresa rara vez enfrenta una situación donde todos los clientes tengan el mismo riesgo.
+
+La heterogeneidad es la norma.
+
+## 12.5 Ordenando clientes por riesgo
+
+```{r}
+# Ordenar los clientes por riesgo
+telco_risk <- telco_riesgo |>
+  arrange(desc(riesgo))
+telco_risk[1:6,-20:-1] # produce:
+```
+
+Aquí aparece una idea poderosa.
+
+La empresa no necesita identificar exactamente quién abandonará.
+
+Puede simplemente priorizar los clientes con mayor riesgo.
+
+---
+
+Visualización:
+
+```{r}
+# Ver como cambia el riesgo a través de l cartera completa
+telco_riesgo |>
+  arrange(desc(riesgo)) |>
+  mutate(
+    cliente = row_number()
+  ) |>
+  ggplot(
+    aes(
+      x = cliente,
+      y = riesgo
+    )
+  ) +
+  geom_point(alpha = 0.9)
+```
+
+Este gráfico suele generar mucho impacto visual.
+
+Permite ver cómo cambia el riesgo a través de la cartera completa.
+
+## 12.6 Segmentos de riesgo
+
+Las empresas suelen trabajar con categorías prácticas.
+
+Por ejemplo:
+
+```{r}
+# Segmentar el riesgo
+telco_riesgo <- telco_riesgo |>
+  mutate(
+    segmento = case_when(
+      riesgo < 0.20 ~ "Bajo",
+      riesgo < 0.40 ~ "Moderado",
+      TRUE ~ "Alto"
+    )
+  )
+```
+
+Importante:
+
+Los puntos de corte son decisiones humanas.
+
+No leyes naturales.
+
+--- 
+
+Interpretación:
+
+**Riesgo bajo**
+
+Clientes relativamente estables.
+
+**Riesgo moderado**
+
+Clientes que merecen seguimiento.
+
+**Riesgo alto**
+
+Clientes candidatos a intervenciones prioritarias.
+
+---
+
+Reflexión importante:
+
+Los límites son arbitrarios.
+
+Un cliente con riesgo 0.59 no es radicalmente distinto de uno con riesgo 0.61.
+
+La realidad es continua.
+
+Los segmentos son simplificaciones útiles.
+
+## 12.7 Visualizando segmentos
+
+```{r}
+# Histograma de la probabilidad de churn según la antiguedad
+ggplot(
+  telco_riesgo,
+  aes(
+    x = riesgo,
+    fill = segmento
+  )
+) +
+  geom_histogram(
+    bins = 40
+  )
+```
+
+Aquí los segmentos dejan de ser una tabla y se convierten en una historia visual.
+
+## 12.8 Incertidumbre individual
+
+Esta es probablemente la sección más importante del capítulo.
+
+Hasta ahora hemos trabajado con probabilidades promedio.
+
+Pero el análisis bayesiano nos permite ver algo más profundo:
+
+la incertidumbre alrededor de cada individuo.
+
+---
+
+Tomemos un cliente.
+
+```{r}
+# Mostrar las 1000) simulaciones posteriores 
+# del cliente número 25 (de 7043)
+#prob_churn[25,]
+
+# Mostrar las  5 primeras (de las 1000) simulaciones posteriores 
+# del cliente número 25 (de 7043) 
+prob_churn[25,1:5] # produce
+```
+
+Obtendremos cientos de simulaciones posteriores para ese cliente.
+
+Podemos resumirlas así:
+
+```{r}
+# Resumir las simulaciones posteriores
+quantile(
+  prob_churn[, 25],
+  probs = c(0.05, 0.5, 0.95)
+) # produce:
+```
+
+Interpretación:
+
+El modelo no entrega un único riesgo.
+
+Entrega un rango plausible de riesgos.
+
+---
+
+Esta idea conecta perfectamente con la filosofía del libro:
+
+`La incertidumbre no desaparece cuando construimos un modelo.`
+
+`Simplemente aprendemos a describirla mejor.`
+
+## 12.9 Comparando la incertidumbre de dos clientes
+
+Hasta ahora hemos trabajado con probabilidades promedio. Sin embargo, una de las ventajas del enfoque bayesiano es que podemos examinar toda la distribución posterior de riesgo para un cliente específico.
+
+Supongamos que queremos comparar dos clientes de nuestra base de datos.
+
+```{r}
+# Extraer todas las probabilidades posteriores
+# del Cliente A (observación 25)
+riesgo_cliente_a <- prob_churn[, 25]
+
+# Extraer todas las probabilidades posteriores
+# del Cliente B (observación 1200)
+riesgo_cliente_b <- prob_churn[, 1200]
+```
+
+
+Cada objeto contiene miles de probabilidades plausibles de churn obtenidas a partir de las simulaciones posteriores del modelo.
+
+Ahora construimos una tabla que identifique claramente a qué cliente pertenece cada simulación:
+
+```{r}
+# Crear una tabla con las probabilidades de churn del cliente A
+# y el cliente B. Con las probabilidades en la variable riesgo
+# y los cientes en la variable cliente
+comparacion_clientes <- tibble(
+  riesgo = c(
+    riesgo_cliente_a,
+    riesgo_cliente_b
+  ),
+  cliente = c(
+    rep( # Repetir "Cliente A" 1000 veces
+      "Cliente A",
+      length(riesgo_cliente_a)
+    ),
+    rep( # Repetir "Cliente B" 1000 veces
+      "Cliente B",
+      length(riesgo_cliente_b)
+    )
+  )
+) 
+comparacion_clientes[1:6,] # produce:
+```
+
+Finalmente visualizamos ambas distribuciones:
+
+```{r}
+# Graficar las distribuciones  de de los clientes A y B
+ggplot(
+  comparacion_clientes,
+  aes(
+    x = riesgo,
+    fill = cliente
+  )
+) +
+  geom_density(
+    alpha = 0.4
+  )
+```
+
+
+Este gráfico no compara dos probabilidades puntuales.
+
+Compara dos distribuciones completas de riesgo.
+
+Cada curva representa el conjunto de probabilidades plausibles que el modelo asigna a un cliente específico.
+
+Si las curvas están muy separadas, existe evidencia de que ambos clientes presentan perfiles de riesgo distintos.
+
+Si las curvas se superponen considerablemente, la incertidumbre es suficientemente grande como para que las diferencias entre ambos clientes sean menos claras.
+
+Esta visualización refleja una idea central del pensamiento bayesiano: en lugar de resumir cada cliente mediante un único número, analizamos la distribución completa de riesgos plausibles asociada a cada individuo.
+
+
+## 12.10 Contexto de negocio: retención y priorización
+
+Antes de continuar debemos entender dos conceptos importantes.
+
+### Retención
+
+Conjunto de acciones destinadas a evitar que un cliente abandone la empresa.
+
+Ejemplos:
+
+- descuentos;
+- promociones;
+- soporte personalizado;
+- programas de fidelización.
+
+### Priorización
+
+Los recursos son limitados.
+
+Por ello las empresas deben decidir:
+
+- quién recibe atención primero;
+- cuánto invertir;
+- dónde es más probable obtener beneficios.
+
+Las probabilidades ayudan precisamente en esa tarea.
+
+### Escenarios Concretos
+
+Por ejemplo, podríamos tener escenarios concretos de antiguedad o tenure de los clientes
+
+```{r}
+# Crear tabla con una columna de meses
+nuevo <- tibble(
+  tenure = c(12, 24, 36, 48)
+)
+```
+
+Y con estos escenarios concretos de antiguedad podríamos calcular la probabilidad de churn
+
+```{r}
+# Crear una matriz de 1000 simulaciones posteriores para 
+# antiguedades de 12, 24, 36 y 48 meses
+probs_concretas <- posterior_epred(
+  modelo_churn,
+  newdata = nuevo
+) 
+probs_concretas[1:6,] # produce:
+```
+
+Y esta matriz se podría resumir de esta manera:
+
+```{r}
+# Crear una matriz de simulaciones posteriores para antiguedades de
+# 12, 24, 36 y 48 meses y sacar los promedios
+posterior_epred(
+  modelo_churn,
+  newdata = nuevo
+) |>
+  colMeans() # produce:
+```
+
+
+## 12.11 Trade-offs
+
+Una empresa podría intervenir sobre todos los clientes.
+
+Pero eso sería costoso.
+
+También podría no intervenir sobre nadie.
+
+Pero perdería clientes valiosos.
+
+Las decisiones reales ocurren entre esos dos extremos.
+
+Por eso el riesgo individual debe interpretarse dentro de un contexto económico y operativo.
+
+## 12.12 Riesgo y decisiones humanas
+
+Un error frecuente es creer que:
+
+`El modelo sabe quién abandonará.`
+
+No es cierto.
+
+Los modelos trabajan con incertidumbre.
+
+Las personas cambian.
+
+Las circunstancias cambian.
+
+Los mercados cambian.
+
+Por eso una probabilidad elevada nunca debe interpretarse como un destino inevitable.
+
+Debe interpretarse como una señal para prestar atención.
+
+## Reflexión bayesiana
+
+Una probabilidad individual no es una etiqueta.
+
+Es una descripción imperfecta de nuestra incertidumbre actual.
+
+Mañana podría cambiar si aparece nueva información.
+
+En ese sentido, pensar probabilísticamente significa aceptar que nuestro conocimiento siempre es provisional.
+
+Los modelos no eliminan la incertidumbre.
+
+Nos ayudan a navegarla.
+
+## Ejercicios
+
+### Ejercicio 1
+
+Seleccione tres clientes:
+
+- uno de riesgo bajo;
+- uno de riesgo moderado;
+- uno de riesgo alto.
+
+Describa cómo interpretaría cada probabilidad.
+
+### Ejercicio 2
+
+Construya un histograma de riesgos.
+
+¿Qué le dice sobre la distribución del riesgo en la cartera de clientes?
+
+### Ejercicio 3
+
+Compare las distribuciones posteriores de dos clientes distintos.
+
+¿Existe superposición?
+
+¿Qué implica esa superposición?
+
+### Ejercicio 4
+
+Modifique los puntos de corte de los segmentos.
+
+¿Cómo cambia el número de clientes clasificados como de alto riesgo?
+
+### Ejercicio 5
+
+Suponga que sólo puede intervenir sobre el 10% de los clientes.
+
+¿Cómo los seleccionaría?
+
+¿Utilizaría únicamente la probabilidad de abandono?
+
+¿Por qué?

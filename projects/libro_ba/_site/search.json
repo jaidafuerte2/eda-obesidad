@@ -1680,7 +1680,7 @@
     "href": "analysis/c07.html#resumen-del-modelo",
     "title": "7.- Relaciones entre variables",
     "section": "Resumen del modelo",
-    "text": "Resumen del modelo\n\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.5    2.9  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.6    1.7 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nEl resultado mostrará una distribución posterior para cada parámetro.\nLo importante no es encontrar un número exacto.\nLo importante es comprender qué valores parecen plausibles.",
+    "text": "Resumen del modelo\n\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.6    2.8  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.5    1.7 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nEl resultado mostrará una distribución posterior para cada parámetro.\nLo importante no es encontrar un número exacto.\nLo importante es comprender qué valores parecen plausibles.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -1704,7 +1704,7 @@
     "href": "analysis/c07.html#visualizando-incertidumbre",
     "title": "7.- Relaciones entre variables",
     "section": "Visualizando incertidumbre",
-    "text": "Visualizando incertidumbre\nUno de los mayores beneficios del enfoque bayesiano es que podemos visualizar la incertidumbre directamente.\n\n# Conocer la incertidumbre de la relación del descuento con las\n# ganancias\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n) # produce:\n\n                  2.5%      97.5%\n(Intercept)  61.785321  73.381163\nDiscount_c   -2.714493  -2.262205\nsigma       225.499938 232.171334\n\n\nAquí obtenemos un rango de valores plausibles.\nNo un único número.\nPorque los parámetros también son inciertos.",
+    "text": "Visualizando incertidumbre\nUno de los mayores beneficios del enfoque bayesiano es que podemos visualizar la incertidumbre directamente.\n\n# Conocer la incertidumbre de la relación del descuento con las\n# ganancias\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n) # produce:\n\n                  2.5%      97.5%\n(Intercept)  61.695013  72.965586\nDiscount_c   -2.702717  -2.272576\nsigma       225.162535 231.814223\n\n\nAquí obtenemos un rango de valores plausibles.\nNo un único número.\nPorque los parámetros también son inciertos.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -2124,7 +2124,7 @@
     "href": "analysis/c09.html#generando-escenarios-futuros",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.8 Generando escenarios futuros",
-    "text": "9.8 Generando escenarios futuros\nSupongamos que queremos estudiar varios niveles de descuento.\n\n# Generar varios niveles de descuento\nnuevos_descuentos &lt;- tibble(\n  Discount_c = seq(0, 80, by = 5)\n)\nnuevos_descuentos[1:7,] # produce:\n\n# A tibble: 7 × 1\n  Discount_c\n       &lt;dbl&gt;\n1          0\n2          5\n3         10\n4         15\n5         20\n6         25\n7         30\n\n\nAhora generamos predicciones.\n\n# Generar una matriz de predicciones\npredicciones &lt;- posterior_predict(\n  modelo_profit,\n  newdata = nuevos_descuentos\n)\npredicciones[1:4, 1:4] # produce:\n\n             1         2         3          4\n[1,]  127.9585  374.8490 -236.2800 -111.45925\n[2,] -214.8982  168.3496  243.3044   60.55305\n[3,]  114.1008 -176.8744  535.4702 -164.25150\n[4,] -211.2330 -217.1305  497.8658 -111.58314\n\n\n[ reached ‘max’ / getOption(“max.print”) – omitted 996 rows ]\n\ndim(predicciones) # produce:\n\n[1] 1000   17\n\n\nInterprestación: Significa 17 escenarios de descuento (columnas) y 1000 futuros posibles en cada escenario (filas)\nEl resultado de posterior_predict() es una matriz.\nCada fila representa una simulación posterior (debería haber 1000 filas).\nCada columna representa un nivel o porcentaje de descuento (debería haber 17 columnas).\nConceptualmente\n\n\n\nSimulación\n0%\n5%\n10%\n\n\n\n\n1\n45\n40\n35\n\n\n2\n52\n38\n30\n\n\n3\n41\n34\n28\n\n\n\nCada fila representa un posible futuro.",
+    "text": "9.8 Generando escenarios futuros\nSupongamos que queremos estudiar varios niveles de descuento.\n\n# Generar varios niveles de descuento\nnuevos_descuentos &lt;- tibble(\n  Discount_c = seq(0, 80, by = 5)\n)\nnuevos_descuentos[1:7,] # produce:\n\n# A tibble: 7 × 1\n  Discount_c\n       &lt;dbl&gt;\n1          0\n2          5\n3         10\n4         15\n5         20\n6         25\n7         30\n\n\nAhora generamos predicciones.\n\n# Generar una matriz de predicciones\npredicciones &lt;- posterior_predict(\n  modelo_profit,\n  newdata = nuevos_descuentos\n)\npredicciones[1:4, 1:4] # produce:\n\n              1          2         3         4\n[1,]  406.83278   78.77974 -50.84350 -157.0459\n[2,]  -41.77251  184.14415 -59.52359  618.7516\n[3,] -166.21917 -287.96617 359.36316  209.2269\n[4,] -320.50982   99.44673 234.79984 -384.4504\n\n\n[ reached ‘max’ / getOption(“max.print”) – omitted 996 rows ]\n\ndim(predicciones) # produce:\n\n[1] 1000   17\n\n\nInterprestación: Significa 17 escenarios de descuento (columnas) y 1000 futuros posibles en cada escenario (filas)\nEl resultado de posterior_predict() es una matriz.\nCada fila representa una simulación posterior (debería haber 1000 filas).\nCada columna representa un nivel o porcentaje de descuento (debería haber 17 columnas).\nConceptualmente\n\n\n\nSimulación\n0%\n5%\n10%\n\n\n\n\n1\n45\n40\n35\n\n\n2\n52\n38\n30\n\n\n3\n41\n34\n28\n\n\n\nCada fila representa un posible futuro.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -2136,7 +2136,7 @@
     "href": "analysis/c09.html#resumiendo-las-predicciones",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.9 Resumiendo las predicciones",
-    "text": "9.9 Resumiendo las predicciones\nLas empresas normalmente desean resumir escenarios.\nPodemos calcular:\n\nmediana\nlímite inferior plausible\nlímite superior plausible\n\n\n# Crear una tabla de resumen de las predicciones (con \n# 17 filas de descuentos) \npred_resumen &lt;- tibble(\n  Discount_c = nuevos_descuentos$Discount_c, # Descuento\n  mediana = apply(predicciones, 2, median), # mediana\n  li = apply(predicciones, 2, quantile, probs = 0.05), # límite inferiror\n  ls = apply(predicciones, 2, quantile, probs = 0.95) # límite superior\n)\npred_resumen[1:7,] # produce:\n\n# A tibble: 7 × 4\n  Discount_c mediana    li    ls\n       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1          0   80.7  -303.  438.\n2          5   44.8  -322.  441.\n3         10   28.5  -305.  395.\n4         15   24.2  -331.  427.\n5         20   33.1  -366.  395.\n6         25    2.85 -378.  366.\n7         30  -10.2  -365.  381.\n\n\n\nEntendiendo el código\n\n# apply sigue este esquema apply(X, MARGIN, FUN) donde: X es la \n# matriz, MARGIN por donde recorrer (filas o columnas) y FUN es \n# la función a aplicar. Margin = 1 significa trabajar por filas y\n# Margin = 2 significa trabajar por columnas\napply(predicciones, 2, quantile, probs = 0.05) # produce: \n\n        1         2         3         4         5         6         7         8 \n-302.6284 -321.7946 -305.0633 -330.6706 -366.0190 -378.2409 -364.6010 -391.8511 \n        9        10        11        12        13        14        15        16 \n-409.6352 -429.2318 -416.9962 -430.7802 -465.1202 -491.2621 -477.2188 -476.6683 \n       17 \n-521.1988 \n\n\n\napply(predicciones, 2, quantile, probs = 0.05) # produce:\n\n        1         2         3         4         5         6         7         8 \n-302.6284 -321.7946 -305.0633 -330.6706 -366.0190 -378.2409 -364.6010 -391.8511 \n        9        10        11        12        13        14        15        16 \n-409.6352 -429.2318 -416.9962 -430.7802 -465.1202 -491.2621 -477.2188 -476.6683 \n       17 \n-521.1988 \n\n\n\napply(predicciones, 2, quantile, probs = 0.95) # produce:\n\n       1        2        3        4        5        6        7        8 \n438.0701 440.8573 394.7750 427.4786 395.4274 365.9891 381.1589 348.5475 \n       9       10       11       12       13       14       15       16 \n350.5614 334.0927 351.2621 280.0479 292.3668 288.6414 250.2079 230.1644 \n      17 \n256.8221",
+    "text": "9.9 Resumiendo las predicciones\nLas empresas normalmente desean resumir escenarios.\nPodemos calcular:\n\nmediana\nlímite inferior plausible\nlímite superior plausible\n\n\n# Crear una tabla de resumen de las predicciones (con \n# 17 filas de descuentos) \npred_resumen &lt;- tibble(\n  Discount_c = nuevos_descuentos$Discount_c, # Descuento\n  mediana = apply(predicciones, 2, median), # mediana\n  li = apply(predicciones, 2, quantile, probs = 0.05), # límite inferiror\n  ls = apply(predicciones, 2, quantile, probs = 0.95) # límite superior\n)\npred_resumen[1:7,] # produce:\n\n# A tibble: 7 × 4\n  Discount_c mediana    li    ls\n       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1          0   62.0  -306.  430.\n2          5   47.7  -336.  401.\n3         10   50.9  -332.  411.\n4         15   21.2  -348.  397.\n5         20   31.6  -369.  425.\n6         25    6.27 -367.  393.\n7         30    8.19 -385.  357.\n\n\n\nEntendiendo el código\n\n# apply sigue este esquema apply(X, MARGIN, FUN) donde: X es la \n# matriz, MARGIN por donde recorrer (filas o columnas) y FUN es \n# la función a aplicar. Margin = 1 significa trabajar por filas y\n# Margin = 2 significa trabajar por columnas\napply(predicciones, 2, quantile, probs = 0.05) # produce: \n\n        1         2         3         4         5         6         7         8 \n-305.9048 -336.1125 -332.3969 -348.2524 -369.1481 -367.2168 -385.4928 -372.4899 \n        9        10        11        12        13        14        15        16 \n-434.5270 -419.5241 -408.0542 -449.3389 -445.2032 -469.5340 -445.5192 -496.1119 \n       17 \n-516.5737 \n\n\n\napply(predicciones, 2, quantile, probs = 0.05) # produce:\n\n        1         2         3         4         5         6         7         8 \n-305.9048 -336.1125 -332.3969 -348.2524 -369.1481 -367.2168 -385.4928 -372.4899 \n        9        10        11        12        13        14        15        16 \n-434.5270 -419.5241 -408.0542 -449.3389 -445.2032 -469.5340 -445.5192 -496.1119 \n       17 \n-516.5737 \n\n\n\napply(predicciones, 2, quantile, probs = 0.95) # produce:\n\n       1        2        3        4        5        6        7        8 \n429.5301 400.6181 410.5362 397.2381 425.1005 393.1932 356.6879 326.1218 \n       9       10       11       12       13       14       15       16 \n348.0032 330.9736 315.5874 316.5194 294.5856 286.4903 253.6093 252.9257 \n      17 \n237.6336",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -2160,7 +2160,7 @@
     "href": "analysis/c09.html#visualizando-múltiples-futuros-plausibles",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.11 Visualizando múltiples futuros plausibles",
-    "text": "9.11 Visualizando múltiples futuros plausibles\nUna manera aún más intuitiva consiste en visualizar escenarios individuales.\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100. Entonces en total\n# hay 1700 filas\nescenarios &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;% # Cambia de formato matriz a dataframe\n  slice_sample(n = 100) %&gt;% # Se toma una muestra de 100 \n  mutate(simulacion = row_number()) %&gt;% # Se crea una variable para\n                                        # numerar las filas  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\nescenarios # produce\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1           18.6\n 2          1 2          303. \n 3          1 3         -229. \n 4          1 4          433. \n 5          1 5          -89.4\n 6          1 6          101. \n 7          1 7          272. \n 8          1 8          123. \n 9          1 9         -339. \n10          1 10        -267. \n# ℹ 1,690 more rows\n\n\n\nEntendiendo el código\n\n# Matriz de predicciones posteriores para distintos tipos de \n# probabilidades. \nescenarios2 &lt;- predicciones \nescenarios2[1:4, 1:4] # produce: 17 columnas , 1000 filas\n\n             1         2         3          4\n[1,]  127.9585  374.8490 -236.2800 -111.45925\n[2,] -214.8982  168.3496  243.3044   60.55305\n[3,]  114.1008 -176.8744  535.4702 -164.25150\n[4,] -211.2330 -217.1305  497.8658 -111.58314\n\n\n\n# Cambiar la matriz a tabla o dataframe\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() \nescenarios2[1:4, 1:4] # produce (17 columnas, 1000 filas):\n\n          1         2         3          4\n1  127.9585  374.8490 -236.2800 -111.45925\n2 -214.8982  168.3496  243.3044   60.55305\n3  114.1008 -176.8744  535.4702 -164.25150\n4 -211.2330 -217.1305  497.8658 -111.58314\n\n\n\n# Quedarse con una muestra de sólo 100 participantes\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) # escoger aleatoriamente 100 participantes\nescenarios2[1:4, 1:4] # produce (17 filas, 100 columnas) \n\n           1          2          3         4\n1  59.307484 -342.68409  -88.53183  136.6269\n2 120.395815  240.70402 -193.63095 -353.0309\n3 150.697472  -32.81547 -122.44038 -116.7228\n4   3.849249  455.69426  138.76505  -63.2346\n\n\n\n# Crear una variable que numera cada una de las 100 filas\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) %&gt;%\n  mutate(simulacion = row_number()) # crear la variable simulacion\n                                    # y numerar las filas\nescenarios2[1:4, -14:-1] # produce:\n\n           15          16        17 simulacion\n1  185.066402 -328.782740 -482.5944          1\n2 -232.494609  155.725731  -36.7883          2\n3   -2.340326    6.434715 -185.9234          3\n4  164.017554 -114.231937 -224.2209          4\n\n\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100\nescenarios2  %&gt;%  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1          243. \n 2          1 2          284. \n 3          1 3          132. \n 4          1 4         -167. \n 5          1 5         -162. \n 6          1 6         -364. \n 7          1 7          115. \n 8          1 8         -227. \n 9          1 9           35.0\n10          1 10        -366. \n# ℹ 1,690 more rows\n\n\n\n\nVisualizar escenarios individuales\n\n# Visualizar escenarios idividuales\nggplot(\n  escenarios,\n  aes(\n    x = escenario,\n    y = profit,\n    group = simulacion # agrupar por simulación\n  )\n) +\n  geom_line(alpha = 0.15)",
+    "text": "9.11 Visualizando múltiples futuros plausibles\nUna manera aún más intuitiva consiste en visualizar escenarios individuales.\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100. Entonces en total\n# hay 1700 filas\nescenarios &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;% # Cambia de formato matriz a dataframe\n  slice_sample(n = 100) %&gt;% # Se toma una muestra de 100 \n  mutate(simulacion = row_number()) %&gt;% # Se crea una variable para\n                                        # numerar las filas  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\nescenarios # produce\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1          322. \n 2          1 2          123. \n 3          1 3          364. \n 4          1 4           41.8\n 5          1 5           64.7\n 6          1 6         -354. \n 7          1 7          156. \n 8          1 8         -494. \n 9          1 9         -529. \n10          1 10        -337. \n# ℹ 1,690 more rows\n\n\n\nEntendiendo el código\n\n# Matriz de predicciones posteriores para distintos tipos de \n# probabilidades. \nescenarios2 &lt;- predicciones \nescenarios2[1:4, 1:4] # produce: 17 columnas , 1000 filas\n\n              1          2         3         4\n[1,]  406.83278   78.77974 -50.84350 -157.0459\n[2,]  -41.77251  184.14415 -59.52359  618.7516\n[3,] -166.21917 -287.96617 359.36316  209.2269\n[4,] -320.50982   99.44673 234.79984 -384.4504\n\n\n\n# Cambiar la matriz a tabla o dataframe\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() \nescenarios2[1:4, 1:4] # produce (17 columnas, 1000 filas):\n\n           1          2         3         4\n1  406.83278   78.77974 -50.84350 -157.0459\n2  -41.77251  184.14415 -59.52359  618.7516\n3 -166.21917 -287.96617 359.36316  209.2269\n4 -320.50982   99.44673 234.79984 -384.4504\n\n\n\n# Quedarse con una muestra de sólo 100 participantes\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) # escoger aleatoriamente 100 participantes\nescenarios2[1:4, 1:4] # produce (17 filas, 100 columnas) \n\n          1          2          3         4\n1 -90.29044   46.74670  217.07331 -192.7144\n2 171.84518  -17.76212  263.92644  229.4079\n3 141.32893 -185.34746 -388.33294  489.0061\n4 154.29835 -387.53660  -95.21916 -124.9433\n\n\n\n# Crear una variable que numera cada una de las 100 filas\nescenarios2 &lt;- predicciones %&gt;%\n  as.data.frame() %&gt;%\n  slice_sample(n = 100) %&gt;%\n  mutate(simulacion = row_number()) # crear la variable simulacion\n                                    # y numerar las filas\nescenarios2[1:4, -14:-1] # produce:\n\n          15         16        17 simulacion\n1  -67.71565 -152.14700 -32.04874          1\n2 -621.88781  119.63387 180.70821          2\n3 -382.92986  -76.08963 122.69637          3\n4 -283.52905 -493.33565 165.62538          4\n\n\n\n# Mostrar en formato largo los escenarios, donde los escenarios\n# van del 1 al 17 y simulacion va del 1 al 100\nescenarios2  %&gt;%  \n  pivot_longer( # Cambiar la tabla a formato largo\n    -simulacion, # usa todas las columnas excepto simulacion\n    names_to = \"escenario\",\n    values_to = \"profit\"\n  )\n\n# A tibble: 1,700 × 3\n   simulacion escenario profit\n        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;\n 1          1 1           46.3\n 2          1 2         -414. \n 3          1 3          281. \n 4          1 4         -194. \n 5          1 5          -32.3\n 6          1 6          377. \n 7          1 7         -421. \n 8          1 8          135. \n 9          1 9          101. \n10          1 10        -127. \n# ℹ 1,690 more rows\n\n\n\n\nVisualizar escenarios individuales\n\n# Visualizar escenarios idividuales\nggplot(\n  escenarios,\n  aes(\n    x = escenario,\n    y = profit,\n    group = simulacion # agrupar por simulación\n  )\n) +\n  geom_line(alpha = 0.15)",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -2184,7 +2184,7 @@
     "href": "analysis/c09.html#escenarios-de-negocio",
     "title": "9.- Predicciones probabilísticas",
     "section": "9.12 Escenarios de negocio",
-    "text": "9.12 Escenarios de negocio\nImaginemos tres niveles de descuento.\n\n\n\nEscenario\nDescuento\n\n\n\n\nConservador\n5%\n\n\nModerado\n20%\n\n\nAgresivo\n40%\n\n\n\nPodemos obtener predicciones para cada caso.\n\n# Obtener predicciones para cada caso\nescenarios_negocio &lt;- tibble(\n  Discount_c = c(5,20,40)\n)\n\npredicciones2 &lt;- posterior_predict(\n  modelo_profit,\n  newdata = escenarios_negocio\n) \npredicciones2[1:4,] # produce (3 columnas y 1000 filas):\n\n             1         2          3\n[1,]  34.89809 -136.1766  -59.47916\n[2,]  23.43315 -136.3448 -103.82738\n[3,] 162.07619 -111.8476  -41.56589\n[4,] 355.17684 -302.5479   29.99618\n\n\nAhora la conversación cambia.\nYa no preguntamos:\n¿Cuál será exactamente el beneficio?\nPreguntamos:\n¿Qué rango de beneficios es plausible bajo cada estrategia?\nEsta forma de pensar se parece mucho más a cómo toman decisiones las empresas reales.",
+    "text": "9.12 Escenarios de negocio\nImaginemos tres niveles de descuento.\n\n\n\nEscenario\nDescuento\n\n\n\n\nConservador\n5%\n\n\nModerado\n20%\n\n\nAgresivo\n40%\n\n\n\nPodemos obtener predicciones para cada caso.\n\n# Obtener predicciones para cada caso\nescenarios_negocio &lt;- tibble(\n  Discount_c = c(5,20,40)\n)\n\npredicciones2 &lt;- posterior_predict(\n  modelo_profit,\n  newdata = escenarios_negocio\n) \npredicciones2[1:4,] # produce (3 columnas y 1000 filas):\n\n             1         2          3\n[1,] -178.7264 181.49705 -235.89488\n[2,]  212.8172 369.37790  -79.11286\n[3,]  101.2428 530.48574   27.20736\n[4,]  199.6291  53.94954  349.61147\n\n\nAhora la conversación cambia.\nYa no preguntamos:\n¿Cuál será exactamente el beneficio?\nPreguntamos:\n¿Qué rango de beneficios es plausible bajo cada estrategia?\nEsta forma de pensar se parece mucho más a cómo toman decisiones las empresas reales.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -2814,6 +2814,198 @@
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
       "11.- Regresión logística bayesiana"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html",
+    "href": "analysis/c12.html",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "",
+    "text": "Historia inicial:\nImaginemos una empresa de telecomunicaciones con diez mil clientes.\nCada mes algunos clientes cancelan su contrato.\nLa empresa dispone de un presupuesto limitado para programas de retención:\n\ndescuentos,\nllamadas de seguimiento,\nsoporte personalizado,\npromociones especiales.\n\nSin embargo, no puede ofrecer estos beneficios a todos los clientes.\nLa pregunta ya no es:\n¿Quién abandonará?\nLa pregunta real es:\n¿A quién deberíamos prestar atención primero?\nAquí es donde las probabilidades individuales se vuelven valiosas.\nNo porque permitan ver el futuro con certeza.\nSino porque ayudan a asignar recursos de manera más inteligente bajo incertidumbre.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#introducción",
+    "href": "analysis/c12.html#introducción",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "",
+    "text": "Historia inicial:\nImaginemos una empresa de telecomunicaciones con diez mil clientes.\nCada mes algunos clientes cancelan su contrato.\nLa empresa dispone de un presupuesto limitado para programas de retención:\n\ndescuentos,\nllamadas de seguimiento,\nsoporte personalizado,\npromociones especiales.\n\nSin embargo, no puede ofrecer estos beneficios a todos los clientes.\nLa pregunta ya no es:\n¿Quién abandonará?\nLa pregunta real es:\n¿A quién deberíamos prestar atención primero?\nAquí es donde las probabilidades individuales se vuelven valiosas.\nNo porque permitan ver el futuro con certeza.\nSino porque ayudan a asignar recursos de manera más inteligente bajo incertidumbre.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#del-modelo-a-la-decisión",
+    "href": "analysis/c12.html#del-modelo-a-la-decisión",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.1 Del modelo a la decisión",
+    "text": "12.1 Del modelo a la decisión\nEn capítulos anteriores construimos modelos para estimar probabilidades de abandono.\nAhora debemos dar un paso adicional.\nUn modelo por sí solo no toma decisiones.\nUn modelo simplemente genera información.\nLas decisiones siguen siendo responsabilidad de las personas.\nPor eso el verdadero valor de un modelo no está en su capacidad para producir números.\nEstá en ayudarnos a interpretar mejor situaciones inciertas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#qué-significa-una-probabilidad-individual",
+    "href": "analysis/c12.html#qué-significa-una-probabilidad-individual",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.2 ¿Qué significa una probabilidad individual?",
+    "text": "12.2 ¿Qué significa una probabilidad individual?\nSupongamos tres clientes.\n\n\n\nCliente\nRiesgo estimado\n\n\n\n\nA\n0.10\n\n\nB\n0.40\n\n\nC\n0.80\n\n\n\nInterpretación:\nCliente A:\nEl modelo considera relativamente poco plausible que abandone la empresa.\nCliente B:\nExiste una incertidumbre considerable. El riesgo es moderado.\nCliente C:\nEl modelo considera bastante plausible que abandone la empresa.\nObserva algo importante.\nNo estamos diciendo:\n❌ “El cliente C abandonará.”\nEstamos diciendo:\n✅ “El cliente C presenta un riesgo más elevado.”\nLa diferencia parece pequeña.\nPero conceptualmente es enorme.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#obteniendo-probabilidades-individuales",
+    "href": "analysis/c12.html#obteniendo-probabilidades-individuales",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.3 Obteniendo probabilidades individuales",
+    "text": "12.3 Obteniendo probabilidades individuales\nAquí reutilizamos el modelo logístico construido en capítulos anteriores.\n\n# Crear una variable Churn numérica\ntelco &lt;- telco %&gt;%\n  mutate(\n    Churn_num =\n      if_else(\n        Churn == \"Yes\",\n        1,\n        0\n      )\n  )\nclass(telco$Churn_num) # produce: numeric\n\n[1] \"numeric\"\n\n\n\n# Crear un modelo logístico bayesiano para conocer cuanto influye \n# la antiguedad en la cancelación de suscripción\nmodelo_churn &lt;- stan_glm(\n  Churn_num ~ tenure,\n  data = telco,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  seed = 1234,\n  refresh = 0\n) \nposterior_interval(modelo_churn) # produce:\n\n                     5%         95%\n(Intercept) -0.03609829  0.09296688\ntenure      -0.04111115 -0.03648721\n\n\n\nprob_churn &lt;- posterior_epred(modelo_churn)\n# Ver esta tabla de 7043 clientes (cols) y 1000 simulaciones \n# posteriores (filas) por  cliente. Y en probabilidades\nprob_churn[1:6, 1:5] # produce:\n\n          \niterations         1         2         3         4         5\n      [1,] 0.5101150 0.2140617 0.4999567 0.1483450 0.4999567\n      [2,] 0.4841610 0.2208202 0.4751043 0.1597533 0.4751043\n      [3,] 0.5111173 0.2106011 0.5007723 0.1447276 0.5007723\n      [4,] 0.4936282 0.2185688 0.4841745 0.1557488 0.4841745\n      [5,] 0.4931860 0.2217319 0.4838855 0.1590852 0.4838855\n      [6,] 0.4989240 0.2205819 0.4893955 0.1568832 0.4893955\n\n\nRecordatorio:\nCada fila representa una simulación posterior.\nCada columna representa un cliente.\nProbabilidad posterior promedio\n\nProbabilidad posterior promedio\n\nriesgo_promedio &lt;- colMeans(prob_churn)\n# Mostrar el riesgo promedio por cada uno de los 7043 clientes\nriesgo_promedio[1:5] # produce:\n\n        1         2         3         4         5 \n0.4971375 0.2156246 0.4874451 0.1521633 0.4874451 \n\n\n\n# Crear una nueva tabla con una nueva variable de riesgo promedio\ntelco_riesgo &lt;- telco |&gt;\n  mutate(\n    riesgo = riesgo_promedio\n  )\nglimpse(telco_riesgo) # produce:\n\nRows: 7,043\nColumns: 23\n$ customerID       &lt;chr&gt; \"7590-VHVEG\", \"5575-GNVDE\", \"3668-QPYBK\", \"7795-CFOCW…\n$ gender           &lt;chr&gt; \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Female\",…\n$ SeniorCitizen    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Partner          &lt;chr&gt; \"Yes\", \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes…\n$ Dependents       &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\"…\n$ tenure           &lt;dbl&gt; 1, 34, 2, 45, 2, 8, 22, 10, 28, 62, 13, 16, 58, 49, 2…\n$ PhoneService     &lt;chr&gt; \"No\", \"Yes\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", …\n$ MultipleLines    &lt;chr&gt; \"No phone service\", \"No\", \"No\", \"No phone service\", \"…\n$ InternetService  &lt;chr&gt; \"DSL\", \"DSL\", \"DSL\", \"DSL\", \"Fiber optic\", \"Fiber opt…\n$ OnlineSecurity   &lt;chr&gt; \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", \"No\", \"No\", \"Yes\", \"…\n$ OnlineBackup     &lt;chr&gt; \"Yes\", \"No\", \"Yes\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"N…\n$ DeviceProtection &lt;chr&gt; \"No\", \"Yes\", \"No\", \"Yes\", \"No\", \"Yes\", \"No\", \"No\", \"Y…\n$ TechSupport      &lt;chr&gt; \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\", \"No\", \"No\", \"Yes…\n$ StreamingTV      &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"Yes\", \"No\", \"Ye…\n$ StreamingMovies  &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\", \"Yes…\n$ Contract         &lt;chr&gt; \"Month-to-month\", \"One year\", \"Month-to-month\", \"One …\n$ PaperlessBilling &lt;chr&gt; \"Yes\", \"No\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", …\n$ PaymentMethod    &lt;chr&gt; \"Electronic check\", \"Mailed check\", \"Mailed check\", \"…\n$ MonthlyCharges   &lt;dbl&gt; 29.85, 56.95, 53.85, 42.30, 70.70, 99.65, 89.10, 29.7…\n$ TotalCharges     &lt;dbl&gt; 29.85, 1889.50, 108.15, 1840.75, 151.65, 820.50, 1949…\n$ Churn            &lt;chr&gt; \"No\", \"No\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"No\", \"No\", \"Y…\n$ Churn_num        &lt;dbl&gt; 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,…\n$ riesgo           &lt;dbl&gt; 0.49713754, 0.21562457, 0.48744510, 0.15216332, 0.487…\n\n\nAhora cada cliente tiene una probabilidad estimada de abandono.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#visualizando-la-distribución-del-riesgo",
+    "href": "analysis/c12.html#visualizando-la-distribución-del-riesgo",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.4 Visualizando la distribución del riesgo",
+    "text": "12.4 Visualizando la distribución del riesgo\nPrimer gráfico importante.\n\n# Histograma de riesgo de churn por antiguedad. Este gráfico responde,\n# cómo se distribuye el churn en toda la cartera de clientes\nggplot(\n  telco_riesgo,\n  aes(x = riesgo)\n) +\n  geom_histogram(\n    bins = 30\n  )\n\n\n\n\n\n\n\n\nInterpretación:\nEste gráfico responde una pregunta muy útil:\n¿Cómo se distribuye el riesgo en toda la cartera de clientes?\nPosibles observaciones:\n\nmuchos clientes con riesgo bajo;\nun grupo intermedio con bajo riesgo;\nmuchos clientes con riesgo muy elevado. (Esto es un poco sorprendente porque esperábamos intuitivamente un riesgo más bajo)\n\nLa empresa rara vez enfrenta una situación donde todos los clientes tengan el mismo riesgo.\nLa heterogeneidad es la norma.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#ordenando-clientes-por-riesgo",
+    "href": "analysis/c12.html#ordenando-clientes-por-riesgo",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.5 Ordenando clientes por riesgo",
+    "text": "12.5 Ordenando clientes por riesgo\n\n# Ordenar los clientes por riesgo\ntelco_risk &lt;- telco_riesgo |&gt;\n  arrange(desc(riesgo))\ntelco_risk[1:6,-20:-1] # produce:\n\n# A tibble: 6 × 3\n  Churn Churn_num riesgo\n  &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;\n1 No            0  0.507\n2 No            0  0.507\n3 No            0  0.507\n4 No            0  0.507\n5 No            0  0.507\n6 No            0  0.507\n\n\nAquí aparece una idea poderosa.\nLa empresa no necesita identificar exactamente quién abandonará.\nPuede simplemente priorizar los clientes con mayor riesgo.\n\nVisualización:\n\n# Ver como cambia el riesgo a través de l cartera completa\ntelco_riesgo |&gt;\n  arrange(desc(riesgo)) |&gt;\n  mutate(\n    cliente = row_number()\n  ) |&gt;\n  ggplot(\n    aes(\n      x = cliente,\n      y = riesgo\n    )\n  ) +\n  geom_point(alpha = 0.9)\n\n\n\n\n\n\n\n\nEste gráfico suele generar mucho impacto visual.\nPermite ver cómo cambia el riesgo a través de la cartera completa.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#segmentos-de-riesgo",
+    "href": "analysis/c12.html#segmentos-de-riesgo",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.6 Segmentos de riesgo",
+    "text": "12.6 Segmentos de riesgo\nLas empresas suelen trabajar con categorías prácticas.\nPor ejemplo:\n\n# Segmentar el riesgo\ntelco_riesgo &lt;- telco_riesgo |&gt;\n  mutate(\n    segmento = case_when(\n      riesgo &lt; 0.20 ~ \"Bajo\",\n      riesgo &lt; 0.40 ~ \"Moderado\",\n      TRUE ~ \"Alto\"\n    )\n  )\n\nImportante:\nLos puntos de corte son decisiones humanas.\nNo leyes naturales.\n\nInterpretación:\nRiesgo bajo\nClientes relativamente estables.\nRiesgo moderado\nClientes que merecen seguimiento.\nRiesgo alto\nClientes candidatos a intervenciones prioritarias.\n\nReflexión importante:\nLos límites son arbitrarios.\nUn cliente con riesgo 0.59 no es radicalmente distinto de uno con riesgo 0.61.\nLa realidad es continua.\nLos segmentos son simplificaciones útiles.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#visualizando-segmentos",
+    "href": "analysis/c12.html#visualizando-segmentos",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.7 Visualizando segmentos",
+    "text": "12.7 Visualizando segmentos\n\n# Histograma de la probabilidad de churn según la antiguedad\nggplot(\n  telco_riesgo,\n  aes(\n    x = riesgo,\n    fill = segmento\n  )\n) +\n  geom_histogram(\n    bins = 40\n  )\n\n\n\n\n\n\n\n\nAquí los segmentos dejan de ser una tabla y se convierten en una historia visual.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#incertidumbre-individual",
+    "href": "analysis/c12.html#incertidumbre-individual",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.8 Incertidumbre individual",
+    "text": "12.8 Incertidumbre individual\nEsta es probablemente la sección más importante del capítulo.\nHasta ahora hemos trabajado con probabilidades promedio.\nPero el análisis bayesiano nos permite ver algo más profundo:\nla incertidumbre alrededor de cada individuo.\n\nTomemos un cliente.\n\n# Mostrar las 1000) simulaciones posteriores \n# del cliente número 25 (de 7043)\n#prob_churn[25,]\n\n# Mostrar las  5 primeras (de las 1000) simulaciones posteriores \n# del cliente número 25 (de 7043) \nprob_churn[25,1:5] # produce\n\n        1         2         3         4         5 \n0.5033470 0.2144154 0.4934088 0.1498455 0.4934088 \n\n\nObtendremos cientos de simulaciones posteriores para ese cliente.\nPodemos resumirlas así:\n\n# Resumir las simulaciones posteriores\nquantile(\n  prob_churn[, 25],\n  probs = c(0.05, 0.5, 0.95)\n) # produce:\n\n       5%       50%       95% \n0.1240423 0.1331091 0.1429131 \n\n\nInterpretación:\nEl modelo no entrega un único riesgo.\nEntrega un rango plausible de riesgos.\n\nEsta idea conecta perfectamente con la filosofía del libro:\nLa incertidumbre no desaparece cuando construimos un modelo.\nSimplemente aprendemos a describirla mejor.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#comparando-la-incertidumbre-de-dos-clientes",
+    "href": "analysis/c12.html#comparando-la-incertidumbre-de-dos-clientes",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.9 Comparando la incertidumbre de dos clientes",
+    "text": "12.9 Comparando la incertidumbre de dos clientes\nHasta ahora hemos trabajado con probabilidades promedio. Sin embargo, una de las ventajas del enfoque bayesiano es que podemos examinar toda la distribución posterior de riesgo para un cliente específico.\nSupongamos que queremos comparar dos clientes de nuestra base de datos.\n\n# Extraer todas las probabilidades posteriores\n# del Cliente A (observación 25)\nriesgo_cliente_a &lt;- prob_churn[, 25]\n\n# Extraer todas las probabilidades posteriores\n# del Cliente B (observación 1200)\nriesgo_cliente_b &lt;- prob_churn[, 1200]\n\nCada objeto contiene miles de probabilidades plausibles de churn obtenidas a partir de las simulaciones posteriores del modelo.\nAhora construimos una tabla que identifique claramente a qué cliente pertenece cada simulación:\n\n# Crear una tabla con las probabilidades de churn del cliente A\n# y el cliente B. Con las probabilidades en la variable riesgo\n# y los cientes en la variable cliente\ncomparacion_clientes &lt;- tibble(\n  riesgo = c(\n    riesgo_cliente_a,\n    riesgo_cliente_b\n  ),\n  cliente = c(\n    rep( # Repetir \"Cliente A\" 1000 veces\n      \"Cliente A\",\n      length(riesgo_cliente_a)\n    ),\n    rep( # Repetir \"Cliente B\" 1000 veces\n      \"Cliente B\",\n      length(riesgo_cliente_b)\n    )\n  )\n) \ncomparacion_clientes[1:6,] # produce:\n\n# A tibble: 6 × 2\n  riesgo cliente  \n   &lt;dbl&gt; &lt;chr&gt;    \n1  0.129 Cliente A\n2  0.141 Cliente A\n3  0.125 Cliente A\n4  0.137 Cliente A\n5  0.140 Cliente A\n6  0.138 Cliente A\n\n\nFinalmente visualizamos ambas distribuciones:\n\n# Graficar las distribuciones  de de los clientes A y B\nggplot(\n  comparacion_clientes,\n  aes(\n    x = riesgo,\n    fill = cliente\n  )\n) +\n  geom_density(\n    alpha = 0.4\n  )\n\n\n\n\n\n\n\n\nEste gráfico no compara dos probabilidades puntuales.\nCompara dos distribuciones completas de riesgo.\nCada curva representa el conjunto de probabilidades plausibles que el modelo asigna a un cliente específico.\nSi las curvas están muy separadas, existe evidencia de que ambos clientes presentan perfiles de riesgo distintos.\nSi las curvas se superponen considerablemente, la incertidumbre es suficientemente grande como para que las diferencias entre ambos clientes sean menos claras.\nEsta visualización refleja una idea central del pensamiento bayesiano: en lugar de resumir cada cliente mediante un único número, analizamos la distribución completa de riesgos plausibles asociada a cada individuo.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#contexto-de-negocio-retención-y-priorización",
+    "href": "analysis/c12.html#contexto-de-negocio-retención-y-priorización",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.10 Contexto de negocio: retención y priorización",
+    "text": "12.10 Contexto de negocio: retención y priorización\nAntes de continuar debemos entender dos conceptos importantes.\n\nRetención\nConjunto de acciones destinadas a evitar que un cliente abandone la empresa.\nEjemplos:\n\ndescuentos;\npromociones;\nsoporte personalizado;\nprogramas de fidelización.\n\n\n\nPriorización\nLos recursos son limitados.\nPor ello las empresas deben decidir:\n\nquién recibe atención primero;\ncuánto invertir;\ndónde es más probable obtener beneficios.\n\nLas probabilidades ayudan precisamente en esa tarea.\n\n\nEscenarios Concretos\nPor ejemplo, podríamos tener escenarios concretos de antiguedad o tenure de los clientes\n\n# Crear tabla con una columna de meses\nnuevo &lt;- tibble(\n  tenure = c(12, 24, 36, 48)\n)\n\nY con estos escenarios concretos de antiguedad podríamos calcular la probabilidad de churn\n\n# Crear una matriz de 1000 simulaciones posteriores para \n# antiguedades de 12, 24, 36 y 48 meses\nprobs_concretas &lt;- posterior_epred(\n  modelo_churn,\n  newdata = nuevo\n) \nprobs_concretas[1:6,] # produce:\n\n          \niterations         1         2         3         4\n      [1,] 0.3997370 0.2902384 0.2007054 0.1335930\n      [2,] 0.3863813 0.2894598 0.2085860 0.1456755\n      [3,] 0.3987241 0.2875255 0.1971694 0.1300260\n      [4,] 0.3913436 0.2899387 0.2059202 0.1414001\n      [5,] 0.3925262 0.2924785 0.2091515 0.1447089\n      [6,] 0.3956487 0.2929552 0.2077536 0.1423430\n\n\nY esta matriz se podría resumir de esta manera:\n\n# Crear una matriz de simulaciones posteriores para antiguedades de\n# 12, 24, 36 y 48 meses y sacar los promedios\nposterior_epred(\n  modelo_churn,\n  newdata = nuevo\n) |&gt;\n  colMeans() # produce:\n\n        1         2         3         4 \n0.3921958 0.2883205 0.2027992 0.1377650",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#trade-offs",
+    "href": "analysis/c12.html#trade-offs",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.11 Trade-offs",
+    "text": "12.11 Trade-offs\nUna empresa podría intervenir sobre todos los clientes.\nPero eso sería costoso.\nTambién podría no intervenir sobre nadie.\nPero perdería clientes valiosos.\nLas decisiones reales ocurren entre esos dos extremos.\nPor eso el riesgo individual debe interpretarse dentro de un contexto económico y operativo.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#riesgo-y-decisiones-humanas",
+    "href": "analysis/c12.html#riesgo-y-decisiones-humanas",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "12.12 Riesgo y decisiones humanas",
+    "text": "12.12 Riesgo y decisiones humanas\nUn error frecuente es creer que:\nEl modelo sabe quién abandonará.\nNo es cierto.\nLos modelos trabajan con incertidumbre.\nLas personas cambian.\nLas circunstancias cambian.\nLos mercados cambian.\nPor eso una probabilidad elevada nunca debe interpretarse como un destino inevitable.\nDebe interpretarse como una señal para prestar atención.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#reflexión-bayesiana",
+    "href": "analysis/c12.html#reflexión-bayesiana",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nUna probabilidad individual no es una etiqueta.\nEs una descripción imperfecta de nuestra incertidumbre actual.\nMañana podría cambiar si aparece nueva información.\nEn ese sentido, pensar probabilísticamente significa aceptar que nuestro conocimiento siempre es provisional.\nLos modelos no eliminan la incertidumbre.\nNos ayudan a navegarla.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c12.html#ejercicios",
+    "href": "analysis/c12.html#ejercicios",
+    "title": "12.- Interpretar riesgo individual",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nSeleccione tres clientes:\n\nuno de riesgo bajo;\nuno de riesgo moderado;\nuno de riesgo alto.\n\nDescriba cómo interpretaría cada probabilidad.\n\n\nEjercicio 2\nConstruya un histograma de riesgos.\n¿Qué le dice sobre la distribución del riesgo en la cartera de clientes?\n\n\nEjercicio 3\nCompare las distribuciones posteriores de dos clientes distintos.\n¿Existe superposición?\n¿Qué implica esa superposición?\n\n\nEjercicio 4\nModifique los puntos de corte de los segmentos.\n¿Cómo cambia el número de clientes clasificados como de alto riesgo?\n\n\nEjercicio 5\nSuponga que sólo puede intervenir sobre el 10% de los clientes.\n¿Cómo los seleccionaría?\n¿Utilizaría únicamente la probabilidad de abandono?\n¿Por qué?",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "12.- Interpretar riesgo individual"
     ]
   }
 ]
