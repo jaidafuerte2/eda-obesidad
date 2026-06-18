@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>13.- Tomar decisiones bajo incertidumbre – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_sobre_el_autor.html"> 
+<span class="menu-text">Sobre el autor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_proyectos.html"> 
+<span class="menu-text">Proyectos</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c10.html">PARTE IV — RIESGO, CHURN Y DECISIONES</a></li><li class="breadcrumb-item"><a href="../analysis/c13.html">13.- Tomar decisiones bajo incertidumbre</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sobre el autor</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — APRENDER A VER LA INCERTIDUMBRE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Simulación y mundos posibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidades útiles para tomar decisiones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Modelos bayesianos prácticos con rstanarm</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Relaciones entre variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9.- Predicciones probabilísticas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE IV — RIESGO, CHURN Y DECISIONES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10.- Introducción al churn y al riesgo de abandono</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11.- Regresión logística bayesiana</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12.- Interpretar riesgo individual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">13.- Tomar decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#del-modelo-a-la-acción" id="toc-del-modelo-a-la-acción" class="nav-link" data-scroll-target="#del-modelo-a-la-acción">13.1 Del modelo a la acción</a></li>
+  <li><a href="#un-problema-real-de-negocio" id="toc-un-problema-real-de-negocio" class="nav-link" data-scroll-target="#un-problema-real-de-negocio">13.2 Un problema real de negocio</a></li>
+  <li><a href="#la-inevitabilidad-de-los-trade-offs" id="toc-la-inevitabilidad-de-los-trade-offs" class="nav-link" data-scroll-target="#la-inevitabilidad-de-los-trade-offs">13.3 La inevitabilidad de los trade-offs</a>
+  <ul class="collapse">
+  <li><a href="#estrategia-a" id="toc-estrategia-a" class="nav-link" data-scroll-target="#estrategia-a">Estrategia A</a></li>
+  <li><a href="#estrategia-b" id="toc-estrategia-b" class="nav-link" data-scroll-target="#estrategia-b">Estrategia B</a></li>
+  </ul></li>
+  <li><a href="#falsos-positivos-y-falsos-negativos" id="toc-falsos-positivos-y-falsos-negativos" class="nav-link" data-scroll-target="#falsos-positivos-y-falsos-negativos">13.4 Falsos positivos y falsos negativos</a>
+  <ul class="collapse">
+  <li><a href="#falso-positivo" id="toc-falso-positivo" class="nav-link" data-scroll-target="#falso-positivo">Falso positivo</a></li>
+  <li><a href="#falso-negativo" id="toc-falso-negativo" class="nav-link" data-scroll-target="#falso-negativo">Falso negativo</a></li>
+  </ul></li>
+  <li><a href="#preparando-los-datos" id="toc-preparando-los-datos" class="nav-link" data-scroll-target="#preparando-los-datos">13.5 Preparando los datos</a></li>
+  <li><a href="#construyendo-un-modelo-simple" id="toc-construyendo-un-modelo-simple" class="nav-link" data-scroll-target="#construyendo-un-modelo-simple">13.6 Construyendo un modelo simple</a></li>
+  <li><a href="#estimando-riesgo-individual" id="toc-estimando-riesgo-individual" class="nav-link" data-scroll-target="#estimando-riesgo-individual">13.7 Estimando riesgo individual</a></li>
+  <li><a href="#visualizando-la-distribución-del-riesgo" id="toc-visualizando-la-distribución-del-riesgo" class="nav-link" data-scroll-target="#visualizando-la-distribución-del-riesgo">13.8 Visualizando la distribución del riesgo</a>
+  <ul class="collapse">
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#del-riesgo-a-la-acción" id="toc-del-riesgo-a-la-acción" class="nav-link" data-scroll-target="#del-riesgo-a-la-acción">13.9 Del riesgo a la acción</a></li>
+  <li><a href="#y-si-cambiamos-el-umbral" id="toc-y-si-cambiamos-el-umbral" class="nav-link" data-scroll-target="#y-si-cambiamos-el-umbral">13.10 ¿Y si cambiamos el umbral?</a></li>
+  <li><a href="#visualizando-prioridades" id="toc-visualizando-prioridades" class="nav-link" data-scroll-target="#visualizando-prioridades">13.11 Visualizando prioridades</a></li>
+  <li><a href="#recursos-limitados-y-priorización" id="toc-recursos-limitados-y-priorización" class="nav-link" data-scroll-target="#recursos-limitados-y-priorización">13.12 Recursos limitados y priorización</a></li>
+  <li><a href="#una-visualización-simple-de-costos" id="toc-una-visualización-simple-de-costos" class="nav-link" data-scroll-target="#una-visualización-simple-de-costos">13.13 Una visualización simple de costos</a></li>
+  <li><a href="#decisiones-imperfectas" id="toc-decisiones-imperfectas" class="nav-link" data-scroll-target="#decisiones-imperfectas">13.14 Decisiones imperfectas</a></li>
+  <li><a href="#probabilidades-y-decisiones" id="toc-probabilidades-y-decisiones" class="nav-link" data-scroll-target="#probabilidades-y-decisiones">13.15 Probabilidades y decisiones</a></li>
+  <li><a href="#incertidumbre-ética-y-humana" id="toc-incertidumbre-ética-y-humana" class="nav-link" data-scroll-target="#incertidumbre-ética-y-humana">13.16 Incertidumbre ética y humana</a></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">Reflexión bayesiana</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  <li><a href="#ejercicio-6" id="toc-ejercicio-6" class="nav-link" data-scroll-target="#ejercicio-6">Ejercicio 6</a></li>
+  <li><a href="#ejercicio-7" id="toc-ejercicio-7" class="nav-link" data-scroll-target="#ejercicio-7">Ejercicio 7</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c10.html">PARTE IV — RIESGO, CHURN Y DECISIONES</a></li><li class="breadcrumb-item"><a href="../analysis/c13.html">13.- Tomar decisiones bajo incertidumbre</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">13.- Tomar decisiones bajo incertidumbre</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><em>La incertidumbre no desaparece cuando tomamos decisiones.</em></p>
+<p><em>Lo único que cambia es que ahora debemos actuar a pesar de ella.</em></p>
+<hr>
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<p>Durante todo este libro hemos construido una idea aparentemente sencilla, pero profundamente importante:</p>
+<p><strong>los datos rara vez nos entregan certezas.</strong></p>
+<p>Nos entregan indicios.</p>
+<p>Nos entregan señales.</p>
+<p>Nos entregan probabilidades.</p>
+<p>Y aun así debemos decidir.</p>
+<p>Las empresas deben decidir si lanzar una campaña.</p>
+<p>Los médicos deben decidir si iniciar un tratamiento.</p>
+<p>Los inversionistas deben decidir dónde colocar capital.</p>
+<p>Los directivos deben decidir qué proyectos financiar.</p>
+<p>Esperar información perfecta suele ser imposible.</p>
+<p>Pero también puede ser costoso.</p>
+<p>Un hospital que espera demasiado para actuar puede perder una oportunidad de salvar una vida.</p>
+<p>Una empresa que espera demasiado para retener clientes puede perderlos para siempre.</p>
+<p>La realidad es incómoda:</p>
+<p><strong>las decisiones importantes casi siempre ocurren antes de que exista certeza.</strong></p>
+<p>Por eso el objetivo de los modelos probabilísticos no es producir respuestas perfectas.</p>
+<p>Su objetivo es ayudarnos a decidir mejor cuando el futuro todavía es incierto.</p>
+</section>
+<section id="del-modelo-a-la-acción" class="level2">
+<h2 class="anchored" data-anchor-id="del-modelo-a-la-acción">13.1 Del modelo a la acción</h2>
+<p>En los capítulos anteriores aprendimos a construir modelos capaces de estimar probabilidades.</p>
+<p>Por ejemplo, usando regresión logística bayesiana pudimos estimar:</p>
+<p><code>¿Cuál es la probabilidad de que un cliente abandone la empresa?</code></p>
+<p>Sin embargo, conocer una probabilidad y tomar una decisión son cosas distintas.</p>
+<p>Supongamos que un cliente tiene:</p>
+<ul>
+<li>80% de probabilidad de churn</li>
+</ul>
+<p>¿Qué debemos hacer?</p>
+<p>¿Ofrecer un descuento?</p>
+<p>¿Llamarlo?</p>
+<p>¿Asignarle un asesor personalizado?</p>
+<p>¿No hacer nada?</p>
+<p>El modelo no responde estas preguntas.</p>
+<p>El modelo únicamente proporciona información.</p>
+<p>La decisión requiere además:</p>
+<ul>
+<li>objetivos</li>
+<li>presupuesto</li>
+<li>estrategia</li>
+<li>contexto de negocio</li>
+<li>tolerancia al riesgo</li>
+</ul>
+<p>Por eso es importante distinguir:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Pregunta</th>
+<th>Responsable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>¿Qué tan probable es el churn?</td>
+<td>Modelo</td>
+</tr>
+<tr class="even">
+<td>¿Qué debemos hacer?</td>
+<td>Personas</td>
+</tr>
+</tbody>
+</table>
+<p>Los modelos informan decisiones.</p>
+<p>No las reemplazan.</p>
+</section>
+<section id="un-problema-real-de-negocio" class="level2">
+<h2 class="anchored" data-anchor-id="un-problema-real-de-negocio">13.2 Un problema real de negocio</h2>
+<p>Imaginemos una empresa de telecomunicaciones.</p>
+<p>Cada cliente que abandona la empresa representa:</p>
+<ul>
+<li>pérdida de ingresos futuros</li>
+<li>costos de adquisición de reemplazo</li>
+<li>pérdida de participación de mercado</li>
+</ul>
+<p>Por eso muchas compañías ejecutan campañas de retención.</p>
+<p>Sin embargo, estas campañas tienen costo.</p>
+<p>Por ejemplo:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Acción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>descuento</td>
+</tr>
+<tr class="even">
+<td>llamada personalizada</td>
+</tr>
+<tr class="odd">
+<td>soporte prioritario</td>
+</tr>
+<tr class="even">
+<td>promoción especial</td>
+</tr>
+</tbody>
+</table>
+<p>Nada de esto es gratuito.</p>
+<p>Entonces aparece una pregunta fundamental:</p>
+<p><code>¿A qué clientes deberíamos intervenir?</code></p>
+<p>Aquí es donde comienzan los verdaderos problemas de decisión.</p>
+</section>
+<section id="la-inevitabilidad-de-los-trade-offs" class="level2">
+<h2 class="anchored" data-anchor-id="la-inevitabilidad-de-los-trade-offs">13.3 La inevitabilidad de los trade-offs</h2>
+<p>La palabra <em>trade-off</em> puede traducirse como:</p>
+<p><code>intercambio entre ventajas y costos.</code></p>
+<p>Toda decisión implica renunciar a algo.</p>
+<p>Veamos dos estrategias extremas.</p>
+<section id="estrategia-a" class="level3">
+<h3 class="anchored" data-anchor-id="estrategia-a">Estrategia A</h3>
+<p>Intervenir sobre todos los clientes.</p>
+<p>Ventaja:</p>
+<ul>
+<li>casi nadie se nos escapa</li>
+</ul>
+<p>Desventaja:</p>
+<ul>
+<li>costos enormes</li>
+</ul>
+</section>
+<section id="estrategia-b" class="level3">
+<h3 class="anchored" data-anchor-id="estrategia-b">Estrategia B</h3>
+<p>No intervenir sobre nadie.</p>
+<p>Ventaja:</p>
+<ul>
+<li>costo cero</li>
+</ul>
+<p>Desventaja:</p>
+<ul>
+<li>perderemos muchos clientes</li>
+</ul>
+<p>Ninguna de las dos estrategias parece razonable.</p>
+<p>La realidad suele encontrarse en algún punto intermedio.</p>
+<p>Aquí aparece una de las ideas más importantes del libro:</p>
+<p><code>Las decisiones racionales rara vez maximizan una sola cosa.</code></p>
+<p><code>Normalmente equilibran múltiples objetivos en conflicto.</code></p>
+</section>
+</section>
+<section id="falsos-positivos-y-falsos-negativos" class="level2">
+<h2 class="anchored" data-anchor-id="falsos-positivos-y-falsos-negativos">13.4 Falsos positivos y falsos negativos</h2>
+<p>Imaginemos que intervenimos cuando el riesgo estimado de churn supera cierto umbral.</p>
+<p>Aparecen dos tipos de errores.</p>
+<section id="falso-positivo" class="level3">
+<h3 class="anchored" data-anchor-id="falso-positivo">Falso positivo</h3>
+<p>Intervenimos sobre un cliente.</p>
+<p>Pero ese cliente realmente no iba a abandonar la empresa.</p>
+<p>La intervención fue innecesaria.</p>
+<p>La empresa gastó recursos.</p>
+</section>
+<section id="falso-negativo" class="level3">
+<h3 class="anchored" data-anchor-id="falso-negativo">Falso negativo</h3>
+<p>No intervenimos.</p>
+<p>Pero el cliente finalmente abandonó la empresa.</p>
+<p>Perdimos ingresos futuros.</p>
+<hr>
+<p>Ambos errores tienen costo.</p>
+<p>La pregunta no es:</p>
+<p><code>¿Cómo eliminar completamente los errores?</code></p>
+<p>La pregunta correcta es:</p>
+<p><code>¿Qué tipo de error es más costoso para nuestro negocio?</code></p>
+<p>Esta diferencia cambia completamente la estrategia.</p>
+</section>
+</section>
+<section id="preparando-los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="preparando-los-datos">13.5 Preparando los datos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambiar el Churn a numárica binaria y cambiar la variable de cargos </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># totales a numérica </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>telco <span class="ot">&lt;-</span> telco <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Churn =</span> <span class="fu">if_else</span>(Churn <span class="sc">==</span> <span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">TotalCharges =</span> <span class="fu">as.numeric</span>(TotalCharges)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(TotalCharges)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(telco<span class="sc">$</span>Churn) <span class="co"># produce: "numeric"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+</section>
+<section id="construyendo-un-modelo-simple" class="level2">
+<h2 class="anchored" data-anchor-id="construyendo-un-modelo-simple">13.6 Construyendo un modelo simple</h2>
+<p>Utilizaremos una versión sencilla del modelo logístico desarrollado en el capítulo anterior.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un modelo para conocer cómo afecta la antiguedad y los cargos</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># mensuales en el churn</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>modelo_churn <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  Churn <span class="sc">~</span> tenure <span class="sc">+</span> MonthlyCharges,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> telco,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_churn) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        5%         95%
+(Intercept)    -1.93122085 -1.65698089
+tenure         -0.05795104 -0.05236150
+MonthlyCharges  0.03093929  0.03506037</code></pre>
+</div>
+</div>
+<p><strong>Interpretación</strong>: Es plausible que, independientemente de los cargos mensuales, la antiguedad se asocia a una disminución del churn; e independientemente de la antiguedad, los cargos mensuales se asocian a un aumento del churn.</p>
+<p>El objetivo aquí no es mejorar el modelo.</p>
+<p>El objetivo es utilizar probabilidades para tomar decisiones.</p>
+</section>
+<section id="estimando-riesgo-individual" class="level2">
+<h2 class="anchored" data-anchor-id="estimando-riesgo-individual">13.7 Estimando riesgo individual</h2>
+<p>Calculamos la probabilidad estimada de churn para cada cliente.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcular 1000 probabilidades (simulaciones)  de churn para </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># cada uno de los 7032 clientes</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>riesgo_promedio <span class="ot">&lt;-</span> <span class="fu">posterior_epred</span>(modelo_churn)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar la primera simulación (de las 1000) y sólo 5 clientes</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># (de los 7032)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>riesgo_promedio[<span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1          2          3          4          5 
+0.29768323 0.14523255 0.47068233 0.05403426 0.60858568 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una nueva variable con el riesgo promedio de churn</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>telco <span class="ot">&lt;-</span> telco <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">riesgo_churn =</span> <span class="fu">colMeans</span>(riesgo_promedio)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las 6 primeras filas (de las 7032) y las últimas columnas </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>telco[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="sc">-</span><span class="dv">20</span><span class="sc">:-</span><span class="dv">1</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Churn riesgo_churn
+  &lt;dbl&gt;        &lt;dbl&gt;
+1     0       0.297 
+2     0       0.143 
+3     1       0.468 
+4     0       0.0533
+5     1       0.605 
+6     1       0.741 </code></pre>
+</div>
+</div>
+<p>Ahora cada cliente tiene una probabilidad estimada.</p>
+<p>Por ejemplo:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cliente</th>
+<th>Riesgo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>0.12</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0.37</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0.82</td>
+</tr>
+</tbody>
+</table>
+<p>Esto ya es información accionable.</p>
+</section>
+<section id="visualizando-la-distribución-del-riesgo" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-la-distribución-del-riesgo">13.8 Visualizando la distribución del riesgo</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma que muestra la distribución del riesgo de churn en el </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(telco, <span class="fu">aes</span>(riesgo_churn)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">bins =</span> <span class="dv">30</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución del riesgo estimado de churn"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Probabilidad estimada"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Clientes"</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c13_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación">Interpretación</h3>
+<p>Este gráfico responde una pregunta importante:</p>
+<p><code>¿Cómo se distribuye el riesgo en nuestra cartera de clientes?</code></p>
+<p>Probablemente observaremos:</p>
+<ul>
+<li>muchos clientes de bajo riesgo</li>
+<li>algunos clientes de riesgo intermedio</li>
+<li>un grupo más pequeño de alto riesgo</li>
+</ul>
+<p>La realidad suele ser gradual.</p>
+<p>No existen dos grupos perfectamente separados.</p>
+</section>
+</section>
+<section id="del-riesgo-a-la-acción" class="level2">
+<h2 class="anchored" data-anchor-id="del-riesgo-a-la-acción">13.9 Del riesgo a la acción</h2>
+<p>Supongamos que la empresa decide intervenir únicamente cuando:</p>
+<p><code>Probabilidad de churn &gt; 70%</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Intervenir cuando el riesgo de churn es mayor al 70%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>telco <span class="ot">&lt;-</span> telco <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">intervenir_70 =</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      riesgo_churn <span class="sc">&gt;</span> <span class="fl">0.70</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir las 6 primeras observaciones (de las 7032) y las últimas </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># filas</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>telco[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,<span class="sc">-</span><span class="dv">20</span><span class="sc">:-</span><span class="dv">1</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  Churn riesgo_churn intervenir_70
+  &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;        
+1     0       0.297  FALSE        
+2     0       0.143  FALSE        
+3     1       0.468  FALSE        
+4     0       0.0533 FALSE        
+5     1       0.605  FALSE        
+6     1       0.741  TRUE         </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conocer a cuantos clientes de los 7043 hay que intervenir</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>telco <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(intervenir_70) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  intervenir_70     n
+  &lt;lgl&gt;         &lt;int&gt;
+1 FALSE          6781
+2 TRUE            251</code></pre>
+</div>
+</div>
+</section>
+<section id="y-si-cambiamos-el-umbral" class="level2">
+<h2 class="anchored" data-anchor-id="y-si-cambiamos-el-umbral">13.10 ¿Y si cambiamos el umbral?</h2>
+<p>Ahora probemos un criterio más agresivo.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una nueva variable con los clientes que tienen un riesgo de</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># churn mayor al 40%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>telco <span class="ot">&lt;-</span> telco <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">intervenir_40 =</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>      riesgo_churn <span class="sc">&gt;</span> <span class="fl">0.40</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Conocer cuantos clientes tienen un riesgo de churn mayor al 40%</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>telco <span class="sc">|&gt;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(intervenir_40) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  intervenir_40     n
+  &lt;lgl&gt;         &lt;int&gt;
+1 FALSE          5096
+2 TRUE           1936</code></pre>
+</div>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Umbral</th>
+<th>Clientes intervenidos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>70%</td>
+<td>pocos</td>
+</tr>
+<tr class="even">
+<td>40%</td>
+<td>muchos más</td>
+</tr>
+</tbody>
+</table>
+<p>Aquí aparece nuevamente el trade-off.</p>
+<p>Un umbral más bajo:</p>
+<ul>
+<li>detecta más clientes en riesgo</li>
+<li>aumenta costos</li>
+</ul>
+<p>Un umbral más alto:</p>
+<ul>
+<li>reduce costos</li>
+<li>deja escapar más clientes</li>
+</ul>
+<p>Ninguno es universalmente correcto.</p>
+</section>
+<section id="visualizando-prioridades" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-prioridades">13.11 Visualizando prioridades</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordenar telco </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>telco_ordenado <span class="ot">&lt;-</span> telco <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(riesgo_churn)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="co"># Escoger las 10 primeras observaciones</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>telco_ordenado[,<span class="sc">-</span><span class="dv">20</span><span class="sc">:-</span><span class="dv">1</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 4
+   Churn riesgo_churn intervenir_70 intervenir_40
+   &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;         &lt;lgl&gt;        
+ 1     0        0.832 TRUE          TRUE         
+ 2     0        0.832 TRUE          TRUE         
+ 3     1        0.823 TRUE          TRUE         
+ 4     1        0.822 TRUE          TRUE         
+ 5     1        0.821 TRUE          TRUE         
+ 6     1        0.819 TRUE          TRUE         
+ 7     1        0.818 TRUE          TRUE         
+ 8     1        0.817 TRUE          TRUE         
+ 9     1        0.817 TRUE          TRUE         
+10     1        0.813 TRUE          TRUE         </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar los 10 clientes con mayor riesgo</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>telco_ordenado <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">reorder</span>(customerID, riesgo_churn),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      riesgo_churn</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="co"># Mostrar columnas</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> <span class="co"># Cambiar el eje para poder ver los ID's</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"10 clientes con mayor riesgo estimado"</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Probabilidad de churn"</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c13_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Este gráfico ayuda a responder:</p>
+<p><code>Si sólo pudiéramos actuar sobre 100 clientes, ¿cuáles deberían ser prioridad?</code></p>
+</section>
+<section id="recursos-limitados-y-priorización" class="level2">
+<h2 class="anchored" data-anchor-id="recursos-limitados-y-priorización">13.12 Recursos limitados y priorización</h2>
+<p>En la práctica:</p>
+<ul>
+<li>el presupuesto es limitado</li>
+<li>el tiempo es limitado</li>
+<li>los equipos son limitados</li>
+</ul>
+<p>Por eso muchas organizaciones no buscan:</p>
+<p><code>intervenir a todos.</code></p>
+<p>Buscan:</p>
+<p><code>intervenir donde el beneficio esperado sea mayor.</code></p>
+<p>La priorización es una consecuencia natural de la escasez de recursos.</p>
+</section>
+<section id="una-visualización-simple-de-costos" class="level2">
+<h2 class="anchored" data-anchor-id="una-visualización-simple-de-costos">13.13 Una visualización simple de costos</h2>
+<p>Supongamos:</p>
+<ul>
+<li>costo de intervención = $20</li>
+<li>pérdida por churn = $200</li>
+</ul>
+<p>Podemos explorar escenarios.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>umbrales <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.2</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.8</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fl">0.05</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>umbrales <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una tabla con los umbrales y los clientes intervenidos</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>escenarios <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  umbrales,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(u){</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tibble</span>(</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">umbral =</span> u,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">intervenidos =</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sum</span>(telco<span class="sc">$</span>riesgo_churn <span class="sc">&gt;</span> u)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>escenarios <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 2
+   umbral intervenidos
+    &lt;dbl&gt;        &lt;int&gt;
+ 1   0.2          3559
+ 2   0.25         2920
+ 3   0.3          2555
+ 4   0.35         2258
+ 5   0.4          1936
+ 6   0.45         1586
+ 7   0.5          1308
+ 8   0.55         1071
+ 9   0.6           837
+10   0.65          495
+11   0.7           251
+12   0.75           98
+13   0.8            16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar los clientes intervenidos según el umbral elegido</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  escenarios,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(umbral, intervenidos)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Clientes intervenidos según el umbral elegido"</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Umbral"</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Clientes priorizados"</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c13_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="decisiones-imperfectas" class="level2">
+<h2 class="anchored" data-anchor-id="decisiones-imperfectas">13.14 Decisiones imperfectas</h2>
+<p>Una tentación frecuente es creer:</p>
+<p><code>si el modelo es suficientemente bueno, desaparecerán los errores.</code></p>
+<p>Esto nunca ocurre.</p>
+<p>Incluso excelentes modelos:</p>
+<ul>
+<li>se equivocan</li>
+<li>simplifican la realidad</li>
+<li>omiten variables</li>
+<li>enfrentan cambios futuros</li>
+</ul>
+<p>La incertidumbre nunca desaparece.</p>
+<p>Simplemente cambia de forma.</p>
+<p>Por eso la madurez analítica consiste en aceptar algo incómodo:</p>
+<p><code>una buena decisión puede producir un mal resultado.</code></p>
+<p>Y también:</p>
+<p><code>una mala decisión puede producir un buen resultado por azar.</code></p>
+<p>Debemos evaluar decisiones por la calidad de la información disponible en el momento de decidir.</p>
+<p>No únicamente por el resultado observado después.</p>
+</section>
+<section id="probabilidades-y-decisiones" class="level2">
+<h2 class="anchored" data-anchor-id="probabilidades-y-decisiones">13.15 Probabilidades y decisiones</h2>
+<p>Las probabilidades son útiles porque permiten pensar en grados.</p>
+<p>No obligan a clasificar inmediatamente.</p>
+<p>Por ejemplo:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Riesgo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.15</td>
+</tr>
+<tr class="even">
+<td>0.42</td>
+</tr>
+<tr class="odd">
+<td>0.67</td>
+</tr>
+<tr class="even">
+<td>0.89</td>
+</tr>
+</tbody>
+</table>
+<p>Estos números representan distintos niveles de preocupación.</p>
+<p>Permiten:</p>
+<ul>
+<li>priorizar</li>
+<li>asignar recursos</li>
+<li>planificar intervenciones</li>
+</ul>
+<p>Las probabilidades no eliminan la incertidumbre.</p>
+<p>La hacen visible.</p>
+</section>
+<section id="incertidumbre-ética-y-humana" class="level2">
+<h2 class="anchored" data-anchor-id="incertidumbre-ética-y-humana">13.16 Incertidumbre ética y humana</h2>
+<p>Existe otra dimensión importante.</p>
+<p>Los modelos trabajan con datos.</p>
+<p>Pero las decisiones afectan personas reales.</p>
+<p>Un cliente no es únicamente una probabilidad.</p>
+<p>Es una persona.</p>
+<p>Toda automatización tiene limitaciones.</p>
+<p>Toda predicción puede equivocarse.</p>
+<p>Por eso los modelos deben utilizarse como herramientas de apoyo.</p>
+<p>No como sustitutos completos del juicio humano.</p>
+<p>Las mejores organizaciones combinan:</p>
+<ul>
+<li>evidencia cuantitativa</li>
+<li>experiencia profesional</li>
+<li>criterio humano</li>
+</ul>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">Reflexión bayesiana</h2>
+<p>Desde el inicio del libro hemos repetido una idea:</p>
+<p><code>la incertidumbre no es un defecto del análisis.</code></p>
+<p>Es una característica natural del mundo.</p>
+<p>El enfoque bayesiano no promete eliminarla.</p>
+<p>Promete algo más modesto y más útil:</p>
+<p><code>aprender de la evidencia disponible para tomar decisiones más razonables.</code></p>
+<p>Las distribuciones posteriores no nos dicen exactamente qué ocurrirá.</p>
+<p>Nos muestran qué resultados son más plausibles.</p>
+<p>Y esa diferencia es fundamental.</p>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Explique con sus propias palabras la diferencia entre:</p>
+<ul>
+<li>estimar una probabilidad</li>
+<li>tomar una decisión</li>
+</ul>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Describa un ejemplo de falso positivo en una campaña de retención.</p>
+<p>¿Cuál sería su costo?</p>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Describa un ejemplo de falso negativo.</p>
+<p>¿Por qué podría ser más costoso?</p>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Repita el análisis utilizando:</p>
+<ul>
+<li>30%</li>
+<li>50%</li>
+<li>70%</li>
+</ul>
+<p>como umbrales de intervención.</p>
+<p>¿Qué cambia?</p>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Construya un gráfico que muestre únicamente los 50 clientes con mayor riesgo estimado.</p>
+</section>
+<section id="ejercicio-6" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-6">Ejercicio 6</h3>
+<p>Suponga que cada intervención cuesta $10.</p>
+<p>¿Cuántos clientes intervendría con cada umbral?</p>
+</section>
+<section id="ejercicio-7" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-7">Ejercicio 7</h3>
+<p>Reflexione:</p>
+<p><code>¿Es preferible cometer más falsos positivos o más falsos negativos?</code></p>
+<p>¿Depende del negocio?</p>
+<p>Explique.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Decisiones bajo incertidumbre, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

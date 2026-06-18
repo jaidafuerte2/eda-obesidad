@@ -146,14 +146,11 @@ prob_churn <- posterior_epred(modelo_churn)
 prob_churn[1:6, 1:5] # produce:
 ```
 
-
 Recordatorio:
 
 Cada fila representa una simulación posterior.
 
 Cada columna representa un cliente.
-
-Probabilidad posterior promedio
 
 ### Probabilidad posterior promedio
 
@@ -221,7 +218,7 @@ La empresa no necesita identificar exactamente quién abandonará.
 
 Puede simplemente priorizar los clientes con mayor riesgo.
 
----
+------------------------------------------------------------------------
 
 Visualización:
 
@@ -269,7 +266,7 @@ Los puntos de corte son decisiones humanas.
 
 No leyes naturales.
 
---- 
+------------------------------------------------------------------------
 
 Interpretación:
 
@@ -285,7 +282,7 @@ Clientes que merecen seguimiento.
 
 Clientes candidatos a intervenciones prioritarias.
 
----
+------------------------------------------------------------------------
 
 Reflexión importante:
 
@@ -325,18 +322,18 @@ Pero el análisis bayesiano nos permite ver algo más profundo:
 
 la incertidumbre alrededor de cada individuo.
 
----
+------------------------------------------------------------------------
 
 Tomemos un cliente.
 
 ```{r}
 # Mostrar las 1000) simulaciones posteriores 
 # del cliente número 25 (de 7043)
-#prob_churn[25,]
+#prob_churn[,25]
 
 # Mostrar las  5 primeras (de las 1000) simulaciones posteriores 
 # del cliente número 25 (de 7043) 
-prob_churn[25,1:5] # produce
+prob_churn[1:5, 25] # produce
 ```
 
 Obtendremos cientos de simulaciones posteriores para ese cliente.
@@ -357,7 +354,7 @@ El modelo no entrega un único riesgo.
 
 Entrega un rango plausible de riesgos.
 
----
+------------------------------------------------------------------------
 
 Esta idea conecta perfectamente con la filosofía del libro:
 
@@ -380,7 +377,6 @@ riesgo_cliente_a <- prob_churn[, 25]
 # del Cliente B (observación 1200)
 riesgo_cliente_b <- prob_churn[, 1200]
 ```
-
 
 Cada objeto contiene miles de probabilidades plausibles de churn obtenidas a partir de las simulaciones posteriores del modelo.
 
@@ -425,7 +421,6 @@ ggplot(
   )
 ```
 
-
 Este gráfico no compara dos probabilidades puntuales.
 
 Compara dos distribuciones completas de riesgo.
@@ -437,7 +432,6 @@ Si las curvas están muy separadas, existe evidencia de que ambos clientes prese
 Si las curvas se superponen considerablemente, la incertidumbre es suficientemente grande como para que las diferencias entre ambos clientes sean menos claras.
 
 Esta visualización refleja una idea central del pensamiento bayesiano: en lugar de resumir cada cliente mediante un único número, analizamos la distribución completa de riesgos plausibles asociada a cada individuo.
-
 
 ## 12.10 Contexto de negocio: retención y priorización
 
@@ -500,7 +494,6 @@ posterior_epred(
 ) |>
   colMeans() # produce:
 ```
-
 
 ## 12.11 Trade-offs
 

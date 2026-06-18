@@ -337,3 +337,250 @@ posterior_epred(
   colMeans() # produce:
 #        1         2         3         4 
 #0.3921958 0.2883205 0.2027992 0.1377650 
+
+##################
+##
+## Ejercicios
+##
+##################
+
+##################
+##
+## Ejercicio 1
+##
+##################
+
+# Ejercicio 1
+
+# Seleccione tres clientes:
+  
+#  uno de riesgo bajo;
+# uno de riesgo moderado;
+# uno de riesgo alto.
+
+# Reordenar el riesgo
+telco_risk <- telco_riesgo |>
+  arrange(riesgo) 
+telco_risk[, -20:-1] # produce:
+# A tibble: 7,043 × 4
+#  Churn Churn_num riesgo segmento
+#  <chr>     <dbl>  <dbl> <chr>   
+#1 No            0 0.0593 Bajo    
+#2 No            0 0.0593 Bajo    
+#3 No            0 0.0593 Bajo    
+#4 No            0 0.0593 Bajo    
+#5 No            0 0.0593 Bajo    
+#6 No            0 0.0593 Bajo    
+# ℹ 7,033 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+#glimpse(telco_risk) # produce:
+
+# Seleccionemos:
+  
+cliente_bajo <- telco_risk[100, ]
+cliente_medio <- telco_risk[3500, ]
+cliente_alto <- telco_risk[6900, ]
+
+cliente_bajo$riesgo # produce:
+#      1779 
+#0.05934361 
+cliente_medio$riesgo # produce:
+#     2383 
+#0.2502145 
+cliente_alto$riesgo # produce:
+#     5554 
+#0.4971375 
+
+# Describa cómo interpretaría cada probabilidad.
+# Riesgo del 6% es un bajo riesgo de que un cliente abandone una 
+# empresa; riesgo del 25% representa un riesgo representa un riesgo 
+# moderado de que un cliente abandone una empresa; riesgo del 50%
+# representa un riesgo alto de que un cliente abandone una empresa
+
+##################
+##
+## Ejercicio 2
+##
+##################
+
+# Ejercicio 2
+
+# Construya un histograma de riesgos.
+
+# Histograma de la probabilidad de churn según la antiguedad
+ggplot(
+  telco_riesgo,
+  aes(
+    x = riesgo,
+    fill = segmento
+  )
+) +
+  geom_histogram(
+    bins = 40
+  )
+
+# ¿Qué le dice sobre la distribución del riesgo en la cartera de 
+# clientes? Lo que dice la distribución (en U) es que muchos clientes
+# tienen un bajo churn, pocos clientes tienen un churn moderado y
+# muchos clientes tienen un churn alto
+  
+##################
+##
+## Ejercicio 3
+##
+##################
+
+#  Ejercicio 3
+# Compare las distribuciones posteriores de dos clientes distintos.
+
+# Resumir las simulaciones posteriores del cliente 25
+quantile(
+  prob_churn[, 25],
+  probs = c(0.05, 0.5, 0.95)
+) # produce:
+#       5%       50%       95% 
+#0.1240423 0.1331091 0.1429131 
+
+# Resumir las simulaciones posteriores del cliente 26
+quantile(
+  prob_churn[, 26],
+  probs = c(0.05, 0.5, 0.95)
+) # produce:
+
+#       5%       50%       95% 
+#0.2335072 0.2429537 0.2524561 
+
+# ¿Existe superposición? No hay superposición  
+#  ¿Qué implica esa superposición? Como no hay superposición, esto
+# significa que cada simulación del modelo no tiene tanta 
+# incertidumbre
+
+
+##################
+##
+## Ejercicio 4
+##
+##################
+  
+#  Ejercicio 4
+
+# Modifique los puntos de corte de los segmentos.
+
+# Segmentar el riesgo
+telco_riesgo <- telco_riesgo |>
+  mutate(
+    segmento = case_when(
+      riesgo < 0.20 ~ "Bajo",
+      riesgo < 0.40 ~ "Moderado",
+      TRUE ~ "Alto"
+    )
+  )
+count(telco_riesgo, segmento) # produce:
+# A tibble: 3 × 2
+#  segmento     n
+#  <chr>    <int>
+#1 Alto      2069
+#2 Bajo      3001
+#3 Moderado  1973
+
+# Segmentar el riesgo
+telco_riesgo <- telco_riesgo |>
+  mutate(
+    segmento = case_when(
+      riesgo < 0.17 ~ "Bajo",
+      riesgo < 0.34 ~ "Moderado",
+      TRUE ~ "Alto"
+    )
+  )
+count(telco_riesgo, segmento) # produce:
+# A tibble: 3 × 2
+#  segmento     n
+#  <chr>    <int>
+#1 Alto      2637
+#2 Bajo      2687
+#3 Moderado  1719
+
+
+# ¿Cómo cambia el número de clientes clasificados 
+# como de alto riesgo? Los de alto riesgo aumentan cerca de 600
+  
+##################
+##
+## Ejercicio 5
+##
+##################
+
+#  Ejercicio 5
+
+# Suponga que sólo puede intervenir sobre el 10% de los clientes.
+
+# ¿Cómo los seleccionaría?
+
+# Ordenar las observaciones en orden ascendente
+clientes_prioritarios <- telco_riesgo |>
+  arrange(
+    desc(riesgo)
+  )
+
+# Seleccionar el 10% superior:
+n_clientes <- nrow(
+    clientes_prioritarios
+  )
+n_clientes # produce: 7043
+
+nrow(clientes_prioritarios) # produce: 7043
+
+# Seleccionar los 704 (10%) clientes con más riesgo de churn
+top_10 <- clientes_prioritarios |>
+  slice(
+    1:round(
+      n_clientes * 0.10
+    )
+  )
+top_10[,-20:-1] # produce:
+# A tibble: 704 × 4
+#  Churn Churn_num riesgo segmento
+#  <chr>     <dbl>  <dbl> <chr>   
+#1 No            0  0.507 Alto    
+#2 No            0  0.507 Alto    
+#3 No            0  0.507 Alto    
+#4 No            0  0.507 Alto    
+#5 No            0  0.507 Alto    
+#6 No            0  0.507 Alto    
+# ℹ 694 more rows
+# ℹ Use `print(n = ...)` to see more rows
+  
+slice(clientes_prioritarios, 1:6)[,-20:-1] # produce:
+# A tibble: 6 × 4
+#  Churn Churn_num riesgo segmento
+#  <chr>     <dbl>  <dbl> <chr>   
+#1 No            0  0.507 Alto    
+#2 No            0  0.507 Alto    
+#3 No            0  0.507 Alto    
+#4 No            0  0.507 Alto    
+#5 No            0  0.507 Alto    
+#6 No            0  0.507 Alto 
+
+slice(clientes_prioritarios, 1:(7043 * 0.1))[,-20:-1] # produce:
+# A tibble: 704 × 4
+#  Churn Churn_num riesgo segmento
+#  <chr>     <dbl>  <dbl> <chr>   
+#1 No            0  0.507 Alto    
+#2 No            0  0.507 Alto    
+#3 No            0  0.507 Alto    
+#4 No            0  0.507 Alto    
+#5 No            0  0.507 Alto    
+#6 No            0  0.507 Alto    
+#7 No            0  0.507 Alto    
+#8 No            0  0.507 Alto    
+#9 No            0  0.507 Alto    
+#10 No            0  0.507 Alto    
+# ℹ 694 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+#  ¿Utilizaría únicamente la probabilidad de abandono?
+# No
+  
+#  ¿Por qué? Porque puede haber otras características adicionales
+#  importantes a tener en cuenta

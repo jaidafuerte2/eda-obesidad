@@ -2869,7 +2869,7 @@
     "href": "analysis/c12.html#obteniendo-probabilidades-individuales",
     "title": "12.- Interpretar riesgo individual",
     "section": "12.3 Obteniendo probabilidades individuales",
-    "text": "12.3 Obteniendo probabilidades individuales\nAquí reutilizamos el modelo logístico construido en capítulos anteriores.\n\n# Crear una variable Churn numérica\ntelco &lt;- telco %&gt;%\n  mutate(\n    Churn_num =\n      if_else(\n        Churn == \"Yes\",\n        1,\n        0\n      )\n  )\nclass(telco$Churn_num) # produce: numeric\n\n[1] \"numeric\"\n\n\n\n# Crear un modelo logístico bayesiano para conocer cuanto influye \n# la antiguedad en la cancelación de suscripción\nmodelo_churn &lt;- stan_glm(\n  Churn_num ~ tenure,\n  data = telco,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  seed = 1234,\n  refresh = 0\n) \nposterior_interval(modelo_churn) # produce:\n\n                     5%         95%\n(Intercept) -0.03609829  0.09296688\ntenure      -0.04111115 -0.03648721\n\n\n\nprob_churn &lt;- posterior_epred(modelo_churn)\n# Ver esta tabla de 7043 clientes (cols) y 1000 simulaciones \n# posteriores (filas) por  cliente. Y en probabilidades\nprob_churn[1:6, 1:5] # produce:\n\n          \niterations         1         2         3         4         5\n      [1,] 0.5101150 0.2140617 0.4999567 0.1483450 0.4999567\n      [2,] 0.4841610 0.2208202 0.4751043 0.1597533 0.4751043\n      [3,] 0.5111173 0.2106011 0.5007723 0.1447276 0.5007723\n      [4,] 0.4936282 0.2185688 0.4841745 0.1557488 0.4841745\n      [5,] 0.4931860 0.2217319 0.4838855 0.1590852 0.4838855\n      [6,] 0.4989240 0.2205819 0.4893955 0.1568832 0.4893955\n\n\nRecordatorio:\nCada fila representa una simulación posterior.\nCada columna representa un cliente.\nProbabilidad posterior promedio\n\nProbabilidad posterior promedio\n\nriesgo_promedio &lt;- colMeans(prob_churn)\n# Mostrar el riesgo promedio por cada uno de los 7043 clientes\nriesgo_promedio[1:5] # produce:\n\n        1         2         3         4         5 \n0.4971375 0.2156246 0.4874451 0.1521633 0.4874451 \n\n\n\n# Crear una nueva tabla con una nueva variable de riesgo promedio\ntelco_riesgo &lt;- telco |&gt;\n  mutate(\n    riesgo = riesgo_promedio\n  )\nglimpse(telco_riesgo) # produce:\n\nRows: 7,043\nColumns: 23\n$ customerID       &lt;chr&gt; \"7590-VHVEG\", \"5575-GNVDE\", \"3668-QPYBK\", \"7795-CFOCW…\n$ gender           &lt;chr&gt; \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Female\",…\n$ SeniorCitizen    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Partner          &lt;chr&gt; \"Yes\", \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes…\n$ Dependents       &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\"…\n$ tenure           &lt;dbl&gt; 1, 34, 2, 45, 2, 8, 22, 10, 28, 62, 13, 16, 58, 49, 2…\n$ PhoneService     &lt;chr&gt; \"No\", \"Yes\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", …\n$ MultipleLines    &lt;chr&gt; \"No phone service\", \"No\", \"No\", \"No phone service\", \"…\n$ InternetService  &lt;chr&gt; \"DSL\", \"DSL\", \"DSL\", \"DSL\", \"Fiber optic\", \"Fiber opt…\n$ OnlineSecurity   &lt;chr&gt; \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", \"No\", \"No\", \"Yes\", \"…\n$ OnlineBackup     &lt;chr&gt; \"Yes\", \"No\", \"Yes\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"N…\n$ DeviceProtection &lt;chr&gt; \"No\", \"Yes\", \"No\", \"Yes\", \"No\", \"Yes\", \"No\", \"No\", \"Y…\n$ TechSupport      &lt;chr&gt; \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\", \"No\", \"No\", \"Yes…\n$ StreamingTV      &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"Yes\", \"No\", \"Ye…\n$ StreamingMovies  &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\", \"Yes…\n$ Contract         &lt;chr&gt; \"Month-to-month\", \"One year\", \"Month-to-month\", \"One …\n$ PaperlessBilling &lt;chr&gt; \"Yes\", \"No\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", …\n$ PaymentMethod    &lt;chr&gt; \"Electronic check\", \"Mailed check\", \"Mailed check\", \"…\n$ MonthlyCharges   &lt;dbl&gt; 29.85, 56.95, 53.85, 42.30, 70.70, 99.65, 89.10, 29.7…\n$ TotalCharges     &lt;dbl&gt; 29.85, 1889.50, 108.15, 1840.75, 151.65, 820.50, 1949…\n$ Churn            &lt;chr&gt; \"No\", \"No\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"No\", \"No\", \"Y…\n$ Churn_num        &lt;dbl&gt; 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,…\n$ riesgo           &lt;dbl&gt; 0.49713754, 0.21562457, 0.48744510, 0.15216332, 0.487…\n\n\nAhora cada cliente tiene una probabilidad estimada de abandono.",
+    "text": "12.3 Obteniendo probabilidades individuales\nAquí reutilizamos el modelo logístico construido en capítulos anteriores.\n\n# Crear una variable Churn numérica\ntelco &lt;- telco %&gt;%\n  mutate(\n    Churn_num =\n      if_else(\n        Churn == \"Yes\",\n        1,\n        0\n      )\n  )\nclass(telco$Churn_num) # produce: numeric\n\n[1] \"numeric\"\n\n\n\n# Crear un modelo logístico bayesiano para conocer cuanto influye \n# la antiguedad en la cancelación de suscripción\nmodelo_churn &lt;- stan_glm(\n  Churn_num ~ tenure,\n  data = telco,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  seed = 1234,\n  refresh = 0\n) \nposterior_interval(modelo_churn) # produce:\n\n                     5%         95%\n(Intercept) -0.03609829  0.09296688\ntenure      -0.04111115 -0.03648721\n\n\n\nprob_churn &lt;- posterior_epred(modelo_churn)\n# Ver esta tabla de 7043 clientes (cols) y 1000 simulaciones \n# posteriores (filas) por  cliente. Y en probabilidades\nprob_churn[1:6, 1:5] # produce:\n\n          \niterations         1         2         3         4         5\n      [1,] 0.5101150 0.2140617 0.4999567 0.1483450 0.4999567\n      [2,] 0.4841610 0.2208202 0.4751043 0.1597533 0.4751043\n      [3,] 0.5111173 0.2106011 0.5007723 0.1447276 0.5007723\n      [4,] 0.4936282 0.2185688 0.4841745 0.1557488 0.4841745\n      [5,] 0.4931860 0.2217319 0.4838855 0.1590852 0.4838855\n      [6,] 0.4989240 0.2205819 0.4893955 0.1568832 0.4893955\n\n\nRecordatorio:\nCada fila representa una simulación posterior.\nCada columna representa un cliente.\n\nProbabilidad posterior promedio\n\nriesgo_promedio &lt;- colMeans(prob_churn)\n# Mostrar el riesgo promedio por cada uno de los 7043 clientes\nriesgo_promedio[1:5] # produce:\n\n        1         2         3         4         5 \n0.4971375 0.2156246 0.4874451 0.1521633 0.4874451 \n\n\n\n# Crear una nueva tabla con una nueva variable de riesgo promedio\ntelco_riesgo &lt;- telco |&gt;\n  mutate(\n    riesgo = riesgo_promedio\n  )\nglimpse(telco_riesgo) # produce:\n\nRows: 7,043\nColumns: 23\n$ customerID       &lt;chr&gt; \"7590-VHVEG\", \"5575-GNVDE\", \"3668-QPYBK\", \"7795-CFOCW…\n$ gender           &lt;chr&gt; \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Female\",…\n$ SeniorCitizen    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…\n$ Partner          &lt;chr&gt; \"Yes\", \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes…\n$ Dependents       &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\"…\n$ tenure           &lt;dbl&gt; 1, 34, 2, 45, 2, 8, 22, 10, 28, 62, 13, 16, 58, 49, 2…\n$ PhoneService     &lt;chr&gt; \"No\", \"Yes\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", …\n$ MultipleLines    &lt;chr&gt; \"No phone service\", \"No\", \"No\", \"No phone service\", \"…\n$ InternetService  &lt;chr&gt; \"DSL\", \"DSL\", \"DSL\", \"DSL\", \"Fiber optic\", \"Fiber opt…\n$ OnlineSecurity   &lt;chr&gt; \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", \"No\", \"No\", \"Yes\", \"…\n$ OnlineBackup     &lt;chr&gt; \"Yes\", \"No\", \"Yes\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"N…\n$ DeviceProtection &lt;chr&gt; \"No\", \"Yes\", \"No\", \"Yes\", \"No\", \"Yes\", \"No\", \"No\", \"Y…\n$ TechSupport      &lt;chr&gt; \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\", \"No\", \"No\", \"Yes…\n$ StreamingTV      &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"Yes\", \"No\", \"Ye…\n$ StreamingMovies  &lt;chr&gt; \"No\", \"No\", \"No\", \"No\", \"No\", \"Yes\", \"No\", \"No\", \"Yes…\n$ Contract         &lt;chr&gt; \"Month-to-month\", \"One year\", \"Month-to-month\", \"One …\n$ PaperlessBilling &lt;chr&gt; \"Yes\", \"No\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"Yes\", \"No\", …\n$ PaymentMethod    &lt;chr&gt; \"Electronic check\", \"Mailed check\", \"Mailed check\", \"…\n$ MonthlyCharges   &lt;dbl&gt; 29.85, 56.95, 53.85, 42.30, 70.70, 99.65, 89.10, 29.7…\n$ TotalCharges     &lt;dbl&gt; 29.85, 1889.50, 108.15, 1840.75, 151.65, 820.50, 1949…\n$ Churn            &lt;chr&gt; \"No\", \"No\", \"Yes\", \"No\", \"Yes\", \"Yes\", \"No\", \"No\", \"Y…\n$ Churn_num        &lt;dbl&gt; 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,…\n$ riesgo           &lt;dbl&gt; 0.49713754, 0.21562457, 0.48744510, 0.15216332, 0.487…\n\n\nAhora cada cliente tiene una probabilidad estimada de abandono.",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -2929,7 +2929,7 @@
     "href": "analysis/c12.html#incertidumbre-individual",
     "title": "12.- Interpretar riesgo individual",
     "section": "12.8 Incertidumbre individual",
-    "text": "12.8 Incertidumbre individual\nEsta es probablemente la sección más importante del capítulo.\nHasta ahora hemos trabajado con probabilidades promedio.\nPero el análisis bayesiano nos permite ver algo más profundo:\nla incertidumbre alrededor de cada individuo.\n\nTomemos un cliente.\n\n# Mostrar las 1000) simulaciones posteriores \n# del cliente número 25 (de 7043)\n#prob_churn[25,]\n\n# Mostrar las  5 primeras (de las 1000) simulaciones posteriores \n# del cliente número 25 (de 7043) \nprob_churn[25,1:5] # produce\n\n        1         2         3         4         5 \n0.5033470 0.2144154 0.4934088 0.1498455 0.4934088 \n\n\nObtendremos cientos de simulaciones posteriores para ese cliente.\nPodemos resumirlas así:\n\n# Resumir las simulaciones posteriores\nquantile(\n  prob_churn[, 25],\n  probs = c(0.05, 0.5, 0.95)\n) # produce:\n\n       5%       50%       95% \n0.1240423 0.1331091 0.1429131 \n\n\nInterpretación:\nEl modelo no entrega un único riesgo.\nEntrega un rango plausible de riesgos.\n\nEsta idea conecta perfectamente con la filosofía del libro:\nLa incertidumbre no desaparece cuando construimos un modelo.\nSimplemente aprendemos a describirla mejor.",
+    "text": "12.8 Incertidumbre individual\nEsta es probablemente la sección más importante del capítulo.\nHasta ahora hemos trabajado con probabilidades promedio.\nPero el análisis bayesiano nos permite ver algo más profundo:\nla incertidumbre alrededor de cada individuo.\n\nTomemos un cliente.\n\n# Mostrar las 1000) simulaciones posteriores \n# del cliente número 25 (de 7043)\n#prob_churn[,25]\n\n# Mostrar las  5 primeras (de las 1000) simulaciones posteriores \n# del cliente número 25 (de 7043) \nprob_churn[1:5, 25] # produce\n\n[1] 0.1289589 0.1412170 0.1254155 0.1368688 0.1401625\n\n\nObtendremos cientos de simulaciones posteriores para ese cliente.\nPodemos resumirlas así:\n\n# Resumir las simulaciones posteriores\nquantile(\n  prob_churn[, 25],\n  probs = c(0.05, 0.5, 0.95)\n) # produce:\n\n       5%       50%       95% \n0.1240423 0.1331091 0.1429131 \n\n\nInterpretación:\nEl modelo no entrega un único riesgo.\nEntrega un rango plausible de riesgos.\n\nEsta idea conecta perfectamente con la filosofía del libro:\nLa incertidumbre no desaparece cuando construimos un modelo.\nSimplemente aprendemos a describirla mejor.",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -3006,6 +3006,246 @@
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
       "12.- Interpretar riesgo individual"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html",
+    "href": "analysis/c13.html",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "",
+    "text": "La incertidumbre no desaparece cuando tomamos decisiones.\nLo único que cambia es que ahora debemos actuar a pesar de ella.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#introducción",
+    "href": "analysis/c13.html#introducción",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "Introducción",
+    "text": "Introducción\nDurante todo este libro hemos construido una idea aparentemente sencilla, pero profundamente importante:\nlos datos rara vez nos entregan certezas.\nNos entregan indicios.\nNos entregan señales.\nNos entregan probabilidades.\nY aun así debemos decidir.\nLas empresas deben decidir si lanzar una campaña.\nLos médicos deben decidir si iniciar un tratamiento.\nLos inversionistas deben decidir dónde colocar capital.\nLos directivos deben decidir qué proyectos financiar.\nEsperar información perfecta suele ser imposible.\nPero también puede ser costoso.\nUn hospital que espera demasiado para actuar puede perder una oportunidad de salvar una vida.\nUna empresa que espera demasiado para retener clientes puede perderlos para siempre.\nLa realidad es incómoda:\nlas decisiones importantes casi siempre ocurren antes de que exista certeza.\nPor eso el objetivo de los modelos probabilísticos no es producir respuestas perfectas.\nSu objetivo es ayudarnos a decidir mejor cuando el futuro todavía es incierto.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#del-modelo-a-la-acción",
+    "href": "analysis/c13.html#del-modelo-a-la-acción",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.1 Del modelo a la acción",
+    "text": "13.1 Del modelo a la acción\nEn los capítulos anteriores aprendimos a construir modelos capaces de estimar probabilidades.\nPor ejemplo, usando regresión logística bayesiana pudimos estimar:\n¿Cuál es la probabilidad de que un cliente abandone la empresa?\nSin embargo, conocer una probabilidad y tomar una decisión son cosas distintas.\nSupongamos que un cliente tiene:\n\n80% de probabilidad de churn\n\n¿Qué debemos hacer?\n¿Ofrecer un descuento?\n¿Llamarlo?\n¿Asignarle un asesor personalizado?\n¿No hacer nada?\nEl modelo no responde estas preguntas.\nEl modelo únicamente proporciona información.\nLa decisión requiere además:\n\nobjetivos\npresupuesto\nestrategia\ncontexto de negocio\ntolerancia al riesgo\n\nPor eso es importante distinguir:\n\n\n\nPregunta\nResponsable\n\n\n\n\n¿Qué tan probable es el churn?\nModelo\n\n\n¿Qué debemos hacer?\nPersonas\n\n\n\nLos modelos informan decisiones.\nNo las reemplazan.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#un-problema-real-de-negocio",
+    "href": "analysis/c13.html#un-problema-real-de-negocio",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.2 Un problema real de negocio",
+    "text": "13.2 Un problema real de negocio\nImaginemos una empresa de telecomunicaciones.\nCada cliente que abandona la empresa representa:\n\npérdida de ingresos futuros\ncostos de adquisición de reemplazo\npérdida de participación de mercado\n\nPor eso muchas compañías ejecutan campañas de retención.\nSin embargo, estas campañas tienen costo.\nPor ejemplo:\n\n\n\nAcción\n\n\n\n\ndescuento\n\n\nllamada personalizada\n\n\nsoporte prioritario\n\n\npromoción especial\n\n\n\nNada de esto es gratuito.\nEntonces aparece una pregunta fundamental:\n¿A qué clientes deberíamos intervenir?\nAquí es donde comienzan los verdaderos problemas de decisión.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#la-inevitabilidad-de-los-trade-offs",
+    "href": "analysis/c13.html#la-inevitabilidad-de-los-trade-offs",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.3 La inevitabilidad de los trade-offs",
+    "text": "13.3 La inevitabilidad de los trade-offs\nLa palabra trade-off puede traducirse como:\nintercambio entre ventajas y costos.\nToda decisión implica renunciar a algo.\nVeamos dos estrategias extremas.\n\nEstrategia A\nIntervenir sobre todos los clientes.\nVentaja:\n\ncasi nadie se nos escapa\n\nDesventaja:\n\ncostos enormes\n\n\n\nEstrategia B\nNo intervenir sobre nadie.\nVentaja:\n\ncosto cero\n\nDesventaja:\n\nperderemos muchos clientes\n\nNinguna de las dos estrategias parece razonable.\nLa realidad suele encontrarse en algún punto intermedio.\nAquí aparece una de las ideas más importantes del libro:\nLas decisiones racionales rara vez maximizan una sola cosa.\nNormalmente equilibran múltiples objetivos en conflicto.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#falsos-positivos-y-falsos-negativos",
+    "href": "analysis/c13.html#falsos-positivos-y-falsos-negativos",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.4 Falsos positivos y falsos negativos",
+    "text": "13.4 Falsos positivos y falsos negativos\nImaginemos que intervenimos cuando el riesgo estimado de churn supera cierto umbral.\nAparecen dos tipos de errores.\n\nFalso positivo\nIntervenimos sobre un cliente.\nPero ese cliente realmente no iba a abandonar la empresa.\nLa intervención fue innecesaria.\nLa empresa gastó recursos.\n\n\nFalso negativo\nNo intervenimos.\nPero el cliente finalmente abandonó la empresa.\nPerdimos ingresos futuros.\n\nAmbos errores tienen costo.\nLa pregunta no es:\n¿Cómo eliminar completamente los errores?\nLa pregunta correcta es:\n¿Qué tipo de error es más costoso para nuestro negocio?\nEsta diferencia cambia completamente la estrategia.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#preparando-los-datos",
+    "href": "analysis/c13.html#preparando-los-datos",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.5 Preparando los datos",
+    "text": "13.5 Preparando los datos\n\n# Cambiar el Churn a numárica binaria y cambiar la variable de cargos \n# totales a numérica \ntelco &lt;- telco %&gt;%\n  mutate(\n    Churn = if_else(Churn == \"Yes\", 1, 0),\n    TotalCharges = as.numeric(TotalCharges)\n  ) %&gt;%\n  drop_na(TotalCharges)\nclass(telco$Churn) # produce: \"numeric\"\n\n[1] \"numeric\"",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#construyendo-un-modelo-simple",
+    "href": "analysis/c13.html#construyendo-un-modelo-simple",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.6 Construyendo un modelo simple",
+    "text": "13.6 Construyendo un modelo simple\nUtilizaremos una versión sencilla del modelo logístico desarrollado en el capítulo anterior.\n\n# Crear un modelo para conocer cómo afecta la antiguedad y los cargos\n# mensuales en el churn\nmodelo_churn &lt;- stan_glm(\n  Churn ~ tenure + MonthlyCharges,\n  data = telco,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nposterior_interval(modelo_churn) # produce:\n\n                        5%         95%\n(Intercept)    -1.93122085 -1.65698089\ntenure         -0.05795104 -0.05236150\nMonthlyCharges  0.03093929  0.03506037\n\n\nInterpretación: Es plausible que, independientemente de los cargos mensuales, la antiguedad se asocia a una disminución del churn; e independientemente de la antiguedad, los cargos mensuales se asocian a un aumento del churn.\nEl objetivo aquí no es mejorar el modelo.\nEl objetivo es utilizar probabilidades para tomar decisiones.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#estimando-riesgo-individual",
+    "href": "analysis/c13.html#estimando-riesgo-individual",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.7 Estimando riesgo individual",
+    "text": "13.7 Estimando riesgo individual\nCalculamos la probabilidad estimada de churn para cada cliente.\n\n# Calcular 1000 probabilidades (simulaciones)  de churn para \n# cada uno de los 7032 clientes\nriesgo_promedio &lt;- posterior_epred(modelo_churn)\n# Mostrar la primera simulación (de las 1000) y sólo 5 clientes\n# (de los 7032)\nriesgo_promedio[1, 1:5] # produce:\n\n         1          2          3          4          5 \n0.29768323 0.14523255 0.47068233 0.05403426 0.60858568 \n\n\n\n# Crear una nueva variable con el riesgo promedio de churn\ntelco &lt;- telco %&gt;%\n  mutate(\n    riesgo_churn = colMeans(riesgo_promedio)\n  )\n# Mostrar las 6 primeras filas (de las 7032) y las últimas columnas \ntelco[1:6, -20:-1] # produce:\n\n# A tibble: 6 × 2\n  Churn riesgo_churn\n  &lt;dbl&gt;        &lt;dbl&gt;\n1     0       0.297 \n2     0       0.143 \n3     1       0.468 \n4     0       0.0533\n5     1       0.605 \n6     1       0.741 \n\n\nAhora cada cliente tiene una probabilidad estimada.\nPor ejemplo:\n\n\n\nCliente\nRiesgo\n\n\n\n\nA\n0.12\n\n\nB\n0.37\n\n\nC\n0.82\n\n\n\nEsto ya es información accionable.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#visualizando-la-distribución-del-riesgo",
+    "href": "analysis/c13.html#visualizando-la-distribución-del-riesgo",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.8 Visualizando la distribución del riesgo",
+    "text": "13.8 Visualizando la distribución del riesgo\n\n# Histograma que muestra la distribución del riesgo de churn en el \n# modelo \nggplot(telco, aes(riesgo_churn)) +\n  geom_histogram(\n    bins = 30\n  ) +\n  labs(\n    title = \"Distribución del riesgo estimado de churn\",\n    x = \"Probabilidad estimada\",\n    y = \"Clientes\"\n  )\n\n\n\n\n\n\n\n\n\nInterpretación\nEste gráfico responde una pregunta importante:\n¿Cómo se distribuye el riesgo en nuestra cartera de clientes?\nProbablemente observaremos:\n\nmuchos clientes de bajo riesgo\nalgunos clientes de riesgo intermedio\nun grupo más pequeño de alto riesgo\n\nLa realidad suele ser gradual.\nNo existen dos grupos perfectamente separados.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#del-riesgo-a-la-acción",
+    "href": "analysis/c13.html#del-riesgo-a-la-acción",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.9 Del riesgo a la acción",
+    "text": "13.9 Del riesgo a la acción\nSupongamos que la empresa decide intervenir únicamente cuando:\nProbabilidad de churn &gt; 70%\n\n# Intervenir cuando el riesgo de churn es mayor al 70%\ntelco &lt;- telco %&gt;%\n  mutate(\n    intervenir_70 =\n      riesgo_churn &gt; 0.70\n  )\n# Imprimir las 6 primeras observaciones (de las 7032) y las últimas \n# filas\ntelco[1:6,-20:-1] # produce:\n\n# A tibble: 6 × 3\n  Churn riesgo_churn intervenir_70\n  &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;        \n1     0       0.297  FALSE        \n2     0       0.143  FALSE        \n3     1       0.468  FALSE        \n4     0       0.0533 FALSE        \n5     1       0.605  FALSE        \n6     1       0.741  TRUE         \n\n\n\n# Conocer a cuantos clientes de los 7043 hay que intervenir\ntelco %&gt;%\n  count(intervenir_70) # produce:\n\n# A tibble: 2 × 2\n  intervenir_70     n\n  &lt;lgl&gt;         &lt;int&gt;\n1 FALSE          6781\n2 TRUE            251",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#y-si-cambiamos-el-umbral",
+    "href": "analysis/c13.html#y-si-cambiamos-el-umbral",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.10 ¿Y si cambiamos el umbral?",
+    "text": "13.10 ¿Y si cambiamos el umbral?\nAhora probemos un criterio más agresivo.\n\n# Crear una nueva variable con los clientes que tienen un riesgo de\n# churn mayor al 40%\ntelco &lt;- telco %&gt;%\n  mutate(\n    intervenir_40 =\n      riesgo_churn &gt; 0.40\n  )\n# Conocer cuantos clientes tienen un riesgo de churn mayor al 40%\ntelco |&gt;\n  count(intervenir_40) # produce:\n\n# A tibble: 2 × 2\n  intervenir_40     n\n  &lt;lgl&gt;         &lt;int&gt;\n1 FALSE          5096\n2 TRUE           1936\n\n\n\n\n\nUmbral\nClientes intervenidos\n\n\n\n\n70%\npocos\n\n\n40%\nmuchos más\n\n\n\nAquí aparece nuevamente el trade-off.\nUn umbral más bajo:\n\ndetecta más clientes en riesgo\naumenta costos\n\nUn umbral más alto:\n\nreduce costos\ndeja escapar más clientes\n\nNinguno es universalmente correcto.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#visualizando-prioridades",
+    "href": "analysis/c13.html#visualizando-prioridades",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.11 Visualizando prioridades",
+    "text": "13.11 Visualizando prioridades\n\n# Ordenar telco \ntelco_ordenado &lt;- telco %&gt;%\n  arrange(desc(riesgo_churn)) %&gt;%\n  slice_head(n = 10) # Escoger las 10 primeras observaciones\ntelco_ordenado[,-20:-1] # produce:\n\n# A tibble: 10 × 4\n   Churn riesgo_churn intervenir_70 intervenir_40\n   &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;         &lt;lgl&gt;        \n 1     0        0.832 TRUE          TRUE         \n 2     0        0.832 TRUE          TRUE         \n 3     1        0.823 TRUE          TRUE         \n 4     1        0.822 TRUE          TRUE         \n 5     1        0.821 TRUE          TRUE         \n 6     1        0.819 TRUE          TRUE         \n 7     1        0.818 TRUE          TRUE         \n 8     1        0.817 TRUE          TRUE         \n 9     1        0.817 TRUE          TRUE         \n10     1        0.813 TRUE          TRUE         \n\n\n\n# Mostrar los 10 clientes con mayor riesgo\ntelco_ordenado %&gt;%\n  ggplot(\n    aes(\n      reorder(customerID, riesgo_churn),\n      riesgo_churn\n    )\n  ) +\n  geom_col() + # Mostrar columnas\n  coord_flip() + # Cambiar el eje para poder ver los ID's\n  labs(\n    title = \"10 clientes con mayor riesgo estimado\",\n    x = \"\",\n    y = \"Probabilidad de churn\"\n  )\n\n\n\n\n\n\n\n\nEste gráfico ayuda a responder:\nSi sólo pudiéramos actuar sobre 100 clientes, ¿cuáles deberían ser prioridad?",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#recursos-limitados-y-priorización",
+    "href": "analysis/c13.html#recursos-limitados-y-priorización",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.12 Recursos limitados y priorización",
+    "text": "13.12 Recursos limitados y priorización\nEn la práctica:\n\nel presupuesto es limitado\nel tiempo es limitado\nlos equipos son limitados\n\nPor eso muchas organizaciones no buscan:\nintervenir a todos.\nBuscan:\nintervenir donde el beneficio esperado sea mayor.\nLa priorización es una consecuencia natural de la escasez de recursos.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#una-visualización-simple-de-costos",
+    "href": "analysis/c13.html#una-visualización-simple-de-costos",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.13 Una visualización simple de costos",
+    "text": "13.13 Una visualización simple de costos\nSupongamos:\n\ncosto de intervención = $20\npérdida por churn = $200\n\nPodemos explorar escenarios.\n\numbrales &lt;- seq(\n  0.2,\n  0.8,\n  by = 0.05\n)\numbrales # produce:\n\n [1] 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80\n\n\n\n# Crear una tabla con los umbrales y los clientes intervenidos\nescenarios &lt;- map_dfr(\n  umbrales,\n  function(u){\n    \n    tibble(\n      umbral = u,\n      intervenidos =\n        sum(telco$riesgo_churn &gt; u)\n    )\n    \n  }\n)\nescenarios # produce:\n\n# A tibble: 13 × 2\n   umbral intervenidos\n    &lt;dbl&gt;        &lt;int&gt;\n 1   0.2          3559\n 2   0.25         2920\n 3   0.3          2555\n 4   0.35         2258\n 5   0.4          1936\n 6   0.45         1586\n 7   0.5          1308\n 8   0.55         1071\n 9   0.6           837\n10   0.65          495\n11   0.7           251\n12   0.75           98\n13   0.8            16\n\n\n\n# Visualizar los clientes intervenidos según el umbral elegido\nggplot(\n  escenarios,\n  aes(umbral, intervenidos)\n) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Clientes intervenidos según el umbral elegido\",\n    x = \"Umbral\",\n    y = \"Clientes priorizados\"\n  )",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#decisiones-imperfectas",
+    "href": "analysis/c13.html#decisiones-imperfectas",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.14 Decisiones imperfectas",
+    "text": "13.14 Decisiones imperfectas\nUna tentación frecuente es creer:\nsi el modelo es suficientemente bueno, desaparecerán los errores.\nEsto nunca ocurre.\nIncluso excelentes modelos:\n\nse equivocan\nsimplifican la realidad\nomiten variables\nenfrentan cambios futuros\n\nLa incertidumbre nunca desaparece.\nSimplemente cambia de forma.\nPor eso la madurez analítica consiste en aceptar algo incómodo:\nuna buena decisión puede producir un mal resultado.\nY también:\nuna mala decisión puede producir un buen resultado por azar.\nDebemos evaluar decisiones por la calidad de la información disponible en el momento de decidir.\nNo únicamente por el resultado observado después.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#probabilidades-y-decisiones",
+    "href": "analysis/c13.html#probabilidades-y-decisiones",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.15 Probabilidades y decisiones",
+    "text": "13.15 Probabilidades y decisiones\nLas probabilidades son útiles porque permiten pensar en grados.\nNo obligan a clasificar inmediatamente.\nPor ejemplo:\n\n\n\nRiesgo\n\n\n\n\n0.15\n\n\n0.42\n\n\n0.67\n\n\n0.89\n\n\n\nEstos números representan distintos niveles de preocupación.\nPermiten:\n\npriorizar\nasignar recursos\nplanificar intervenciones\n\nLas probabilidades no eliminan la incertidumbre.\nLa hacen visible.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#incertidumbre-ética-y-humana",
+    "href": "analysis/c13.html#incertidumbre-ética-y-humana",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "13.16 Incertidumbre ética y humana",
+    "text": "13.16 Incertidumbre ética y humana\nExiste otra dimensión importante.\nLos modelos trabajan con datos.\nPero las decisiones afectan personas reales.\nUn cliente no es únicamente una probabilidad.\nEs una persona.\nToda automatización tiene limitaciones.\nToda predicción puede equivocarse.\nPor eso los modelos deben utilizarse como herramientas de apoyo.\nNo como sustitutos completos del juicio humano.\nLas mejores organizaciones combinan:\n\nevidencia cuantitativa\nexperiencia profesional\ncriterio humano",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#reflexión-bayesiana",
+    "href": "analysis/c13.html#reflexión-bayesiana",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nDesde el inicio del libro hemos repetido una idea:\nla incertidumbre no es un defecto del análisis.\nEs una característica natural del mundo.\nEl enfoque bayesiano no promete eliminarla.\nPromete algo más modesto y más útil:\naprender de la evidencia disponible para tomar decisiones más razonables.\nLas distribuciones posteriores no nos dicen exactamente qué ocurrirá.\nNos muestran qué resultados son más plausibles.\nY esa diferencia es fundamental.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c13.html#ejercicios",
+    "href": "analysis/c13.html#ejercicios",
+    "title": "13.- Tomar decisiones bajo incertidumbre",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nExplique con sus propias palabras la diferencia entre:\n\nestimar una probabilidad\ntomar una decisión\n\n\n\nEjercicio 2\nDescriba un ejemplo de falso positivo en una campaña de retención.\n¿Cuál sería su costo?\n\n\nEjercicio 3\nDescriba un ejemplo de falso negativo.\n¿Por qué podría ser más costoso?\n\n\nEjercicio 4\nRepita el análisis utilizando:\n\n30%\n50%\n70%\n\ncomo umbrales de intervención.\n¿Qué cambia?\n\n\nEjercicio 5\nConstruya un gráfico que muestre únicamente los 50 clientes con mayor riesgo estimado.\n\n\nEjercicio 6\nSuponga que cada intervención cuesta $10.\n¿Cuántos clientes intervendría con cada umbral?\n\n\nEjercicio 7\nReflexione:\n¿Es preferible cometer más falsos positivos o más falsos negativos?\n¿Depende del negocio?\nExplique.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — RIESGO, CHURN Y DECISIONES",
+      "13.- Tomar decisiones bajo incertidumbre"
     ]
   }
 ]

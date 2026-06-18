@@ -309,6 +309,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">12.- Interpretar riesgo individual</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13.- Tomar decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -504,7 +510,6 @@ iterations         1         2         3         4         5
 <p>Recordatorio:</p>
 <p>Cada fila representa una simulación posterior.</p>
 <p>Cada columna representa un cliente.</p>
-<p>Probabilidad posterior promedio</p>
 <section id="probabilidad-posterior-promedio" class="level3">
 <h3 class="anchored" data-anchor-id="probabilidad-posterior-promedio">Probabilidad posterior promedio</h3>
 <div class="cell">
@@ -704,14 +709,13 @@ $ riesgo           &lt;dbl&gt; 0.49713754, 0.21562457, 0.48744510, 0.15216332, 0
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las 1000) simulaciones posteriores </span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># del cliente número 25 (de 7043)</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#prob_churn[25,]</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#prob_churn[,25]</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar las  5 primeras (de las 1000) simulaciones posteriores </span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># del cliente número 25 (de 7043) </span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>prob_churn[<span class="dv">25</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>prob_churn[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">25</span>] <span class="co"># produce</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        1         2         3         4         5 
-0.5033470 0.2144154 0.4934088 0.1498455 0.4934088 </code></pre>
+<pre><code>[1] 0.1289589 0.1412170 0.1254155 0.1368688 0.1401625</code></pre>
 </div>
 </div>
 <p>Obtendremos cientos de simulaciones posteriores para ese cliente.</p>
