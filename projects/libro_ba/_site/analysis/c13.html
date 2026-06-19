@@ -317,6 +317,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE V — EL FUTURO SIEMPRE ES INCIERTO</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14.- Forecasting para humanos normales</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -595,9 +612,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_churn) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                        5%         95%
-(Intercept)    -1.93122085 -1.65698089
-tenure         -0.05795104 -0.05236150
-MonthlyCharges  0.03093929  0.03506037</code></pre>
+(Intercept)    -1.94074637 -1.65203919
+tenure         -0.05783000 -0.05240440
+MonthlyCharges  0.03090806  0.03513443</code></pre>
 </div>
 </div>
 <p><strong>Interpretación</strong>: Es plausible que, independientemente de los cargos mensuales, la antiguedad se asocia a una disminución del churn; e independientemente de la antiguedad, los cargos mensuales se asocian a un aumento del churn.</p>
@@ -616,9 +633,10 @@ MonthlyCharges  0.03093929  0.03506037</code></pre>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>riesgo_promedio[<span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         1          2          3          4          5 
-0.29768323 0.14523255 0.47068233 0.05403426 0.60858568 </code></pre>
+0.29325488 0.14541073 0.46962950 0.05364146 0.61041022 </code></pre>
 </div>
 </div>
+<p><strong>Interpretación</strong>: Cuál es la probabilidad de cada cliente de abandonar la empresa considerando: su antiguedad y sus cargos mensuales</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una nueva variable con el riesgo promedio de churn</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>telco <span class="ot">&lt;-</span> telco <span class="sc">%&gt;%</span></span>
@@ -631,9 +649,9 @@ MonthlyCharges  0.03093929  0.03506037</code></pre>
 <pre><code># A tibble: 6 × 2
   Churn riesgo_churn
   &lt;dbl&gt;        &lt;dbl&gt;
-1     0       0.297 
+1     0       0.296 
 2     0       0.143 
-3     1       0.468 
+3     1       0.467 
 4     0       0.0533
 5     1       0.605 
 6     1       0.741 </code></pre>
@@ -663,6 +681,7 @@ MonthlyCharges  0.03093929  0.03506037</code></pre>
 </tr>
 </tbody>
 </table>
+<p>La interpretación sería que según el modelo y los datos observados, el cliente C con ciertas características de antiguedad y cargos mensuales tiene una probabilidad estimada cercana al 82% de abandonar la empresa.</p>
 <p>Esto ya es información accionable.</p>
 </section>
 <section id="visualizando-la-distribución-del-riesgo" class="level2">
@@ -719,9 +738,9 @@ MonthlyCharges  0.03093929  0.03506037</code></pre>
 <pre><code># A tibble: 6 × 3
   Churn riesgo_churn intervenir_70
   &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;        
-1     0       0.297  FALSE        
+1     0       0.296  FALSE        
 2     0       0.143  FALSE        
-3     1       0.468  FALSE        
+3     1       0.467  FALSE        
 4     0       0.0533 FALSE        
 5     1       0.605  FALSE        
 6     1       0.741  TRUE         </code></pre>
@@ -758,8 +777,8 @@ MonthlyCharges  0.03093929  0.03506037</code></pre>
 <pre><code># A tibble: 2 × 2
   intervenir_40     n
   &lt;lgl&gt;         &lt;int&gt;
-1 FALSE          5096
-2 TRUE           1936</code></pre>
+1 FALSE          5097
+2 TRUE           1935</code></pre>
 </div>
 </div>
 <table class="caption-top table">
@@ -822,17 +841,20 @@ MonthlyCharges  0.03093929  0.03506037</code></pre>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>telco_ordenado <span class="sc">%&gt;%</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">reorder</span>(customerID, riesgo_churn),</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      riesgo_churn</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="co"># Mostrar columnas</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> <span class="co"># Cambiar el eje para poder ver los ID's</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"10 clientes con mayor riesgo estimado"</span>,</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Probabilidad de churn"</span></span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">reorder</span>(customerID, riesgo_churn), <span class="co"># ordena customerID según </span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      <span class="co"># el riesgo (riesgo_churn). Por ejemplo: </span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>      <span class="co"># reorder(c("A","B","C","D"), c(0.2,0.8,0.4,0.1)) # produce:</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      <span class="co"># D A C B</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      riesgo_churn</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="co"># Mostrar columnas</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span> <span class="co"># Cambiar el eje para poder ver los ID's</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"10 clientes con mayor riesgo estimado"</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Probabilidad de churn"</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -896,19 +918,19 @@ MonthlyCharges  0.03093929  0.03506037</code></pre>
 <pre><code># A tibble: 13 × 2
    umbral intervenidos
     &lt;dbl&gt;        &lt;int&gt;
- 1   0.2          3559
- 2   0.25         2920
- 3   0.3          2555
+ 1   0.2          3558
+ 2   0.25         2918
+ 3   0.3          2556
  4   0.35         2258
- 5   0.4          1936
+ 5   0.4          1935
  6   0.45         1586
  7   0.5          1308
- 8   0.55         1071
- 9   0.6           837
-10   0.65          495
+ 8   0.55         1070
+ 9   0.6           836
+10   0.65          492
 11   0.7           251
 12   0.75           98
-13   0.8            16</code></pre>
+13   0.8            15</code></pre>
 </div>
 </div>
 <div class="cell">

@@ -51,10 +51,10 @@ website:
         - analysis/c11.qmd
         - analysis/c12.qmd
         - analysis/c13.qmd
-      #- section: "Módulo 5: Modelos Bayesianos en R"
+      - section: "PARTE V — EL FUTURO SIEMPRE ES INCIERTO"
         #href: analysis/m05.qmd
-        #contents:
-        #- analysis/c11.qmd
+        contents:
+        - analysis/c14.qmd
         #- analysis/c12.qmd
         #- analysis/c13.qmd
         #- analysis/c14.qmd

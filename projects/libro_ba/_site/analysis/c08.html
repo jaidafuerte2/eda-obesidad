@@ -317,6 +317,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE V — EL FUTURO SIEMPRE ES INCIERTO</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14.- Forecasting para humanos normales</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -498,12 +515,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  predictors:   2
 ------
             Median MAD_SD
-(Intercept) 67.6    2.6  
+(Intercept) 67.5    2.9  
 Discount_c  -2.5    0.1  
 
 Auxiliary parameter(s):
       Median MAD_SD
-sigma 228.6    1.5 
+sigma 228.5    1.5 
 
 ------
 * For help interpreting the printed output see ?print.stanreg
@@ -525,12 +542,12 @@ sigma 228.6    1.5
 <div class="cell-output cell-output-stdout">
 <pre><code># A draws_df: 6 iterations, 1 chains, and 3 variables
   (Intercept) Discount_c sigma
-1          65       -2.5   228
-2          64       -2.5   228
-3          70       -2.4   230
-4          73       -2.6   230
-5          71       -2.5   230
-6          73       -2.6   229
+1          75       -2.8   230
+2          71       -2.4   229
+3          72       -2.5   229
+4          71       -2.6   231
+5          69       -2.5   228
+6          66       -2.5   230
 # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</code></pre>
 </div>
 </div>
@@ -583,10 +600,10 @@ sigma 228.6    1.5
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> <span class="fl">0.95</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                 2.5%      97.5%
-(Intercept)  62.80286  72.975692
-Discount_c   -2.71890  -2.288233
-sigma       225.72589 231.769009</code></pre>
+<pre><code>                  2.5%      97.5%
+(Intercept)  61.939142  73.335647
+Discount_c   -2.709929  -2.261553
+sigma       225.601571 231.630078</code></pre>
 </div>
 </div>
 </section>
@@ -630,12 +647,12 @@ sigma       225.72589 231.769009</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>          parameters
 iterations (Intercept) Discount_c    sigma
-      [1,]    64.77979  -2.535965 227.7724
-      [2,]    64.38032  -2.547310 228.1099
-      [3,]    70.10419  -2.400268 229.7840
-      [4,]    72.73953  -2.606957 229.7066
-      [5,]    71.21778  -2.503377 229.8394
-      [6,]    73.36225  -2.631020 229.4712</code></pre>
+      [1,]    75.49788  -2.766698 229.5331
+      [2,]    71.09150  -2.449229 228.5115
+      [3,]    72.21533  -2.541013 229.1176
+      [4,]    70.88186  -2.552241 230.6214
+      [5,]    68.51110  -2.496437 228.3350
+      [6,]    65.50609  -2.503250 229.6660</code></pre>
 </div>
 </div>
 <div class="cell">

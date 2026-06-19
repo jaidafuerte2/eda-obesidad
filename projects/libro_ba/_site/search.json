@@ -1848,7 +1848,7 @@
     "href": "analysis/c08.html#ajustando-el-modelo",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Ajustando el modelo",
-    "text": "Ajustando el modelo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.6    2.6  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.6    1.5 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nObserva que utilizamos una configuración ligera.\nNo estamos buscando máxima precisión computacional.\nEstamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.\nInterpretación: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.",
+    "text": "Ajustando el modelo\n\nmodelo_profit &lt;- stan_glm(\n  Profit ~ Discount_c,\n  data = superstore,\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nprint(modelo_profit) # produce:\n\nstan_glm\n family:       gaussian [identity]\n formula:      Profit ~ Discount_c\n observations: 9994\n predictors:   2\n------\n            Median MAD_SD\n(Intercept) 67.5    2.9  \nDiscount_c  -2.5    0.1  \n\nAuxiliary parameter(s):\n      Median MAD_SD\nsigma 228.5    1.5 \n\n------\n* For help interpreting the printed output see ?print.stanreg\n* For info on the priors used see ?prior_summary.stanreg\n\n\nObserva que utilizamos una configuración ligera.\nNo estamos buscando máxima precisión computacional.\nEstamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.\nInterpretación: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -1860,7 +1860,7 @@
     "href": "analysis/c08.html#extrayendo-la-distribución-posterior",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Extrayendo la distribución posterior",
-    "text": "Extrayendo la distribución posterior\nAhora convertimos las simulaciones posteriores en un data frame.\n\n# Extraer la distribución posterior \ndraws_profit &lt;- posterior::as_draws_df(modelo_profit) \ndraws_profit[1:6,] # produce:\n\n# A draws_df: 6 iterations, 1 chains, and 3 variables\n  (Intercept) Discount_c sigma\n1          65       -2.5   228\n2          64       -2.5   228\n3          70       -2.4   230\n4          73       -2.6   230\n5          71       -2.5   230\n6          73       -2.6   229\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}\n\n\nCada fila representa un mundo plausible generado por el modelo.\nCada mundo propone un valor ligeramente diferente para los parámetros.",
+    "text": "Extrayendo la distribución posterior\nAhora convertimos las simulaciones posteriores en un data frame.\n\n# Extraer la distribución posterior \ndraws_profit &lt;- posterior::as_draws_df(modelo_profit) \ndraws_profit[1:6,] # produce:\n\n# A draws_df: 6 iterations, 1 chains, and 3 variables\n  (Intercept) Discount_c sigma\n1          75       -2.8   230\n2          71       -2.4   229\n3          72       -2.5   229\n4          71       -2.6   231\n5          69       -2.5   228\n6          66       -2.5   230\n# ... hidden reserved variables {'.chain', '.iteration', '.draw'}\n\n\nCada fila representa un mundo plausible generado por el modelo.\nCada mundo propone un valor ligeramente diferente para los parámetros.",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -1896,7 +1896,7 @@
     "href": "analysis/c08.html#credible-intervals",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Credible Intervals",
-    "text": "Credible Intervals\nUna de las herramientas más útiles para resumir incertidumbre es el intervalo creíble.\nUn intervalo creíble del 95% contiene la mayor parte de los valores plausibles según el modelo.\nPor ejemplo:\n\n# Crear los intervalos posteriores\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n  ) # produce:\n\n                 2.5%      97.5%\n(Intercept)  62.80286  72.975692\nDiscount_c   -2.71890  -2.288233\nsigma       225.72589 231.769009",
+    "text": "Credible Intervals\nUna de las herramientas más útiles para resumir incertidumbre es el intervalo creíble.\nUn intervalo creíble del 95% contiene la mayor parte de los valores plausibles según el modelo.\nPor ejemplo:\n\n# Crear los intervalos posteriores\nposterior_interval(\n  modelo_profit,\n  prob = 0.95\n  ) # produce:\n\n                  2.5%      97.5%\n(Intercept)  61.939142  73.335647\nDiscount_c   -2.709929  -2.261553\nsigma       225.601571 231.630078",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -1932,7 +1932,7 @@
     "href": "analysis/c08.html#visualizando-intervalos-plausibles",
     "title": "8.- Interpretar modelos probabilísticos",
     "section": "Visualizando intervalos plausibles",
-    "text": "Visualizando intervalos plausibles\nUna excelente práctica consiste en visualizar explícitamente la incertidumbre.\n\n# Convertir las simulaciones posteriores del modelo en una matriz\nas.matrix(modelo_profit)[1:6,] # produce:\n\n          parameters\niterations (Intercept) Discount_c    sigma\n      [1,]    64.77979  -2.535965 227.7724\n      [2,]    64.38032  -2.547310 228.1099\n      [3,]    70.10419  -2.400268 229.7840\n      [4,]    72.73953  -2.606957 229.7066\n      [5,]    71.21778  -2.503377 229.8394\n      [6,]    73.36225  -2.631020 229.4712\n\n\n\n# Visualizando los intervalos plausibles de la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"Discount_c\")\n)\n\n\n\n\n\n\n\n\nEste gráfico permite observar:\n\nla posición del parámetro,\nla amplitud de la incertidumbre,\nla variabilidad posterior.\n\nLa incertidumbre deja de ser invisible.\nAhora puede verse.\nInterpretación: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.\nTambién podemos visualizar el intercepto de esta forma:\n\n# Visualizar los intervalos plausibles y la mediana del intercepto\n# (ganancias) y la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"(Intercept)\",\"Discount_c\")\n)",
+    "text": "Visualizando intervalos plausibles\nUna excelente práctica consiste en visualizar explícitamente la incertidumbre.\n\n# Convertir las simulaciones posteriores del modelo en una matriz\nas.matrix(modelo_profit)[1:6,] # produce:\n\n          parameters\niterations (Intercept) Discount_c    sigma\n      [1,]    75.49788  -2.766698 229.5331\n      [2,]    71.09150  -2.449229 228.5115\n      [3,]    72.21533  -2.541013 229.1176\n      [4,]    70.88186  -2.552241 230.6214\n      [5,]    68.51110  -2.496437 228.3350\n      [6,]    65.50609  -2.503250 229.6660\n\n\n\n# Visualizando los intervalos plausibles de la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"Discount_c\")\n)\n\n\n\n\n\n\n\n\nEste gráfico permite observar:\n\nla posición del parámetro,\nla amplitud de la incertidumbre,\nla variabilidad posterior.\n\nLa incertidumbre deja de ser invisible.\nAhora puede verse.\nInterpretación: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.\nTambién podemos visualizar el intercepto de esta forma:\n\n# Visualizar los intervalos plausibles y la mediana del intercepto\n# (ganancias) y la pendiente (descuento)\nmcmc_intervals(\n  as.matrix(modelo_profit),\n  pars = c(\"(Intercept)\",\"Discount_c\")\n)",
     "crumbs": [
       "Inicio",
       "PARTE III — MODELOS PARA ENTENDER NEGOCIOS",
@@ -3097,7 +3097,7 @@
     "href": "analysis/c13.html#construyendo-un-modelo-simple",
     "title": "13.- Tomar decisiones bajo incertidumbre",
     "section": "13.6 Construyendo un modelo simple",
-    "text": "13.6 Construyendo un modelo simple\nUtilizaremos una versión sencilla del modelo logístico desarrollado en el capítulo anterior.\n\n# Crear un modelo para conocer cómo afecta la antiguedad y los cargos\n# mensuales en el churn\nmodelo_churn &lt;- stan_glm(\n  Churn ~ tenure + MonthlyCharges,\n  data = telco,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nposterior_interval(modelo_churn) # produce:\n\n                        5%         95%\n(Intercept)    -1.93122085 -1.65698089\ntenure         -0.05795104 -0.05236150\nMonthlyCharges  0.03093929  0.03506037\n\n\nInterpretación: Es plausible que, independientemente de los cargos mensuales, la antiguedad se asocia a una disminución del churn; e independientemente de la antiguedad, los cargos mensuales se asocian a un aumento del churn.\nEl objetivo aquí no es mejorar el modelo.\nEl objetivo es utilizar probabilidades para tomar decisiones.",
+    "text": "13.6 Construyendo un modelo simple\nUtilizaremos una versión sencilla del modelo logístico desarrollado en el capítulo anterior.\n\n# Crear un modelo para conocer cómo afecta la antiguedad y los cargos\n# mensuales en el churn\nmodelo_churn &lt;- stan_glm(\n  Churn ~ tenure + MonthlyCharges,\n  data = telco,\n  family = binomial(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nposterior_interval(modelo_churn) # produce:\n\n                        5%         95%\n(Intercept)    -1.94074637 -1.65203919\ntenure         -0.05783000 -0.05240440\nMonthlyCharges  0.03090806  0.03513443\n\n\nInterpretación: Es plausible que, independientemente de los cargos mensuales, la antiguedad se asocia a una disminución del churn; e independientemente de la antiguedad, los cargos mensuales se asocian a un aumento del churn.\nEl objetivo aquí no es mejorar el modelo.\nEl objetivo es utilizar probabilidades para tomar decisiones.",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -3109,7 +3109,7 @@
     "href": "analysis/c13.html#estimando-riesgo-individual",
     "title": "13.- Tomar decisiones bajo incertidumbre",
     "section": "13.7 Estimando riesgo individual",
-    "text": "13.7 Estimando riesgo individual\nCalculamos la probabilidad estimada de churn para cada cliente.\n\n# Calcular 1000 probabilidades (simulaciones)  de churn para \n# cada uno de los 7032 clientes\nriesgo_promedio &lt;- posterior_epred(modelo_churn)\n# Mostrar la primera simulación (de las 1000) y sólo 5 clientes\n# (de los 7032)\nriesgo_promedio[1, 1:5] # produce:\n\n         1          2          3          4          5 \n0.29768323 0.14523255 0.47068233 0.05403426 0.60858568 \n\n\n\n# Crear una nueva variable con el riesgo promedio de churn\ntelco &lt;- telco %&gt;%\n  mutate(\n    riesgo_churn = colMeans(riesgo_promedio)\n  )\n# Mostrar las 6 primeras filas (de las 7032) y las últimas columnas \ntelco[1:6, -20:-1] # produce:\n\n# A tibble: 6 × 2\n  Churn riesgo_churn\n  &lt;dbl&gt;        &lt;dbl&gt;\n1     0       0.297 \n2     0       0.143 \n3     1       0.468 \n4     0       0.0533\n5     1       0.605 \n6     1       0.741 \n\n\nAhora cada cliente tiene una probabilidad estimada.\nPor ejemplo:\n\n\n\nCliente\nRiesgo\n\n\n\n\nA\n0.12\n\n\nB\n0.37\n\n\nC\n0.82\n\n\n\nEsto ya es información accionable.",
+    "text": "13.7 Estimando riesgo individual\nCalculamos la probabilidad estimada de churn para cada cliente.\n\n# Calcular 1000 probabilidades (simulaciones)  de churn para \n# cada uno de los 7032 clientes\nriesgo_promedio &lt;- posterior_epred(modelo_churn)\n# Mostrar la primera simulación (de las 1000) y sólo 5 clientes\n# (de los 7032)\nriesgo_promedio[1, 1:5] # produce:\n\n         1          2          3          4          5 \n0.29325488 0.14541073 0.46962950 0.05364146 0.61041022 \n\n\nInterpretación: Cuál es la probabilidad de cada cliente de abandonar la empresa considerando: su antiguedad y sus cargos mensuales\n\n# Crear una nueva variable con el riesgo promedio de churn\ntelco &lt;- telco %&gt;%\n  mutate(\n    riesgo_churn = colMeans(riesgo_promedio)\n  )\n# Mostrar las 6 primeras filas (de las 7032) y las últimas columnas \ntelco[1:6, -20:-1] # produce:\n\n# A tibble: 6 × 2\n  Churn riesgo_churn\n  &lt;dbl&gt;        &lt;dbl&gt;\n1     0       0.296 \n2     0       0.143 \n3     1       0.467 \n4     0       0.0533\n5     1       0.605 \n6     1       0.741 \n\n\nAhora cada cliente tiene una probabilidad estimada.\nPor ejemplo:\n\n\n\nCliente\nRiesgo\n\n\n\n\nA\n0.12\n\n\nB\n0.37\n\n\nC\n0.82\n\n\n\nLa interpretación sería que según el modelo y los datos observados, el cliente C con ciertas características de antiguedad y cargos mensuales tiene una probabilidad estimada cercana al 82% de abandonar la empresa.\nEsto ya es información accionable.",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -3133,7 +3133,7 @@
     "href": "analysis/c13.html#del-riesgo-a-la-acción",
     "title": "13.- Tomar decisiones bajo incertidumbre",
     "section": "13.9 Del riesgo a la acción",
-    "text": "13.9 Del riesgo a la acción\nSupongamos que la empresa decide intervenir únicamente cuando:\nProbabilidad de churn &gt; 70%\n\n# Intervenir cuando el riesgo de churn es mayor al 70%\ntelco &lt;- telco %&gt;%\n  mutate(\n    intervenir_70 =\n      riesgo_churn &gt; 0.70\n  )\n# Imprimir las 6 primeras observaciones (de las 7032) y las últimas \n# filas\ntelco[1:6,-20:-1] # produce:\n\n# A tibble: 6 × 3\n  Churn riesgo_churn intervenir_70\n  &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;        \n1     0       0.297  FALSE        \n2     0       0.143  FALSE        \n3     1       0.468  FALSE        \n4     0       0.0533 FALSE        \n5     1       0.605  FALSE        \n6     1       0.741  TRUE         \n\n\n\n# Conocer a cuantos clientes de los 7043 hay que intervenir\ntelco %&gt;%\n  count(intervenir_70) # produce:\n\n# A tibble: 2 × 2\n  intervenir_70     n\n  &lt;lgl&gt;         &lt;int&gt;\n1 FALSE          6781\n2 TRUE            251",
+    "text": "13.9 Del riesgo a la acción\nSupongamos que la empresa decide intervenir únicamente cuando:\nProbabilidad de churn &gt; 70%\n\n# Intervenir cuando el riesgo de churn es mayor al 70%\ntelco &lt;- telco %&gt;%\n  mutate(\n    intervenir_70 =\n      riesgo_churn &gt; 0.70\n  )\n# Imprimir las 6 primeras observaciones (de las 7032) y las últimas \n# filas\ntelco[1:6,-20:-1] # produce:\n\n# A tibble: 6 × 3\n  Churn riesgo_churn intervenir_70\n  &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;        \n1     0       0.296  FALSE        \n2     0       0.143  FALSE        \n3     1       0.467  FALSE        \n4     0       0.0533 FALSE        \n5     1       0.605  FALSE        \n6     1       0.741  TRUE         \n\n\n\n# Conocer a cuantos clientes de los 7043 hay que intervenir\ntelco %&gt;%\n  count(intervenir_70) # produce:\n\n# A tibble: 2 × 2\n  intervenir_70     n\n  &lt;lgl&gt;         &lt;int&gt;\n1 FALSE          6781\n2 TRUE            251",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -3145,7 +3145,7 @@
     "href": "analysis/c13.html#y-si-cambiamos-el-umbral",
     "title": "13.- Tomar decisiones bajo incertidumbre",
     "section": "13.10 ¿Y si cambiamos el umbral?",
-    "text": "13.10 ¿Y si cambiamos el umbral?\nAhora probemos un criterio más agresivo.\n\n# Crear una nueva variable con los clientes que tienen un riesgo de\n# churn mayor al 40%\ntelco &lt;- telco %&gt;%\n  mutate(\n    intervenir_40 =\n      riesgo_churn &gt; 0.40\n  )\n# Conocer cuantos clientes tienen un riesgo de churn mayor al 40%\ntelco |&gt;\n  count(intervenir_40) # produce:\n\n# A tibble: 2 × 2\n  intervenir_40     n\n  &lt;lgl&gt;         &lt;int&gt;\n1 FALSE          5096\n2 TRUE           1936\n\n\n\n\n\nUmbral\nClientes intervenidos\n\n\n\n\n70%\npocos\n\n\n40%\nmuchos más\n\n\n\nAquí aparece nuevamente el trade-off.\nUn umbral más bajo:\n\ndetecta más clientes en riesgo\naumenta costos\n\nUn umbral más alto:\n\nreduce costos\ndeja escapar más clientes\n\nNinguno es universalmente correcto.",
+    "text": "13.10 ¿Y si cambiamos el umbral?\nAhora probemos un criterio más agresivo.\n\n# Crear una nueva variable con los clientes que tienen un riesgo de\n# churn mayor al 40%\ntelco &lt;- telco %&gt;%\n  mutate(\n    intervenir_40 =\n      riesgo_churn &gt; 0.40\n  )\n# Conocer cuantos clientes tienen un riesgo de churn mayor al 40%\ntelco |&gt;\n  count(intervenir_40) # produce:\n\n# A tibble: 2 × 2\n  intervenir_40     n\n  &lt;lgl&gt;         &lt;int&gt;\n1 FALSE          5097\n2 TRUE           1935\n\n\n\n\n\nUmbral\nClientes intervenidos\n\n\n\n\n70%\npocos\n\n\n40%\nmuchos más\n\n\n\nAquí aparece nuevamente el trade-off.\nUn umbral más bajo:\n\ndetecta más clientes en riesgo\naumenta costos\n\nUn umbral más alto:\n\nreduce costos\ndeja escapar más clientes\n\nNinguno es universalmente correcto.",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -3157,7 +3157,7 @@
     "href": "analysis/c13.html#visualizando-prioridades",
     "title": "13.- Tomar decisiones bajo incertidumbre",
     "section": "13.11 Visualizando prioridades",
-    "text": "13.11 Visualizando prioridades\n\n# Ordenar telco \ntelco_ordenado &lt;- telco %&gt;%\n  arrange(desc(riesgo_churn)) %&gt;%\n  slice_head(n = 10) # Escoger las 10 primeras observaciones\ntelco_ordenado[,-20:-1] # produce:\n\n# A tibble: 10 × 4\n   Churn riesgo_churn intervenir_70 intervenir_40\n   &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;         &lt;lgl&gt;        \n 1     0        0.832 TRUE          TRUE         \n 2     0        0.832 TRUE          TRUE         \n 3     1        0.823 TRUE          TRUE         \n 4     1        0.822 TRUE          TRUE         \n 5     1        0.821 TRUE          TRUE         \n 6     1        0.819 TRUE          TRUE         \n 7     1        0.818 TRUE          TRUE         \n 8     1        0.817 TRUE          TRUE         \n 9     1        0.817 TRUE          TRUE         \n10     1        0.813 TRUE          TRUE         \n\n\n\n# Mostrar los 10 clientes con mayor riesgo\ntelco_ordenado %&gt;%\n  ggplot(\n    aes(\n      reorder(customerID, riesgo_churn),\n      riesgo_churn\n    )\n  ) +\n  geom_col() + # Mostrar columnas\n  coord_flip() + # Cambiar el eje para poder ver los ID's\n  labs(\n    title = \"10 clientes con mayor riesgo estimado\",\n    x = \"\",\n    y = \"Probabilidad de churn\"\n  )\n\n\n\n\n\n\n\n\nEste gráfico ayuda a responder:\nSi sólo pudiéramos actuar sobre 100 clientes, ¿cuáles deberían ser prioridad?",
+    "text": "13.11 Visualizando prioridades\n\n# Ordenar telco \ntelco_ordenado &lt;- telco %&gt;%\n  arrange(desc(riesgo_churn)) %&gt;%\n  slice_head(n = 10) # Escoger las 10 primeras observaciones\ntelco_ordenado[,-20:-1] # produce:\n\n# A tibble: 10 × 4\n   Churn riesgo_churn intervenir_70 intervenir_40\n   &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;         &lt;lgl&gt;        \n 1     0        0.832 TRUE          TRUE         \n 2     0        0.832 TRUE          TRUE         \n 3     1        0.823 TRUE          TRUE         \n 4     1        0.822 TRUE          TRUE         \n 5     1        0.821 TRUE          TRUE         \n 6     1        0.819 TRUE          TRUE         \n 7     1        0.818 TRUE          TRUE         \n 8     1        0.817 TRUE          TRUE         \n 9     1        0.817 TRUE          TRUE         \n10     1        0.813 TRUE          TRUE         \n\n\n\n# Mostrar los 10 clientes con mayor riesgo\ntelco_ordenado %&gt;%\n  ggplot(\n    aes(\n      reorder(customerID, riesgo_churn), # ordena customerID según \n      # el riesgo (riesgo_churn). Por ejemplo: \n      # reorder(c(\"A\",\"B\",\"C\",\"D\"), c(0.2,0.8,0.4,0.1)) # produce:\n      # D A C B\n      riesgo_churn\n    )\n  ) +\n  geom_col() + # Mostrar columnas\n  coord_flip() + # Cambiar el eje para poder ver los ID's\n  labs(\n    title = \"10 clientes con mayor riesgo estimado\",\n    x = \"\",\n    y = \"Probabilidad de churn\"\n  )\n\n\n\n\n\n\n\n\nEste gráfico ayuda a responder:\nSi sólo pudiéramos actuar sobre 100 clientes, ¿cuáles deberían ser prioridad?",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -3181,7 +3181,7 @@
     "href": "analysis/c13.html#una-visualización-simple-de-costos",
     "title": "13.- Tomar decisiones bajo incertidumbre",
     "section": "13.13 Una visualización simple de costos",
-    "text": "13.13 Una visualización simple de costos\nSupongamos:\n\ncosto de intervención = $20\npérdida por churn = $200\n\nPodemos explorar escenarios.\n\numbrales &lt;- seq(\n  0.2,\n  0.8,\n  by = 0.05\n)\numbrales # produce:\n\n [1] 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80\n\n\n\n# Crear una tabla con los umbrales y los clientes intervenidos\nescenarios &lt;- map_dfr(\n  umbrales,\n  function(u){\n    \n    tibble(\n      umbral = u,\n      intervenidos =\n        sum(telco$riesgo_churn &gt; u)\n    )\n    \n  }\n)\nescenarios # produce:\n\n# A tibble: 13 × 2\n   umbral intervenidos\n    &lt;dbl&gt;        &lt;int&gt;\n 1   0.2          3559\n 2   0.25         2920\n 3   0.3          2555\n 4   0.35         2258\n 5   0.4          1936\n 6   0.45         1586\n 7   0.5          1308\n 8   0.55         1071\n 9   0.6           837\n10   0.65          495\n11   0.7           251\n12   0.75           98\n13   0.8            16\n\n\n\n# Visualizar los clientes intervenidos según el umbral elegido\nggplot(\n  escenarios,\n  aes(umbral, intervenidos)\n) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Clientes intervenidos según el umbral elegido\",\n    x = \"Umbral\",\n    y = \"Clientes priorizados\"\n  )",
+    "text": "13.13 Una visualización simple de costos\nSupongamos:\n\ncosto de intervención = $20\npérdida por churn = $200\n\nPodemos explorar escenarios.\n\numbrales &lt;- seq(\n  0.2,\n  0.8,\n  by = 0.05\n)\numbrales # produce:\n\n [1] 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80\n\n\n\n# Crear una tabla con los umbrales y los clientes intervenidos\nescenarios &lt;- map_dfr(\n  umbrales,\n  function(u){\n    \n    tibble(\n      umbral = u,\n      intervenidos =\n        sum(telco$riesgo_churn &gt; u)\n    )\n    \n  }\n)\nescenarios # produce:\n\n# A tibble: 13 × 2\n   umbral intervenidos\n    &lt;dbl&gt;        &lt;int&gt;\n 1   0.2          3558\n 2   0.25         2918\n 3   0.3          2556\n 4   0.35         2258\n 5   0.4          1935\n 6   0.45         1586\n 7   0.5          1308\n 8   0.55         1070\n 9   0.6           836\n10   0.65          492\n11   0.7           251\n12   0.75           98\n13   0.8            15\n\n\n\n# Visualizar los clientes intervenidos según el umbral elegido\nggplot(\n  escenarios,\n  aes(umbral, intervenidos)\n) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Clientes intervenidos según el umbral elegido\",\n    x = \"Umbral\",\n    y = \"Clientes priorizados\"\n  )",
     "crumbs": [
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
@@ -3246,6 +3246,258 @@
       "Inicio",
       "PARTE IV — RIESGO, CHURN Y DECISIONES",
       "13.- Tomar decisiones bajo incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html",
+    "href": "analysis/c14.html",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "",
+    "text": "Todos pensamos sobre el futuro.\nLo hacemos constantemente.\nAntes de salir de casa miramos el clima para decidir si llevar paraguas.\nAntes de hacer un viaje estimamos cuánto tráfico podría haber.\nAntes de organizar una reunión pensamos cuántas personas podrían asistir.\nLas empresas hacen exactamente lo mismo, pero a mayor escala.\nIntentan responder preguntas como:\n\n¿cuánto venderemos el próximo mes?\n¿necesitaremos más inventario?\n¿debemos contratar más personal?\n¿alcanzaremos nuestros objetivos de ventas?\n\nNadie conoce el futuro con certeza.\nSin embargo, esperar a que el futuro llegue para tomar decisiones suele ser una mala estrategia.\nNecesitamos planificar incluso cuando existe incertidumbre.\nAquí aparece una de las ideas centrales de este libro:\nTomar decisiones bajo incertidumbre no significa eliminar la incertidumbre.\nSignifica aprender a convivir con ella.\nEl forecasting es una herramienta que nos ayuda precisamente a eso.\nNo intenta adivinar el futuro.\nIntenta describir escenarios plausibles sobre lo que podría ocurrir.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#introducción",
+    "href": "analysis/c14.html#introducción",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "",
+    "text": "Todos pensamos sobre el futuro.\nLo hacemos constantemente.\nAntes de salir de casa miramos el clima para decidir si llevar paraguas.\nAntes de hacer un viaje estimamos cuánto tráfico podría haber.\nAntes de organizar una reunión pensamos cuántas personas podrían asistir.\nLas empresas hacen exactamente lo mismo, pero a mayor escala.\nIntentan responder preguntas como:\n\n¿cuánto venderemos el próximo mes?\n¿necesitaremos más inventario?\n¿debemos contratar más personal?\n¿alcanzaremos nuestros objetivos de ventas?\n\nNadie conoce el futuro con certeza.\nSin embargo, esperar a que el futuro llegue para tomar decisiones suele ser una mala estrategia.\nNecesitamos planificar incluso cuando existe incertidumbre.\nAquí aparece una de las ideas centrales de este libro:\nTomar decisiones bajo incertidumbre no significa eliminar la incertidumbre.\nSignifica aprender a convivir con ella.\nEl forecasting es una herramienta que nos ayuda precisamente a eso.\nNo intenta adivinar el futuro.\nIntenta describir escenarios plausibles sobre lo que podría ocurrir.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#por-qué-las-empresas-intentan-anticipar-el-futuro",
+    "href": "analysis/c14.html#por-qué-las-empresas-intentan-anticipar-el-futuro",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "¿Por qué las empresas intentan anticipar el futuro?",
+    "text": "¿Por qué las empresas intentan anticipar el futuro?\nAntes de hablar de modelos y gráficos, vale la pena entender el problema de negocio.\nImaginemos una tienda que vende computadoras.\nSi espera vender 100 equipos el próximo mes, necesitará cierto nivel de inventario.\nSi espera vender 1.000 equipos, necesitará mucho más.\nLa diferencia entre ambas situaciones puede significar:\n\nexceso de inventario\nproductos agotados\ncostos innecesarios\noportunidades perdidas\n\nPor eso las empresas intentan anticipar la demanda futura.\nNo porque crean que pueden predecir perfectamente el futuro.\nSino porque incluso una estimación imperfecta suele ser mejor que no tener ninguna estimación.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#qué-es-forecasting",
+    "href": "analysis/c14.html#qué-es-forecasting",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "¿Qué es forecasting?",
+    "text": "¿Qué es forecasting?\nEn lenguaje sencillo:\nForecasting es el proceso de explorar escenarios plausibles sobre el futuro utilizando información disponible en el presente.\nLa palabra forecast suele traducirse como:\n\npronóstico\nprevisión\nestimación futura\n\nPero ninguna de estas traducciones captura completamente la idea.\nForecasting no es una profecía.\nTampoco es una garantía.\nEs una herramienta para pensar.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#adivinar-vs-estimar-plausibilidades",
+    "href": "analysis/c14.html#adivinar-vs-estimar-plausibilidades",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Adivinar vs estimar plausibilidades",
+    "text": "Adivinar vs estimar plausibilidades\nExiste una diferencia importante entre estas dos afirmaciones:\nAdivinar\nLas ventas del próximo mes serán exactamente $52.734.\nForecasting probabilístico\nLas ventas del próximo mes probablemente estarán entre $48.000 y $58.000.\nLa segunda afirmación es mucho más útil.\nReconoce explícitamente la incertidumbre.\nY justamente esa incertidumbre es la esencia del pensamiento bayesiano.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#tendencias-señales-imperfectas-del-futuro",
+    "href": "analysis/c14.html#tendencias-señales-imperfectas-del-futuro",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Tendencias: señales imperfectas del futuro",
+    "text": "Tendencias: señales imperfectas del futuro\nCuando observamos datos a lo largo del tiempo solemos buscar patrones.\nUno de los más importantes es la tendencia.\nUna tendencia representa una dirección general.\nPuede ser:\n\ncreciente\ndecreciente\nrelativamente estable\n\nPor ejemplo:\n\naumento gradual de ventas\ndisminución de clientes\ncrecimiento sostenido de ingresos\n\nSin embargo, las tendencias reales rara vez son líneas perfectas.\nLos datos contienen ruido.\nEventos inesperados ocurren constantemente.\nPor eso debemos pensar en las tendencias como señales aproximadas, no como reglas absolutas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#explorando-las-ventas-a-lo-largo-del-tiempo",
+    "href": "analysis/c14.html#explorando-las-ventas-a-lo-largo-del-tiempo",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Explorando las ventas a lo largo del tiempo",
+    "text": "Explorando las ventas a lo largo del tiempo\nTrabajaremos con el dataset Superstore.\nPrimero cargamos los datos y preparamos la variable de fecha.\n\n# Agregar la variable de fecha de orden, con formato de fecha; basado \n# en la variable existente \nsuperstore &lt;- superstore %&gt;%\n  mutate(\n    order_date = as.Date(\n      `Order Date`,\n      format = \"%m/%d/%Y\"\n    )\n  )\n#glimpse(superstore) # produce:\n\nAhora agregamos las ventas por día.\n\n# Agrupar por fecha de orden \nsales_daily &lt;- superstore %&gt;%\n  group_by(order_date) %&gt;%\n  summarise(\n    sales = sum(Sales),\n    .groups = \"drop\"\n  )\nsales_daily[1:6,] # produce:\n\n# A tibble: 6 × 2\n  order_date  sales\n  &lt;date&gt;      &lt;dbl&gt;\n1 2014-01-03   16.4\n2 2014-01-04  288. \n3 2014-01-05   19.5\n4 2014-01-06 4407. \n5 2014-01-07   87.2\n6 2014-01-09   40.5",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#visualizando-la-evolución-temporal",
+    "href": "analysis/c14.html#visualizando-la-evolución-temporal",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Visualizando la evolución temporal",
+    "text": "Visualizando la evolución temporal\n\n# Visualizar la evolución temporal de las ventas\nggplot(\n  sales_daily,\n  aes(\n    x = order_date,\n    y = sales\n  )\n) +\n  geom_line() +\n  #coord_cartesian(ylim = c(0, 30000)) +\n  labs(\n    title = \"Ventas diarias\",\n    x = \"Fecha\",\n    y = \"Ventas\"\n  )\n\n\n\n\n\n\n\n\n\nInterpretación\nEste gráfico suele producir una reacción interesante.\nMuchos lectores esperan observar una línea suave.\nEn realidad suelen encontrar:\n\npicos\ncaídas\nruido\nfluctuaciones constantes\n\nEso es normal.\nLos negocios reales son desordenados.\nLa incertidumbre forma parte del sistema.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#suavizando-el-ruido",
+    "href": "analysis/c14.html#suavizando-el-ruido",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Suavizando el ruido",
+    "text": "Suavizando el ruido\nA veces es útil observar la tendencia general.\nPodemos usar una curva suavizada.\n\n# Graficar la tendencia de las ventas a lo largo del tiempo\nggplot(\n  sales_daily,\n  aes(\n    x = order_date,\n    y = sales\n  )\n) +\n  geom_line(alpha = 0.4) +\n  geom_smooth(se = TRUE) +\n  labs(\n    title = \"Tendencia general de ventas\"\n  )\n\n\n\n\n\n\n\n\n\n# Graficar la tendencia de las ventas a lo largo del tiempo con zoom\n# en el eje Y\nggplot(\n  sales_daily,\n  aes(\n    x = order_date,\n    y = sales\n  )\n) +\n  geom_line(alpha = 0.4) +\n  geom_smooth(se = TRUE) +\n  coord_cartesian(ylim = c(0, 4000)) +\n  labs(\n    title = \"Tendencia general de ventas\"\n  )\n\n\n\n\n\n\n\n\n\n¿Qué representa la banda sombreada?\nLa banda alrededor de la curva refleja incertidumbre.\nNo debemos interpretarla como:\n\"Aquí estará exactamente el futuro.\"\nMás bien significa:\n\"Dado lo observado, estas trayectorias parecen razonablemente compatibles con los datos.\"\nObserva cómo la incertidumbre aparece de forma natural incluso antes de construir un modelo de forecasting formal.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#el-futuro-es-más-incierto-que-el-pasado",
+    "href": "analysis/c14.html#el-futuro-es-más-incierto-que-el-pasado",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "El futuro es más incierto que el pasado",
+    "text": "El futuro es más incierto que el pasado\nEsta es probablemente la idea más importante del capítulo.\nEl pasado ya ocurrió.\nEl futuro no.\nPor lo tanto:\nLa incertidumbre suele aumentar conforme intentamos mirar más lejos.\nUna predicción para mañana suele ser más confiable que una predicción para dentro de dos años.\nNo porque el modelo sea malo.\nSino porque el mundo es incierto.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#un-modelo-simple-para-pensar-sobre-el-futuro",
+    "href": "analysis/c14.html#un-modelo-simple-para-pensar-sobre-el-futuro",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Un modelo simple para pensar sobre el futuro",
+    "text": "Un modelo simple para pensar sobre el futuro\nNo necesitamos un modelo sofisticado para introducir forecasting.\nPodemos comenzar con una regresión lineal bayesiana.\nLa idea es sencilla:\n\ntiempo como predictor\nventas como respuesta\n\n\n# Crear una variable con el número de días de ventas ordenado\nsales_daily &lt;- sales_daily %&gt;%\n  mutate(\n    day = row_number()\n  )\n# Imprimir 6 filas de las 1237\nsales_daily[1:6,] # produce:\n\n# A tibble: 6 × 3\n  order_date  sales   day\n  &lt;date&gt;      &lt;dbl&gt; &lt;int&gt;\n1 2014-01-03   16.4     1\n2 2014-01-04  288.      2\n3 2014-01-05   19.5     3\n4 2014-01-06 4407.      4\n5 2014-01-07   87.2     5\n6 2014-01-09   40.5     6\n\n\n\n# Resumir la variable day\nsummary(sales_daily$day) # produce:\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n      1     310     619     619     928    1237 \n\n\n\n# Modelo para predecir las ventas (como respuesta) según el tiempo \n# (como predictor)\nmodel_forecast &lt;- stan_glm(\n  sales ~ day,\n  data = sales_daily,\n  family = gaussian(),\n  chains = 2,\n  iter = 1000,\n  refresh = 0\n)\nposterior_interval(model_forecast) # produce:\n\n                     5%         95%\n(Intercept)  949.583482 1385.594746\nday            0.802075    1.412027\nsigma       2196.473269 2353.647920",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#construyendo-fechas-futuras",
+    "href": "analysis/c14.html#construyendo-fechas-futuras",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Construyendo fechas futuras",
+    "text": "Construyendo fechas futuras\n\n# Construir una tabla con 90 días posteriores al último día de \n# ventas del modelo (con la tabla original)\nfuture_days &lt;- tibble(\n  day = seq(\n    max(sales_daily$day) + 1,\n    max(sales_daily$day) + 90\n  )\n)\n# Imprimir 6 de los 90 días del futuro\nfuture_days[1:6,] # produce:\n\n# A tibble: 6 × 1\n    day\n  &lt;int&gt;\n1  1238\n2  1239\n3  1240\n4  1241\n5  1242\n6  1243",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#simulando-escenarios-plausibles",
+    "href": "analysis/c14.html#simulando-escenarios-plausibles",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Simulando escenarios plausibles",
+    "text": "Simulando escenarios plausibles\n\n# Simular escenarios plausibles\nfuture_draws &lt;- posterior_predict(\n  model_forecast,\n  newdata = future_days\n)\n# Imprimir las 6 simulaciones posteriores (de las 1000 filas) \n# para cada uno de los 90 días (90 columnas)\nfuture_draws[1:6, 1:5] # produce:\n\n            1        2        3         4         5\n[1,] 3778.877 4951.235 5411.177  2472.352  567.9579\n[2,] 2381.060 4463.102 2935.282 -1609.600 1400.3308\n[3,] 9741.487 2158.970 2365.695  1301.988  561.7147\n[4,] 3227.201 5555.192 2669.217  1332.851 2014.4814\n[5,] 2214.612 3361.429 1625.536  3392.560 1251.0473\n[6,] 4811.756 7154.678 1428.959  3104.617 -217.3067\n\n\nAquí ocurre algo importante.\nNo obtenemos una única predicción.\nObtenemos muchas simulaciones posibles.\nJustamente eso refleja la filosofía bayesiana:\nEl futuro no es un punto.\nEl futuro es una distribución.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#resumen-de-escenarios-plausibles",
+    "href": "analysis/c14.html#resumen-de-escenarios-plausibles",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Resumen de escenarios plausibles",
+    "text": "Resumen de escenarios plausibles\n\n# Resumir los escenarios plausibles del futuro (los 90 días del\n# futuro)\nforecast_summary &lt;- tibble(\n  day = future_days$day,\n  median = apply(\n    future_draws,\n    2,\n    median\n  ),\n  low = apply(\n    future_draws,\n    2,\n    quantile,\n    probs = 0.10\n  ),\n  high = apply(\n    future_draws,\n    2,\n    quantile,\n    probs = 0.90\n  )\n)\n# Imprimir 6 filas de las 90 (90 días)\nforecast_summary # produce:\n\n# A tibble: 90 × 4\n     day median    low  high\n   &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;\n 1  1238  2505. -625.  5455.\n 2  1239  2573. -406.  5364.\n 3  1240  2588. -313.  5488.\n 4  1241  2468. -351.  5416.\n 5  1242  2701.  -15.0 5787.\n 6  1243  2620. -313.  5551.\n 7  1244  2466. -621.  5229.\n 8  1245  2694. -427.  5580.\n 9  1246  2515. -251.  5427.\n10  1247  2662. -265.  5414.\n# ℹ 80 more rows",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#visualizando-incertidumbre-futura",
+    "href": "analysis/c14.html#visualizando-incertidumbre-futura",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Visualizando incertidumbre futura",
+    "text": "Visualizando incertidumbre futura\n\n# Visualizar los escenarios plausibles de ventas futuras\nggplot(\n  forecast_summary,\n  aes( \n    x = day,\n    y = median\n  )\n) +\n  geom_ribbon(\n    aes(\n      ymin = low,\n      ymax = high\n    ),\n    alpha = 0.3\n  ) +\n  geom_line() +\n  labs(\n    title = \"Escenarios plausibles de ventas futuras\",\n    y = \"Ventas\"\n  )\n\n\n\n\n\n\n\n\n\n# Visualizar los escenarios plausibles de ventas futuras, con zoom\n# en el eje Y\nggplot(\n  forecast_summary,\n  aes(\n    x = day,\n    y = median\n  )\n) +\n  geom_ribbon(\n    aes(\n      ymin = low,\n      ymax = high\n    ),\n    alpha = 0.3\n  ) +\n  geom_line() +\n  geom_smooth(se = TRUE) +\n  coord_cartesian(ylim = c(2000, 3000)) +\n  labs(\n    title = \"Escenarios plausibles de ventas futuras\",\n    y = \"Ventas\"\n  )",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#cómo-interpretar-este-gráfico",
+    "href": "analysis/c14.html#cómo-interpretar-este-gráfico",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Cómo interpretar este gráfico",
+    "text": "Cómo interpretar este gráfico\nUn error común sería decir:\nLas ventas serán exactamente esta línea.\nEso es incorrecto.\nLa interpretación correcta es:\nLa línea representa un escenario central plausible.\nY:\nLa banda representa otros escenarios razonablemente compatibles con la información disponible.\nLa banda suele ampliarse hacia el futuro.\nEso es una característica deseable.\nEstá mostrando honestamente nuestra incertidumbre.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#forecasting-probabilístico",
+    "href": "analysis/c14.html#forecasting-probabilístico",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Forecasting probabilístico",
+    "text": "Forecasting probabilístico\nEn muchos contextos empresariales la pregunta correcta no es:\n¿Cuál será exactamente el resultado?\nSino:\n¿Qué rango de resultados parece razonablemente plausible?\nEsa diferencia cambia completamente la forma de tomar decisiones.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#por-qué-esto-es-útil-para-los-negocios",
+    "href": "analysis/c14.html#por-qué-esto-es-útil-para-los-negocios",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "¿Por qué esto es útil para los negocios?",
+    "text": "¿Por qué esto es útil para los negocios?\nImaginemos tres escenarios para el próximo trimestre:\n\nconservador\nesperado\noptimista\n\nCon ellos una empresa puede:\n\nplanificar inventario\ndefinir presupuestos\ncontratar personal\ngestionar riesgos\n\nSin necesidad de creer que alguna predicción será perfecta.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#un-modelo-simple-puede-ser-suficiente",
+    "href": "analysis/c14.html#un-modelo-simple-puede-ser-suficiente",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Un modelo simple puede ser suficiente",
+    "text": "Un modelo simple puede ser suficiente\nExiste una tentación frecuente en analytics.\nPensar que modelos más complejos siempre producen mejores decisiones.\nNo necesariamente.\nMuchas veces:\n\nun modelo simple\ncomprensible\ntransparente\n\nresulta más útil que un modelo extremadamente sofisticado.\nEspecialmente cuando las decisiones deben explicarse a otras personas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#reflexión-bayesiana",
+    "href": "analysis/c14.html#reflexión-bayesiana",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nLos capítulos anteriores nos enseñaron que:\n\nla incertidumbre es inevitable\nlas probabilidades representan plausibilidad\nlos modelos ayudan a actualizar creencias\n\nForecasting es simplemente una extensión natural de esas mismas ideas.\nEn lugar de preguntarnos:\n¿Qué creemos sobre un cliente?\nAhora preguntamos:\n¿Qué creemos sobre el futuro?\nLa lógica es la misma.\nTrabajamos con incertidumbre.\nActualizamos creencias.\nConstruimos escenarios plausibles.\nY tomamos decisiones más informadas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
+    ]
+  },
+  {
+    "objectID": "analysis/c14.html#ejercicios",
+    "href": "analysis/c14.html#ejercicios",
+    "title": "14.- Forecasting para humanos normales",
+    "section": "Ejercicios",
+    "text": "Ejercicios\n\nEjercicio 1\nGrafica las ventas semanales en lugar de las ventas diarias.\n¿Qué diferencias observas en la variabilidad?\n\n\nEjercicio 2\nConstruye una curva suavizada utilizando distintos valores de suavización.\n¿Cómo cambia tu percepción de la tendencia?\n\n\nEjercicio 3\nExtiende el horizonte de forecasting a:\n\n30 días\n90 días\n180 días\n\n¿Cómo cambia la incertidumbre?\n\n\nEjercicio 4\nInterpreta la banda plausible del gráfico.\n¿Por qué sería incorrecto afirmar que todas las ventas futuras caerán exactamente dentro de ella?\n\n\nEjercicio 5\nReflexiona sobre una decisión empresarial que podría beneficiarse de trabajar con rangos plausibles en lugar de predicciones puntuales.",
+    "crumbs": [
+      "Inicio",
+      "PARTE V — EL FUTURO SIEMPRE ES INCIERTO",
+      "14.- Forecasting para humanos normales"
     ]
   }
 ]

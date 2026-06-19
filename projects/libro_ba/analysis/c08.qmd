@@ -179,8 +179,6 @@ Nuestro objetivo es aprender a interpretar incertidumbre.
 
 ## Ajustando el modelo
 
-
-
 ```{r}
 modelo_profit <- stan_glm(
   Profit ~ Discount_c,
@@ -198,7 +196,7 @@ No estamos buscando máxima precisión computacional.
 
 Estamos buscando una herramienta pedagógica para aprender a pensar probabilísticamente.
 
-*Interpretación*: Es plausible según los datos del modelos que la  mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.
+*Interpretación*: Es plausible según los datos del modelos que la mediana de las ganancias sea 68 dólares, cuando el descuento es cero. Sin embargo por cada punto percentual de descuento, las ganancias disminuyen 2.5 dólares. A pesar de esto todavía hay 229 dólares en ganancias que no se pueden explicar por los descuentos.
 
 ## Extrayendo la distribución posterior
 
@@ -316,7 +314,6 @@ Una excelente práctica consiste en visualizar explícitamente la incertidumbre.
 as.matrix(modelo_profit)[1:6,] # produce:
 ```
 
-
 ```{r}
 # Visualizando los intervalos plausibles de la pendiente (descuento)
 mcmc_intervals(
@@ -337,7 +334,7 @@ Ahora puede verse.
 
 *Interpretación*: el punto central es la mediana posterior, la franja oscura suele representar el intervalo creíble central del 50%. Y la línea más delgada representa el intervalo creíble del 90 0 95% . Entonces lo que no es el punto central es la incertidumbre.
 
-También podemos visualizar el intercepto de esta forma: 
+También podemos visualizar el intercepto de esta forma:
 
 ```{r}
 # Visualizar los intervalos plausibles y la mediana del intercepto
@@ -347,7 +344,6 @@ mcmc_intervals(
   pars = c("(Intercept)","Discount_c")
 )
 ```
-
 
 ## Bandas plausibles en una regresión
 
