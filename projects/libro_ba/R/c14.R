@@ -263,3 +263,293 @@ ggplot(
     title = "Escenarios plausibles de ventas futuras",
     y = "Ventas"
   )
+
+########################
+##
+## Ejercicios
+##
+########################
+
+########################
+##
+## Ejercicio 1
+##
+########################
+
+# Ejercicio 1
+
+# Grafica las ventas semanales en lugar de las ventas diarias.
+
+# ¿Qué diferencias observas en la variabilidad?
+  
+########################
+##
+## Ejercicio 2
+##
+########################
+  
+# Ejercicio 2
+
+# Construye una curva suavizada utilizando distintos valores de 
+# suavización.
+
+# ¿Cómo cambia tu percepción de la tendencia?
+  
+########################
+##
+## Ejercicio 3
+##
+########################
+  
+# Ejercicio 3
+
+# Extiende el horizonte de forecasting a:
+  
+# 30 días
+# 90 días
+# 180 días
+
+############# 30 días ##################
+
+# Construir una tabla con 30 días posteriores al último día de 
+# ventas del modelo (con la tabla original)
+future_days_30 <- tibble(
+  day = seq(
+    max(sales_daily$day) + 1,
+    max(sales_daily$day) + 30
+  )
+)
+# Imprimir 6 de los 30 días del futuro
+future_days_30[1:6,] # produce:
+
+# Simular escenarios plausibles
+future_draws_30 <- posterior_predict(
+  model_forecast,
+  newdata = future_days_30
+)
+# Imprimir las 6 simulaciones posteriores (de las 1000 filas) 
+# para cada uno de los 30 días (90 columnas)
+future_draws[1:6, 1:5] # produce:
+
+# Resumir los escenarios plausibles del futuro (los 90 días del
+# futuro)
+forecast_summary_30 <- tibble(
+  day = future_days_30$day,
+  median = apply(
+    future_draws_30,
+    2,
+    median
+  ),
+  low = apply(
+    future_draws_30,
+    2,
+    quantile,
+    probs = 0.10
+  ),
+  high = apply(
+    future_draws_30,
+    2,
+    quantile,
+    probs = 0.90
+  )
+)
+# Imprimir 6 filas de las 30 (90 días)
+forecast_summary_30 # produce:
+
+# Visualizar los escenarios plausibles de ventas futuras, con zoom
+# en el eje Y
+ggplot(
+  forecast_summary_30,
+  aes(
+    x = day,
+    y = median
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = low,
+      ymax = high
+    ),
+    alpha = 0.3
+  ) +
+  geom_line() +
+  geom_smooth(se = TRUE) +
+  coord_cartesian(ylim = c(2000, 3000)) +
+  labs(
+    title = "Escenarios plausibles de ventas futuras",
+    y = "Ventas"
+  )
+
+############# 90 días ####################
+
+# Construir una tabla con 90 días posteriores al último día de 
+# ventas del modelo (con la tabla original)
+future_days_90 <- tibble(
+  day = seq(
+    max(sales_daily$day) + 1,
+    max(sales_daily$day) + 30
+  )
+)
+# Imprimir 6 de los 90 días del futuro
+future_days_90[1:6,] # produce:
+
+# Simular escenarios plausibles
+future_draws_90 <- posterior_predict(
+  model_forecast,
+  newdata = future_days_90
+)
+# Imprimir las 6 simulaciones posteriores (de las 1000 filas) 
+# para cada uno de los 30 días (90 columnas)
+future_draws_90[1:6, 1:5] # produce:
+
+# Resumir los escenarios plausibles del futuro (los 90 días del
+# futuro)
+forecast_summary_90 <- tibble(
+  day = future_days_90$day,
+  median = apply(
+    future_draws_90,
+    2,
+    median
+  ),
+  low = apply(
+    future_draws_90,
+    2,
+    quantile,
+    probs = 0.10
+  ),
+  high = apply(
+    future_draws_90,
+    2,
+    quantile,
+    probs = 0.90
+  )
+)
+# Imprimir 6 filas de las 90 (90 días)
+forecast_summary_90 # produce:
+
+# Visualizar los escenarios plausibles de ventas futuras, con zoom
+# en el eje Y
+ggplot(
+  forecast_summary_90,
+  aes(
+    x = day,
+    y = median
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = low,
+      ymax = high
+    ),
+    alpha = 0.3
+  ) +
+  geom_line() +
+  geom_smooth(se = TRUE) +
+  #coord_cartesian(ylim = c(2000, 3000)) +
+  labs(
+    title = "Escenarios plausibles de ventas futuras",
+    y = "Ventas"
+  )
+
+############### 180 días #####################
+
+# Construir una tabla con 180 días posteriores al último día de 
+# ventas del modelo (con la tabla original)
+future_days_180 <- tibble(
+  day = seq(
+    max(sales_daily$day) + 1,
+    max(sales_daily$day) + 30
+  )
+)
+# Imprimir 6 de los 180 días del futuro
+future_days_180[1:6,] # produce:
+
+# Simular escenarios plausibles
+future_draws_180 <- posterior_predict(
+  model_forecast,
+  newdata = future_days_180
+)
+# Imprimir las 6 simulaciones posteriores (de las 1000 filas) 
+# para cada uno de los 180 días (90 columnas)
+future_draws_180[1:6, 1:5] # produce:
+
+# Resumir los escenarios plausibles del futuro (los 180 días del
+# futuro)
+forecast_summary_180 <- tibble(
+  day = future_days_180$day,
+  median = apply(
+    future_draws_180,
+    2,
+    median
+  ),
+  low = apply(
+    future_draws_180,
+    2,
+    quantile,
+    probs = 0.10
+  ),
+  high = apply(
+    future_draws_180,
+    2,
+    quantile,
+    probs = 0.90
+  )
+)
+# Imprimir 6 filas de las 180 (180 días)
+forecast_summary_180 # produce:
+
+# Visualizar los escenarios plausibles de ventas futuras, con zoom
+# en el eje Y
+ggplot(
+  forecast_summary_180,
+  aes(
+    x = day,
+    y = median
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = low,
+      ymax = high
+    ),
+    alpha = 0.3
+  ) +
+  geom_line() +
+  geom_smooth(se = TRUE) +
+  #coord_cartesian(ylim = c(2000, 3000)) +
+  labs(
+    title = "Escenarios plausibles de ventas futuras",
+    y = "Ventas"
+  )
+
+# ¿Cómo cambia la incertidumbre? No veo cambios en incertidumbre.
+# Puede ser que la tendencia se va aplanando un poco mientras 
+# aumentan los días, pero es algo casi imperceptible
+  
+########################
+##
+## Ejercicio 4
+##
+########################
+  
+# Ejercicio 4
+
+# Interpreta la banda plausible del gráfico.
+# Es plausible que las ventas en el 80% de la población varían entre
+# ~5500 y ~-500 con un promedio diario de ~2250
+
+# ¿Por qué sería incorrecto afirmar que todas las ventas 
+# futuras caerán exactamente dentro de ella? Porque los valores 
+# del gráfico están hecho para el 80% de población
+  
+########################
+##
+## Ejercicio 5
+##
+########################
+
+# Ejercicio 5
+
+# Reflexiona sobre una decisión empresarial que podría 
+# beneficiarse de trabajar con rangos plausibles en lugar de 
+# predicciones puntuales.
