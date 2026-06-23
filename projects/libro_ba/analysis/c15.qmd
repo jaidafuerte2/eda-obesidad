@@ -168,6 +168,7 @@ Producen distribuciones de respuestas plausibles.
 Comenzaremos agregando las ventas por mes.
 
 ```{r}
+# Mostrar el tipo de la variable `Order Date`
 class(superstore$`Order Date`) # produce: character
 # Modificar el tipo de la variable de fecha de la orden de character
 # a date y crear la variable mes que cambia esta fecha a su versión 
@@ -175,8 +176,9 @@ class(superstore$`Order Date`) # produce: character
 ventas_mensuales <-
   superstore %>%
   mutate(
-    Order_Date = mdy(`Order Date`),
-    mes = floor_date(Order_Date, "month")
+    Order_Date = mdy(`Order Date`), # Pasar a tipo de dato fecha
+    mes = floor_date(Order_Date, "month") # redondear la fecha hacia
+                                          # atrás (inicio de mes)
   )
 # Mostrar 6 filas de las 9994 filas totales
 ventas_mensuales[1:6, -20:-1] # produce:
@@ -288,11 +290,11 @@ Generamos simulaciones
 simulaciones <-
   posterior_predict(
     modelo_ventas,
-    new_data = futuro
+    newdata = futuro
   )
 # Generar 6 de las 1000 simulaciones (1000 filas) y 5 de los 12 
 # meses (12 columnas) 
-simulaciones[1:6 ,1:5] # produce:
+#simulaciones[1:6 ,1:5] # produce:
 ```
 
 Aquí aparece una diferencia importante respecto a capítulos anteriores.
@@ -321,13 +323,12 @@ escenarios <-
     sim = row_number() # numerar las filas
   ) %>%
   pivot_longer(  # pasar a formato largo
-    -sim,
+    -sim, # No incluir sim en el cambio a formato largo
     names_to = "mes",
     values_to = "ventas"
   )
 # Producir una tabla que repite cada una de las 1000 simulaciones
-# (sim ) 48 veces (12 meses durante 4 años) y cada simulación 
-# tiene un valor de ventas
+# (sim ) 12 veces  y cada simulación tiene un valor de ventas
 escenarios[1:6,] # produce:
 ```
 
@@ -336,11 +337,13 @@ Visualizamos múltiples trayectorias
 ```{r}
 #| message: false
 
+# Conocer el tipo de la variable mes
+class(escenarios$mes) # produce: [1] "character"
 # Visualizar múltples escenarios de  ventas por mes
 ggplot(
   escenarios,
   aes(
-    x = as.numeric(mes),
+    x = as.numeric(mes), # Cambiar el tipo de character a numeric
     y = ventas,
     group = sim
   ) 
@@ -387,6 +390,8 @@ Visualizamos los resultados
 ```{r}
 #| message: false
 
+# Conocer el tipo de la variable mes
+class(escenarios$mes) # produce: [1] "character"
 # Crear bandas predictivas de las ventas por mes
 ggplot(
   bandas,
@@ -461,10 +466,12 @@ escenarios[1:6,] # produce:
 ```{r}
 # Escoger sólo las filas que en la variable mes tengan "12" en la
 # tabla de escenarios que se cambió a formato largo
-ultimo_mes <- 
-  escenarios %>%
+ultimo_mes <-
+  escenarios |>
   filter(
-    mes == 12 # max(mes) # produce: 9
+    #mes == "12" #max(mes) # produce "9"
+    as.numeric(mes) ==     # cambiar el tipo de la variable mes de 
+      max(as.numeric(mes)) # character a numeric
   )
 # Generar 6 de las 1000 simulaciones para el mes 12
 ultimo_mes[1:6,] # produce:

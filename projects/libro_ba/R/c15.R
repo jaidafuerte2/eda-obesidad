@@ -42,6 +42,19 @@ ventas_mensuales[,-20:-1] # produce:
 # ℹ 9,988 more rows
 # ℹ Use `print(n = ...)` to see more rows
 
+# mdy() es una función de lubridate para cambiar una cadena con
+# forma de fecha a una fecha real (tipo de dato fecha)
+mdy("12/25/2023") # produce: [1] "2023-12-25"
+
+# floor_date() también es una función de lubridate y redondea una
+# fecha hacia atrás. Ejemplos:
+floor_date(as.Date("2017-08-17"), "month") # produce:
+#[1] "2017-08-01"
+floor_date(as.Date("2017-08-17"), "week") # produce:
+#[1] "2017-08-13"
+floor_date(as.Date("2017-08-17"), "year") # produce:
+#[1] "2017-01-01"
+
 # Agrupar la tabla por ventas mesuales, resumir el total de ventas
 # mensual y ordenarlo en orden ascendente
 ventas_mensuales <- ventas_mensuales |>
@@ -235,6 +248,9 @@ escenarios # produce:
 # ℹ 11,994 more rows
 # ℹ Use `print(n = ...)` to see more rows
 
+# Conocer el tipo de la variable mes
+class(escenarios$mes) # produce: [1] "character"
+
 # Visualizar múltples escenarios de  ventas por mes 
 ggplot(
   escenarios,
@@ -310,19 +326,25 @@ escenarios # produce:
 ultimo_mes <-
   escenarios |>
   filter(
-    mes == "12" #max(mes) # produce "9"
+    #mes == "12" #max(mes) # produce "9"
+    as.numeric(mes) ==     # cambiar el tipo de la variable mes de 
+      max(as.numeric(mes)) # character a numeric
   )
 ultimo_mes # produce:
 # A tibble: 1,000 × 3
 #    sim mes   ventas    
 #  <int> <chr> <drws_mtr>
-#1     1 9      64102.37 
-#2     2 9      30047.72 
-#3     3 9     134078.30 
-#4     4 9      89957.58 
-#5     5 9     101674.59 
-#6     6 9      68009.69 
-# ℹ 994 more rows
+#1     1 12     31386.65 
+#2     2 12    122476.25 
+#3     3 12     95514.56 
+#4     4 12     76237.39 
+#5     5 12     85282.01 
+#6     6 12     98464.96 
+#7     7 12     97497.97 
+#8     8 12     74570.38 
+#9     9 12     52139.96 
+#10    10 12     66101.69 
+# ℹ 990 more rows
 # ℹ Use `print(n = ...)` to see more rows
 
 # Distribución de las ventas de los diciembres de las simulaciones
@@ -338,3 +360,21 @@ ggplot(
     x = "Ventas en dólares",
     y = "cantidad"
   )
+
+#######################
+##
+## Ejercicios
+##
+#######################
+
+######################
+##
+## Ejercicio 1
+##
+######################
+
+# Ejercicio 1
+# Observe las trayectorias simuladas.
+
+# ¿Todas siguen exactamente el mismo camino?
+#  ¿Qué nos enseña esta variabilidad?
