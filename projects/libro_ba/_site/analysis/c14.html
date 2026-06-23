@@ -332,6 +332,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">14.- Forecasting para humanos normales</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15.- Escenarios futuros plausibles</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -694,10 +700,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(model_forecast) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                     5%         95%
-(Intercept)  949.583482 1385.594746
-day            0.802075    1.412027
-sigma       2196.473269 2353.647920</code></pre>
+<pre><code>                      5%         95%
+(Intercept)  959.5214695 1398.051954
+day            0.7881046    1.397143
+sigma       2196.5535585 2345.721584</code></pre>
 </div>
 </div>
 </section>
@@ -739,13 +745,13 @@ sigma       2196.473269 2353.647920</code></pre>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># para cada uno de los 90 días (90 columnas)</span></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>future_draws[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            1        2        3         4         5
-[1,] 3778.877 4951.235 5411.177  2472.352  567.9579
-[2,] 2381.060 4463.102 2935.282 -1609.600 1400.3308
-[3,] 9741.487 2158.970 2365.695  1301.988  561.7147
-[4,] 3227.201 5555.192 2669.217  1332.851 2014.4814
-[5,] 2214.612 3361.429 1625.536  3392.560 1251.0473
-[6,] 4811.756 7154.678 1428.959  3104.617 -217.3067</code></pre>
+<pre><code>            1         2         3         4         5
+[1,] 3075.964 5224.4627 3557.5512 3873.3698  581.6925
+[2,] 6625.594 2751.1320 -914.5703 -416.9102 2216.0417
+[3,] 4399.627 5483.9313 4879.8371 2259.3602 4749.7331
+[4,] 3559.997 3441.6409 6568.6279 3158.4849 2955.0038
+[5,] 1453.031 -151.0031 3978.4246 6795.4297 6516.4152
+[6,] 6362.650 2562.6793  140.7697 4531.3884 1081.1995</code></pre>
 </div>
 </div>
 <p>Aquí ocurre algo importante.</p>
@@ -784,18 +790,18 @@ sigma       2196.473269 2353.647920</code></pre>
 <span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>forecast_summary <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 90 × 4
-     day median    low  high
-   &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
- 1  1238  2505. -625.  5455.
- 2  1239  2573. -406.  5364.
- 3  1240  2588. -313.  5488.
- 4  1241  2468. -351.  5416.
- 5  1242  2701.  -15.0 5787.
- 6  1243  2620. -313.  5551.
- 7  1244  2466. -621.  5229.
- 8  1245  2694. -427.  5580.
- 9  1246  2515. -251.  5427.
-10  1247  2662. -265.  5414.
+     day median   low  high
+   &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1  1238  2503. -427. 5497.
+ 2  1239  2524. -390. 5615.
+ 3  1240  2573. -509. 5311.
+ 4  1241  2665. -203. 5520.
+ 5  1242  2553. -317. 5639.
+ 6  1243  2614. -458. 5508.
+ 7  1244  2522. -282. 5573.
+ 8  1245  2601. -342. 5450.
+ 9  1246  2520. -365. 5578.
+10  1247  2471. -212. 5439.
 # ℹ 80 more rows</code></pre>
 </div>
 </div>

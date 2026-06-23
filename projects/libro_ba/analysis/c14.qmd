@@ -322,7 +322,6 @@ sales_daily[1:6,] # produce:
 summary(sales_daily$day) # produce:
 ```
 
-
 ```{r}
 # Modelo para predecir las ventas (como respuesta) según el tiempo 
 # (como predictor)
@@ -590,5 +589,3 @@ Interpreta la banda plausible del gráfico.
 ### Ejercicio 5
 
 Reflexiona sobre una decisión empresarial que podría beneficiarse de trabajar con rangos plausibles en lugar de predicciones puntuales.
-
-

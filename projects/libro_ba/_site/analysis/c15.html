@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15.- Escenarios futuros plausibles – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_sobre_el_autor.html"> 
+<span class="menu-text">Sobre el autor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_proyectos.html"> 
+<span class="menu-text">Proyectos</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c14.html">PARTE V — EL FUTURO SIEMPRE ES INCIERTO</a></li><li class="breadcrumb-item"><a href="../analysis/c15.html">15.- Escenarios futuros plausibles</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sobre el autor</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — APRENDER A VER LA INCERTIDUMBRE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3.- Simulación y mundos posibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — APRENDER A PENSAR BAYESIANAMENTE</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5.- Probabilidades útiles para tomar decisiones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6.- Modelos bayesianos prácticos con rstanarm</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE III — MODELOS PARA ENTENDER NEGOCIOS</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7.- Relaciones entre variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9.- Predicciones probabilísticas</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE IV — RIESGO, CHURN Y DECISIONES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10.- Introducción al churn y al riesgo de abandono</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11.- Regresión logística bayesiana</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12.- Interpretar riesgo individual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13.- Tomar decisiones bajo incertidumbre</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE V — EL FUTURO SIEMPRE ES INCIERTO</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14.- Forecasting para humanos normales</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">15.- Escenarios futuros plausibles</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#planificar-cuando-el-futuro-es-incierto" id="toc-planificar-cuando-el-futuro-es-incierto" class="nav-link" data-scroll-target="#planificar-cuando-el-futuro-es-incierto">15.1 Planificar cuando el futuro es incierto</a></li>
+  <li><a href="#por-qué-pensar-en-escenarios" id="toc-por-qué-pensar-en-escenarios" class="nav-link" data-scroll-target="#por-qué-pensar-en-escenarios">15.2 ¿Por qué pensar en escenarios?</a></li>
+  <li><a href="#simular-futuros-posibles" id="toc-simular-futuros-posibles" class="nav-link" data-scroll-target="#simular-futuros-posibles">15.3 Simular futuros posibles</a></li>
+  <li><a href="#preparación-de-los-datos" id="toc-preparación-de-los-datos" class="nav-link" data-scroll-target="#preparación-de-los-datos">15.4 Preparación de los datos</a>
+  <ul class="collapse">
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#un-modelo-sencillo-para-explorar-el-futuro" id="toc-un-modelo-sencillo-para-explorar-el-futuro" class="nav-link" data-scroll-target="#un-modelo-sencillo-para-explorar-el-futuro">15.5 Un modelo sencillo para explorar el futuro</a></li>
+  <li><a href="#construyendo-escenarios-futuros" id="toc-construyendo-escenarios-futuros" class="nav-link" data-scroll-target="#construyendo-escenarios-futuros">15.6 Construyendo escenarios futuros</a></li>
+  <li><a href="#visualizando-múltiples-futuros" id="toc-visualizando-múltiples-futuros" class="nav-link" data-scroll-target="#visualizando-múltiples-futuros">15.7 Visualizando múltiples futuros</a>
+  <ul class="collapse">
+  <li><a href="#interpretación-1" id="toc-interpretación-1" class="nav-link" data-scroll-target="#interpretación-1">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#bandas-predictivas" id="toc-bandas-predictivas" class="nav-link" data-scroll-target="#bandas-predictivas">15.8 Bandas predictivas</a>
+  <ul class="collapse">
+  <li><a href="#qué-representan-estas-bandas" id="toc-qué-representan-estas-bandas" class="nav-link" data-scroll-target="#qué-representan-estas-bandas">¿Qué representan estas bandas?</a></li>
+  </ul></li>
+  <li><a href="#escenarios-favorables-moderados-y-desfavorables" id="toc-escenarios-favorables-moderados-y-desfavorables" class="nav-link" data-scroll-target="#escenarios-favorables-moderados-y-desfavorables">15.9 Escenarios favorables, moderados y desfavorables</a></li>
+  <li><a href="#distribución-de-futuros-posibles" id="toc-distribución-de-futuros-posibles" class="nav-link" data-scroll-target="#distribución-de-futuros-posibles">15.10 Distribución de futuros posibles</a>
+  <ul class="collapse">
+  <li><a href="#interpretación-2" id="toc-interpretación-2" class="nav-link" data-scroll-target="#interpretación-2">Interpretación</a></li>
+  </ul></li>
+  <li><a href="#planificación-bajo-incertidumbre" id="toc-planificación-bajo-incertidumbre" class="nav-link" data-scroll-target="#planificación-bajo-incertidumbre">15.11 Planificación bajo incertidumbre</a>
+  <ul class="collapse">
+  <li><a href="#inventario" id="toc-inventario" class="nav-link" data-scroll-target="#inventario">Inventario</a></li>
+  <li><a href="#presupuesto" id="toc-presupuesto" class="nav-link" data-scroll-target="#presupuesto">Presupuesto</a></li>
+  <li><a href="#operaciones" id="toc-operaciones" class="nav-link" data-scroll-target="#operaciones">Operaciones</a></li>
+  </ul></li>
+  <li><a href="#escenarios-extremos" id="toc-escenarios-extremos" class="nav-link" data-scroll-target="#escenarios-extremos">15.12 Escenarios extremos</a></li>
+  <li><a href="#interpretación-probabilística" id="toc-interpretación-probabilística" class="nav-link" data-scroll-target="#interpretación-probabilística">15.13 Interpretación probabilística</a></li>
+  <li><a href="#humildad-analítica" id="toc-humildad-analítica" class="nav-link" data-scroll-target="#humildad-analítica">15.14 Humildad analítica</a></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">Reflexión bayesiana</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2">Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3">Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4">Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5">Ejercicio 5</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c14.html">PARTE V — EL FUTURO SIEMPRE ES INCIERTO</a></li><li class="breadcrumb-item"><a href="../analysis/c15.html">15.- Escenarios futuros plausibles</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">15.- Escenarios futuros plausibles</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
+<p>Hasta ahora hemos utilizado datos para comprender el pasado y construir modelos que nos permitan anticipar el futuro. Sin embargo, existe una idea importante que distingue a las organizaciones que simplemente reaccionan de aquellas que planifican con inteligencia:</p>
+<p><strong>el futuro no ocurre de una sola manera.</strong></p>
+<p>Cuando una empresa prepara su presupuesto para el próximo año, decide cuánto inventario comprar o cuántos empleados contratar, no conoce con certeza lo que ocurrirá.</p>
+<p>Las ventas podrían crecer.</p>
+<p>Las ventas podrían mantenerse estables.</p>
+<p>Las ventas podrían disminuir.</p>
+<p>Y, aun así, las decisiones deben tomarse.</p>
+<p>Esta situación puede parecer incómoda, pero en realidad es completamente normal. La incertidumbre no es una señal de que algo esté mal. Es una característica inevitable del mundo real.</p>
+<p>Las organizaciones exitosas no intentan eliminar la incertidumbre. Aprenden a convivir con ella.</p>
+<p>Por esta razón, muchas decisiones empresariales importantes no se basan en una única predicción, sino en múltiples escenarios plausibles.</p>
+<p>En este capítulo aprenderemos a construir y visualizar esos escenarios utilizando simulaciones sencillas y herramientas bayesianas que ya conocemos.</p>
+<p>La idea central es simple:</p>
+<p><code>El futuro no tiene un único camino posible. Existen múltiples futuros plausibles.</code></p>
+</section>
+<section id="planificar-cuando-el-futuro-es-incierto" class="level2">
+<h2 class="anchored" data-anchor-id="planificar-cuando-el-futuro-es-incierto">15.1 Planificar cuando el futuro es incierto</h2>
+<p>Imaginemos una pequeña empresa que vende artículos de oficina.</p>
+<p>La dirección debe responder preguntas como:</p>
+<ul>
+<li>¿Cuánto inventario debemos comprar?</li>
+<li>¿Cuántos empleados necesitaremos?</li>
+<li>¿Qué presupuesto debemos asignar?</li>
+<li>¿Cuánto efectivo deberíamos mantener disponible?</li>
+</ul>
+<p>Ninguna de estas decisiones puede esperar hasta conocer el futuro.</p>
+<p>Todas deben tomarse hoy.</p>
+<p>Y todas dependen de algo que todavía no ha ocurrido.</p>
+<p>Esta situación no es exclusiva de las empresas.</p>
+<p>Cuando una familia organiza unas vacaciones:</p>
+<ul>
+<li>no conoce exactamente el clima;</li>
+<li>no conoce exactamente el tráfico;</li>
+<li>no conoce exactamente los gastos finales.</li>
+</ul>
+<p>Sin embargo, puede prepararse para varios escenarios posibles.</p>
+<p>Las organizaciones hacen exactamente lo mismo.</p>
+<p>La planificación moderna consiste menos en adivinar el futuro y más en prepararse para diferentes posibilidades.</p>
+</section>
+<section id="por-qué-pensar-en-escenarios" class="level2">
+<h2 class="anchored" data-anchor-id="por-qué-pensar-en-escenarios">15.2 ¿Por qué pensar en escenarios?</h2>
+<p>Existe una diferencia importante entre estas dos afirmaciones:</p>
+<p><strong>Predicción única</strong></p>
+<p><code>Las ventas del próximo mes serán 15.000 dólares.</code></p>
+<p><strong>Escenario probabilístico</strong></p>
+<p><code>Las ventas del próximo mes podrían situarse entre 12.000 y 18.000 dólares, siendo 15.000 un valor representativo.</code></p>
+<p>La segunda afirmación contiene mucha más información.</p>
+<p>No solamente describe un resultado posible.</p>
+<p>También comunica incertidumbre.</p>
+<p>Y esa incertidumbre resulta extremadamente útil para la toma de decisiones.</p>
+<p>Supongamos que una empresa compra inventario suficiente para vender exactamente 15.000 dólares.</p>
+<p>Si las ventas terminan siendo 18.000 dólares:</p>
+<ul>
+<li>podría quedarse sin existencias;</li>
+<li>perder ventas;</li>
+<li>perder clientes.</li>
+</ul>
+<p>Si las ventas terminan siendo 12.000 dólares:</p>
+<ul>
+<li>podría acumular inventario innecesario;</li>
+<li>inmovilizar capital;</li>
+<li>aumentar costos.</li>
+</ul>
+<p>Por esta razón, los responsables de planificación suelen pensar en términos de:</p>
+<ul>
+<li>escenario favorable;</li>
+<li>escenario moderado;</li>
+<li>escenario desfavorable.</li>
+</ul>
+<p>No porque sepan cuál ocurrirá.</p>
+<p>Sino porque desean estar preparados para cualquiera de ellos.</p>
+</section>
+<section id="simular-futuros-posibles" class="level2">
+<h2 class="anchored" data-anchor-id="simular-futuros-posibles">15.3 Simular futuros posibles</h2>
+<p>La simulación es una herramienta sorprendentemente intuitiva.</p>
+<p>En esencia consiste en hacer una pregunta:</p>
+<p><code>¿Qué podría ocurrir si repitiéramos el futuro muchas veces?</code></p>
+<p>Obviamente no podemos repetir el futuro real.</p>
+<p>Pero sí podemos pedirle al modelo que genere muchos futuros plausibles.</p>
+<p>Podemos imaginarlo como una colección de mundos posibles.</p>
+<p>En algunos mundos:</p>
+<ul>
+<li>las ventas crecen rápidamente.</li>
+</ul>
+<p>En otros:</p>
+<ul>
+<li>las ventas permanecen estables.</li>
+</ul>
+<p>En otros:</p>
+<ul>
+<li>las ventas disminuyen.</li>
+</ul>
+<p>Cada simulación representa una trayectoria posible.</p>
+<p>Ninguna es una profecía.</p>
+<p>Todas son posibilidades compatibles con la información disponible.</p>
+<p>Esta idea es profundamente bayesiana.</p>
+<p>Los modelos no producen una única respuesta.</p>
+<p>Producen distribuciones de respuestas plausibles.</p>
+</section>
+<section id="preparación-de-los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="preparación-de-los-datos">15.4 Preparación de los datos</h2>
+<p>Comenzaremos agregando las ventas por mes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(superstore<span class="sc">$</span><span class="st">`</span><span class="at">Order Date</span><span class="st">`</span>) <span class="co"># produce: character</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modificar el tipo de la variable de fecha de la orden de character</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a date y crear la variable mes que cambia esta fecha a su versión </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># del primer día del mes</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ventas_mensuales <span class="ot">&lt;-</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  superstore <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Order_Date =</span> <span class="fu">mdy</span>(<span class="st">`</span><span class="at">Order Date</span><span class="st">`</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mes =</span> <span class="fu">floor_date</span>(Order_Date, <span class="st">"month"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar 6 filas de las 9994 filas totales</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>ventas_mensuales[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="sc">-</span><span class="dv">20</span><span class="sc">:-</span><span class="dv">1</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+   Profit Order_Date mes       
+    &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;    
+1   41.9  2016-11-08 2016-11-01
+2  220.   2016-11-08 2016-11-01
+3    6.87 2016-06-12 2016-06-01
+4 -383.   2015-10-11 2015-10-01
+5    2.52 2015-10-11 2015-10-01
+6   14.2  2014-06-09 2014-06-01</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Agrupar la tabla por ventas mesuales, resumir el total de ventas</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># mensual y ordenarlo en orden ascendente</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>ventas_mensuales <span class="ot">&lt;-</span> ventas_mensuales <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(mes) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">ventas =</span> <span class="fu">sum</span>(Sales),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir 6 filas de las 48 filas que hay para 48 meses durante </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4 años</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>ventas_mensuales[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  mes        ventas
+  &lt;date&gt;      &lt;dbl&gt;
+1 2014-01-01 14237.
+2 2014-02-01  4520.
+3 2014-03-01 55691.
+4 2014-04-01 28295.
+5 2014-05-01 23648.
+6 2014-06-01 34595.</code></pre>
+</div>
+</div>
+<p>Antes de modelar, observamos la serie histórica.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de las ventas mensuales</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  ventas_mensuales,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> mes,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> ventas</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Ventas Mensuales"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Ventas"</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación">Interpretación</h3>
+<p>No buscamos identificar cada detalle de la serie.</p>
+<p>Nos interesa observar:</p>
+<ul>
+<li>tendencia general;</li>
+<li>variabilidad;</li>
+<li>fluctuaciones normales.</li>
+</ul>
+<p>Estos patrones serán la base de nuestros escenarios futuros.</p>
+</section>
+</section>
+<section id="un-modelo-sencillo-para-explorar-el-futuro" class="level2">
+<h2 class="anchored" data-anchor-id="un-modelo-sencillo-para-explorar-el-futuro">15.5 Un modelo sencillo para explorar el futuro</h2>
+<p>Creamos un índice temporal.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># agregar una variable tiempo que numere a cada observación o mes</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ventas_mensuales <span class="ot">&lt;-</span> ventas_mensuales <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">tiempo =</span> <span class="fu">row_number</span>()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimir 6 filas de las 48, correspondientes a 48 meses</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ventas_mensuales[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  mes        ventas tiempo
+  &lt;date&gt;      &lt;dbl&gt;  &lt;int&gt;
+1 2014-01-01 14237.      1
+2 2014-02-01  4520.      2
+3 2014-03-01 55691.      3
+4 2014-04-01 28295.      4
+5 2014-05-01 23648.      5
+6 2014-06-01 34595.      6</code></pre>
+</div>
+</div>
+<p>Ajustamos un modelo lineal bayesiano.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear un modelo lineal bayesiano que relacione el tiempo con las</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ventas</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>modelo_ventas <span class="ot">&lt;-</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_glm</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    ventas <span class="sc">~</span> tiempo,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> ventas_mensuales,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">gaussian</span>(),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">refresh =</span> <span class="dv">0</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_ventas) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    5%       95%
+(Intercept) 15748.6575 36711.779
+tiempo        534.8943  1279.163
+sigma       19002.0479 26617.638</code></pre>
+</div>
+</div>
+<p><em>Interpretación</em>: Es plausible que cada mes esté relacionado con un aumento de entre 548 y 1270 dólares en ventas.</p>
+<p>Nuestro objetivo no es obtener el mejor pronóstico posible.</p>
+<p>Queremos construir una herramienta sencilla para explorar incertidumbre futura.</p>
+</section>
+<section id="construyendo-escenarios-futuros" class="level2">
+<h2 class="anchored" data-anchor-id="construyendo-escenarios-futuros">15.6 Construyendo escenarios futuros</h2>
+<p>Creamos los próximos doce meses.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una tabla con la variable tiempo con 12 meses posteriores o</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># futuros a la tabla original de 48 meses</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>futuro <span class="ot">&lt;-</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">tiempo =</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">max</span>(ventas_mensuales<span class="sc">$</span>tiempo) <span class="sc">+</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>futuro <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 1
+   tiempo
+    &lt;int&gt;
+ 1     49
+ 2     50
+ 3     51
+ 4     52
+ 5     53
+ 6     54
+ 7     55
+ 8     56
+ 9     57
+10     58
+11     59
+12     60</code></pre>
+</div>
+</div>
+<p>Generamos simulaciones</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basado en el modelo modelo_ventas, generar 1000 simulaciones (1000</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filas) con los 12 meses futuros (12 columnas)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>simulaciones <span class="ot">&lt;-</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">posterior_predict</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    modelo_ventas,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_data =</span> futuro</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar 6 de las 1000 simulaciones (1000 filas) y 5 de los 12 </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># meses (12 columnas) </span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>simulaciones[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span> ,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              1          2         3        4          5
+[1,] 16868.3654  42628.011 70514.931 13773.30 28264.3517
+[2,] 58170.6139 103740.973 70600.651 32370.54 81547.2004
+[3,] -3886.5555 -17923.095 17970.916 26339.48 55406.6432
+[4,] -1807.7241  12326.879 38139.118 37989.78 32114.0307
+[5,] 43884.1282  33664.259  4881.543 42081.88 21575.2689
+[6,]  -624.7953   7303.227 -6942.047 10426.13  -797.0107</code></pre>
+</div>
+</div>
+<p>Aquí aparece una diferencia importante respecto a capítulos anteriores.</p>
+<p><em>posterior_epred()</em> genera valores medios esperados.</p>
+<p><em>posterior_predict()</em> genera observaciones futuras completas.</p>
+<p>Por eso incorpora:</p>
+<ul>
+<li>incertidumbre de los parámetros;</li>
+<li>variabilidad natural de las ventas.</li>
+</ul>
+<p>El resultado es mucho más realista cuando queremos explorar escenarios.</p>
+</section>
+<section id="visualizando-múltiples-futuros" class="level2">
+<h2 class="anchored" data-anchor-id="visualizando-múltiples-futuros">15.7 Visualizando múltiples futuros</h2>
+<p>Convertimos las simulaciones a formato largo.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambiar todas las simulaciones a formato largo</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>escenarios <span class="ot">&lt;-</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_draws_matrix</span>(simulaciones) <span class="sc">%&gt;%</span> <span class="co"># transformar a matriz</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> <span class="co"># transformar a tibble</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sim =</span> <span class="fu">row_number</span>() <span class="co"># numerar las filas</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(  <span class="co"># pasar a formato largo</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>sim,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"mes"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"ventas"</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Producir una tabla que repite cada una de las 1000 simulaciones</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co"># (sim ) 48 veces (12 meses durante 4 años) y cada simulación </span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># tiene un valor de ventas</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>escenarios[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+    sim mes   ventas    
+  &lt;int&gt; &lt;chr&gt; &lt;drws_mtr&gt;
+1     1 1     16868.37  
+2     1 2     42628.01  
+3     1 3     70514.93  
+4     1 4     13773.30  
+5     1 5     28264.35  
+6     1 6     33953.40  </code></pre>
+</div>
+</div>
+<p>Visualizamos múltiples trayectorias</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar múltples escenarios de  ventas por mes</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  escenarios,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.numeric</span>(mes),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> ventas,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> sim</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.03</span>) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Futuros plausibles simulados"</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Mes"</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación-1" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-1">Interpretación</h3>
+<p>Este gráfico representa una de las ideas más importantes del libro.</p>
+<p>No existe una única línea futura.</p>
+<p>Existen muchas trayectorias compatibles con el modelo.</p>
+<p>Cada línea representa un mundo posible.</p>
+</section>
+</section>
+<section id="bandas-predictivas" class="level2">
+<h2 class="anchored" data-anchor-id="bandas-predictivas">15.8 Bandas predictivas</h2>
+<p>Resumimos las simulaciones.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Agrupar las simulaciones por mes y resumir por percentil 5, 50 y</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 95</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>bandas <span class="ot">&lt;-</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  escenarios <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(mes) <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">p5 =</span> <span class="fu">quantile</span>(ventas, <span class="fl">0.05</span>),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">p50 =</span> <span class="fu">median</span>(ventas),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">p95 =</span> <span class="fu">quantile</span>(ventas, <span class="fl">0.95</span>),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Mostrar 6 de los 48 meses (48 filas)</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>bandas[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  mes   p5             p50 p95       
+  &lt;chr&gt; &lt;drws_mtr&gt;   &lt;dbl&gt; &lt;drws_mtr&gt;
+1 1     -10889.8058 25866. 65464.37  
+2 10     -1672.9015 34319. 73910.86  
+3 11     -1383.4394 36570. 75607.83  
+4 12      -337.8211 36132. 73915.36  
+5 13      1351.5176 38373. 74947.09  
+6 14      1040.6924 38246. 74799.26  </code></pre>
+</div>
+</div>
+<p>Visualizamos los resultados</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear bandas predictivas de las ventas por mes</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  bandas,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.numeric</span>(mes)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> p5,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymax =</span> p95</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">y =</span> p50)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Bandas predictivas"</span>,</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Mes"</span>,</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Ventas"</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="qué-representan-estas-bandas" class="level3">
+<h3 class="anchored" data-anchor-id="qué-representan-estas-bandas">¿Qué representan estas bandas?</h3>
+<p>Una interpretación incorrecta sería:</p>
+<p><code>Las ventas ocurrirán dentro de esta banda.</code></p>
+<p>Eso no es lo que significa.</p>
+<p>Una interpretación más adecuada sería:</p>
+<p><code>Según el modelo, este rango contiene muchos de los resultados futuros plausibles.</code></p>
+<p>La banda expresa incertidumbre.</p>
+<p>No garantía.</p>
+</section>
+</section>
+<section id="escenarios-favorables-moderados-y-desfavorables" class="level2">
+<h2 class="anchored" data-anchor-id="escenarios-favorables-moderados-y-desfavorables">15.9 Escenarios favorables, moderados y desfavorables</h2>
+<p>Las empresas suelen resumir la incertidumbre en escenarios prácticos.</p>
+<p>Podemos usar percentiles.</p>
+<p>Por ejemplo:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Escenario</th>
+<th>Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>p5</td>
+<td>Desfavorable</td>
+</tr>
+<tr class="even">
+<td>p50</td>
+<td>Moderado</td>
+</tr>
+<tr class="odd">
+<td>p95</td>
+<td>Favorable</td>
+</tr>
+</tbody>
+</table>
+<p>Estos escenarios permiten responder preguntas como:</p>
+<ul>
+<li>¿Qué ocurriría si las ventas fueran peores de lo esperado?</li>
+<li>¿Qué ocurriría si fueran mejores?</li>
+<li>¿Estamos preparados para ambos casos?</li>
+</ul>
+</section>
+<section id="distribución-de-futuros-posibles" class="level2">
+<h2 class="anchored" data-anchor-id="distribución-de-futuros-posibles">15.10 Distribución de futuros posibles</h2>
+<p>Tomemos el último mes proyectado.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar 6 de las 48000 filas o simulaciones (48 meses * 1000</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># simulaciones)  </span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>escenarios[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+    sim mes   ventas    
+  &lt;int&gt; &lt;chr&gt; &lt;drws_mtr&gt;
+1     1 1     16868.37  
+2     1 2     42628.01  
+3     1 3     70514.93  
+4     1 4     13773.30  
+5     1 5     28264.35  
+6     1 6     33953.40  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escoger sólo las filas que en la variable mes tengan "12" en la</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># tabla de escenarios que se cambió a formato largo</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>ultimo_mes <span class="ot">&lt;-</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  escenarios <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    mes <span class="sc">==</span> <span class="dv">12</span> <span class="co"># max(mes) # produce: 9</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generar 6 de las 1000 simulaciones para el mes 12</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>ultimo_mes[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+    sim mes   ventas    
+  &lt;int&gt; &lt;chr&gt; &lt;drws_mtr&gt;
+1     1 12    60926.965 
+2     2 12    55275.600 
+3     3 12    56249.699 
+4     4 12    46377.846 
+5     5 12    30614.039 
+6     6 12     5170.577 </code></pre>
+</div>
+</div>
+<p>Visualizamos su distribución</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Distribución de las ventas de los diciembres de las simulaciones</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  ultimo_mes,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> ventas </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">bins =</span> <span class="dv">30</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribución de las ventas de diciembre"</span>,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Ventas"</span>,</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Cantidad de ventas"</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c15_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="interpretación-2" class="level3">
+<h3 class="anchored" data-anchor-id="interpretación-2">Interpretación</h3>
+<p>Hasta ahora hemos hablado de:</p>
+<ul>
+<li>tendencias;</li>
+<li>trayectorias;</li>
+<li>escenarios.</li>
+</ul>
+<p>Aquí observamos algo diferente.</p>
+<p>Una distribución completa de resultados futuros.</p>
+<p>Este gráfico resume el mensaje principal del capítulo:</p>
+<p><code>El futuro no es un número.</code></p>
+<p><code>Es una distribución de posibilidades.</code></p>
+</section>
+</section>
+<section id="planificación-bajo-incertidumbre" class="level2">
+<h2 class="anchored" data-anchor-id="planificación-bajo-incertidumbre">15.11 Planificación bajo incertidumbre</h2>
+<section id="inventario" class="level3">
+<h3 class="anchored" data-anchor-id="inventario">Inventario</h3>
+<p>Si la demanda resulta mayor de lo esperado:</p>
+<ul>
+<li>podrían faltar productos.</li>
+</ul>
+<p>Si resulta menor:</p>
+<ul>
+<li>podría acumularse inventario.</li>
+</ul>
+<p>Los escenarios ayudan a equilibrar ambos riesgos.</p>
+</section>
+<section id="presupuesto" class="level3">
+<h3 class="anchored" data-anchor-id="presupuesto">Presupuesto</h3>
+<p>Los ingresos futuros son inciertos.</p>
+<p>Una planificación prudente considera:</p>
+<ul>
+<li>escenarios optimistas;</li>
+<li>escenarios moderados;</li>
+<li>escenarios conservadores.</li>
+</ul>
+</section>
+<section id="operaciones" class="level3">
+<h3 class="anchored" data-anchor-id="operaciones">Operaciones</h3>
+<p>Las empresas deben prepararse para:</p>
+<ul>
+<li>distintos niveles de actividad;</li>
+<li>distintos niveles de demanda;</li>
+<li>distintos niveles de utilización de recursos.</li>
+</ul>
+<p>Las simulaciones permiten explorar estas posibilidades antes de que ocurran.</p>
+</section>
+</section>
+<section id="escenarios-extremos" class="level2">
+<h2 class="anchored" data-anchor-id="escenarios-extremos">15.12 Escenarios extremos</h2>
+<p>Los escenarios centrales suelen recibir la mayor atención.</p>
+<p>Sin embargo, algunas decisiones dependen de eventos poco frecuentes.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li>una caída importante en ventas;</li>
+<li>una demanda extraordinariamente alta;</li>
+<li>interrupciones operativas.</li>
+</ul>
+<p>Estos escenarios pueden ser poco probables.</p>
+<p>Pero sus consecuencias pueden ser significativas.</p>
+<p>Por ello conviene analizarlos explícitamente.</p>
+</section>
+<section id="interpretación-probabilística" class="level2">
+<h2 class="anchored" data-anchor-id="interpretación-probabilística">15.13 Interpretación probabilística</h2>
+<p>Cuando trabajamos con escenarios es importante evitar frases como:</p>
+<p>❌</p>
+<p><code>Esto ocurrirá.</code></p>
+<p>O:</p>
+<p><code>El próximo mes venderemos exactamente 15.000 dólares.</code></p>
+<p>Es preferible utilizar expresiones como:</p>
+<p>✅</p>
+<p><code>Este resultado parece plausible según el modelo.</code></p>
+<p>o</p>
+<p>Este escenario es compatible con la información disponible.</p>
+<p>El lenguaje probabilístico comunica incertidumbre de manera más honesta.</p>
+</section>
+<section id="humildad-analítica" class="level2">
+<h2 class="anchored" data-anchor-id="humildad-analítica">15.14 Humildad analítica</h2>
+<p>Las simulaciones no son el futuro.</p>
+<p>Los modelos no conocen eventos inesperados.</p>
+<p>No conocen:</p>
+<ul>
+<li>crisis económicas;</li>
+<li>cambios regulatorios;</li>
+<li>nuevos competidores;</li>
+<li>desastres naturales;</li>
+<li>innovaciones tecnológicas.</li>
+</ul>
+<p>Toda simulación es una simplificación.</p>
+<p>Sin embargo, una simplificación útil.</p>
+<p>Su valor no consiste en eliminar la incertidumbre.</p>
+<p>Su valor consiste en ayudarnos a pensar mejor sobre ella.</p>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">Reflexión bayesiana</h2>
+<p>Durante mucho tiempo la analítica empresarial buscó producir predicciones cada vez más precisas.</p>
+<p>El enfoque probabilístico propone una perspectiva diferente.</p>
+<p>Tal vez el objetivo no sea adivinar exactamente qué ocurrirá.</p>
+<p>Tal vez el objetivo sea comprender el rango de cosas que podrían ocurrir.</p>
+<p>Una organización preparada para múltiples futuros plausibles suele tomar mejores decisiones que una organización preparada únicamente para el futuro que esperaba.</p>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<section id="ejercicio-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
+<p>Observe las trayectorias simuladas.</p>
+<ul>
+<li>¿Todas siguen exactamente el mismo camino?</li>
+<li>¿Qué nos enseña esta variabilidad?</li>
+</ul>
+</section>
+<section id="ejercicio-2" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2">Ejercicio 2</h3>
+<p>Modifique el horizonte de proyección.</p>
+<p>Pruebe:</p>
+<p><code>1:6</code></p>
+<p>y luego:</p>
+<p><code>1:24</code></p>
+<p>¿Cómo cambia la incertidumbre?</p>
+</section>
+<section id="ejercicio-3" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3">Ejercicio 3</h3>
+<p>Compare:</p>
+<p><code>posterior_epred()</code></p>
+<p>y</p>
+<p><code>posterior_predict()</code></p>
+<p>¿Cuál produce escenarios más dispersos?</p>
+<p>¿Por qué?</p>
+</section>
+<section id="ejercicio-4" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4">Ejercicio 4</h3>
+<p>Construya escenarios:</p>
+<ul>
+<li>percentil 10</li>
+<li>percentil 50</li>
+<li>percentil 90</li>
+</ul>
+<p>Interprete cada uno desde la perspectiva de inventario.</p>
+</section>
+<section id="ejercicio-5" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5">Ejercicio 5</h3>
+<p>Suponga que usted es responsable de presupuesto.</p>
+<p>¿Qué decisiones cambiarían si únicamente observara el escenario central?</p>
+<p>¿Qué riesgos estaría ignorando?</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Decisiones bajo incertidumbre, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

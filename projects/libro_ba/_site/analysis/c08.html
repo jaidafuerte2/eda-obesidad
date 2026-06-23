@@ -332,6 +332,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">14.- Forecasting para humanos normales</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15.- Escenarios futuros plausibles</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -515,7 +521,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  predictors:   2
 ------
             Median MAD_SD
-(Intercept) 67.5    2.9  
+(Intercept) 67.5    2.8  
 Discount_c  -2.5    0.1  
 
 Auxiliary parameter(s):
@@ -542,12 +548,12 @@ sigma 228.5    1.5
 <div class="cell-output cell-output-stdout">
 <pre><code># A draws_df: 6 iterations, 1 chains, and 3 variables
   (Intercept) Discount_c sigma
-1          75       -2.8   230
-2          71       -2.4   229
-3          72       -2.5   229
-4          71       -2.6   231
-5          69       -2.5   228
-6          66       -2.5   230
+1          67       -2.4   229
+2          62       -2.3   230
+3          71       -2.6   226
+4          66       -2.4   229
+5          67       -2.5   228
+6          68       -2.5   229
 # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</code></pre>
 </div>
 </div>
@@ -601,9 +607,9 @@ sigma 228.5    1.5
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  2.5%      97.5%
-(Intercept)  61.939142  73.335647
-Discount_c   -2.709929  -2.261553
-sigma       225.601571 231.630078</code></pre>
+(Intercept)  61.912968  72.760607
+Discount_c   -2.691975  -2.271344
+sigma       225.541643 231.864149</code></pre>
 </div>
 </div>
 </section>
@@ -647,12 +653,12 @@ sigma       225.601571 231.630078</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>          parameters
 iterations (Intercept) Discount_c    sigma
-      [1,]    75.49788  -2.766698 229.5331
-      [2,]    71.09150  -2.449229 228.5115
-      [3,]    72.21533  -2.541013 229.1176
-      [4,]    70.88186  -2.552241 230.6214
-      [5,]    68.51110  -2.496437 228.3350
-      [6,]    65.50609  -2.503250 229.6660</code></pre>
+      [1,]    66.69962  -2.426557 228.6763
+      [2,]    61.53389  -2.304545 229.8985
+      [3,]    71.23692  -2.562092 226.4191
+      [4,]    65.95847  -2.366006 229.4891
+      [5,]    66.62073  -2.478873 228.1417
+      [6,]    67.95719  -2.528058 229.3995</code></pre>
 </div>
 </div>
 <div class="cell">

@@ -332,6 +332,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">14.- Forecasting para humanos normales</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15.- Escenarios futuros plausibles</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -612,9 +618,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">posterior_interval</span>(modelo_churn) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                        5%         95%
-(Intercept)    -1.94074637 -1.65203919
-tenure         -0.05783000 -0.05240440
-MonthlyCharges  0.03090806  0.03513443</code></pre>
+(Intercept)    -1.92239313 -1.64873765
+tenure         -0.05740363 -0.05220368
+MonthlyCharges  0.03078818  0.03495610</code></pre>
 </div>
 </div>
 <p><strong>Interpretación</strong>: Es plausible que, independientemente de los cargos mensuales, la antiguedad se asocia a una disminución del churn; e independientemente de la antiguedad, los cargos mensuales se asocian a un aumento del churn.</p>
@@ -633,7 +639,7 @@ MonthlyCharges  0.03090806  0.03513443</code></pre>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>riesgo_promedio[<span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         1          2          3          4          5 
-0.29325488 0.14541073 0.46962950 0.05364146 0.61041022 </code></pre>
+0.28938460 0.13933888 0.46794711 0.05004117 0.61103870 </code></pre>
 </div>
 </div>
 <p><strong>Interpretación</strong>: Cuál es la probabilidad de cada cliente de abandonar la empresa considerando: su antiguedad y sus cargos mensuales</p>
@@ -649,12 +655,12 @@ MonthlyCharges  0.03090806  0.03513443</code></pre>
 <pre><code># A tibble: 6 × 2
   Churn riesgo_churn
   &lt;dbl&gt;        &lt;dbl&gt;
-1     0       0.296 
-2     0       0.143 
-3     1       0.467 
-4     0       0.0533
-5     1       0.605 
-6     1       0.741 </code></pre>
+1     0       0.297 
+2     0       0.144 
+3     1       0.468 
+4     0       0.0538
+5     1       0.604 
+6     1       0.740 </code></pre>
 </div>
 </div>
 <p>Ahora cada cliente tiene una probabilidad estimada.</p>
@@ -738,12 +744,12 @@ MonthlyCharges  0.03090806  0.03513443</code></pre>
 <pre><code># A tibble: 6 × 3
   Churn riesgo_churn intervenir_70
   &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;        
-1     0       0.296  FALSE        
-2     0       0.143  FALSE        
-3     1       0.467  FALSE        
-4     0       0.0533 FALSE        
-5     1       0.605  FALSE        
-6     1       0.741  TRUE         </code></pre>
+1     0       0.297  FALSE        
+2     0       0.144  FALSE        
+3     1       0.468  FALSE        
+4     0       0.0538 FALSE        
+5     1       0.604  FALSE        
+6     1       0.740  TRUE         </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -777,8 +783,8 @@ MonthlyCharges  0.03090806  0.03513443</code></pre>
 <pre><code># A tibble: 2 × 2
   intervenir_40     n
   &lt;lgl&gt;         &lt;int&gt;
-1 FALSE          5097
-2 TRUE           1935</code></pre>
+1 FALSE          5095
+2 TRUE           1937</code></pre>
 </div>
 </div>
 <table class="caption-top table">
@@ -824,15 +830,15 @@ MonthlyCharges  0.03090806  0.03513443</code></pre>
 <pre><code># A tibble: 10 × 4
    Churn riesgo_churn intervenir_70 intervenir_40
    &lt;dbl&gt;        &lt;dbl&gt; &lt;lgl&gt;         &lt;lgl&gt;        
- 1     0        0.832 TRUE          TRUE         
- 2     0        0.832 TRUE          TRUE         
- 3     1        0.823 TRUE          TRUE         
- 4     1        0.822 TRUE          TRUE         
+ 1     0        0.831 TRUE          TRUE         
+ 2     0        0.831 TRUE          TRUE         
+ 3     1        0.822 TRUE          TRUE         
+ 4     1        0.821 TRUE          TRUE         
  5     1        0.821 TRUE          TRUE         
- 6     1        0.819 TRUE          TRUE         
- 7     1        0.818 TRUE          TRUE         
- 8     1        0.817 TRUE          TRUE         
- 9     1        0.817 TRUE          TRUE         
+ 6     1        0.818 TRUE          TRUE         
+ 7     1        0.817 TRUE          TRUE         
+ 8     1        0.816 TRUE          TRUE         
+ 9     1        0.816 TRUE          TRUE         
 10     1        0.813 TRUE          TRUE         </code></pre>
 </div>
 </div>
@@ -918,18 +924,18 @@ MonthlyCharges  0.03090806  0.03513443</code></pre>
 <pre><code># A tibble: 13 × 2
    umbral intervenidos
     &lt;dbl&gt;        &lt;int&gt;
- 1   0.2          3558
- 2   0.25         2918
- 3   0.3          2556
- 4   0.35         2258
- 5   0.4          1935
- 6   0.45         1586
+ 1   0.2          3566
+ 2   0.25         2923
+ 3   0.3          2558
+ 4   0.35         2259
+ 5   0.4          1937
+ 6   0.45         1587
  7   0.5          1308
- 8   0.55         1070
+ 8   0.55         1069
  9   0.6           836
-10   0.65          492
+10   0.65          489
 11   0.7           251
-12   0.75           98
+12   0.75           95
 13   0.8            15</code></pre>
 </div>
 </div>

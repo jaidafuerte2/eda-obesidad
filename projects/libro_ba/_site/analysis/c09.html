@@ -332,6 +332,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">14.- Forecasting para humanos normales</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15.- Escenarios futuros plausibles</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -602,11 +608,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>predicciones[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              1          2         3         4
-[1,]  406.83278   78.77974 -50.84350 -157.0459
-[2,]  -41.77251  184.14415 -59.52359  618.7516
-[3,] -166.21917 -287.96617 359.36316  209.2269
-[4,] -320.50982   99.44673 234.79984 -384.4504</code></pre>
+<pre><code>               1         2           3         4
+[1,]   39.660928 189.35729  30.3742478  80.73505
+[2,]    7.134650  13.09706   0.4851262  13.53098
+[3,] -182.175635 -27.97018 -49.8920049 -39.64130
+[4,]   -9.764096 203.91320 229.6817547 -71.48349</code></pre>
 </div>
 </div>
 <p>[ reached ‘max’ / getOption(“max.print”) – omitted 996 rows ]</p>
@@ -676,13 +682,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 7 × 4
   Discount_c mediana    li    ls
        &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-1          0   62.0  -306.  430.
-2          5   47.7  -336.  401.
-3         10   50.9  -332.  411.
-4         15   21.2  -348.  397.
-5         20   31.6  -369.  425.
-6         25    6.27 -367.  393.
-7         30    8.19 -385.  357.</code></pre>
+1          0   74.4  -333.  434.
+2          5   53.4  -312.  439.
+3         10   39.9  -313.  425.
+4         15   38.9  -338.  412.
+5         20   21.4  -351.  387.
+6         25    8.50 -357.  382.
+7         30   -3.12 -364.  385.</code></pre>
 </div>
 </div>
 <section id="entendiendo-el-código" class="level3">
@@ -695,33 +701,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(predicciones, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fl">0.05</span>) <span class="co"># produce: </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        1         2         3         4         5         6         7         8 
--305.9048 -336.1125 -332.3969 -348.2524 -369.1481 -367.2168 -385.4928 -372.4899 
+-333.2506 -312.3724 -313.1244 -337.7980 -351.1479 -357.3667 -364.2464 -379.1780 
         9        10        11        12        13        14        15        16 
--434.5270 -419.5241 -408.0542 -449.3389 -445.2032 -469.5340 -445.5192 -496.1119 
+-420.3305 -415.3400 -415.9213 -448.9992 -476.0320 -462.6790 -491.0085 -504.9333 
        17 
--516.5737 </code></pre>
+-500.0533 </code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(predicciones, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fl">0.05</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        1         2         3         4         5         6         7         8 
--305.9048 -336.1125 -332.3969 -348.2524 -369.1481 -367.2168 -385.4928 -372.4899 
+-333.2506 -312.3724 -313.1244 -337.7980 -351.1479 -357.3667 -364.2464 -379.1780 
         9        10        11        12        13        14        15        16 
--434.5270 -419.5241 -408.0542 -449.3389 -445.2032 -469.5340 -445.5192 -496.1119 
+-420.3305 -415.3400 -415.9213 -448.9992 -476.0320 -462.6790 -491.0085 -504.9333 
        17 
--516.5737 </code></pre>
+-500.0533 </code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(predicciones, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fl">0.95</span>) <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1        2        3        4        5        6        7        8 
-429.5301 400.6181 410.5362 397.2381 425.1005 393.1932 356.6879 326.1218 
+434.4175 439.3696 425.3008 411.5556 386.8193 381.7919 384.5403 359.5020 
        9       10       11       12       13       14       15       16 
-348.0032 330.9736 315.5874 316.5194 294.5856 286.4903 253.6093 252.9257 
+343.8102 368.7476 331.5814 310.7499 306.1566 281.3374 271.4008 283.4533 
       17 
-237.6336 </code></pre>
+241.6613 </code></pre>
 </div>
 </div>
 </section>
@@ -800,16 +806,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 1,700 × 3
    simulacion escenario profit
         &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
- 1          1 1          322. 
- 2          1 2          123. 
- 3          1 3          364. 
- 4          1 4           41.8
- 5          1 5           64.7
- 6          1 6         -354. 
- 7          1 7          156. 
- 8          1 8         -494. 
- 9          1 9         -529. 
-10          1 10        -337. 
+ 1          1 1          661. 
+ 2          1 2         -127. 
+ 3          1 3          -82.0
+ 4          1 4         -327. 
+ 5          1 5          335. 
+ 6          1 6         -455. 
+ 7          1 7          341. 
+ 8          1 8          235. 
+ 9          1 9         -134. 
+10          1 10         -28.8
 # ℹ 1,690 more rows</code></pre>
 </div>
 </div>
@@ -821,11 +827,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>escenarios2 <span class="ot">&lt;-</span> predicciones </span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce: 17 columnas , 1000 filas</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              1          2         3         4
-[1,]  406.83278   78.77974 -50.84350 -157.0459
-[2,]  -41.77251  184.14415 -59.52359  618.7516
-[3,] -166.21917 -287.96617 359.36316  209.2269
-[4,] -320.50982   99.44673 234.79984 -384.4504</code></pre>
+<pre><code>               1         2           3         4
+[1,]   39.660928 189.35729  30.3742478  80.73505
+[2,]    7.134650  13.09706   0.4851262  13.53098
+[3,] -182.175635 -27.97018 -49.8920049 -39.64130
+[4,]   -9.764096 203.91320 229.6817547 -71.48349</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -834,11 +840,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() </span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce (17 columnas, 1000 filas):</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           1          2         3         4
-1  406.83278   78.77974 -50.84350 -157.0459
-2  -41.77251  184.14415 -59.52359  618.7516
-3 -166.21917 -287.96617 359.36316  209.2269
-4 -320.50982   99.44673 234.79984 -384.4504</code></pre>
+<pre><code>            1         2           3         4
+1   39.660928 189.35729  30.3742478  80.73505
+2    7.134650  13.09706   0.4851262  13.53098
+3 -182.175635 -27.97018 -49.8920049 -39.64130
+4   -9.764096 203.91320 229.6817547 -71.48349</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -848,11 +854,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">100</span>) <span class="co"># escoger aleatoriamente 100 participantes</span></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="co"># produce (17 filas, 100 columnas) </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          1          2          3         4
-1 -90.29044   46.74670  217.07331 -192.7144
-2 171.84518  -17.76212  263.92644  229.4079
-3 141.32893 -185.34746 -388.33294  489.0061
-4 154.29835 -387.53660  -95.21916 -124.9433</code></pre>
+<pre><code>          1          2            3         4
+1   8.91280 -309.96904 -231.8834777 229.72281
+2   7.13465   13.09706    0.4851262  13.53098
+3 282.60738 -185.93443  107.9286616 143.18130
+4 108.21756  159.37833  -28.0570834 159.23261</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -864,11 +870,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="co"># y numerar las filas</span></span>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>escenarios2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">14</span><span class="sc">:-</span><span class="dv">1</span>] <span class="co"># produce:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          15         16        17 simulacion
-1  -67.71565 -152.14700 -32.04874          1
-2 -621.88781  119.63387 180.70821          2
-3 -382.92986  -76.08963 122.69637          3
-4 -283.52905 -493.33565 165.62538          4</code></pre>
+<pre><code>          15        16         17 simulacion
+1   35.83538  665.8470  359.64491          1
+2 -280.05208  308.7769 -215.53534          2
+3  -19.59522  177.1689  266.50621          3
+4 -159.27725 -230.3122   47.96788          4</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -882,18 +888,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,700 × 3
-   simulacion escenario profit
-        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
- 1          1 1           46.3
- 2          1 2         -414. 
- 3          1 3          281. 
- 4          1 4         -194. 
- 5          1 5          -32.3
- 6          1 6          377. 
- 7          1 7         -421. 
- 8          1 8          135. 
- 9          1 9          101. 
-10          1 10        -127. 
+   simulacion escenario  profit
+        &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
+ 1          1 1          246.  
+ 2          1 2          320.  
+ 3          1 3            5.92
+ 4          1 4         -534.  
+ 5          1 5          698.  
+ 6          1 6         -237.  
+ 7          1 7          -65.5 
+ 8          1 8          -20.0 
+ 9          1 9          169.  
+10          1 10        -112.  
 # ℹ 1,690 more rows</code></pre>
 </div>
 </div>
@@ -969,11 +975,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>) </span>
 <span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>predicciones2[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,] <span class="co"># produce (3 columnas y 1000 filas):</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>             1         2          3
-[1,] -178.7264 181.49705 -235.89488
-[2,]  212.8172 369.37790  -79.11286
-[3,]  101.2428 530.48574   27.20736
-[4,]  199.6291  53.94954  349.61147</code></pre>
+<pre><code>              1           2          3
+[1,] -335.48919 -161.786833   93.84449
+[2,] -358.04433  118.465623 -316.43284
+[3,]   32.81246   27.343382 -468.75618
+[4,] -341.11410   -1.476973   80.22697</code></pre>
 </div>
 </div>
 <p>Ahora la conversación cambia.</p>

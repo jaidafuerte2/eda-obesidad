@@ -35,8 +35,9 @@ sales_daily <- superstore %>%
   group_by(order_date) %>%
   summarise(
     sales = sum(Sales),
-    .groups = "drop"
-  )
+    #.groups = "drop"
+  ) %>%
+  ungroup()
 sales_daily # produce:
 # A tibble: 1,237 × 2
 #  order_date   sales
@@ -280,8 +281,67 @@ ggplot(
 
 # Grafica las ventas semanales en lugar de las ventas diarias.
 
+# Crear una variable week que cambie las fechas específicas a fechas
+# de la semana
+sales_weekly <- superstore %>%
+  mutate(
+    week = lubridate::floor_date(
+      order_date,
+      unit = "week"
+    )
+  )
+sales_weekly[, -20:-1] # produce:
+# A tibble: 9,994 × 3
+#   Profit order_date week      
+#    <dbl> <date>     <date>    
+#1   41.9  2016-11-08 2016-11-06
+#2  220.   2016-11-08 2016-11-06
+#3    6.87 2016-06-12 2016-06-12
+#4 -383.   2015-10-11 2015-10-11
+#5    2.52 2015-10-11 2015-10-11
+#6   14.2  2014-06-09 2014-06-08
+#7    1.97 2014-06-09 2014-06-08
+#8   90.7  2014-06-09 2014-06-08
+#9    5.78 2014-06-09 2014-06-08
+#10   34.5  2014-06-09 2014-06-08
+
+# Agrupar por semanas
+sales_weekly <- sales_weekly %>%
+  group_by(week) %>%
+  summarise(
+    sales = sum(Sales)
+  )
+sales_weekly # produce:
+# A tibble: 209 × 2
+#  week       sales
+#  <date>     <dbl>
+#1 2013-12-29  305.
+#2 2014-01-05 4619.
+#3 2014-01-12 4131.
+#4 2014-01-19 3124.
+#5 2014-01-26 2528.
+#6 2014-02-02  969.
+#7 2014-02-09 2771.
+#8 2014-02-16  225.
+#9 2014-02-23 2290.
+#10 2014-03-02 4185.
+# ℹ 199 more rows
+# ℹ Use `print(n = ...)` to see more rows
 # ¿Qué diferencias observas en la variabilidad?
   
+# Graficar las ventas semanales
+ggplot(
+  sales_weekly,
+  aes(
+    x = week,
+    y = sales
+  )
+) +
+  geom_line() +
+  geom_smooth(
+    se = TRUE
+  )
+
 ########################
 ##
 ## Ejercicio 2
@@ -293,7 +353,25 @@ ggplot(
 # Construye una curva suavizada utilizando distintos valores de 
 # suavización.
 
-# ¿Cómo cambia tu percepción de la tendencia?
+# Graficar las ventas semanales con nivel de suavización (span) de 
+# 0.1
+ggplot(
+  sales_weekly,
+  aes(
+    x = week,
+    y = sales
+  )
+) +
+  geom_line() +
+  geom_smooth(
+    span = 0.7,
+    se = FALSE
+  )
+
+
+# ¿Cómo cambia tu percepción de la tendencia? La tendencia se 
+# va aplanando mientras hay mayor span o suavización, sin tantas 
+# fluctuaciones
   
 ########################
 ##
@@ -373,7 +451,10 @@ ggplot(
     alpha = 0.3
   ) +
   geom_line() +
-  geom_smooth(se = TRUE) +
+  geom_smooth(
+    span = 0.3,
+    se = FALSE
+    ) +
   coord_cartesian(ylim = c(2000, 3000)) +
   labs(
     title = "Escenarios plausibles de ventas futuras",
@@ -387,7 +468,7 @@ ggplot(
 future_days_90 <- tibble(
   day = seq(
     max(sales_daily$day) + 1,
-    max(sales_daily$day) + 30
+    max(sales_daily$day) + 90
   )
 )
 # Imprimir 6 de los 90 días del futuro
@@ -444,8 +525,11 @@ ggplot(
     alpha = 0.3
   ) +
   geom_line() +
-  geom_smooth(se = TRUE) +
-  #coord_cartesian(ylim = c(2000, 3000)) +
+  geom_smooth(
+    span = 0.3,
+    se = TRUE
+    ) +
+  coord_cartesian(ylim = c(2000, 3000)) +
   labs(
     title = "Escenarios plausibles de ventas futuras",
     y = "Ventas"
@@ -458,7 +542,7 @@ ggplot(
 future_days_180 <- tibble(
   day = seq(
     max(sales_daily$day) + 1,
-    max(sales_daily$day) + 30
+    max(sales_daily$day) + 180
   )
 )
 # Imprimir 6 de los 180 días del futuro
@@ -515,16 +599,21 @@ ggplot(
     alpha = 0.3
   ) +
   geom_line() +
-  geom_smooth(se = TRUE) +
-  #coord_cartesian(ylim = c(2000, 3000)) +
+  geom_smooth(
+    span = 0.3,
+    se = TRUE
+    ) +
+  coord_cartesian(ylim = c(2000, 3000)) +
   labs(
     title = "Escenarios plausibles de ventas futuras",
     y = "Ventas"
   )
 
-# ¿Cómo cambia la incertidumbre? No veo cambios en incertidumbre.
-# Puede ser que la tendencia se va aplanando un poco mientras 
-# aumentan los días, pero es algo casi imperceptible
+# ¿Cómo cambia la incertidumbre? La incertidumbre es ligeramente
+# mayor mientras hay más días.
+# Puede ser que la tendencia es más plana con pocos días y cuando 
+# aumentan los días la tendencia empieza a ser mayor, pareciéndose
+# un poco más a las simulaciones originales
   
 ########################
 ##
