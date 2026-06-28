@@ -58,10 +58,10 @@ website:
         - analysis/c15.qmd
         #- analysis/c13.qmd
         #- analysis/c14.qmd
-      #- section: "Módulo 6: Modelos Clínicos Reales"
+      - section: "PARTE VI — COMUNICAR Y PENSAR MEJOR"
         #href: analysis/m06.qmd
-        #contents:
-        #- analysis/c15.qmd
+        contents:
+        - analysis/c16.qmd
         #- analysis/c16.qmd
         #- analysis/c17.qmd
       #- section: "Módulo 7: Decisiones bajo incertidumbre"

@@ -1,0 +1,88 @@
+project: 
+  type: website
+  
+website: 
+  title: "SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas"   
+  favicon: favicon.ico
+  navbar:
+    left:
+      - text: Inicio
+        href: index.qmd
+      #- text: Sobre el autor
+        #href: analysis/c00_sobre_el_autor.qmd
+      #- text: Proyectos
+      #  href: analysis/c00_proyectos.qmd
+    right:
+    - icon: linkedin
+      href: https://www.linkedin.com/in/jaimedavidvillafuerte/
+    - icon: github
+      href: https://github.com/jaidafuerte2
+    - icon: twitter
+      href: https://x.com/jvillafuertemd
+  sidebar: 
+    style: "docked"
+    contents: 
+      - index.qmd
+      # Nota: los comentarios van después de la almohadilla o numeral 
+      #- analysis/c00_prefacio.qmd
+      #- analysis/c00_sobre_el_autor.qmd
+      - section: "1. Construcción de abstracciones con procedimientos"
+        #href: analysis/m01.qmd
+        contents: 
+        - analysis/c01-1.qmd
+        - analysis/c01-2.qmd
+        #- analysis/c03.qmd
+      #- section: "PARTE II — APRENDER A PENSAR BAYESIANAMENTE"
+        #href: analysis/m02.qmd
+        #contents: 
+        #- analysis/c04.qmd
+        #- analysis/c05.qmd
+        #- analysis/c06.qmd
+      #- section: "PARTE III — MODELOS PARA ENTENDER NEGOCIOS"
+        #href: analysis/m03.qmd
+        #contents:
+        #- analysis/c07.qmd
+        #- analysis/c08.qmd
+        #- analysis/c09.qmd
+      #- section: "PARTE IV — RIESGO, CHURN Y DECISIONES"
+        #href: analysis/m04.qmd
+        #contents:
+        #- analysis/c10.qmd
+        #- analysis/c11.qmd
+        #- analysis/c12.qmd
+        #- analysis/c13.qmd
+      #- section: "PARTE V — EL FUTURO SIEMPRE ES INCIERTO"
+        #href: analysis/m05.qmd
+        #contents:
+        #- analysis/c14.qmd
+        #- analysis/c15.qmd
+        #- analysis/c13.qmd
+        #- analysis/c14.qmd
+      #- section: "Módulo 6: Modelos Clínicos Reales"
+        #href: analysis/m06.qmd
+        #contents:
+        #- analysis/c15.qmd
+        #- analysis/c16.qmd
+        #- analysis/c17.qmd
+      #- section: "Módulo 7: Decisiones bajo incertidumbre"
+        #href: analysis/m07.qmd
+        #contents:
+        #- analysis/c18.qmd
+        #- analysis/c19.qmd
+        #- analysis/c20.qmd
+  page-footer: 
+    border: false
+    background: light
+    left: "SICP accesible, David Villafuerte MD, MBA." 
+    center: 
+      - icon: linkedin
+        href: https://www.linkedin.com/in/jaimedavidvillafuerte/
+      - icon: github
+        href: https://github.com/jaidafuerte2
+      - icon: twitter
+        href: https://x.com/jvillafuertemd
+    
+format: 
+  html: 
+    theme: cosmo
+    toc: true

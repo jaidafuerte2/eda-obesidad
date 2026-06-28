@@ -1,0 +1,240 @@
+---
+title: "1.2 — Los Procedimientos y los Procesos que Generan"
+format: html
+editor: visual
+---
+
+## Introducción al Capítulo
+
+En el diseño de software biomédico y motores de reglas lógicas (como un futuro Datalog semántico), escribir un procedimiento no basta; es imperativo entender cómo se comporta dicho procedimiento en la memoria de la computadora a medida que los datos de salud escalan. 
+
+Este capítulo analiza la diferencia entre la estructura del código ("la receta") y la evolución del proceso en la memoria ("la cocina"), sustituyendo la matemática abstracta tradicional por escenarios de auditoría clínica, logística de red de frío y encriptación de identidades de pacientes.
+
+---
+
+## 1.2.1 Recursión Lineal vs. Iteración Lineal
+
+### Caso de Estudio: Auditoría de Alertas de Glucosa
+Deseamos procesar una lista de lecturas de glucosa en ayunas de la app de seguimiento de un paciente crónico (`'(145 95 160)`) y contar cuántas de ellas califican como **hiperglucemia** (definida estrictamente por guías internacionales como $> 126 \text{ mg/dL}$).
+
+#### El Enfoque Iterativo Eficiente (Espacio Constante $O(1)$)
+A diferencia de un proceso recursivo lineal que acumula una "deuda de operaciones" en el stack de memoria, el enfoque iterativo utiliza un **acumulador**. Esto actúa como una máquina de estados o una libreta de auditoría donde el resultado se calcula en tiempo real paso a paso, permitiendo procesar millones de filas de NHANES sin riesgo de *Stack Overflow*.
+
+```racket
+#lang racket
+
+;; hiperglicemia? : number -> boolean
+(define (hiperglicemia? glicemia)
+  (> glicemia 126))
+
+;; contar-alertas-iterativa: lista-de-glicemias -> numero
+(define (contar-alertas-iterativa lista-glicemias)
+  ;; iterar: resto-glicemias, acumulador-glicemias -> numero
+  (define (iterar resto-glicemias acumulador-glicemias)
+    (cond [(empty? resto-glicemias)
+           acumulador-glicemias] ; Caso base: devuelve el total acumulado
+          [(hiperglicemia? (first resto-glicemias))
+           (iterar (rest resto-glicemias)
+                   (+ acumulador-glicemias 1))] ; Incremento inmediato del estado
+          [else 
+           (iterar (rest resto-glicemias)
+                   acumulador-glicemias)]))
+  
+  (iterar lista-glicemias 0)) ; Inicialización del acumulador en cero
+
+;; Ejecución de prueba:
+;;(contar-alertas-iterativa '(145 95 160)) ;; produce: 2
+;;(contar-alertas-iterativa '(145 95 60)) ;; produce: 1
+;;(contar-alertas-iterativa '(45 95 60)) ;; produce: 0
+;;(contar-alertas-iterativa '(145 195 160)) ;; produce: 3
+```
+
+### Evolución Histórica del Estado en Memoria
+
+El siguiente rastreo demuestra cómo las variables de la función interna mutan de forma lineal y compacta en cada iteración del intérprete:
+
+```text
+(contar-alertas-iterativa '(145 95 160))
+(iterar '(145 95 160) 0)  ; Estado inicial: lista completa, acumulador en 0
+(iterar '(95 160)     1)  ; 145 > 126: acumulador pasa a 1 (0 + 1)
+(iterar '(160)        1)  ; 95 <= 126: acumulador se mantiene en 1
+(iterar '()           2)  ; 160 > 126: acumulador pasa a 2 (1 + 1)
+2                         ; Lista vacía: retorna el acumulador
+```
+
+## 1.2.2 Recursión Arbórea (Tree Recursion)
+
+### Caso de Estudio: Triaje de Emergencias en Catástrofes (Saturación de Camas)
+
+Modelamos el flujo de decisiones logísticas cuando un hospital se encuentra colapsado. Cada vez que ingresa un paciente crítico, la dirección médica tiene dos opciones exclusivas para acomodarlo: **Opción A** (reasignar internamente desprotegiendo otra área) u **Opción B** (derivar en ambulancia de soporte crítico a la red periférica).
+
+Si el proceso se ramifica exponencialmente en dos decisiones por cada paciente entrante n, se genera un árbol de llamadas idénticas y redundantes en la memoria.
+
+### Código Ineficiente Exponencial:
+
+```racket
+#lang racket
+
+(define (simular-combinaciones-triaje n)
+  (cond [(= n 0) 1] ; Si no quedan pacientes por asignar, 1 ruta válida encontrada.
+        [(< n 0) 0] ; Combinación inválida.
+        [else 
+         (+ (simular-combinaciones-triaje (- n 1))   ; Rama Opción A
+            (simular-combinaciones-triaje (- n 2)))] ; Rama Opción B
+  ))
+```
+
+### El Rastreo de la Explosión Arbórea
+
+Para solo *$n = 3$* pacientes, observa cómo el intérprete se ve obligado a evaluar expresiones idénticas de forma redundante (como `(sim-com-triaje 0)` y `(sim-com-triaje -1)` en múltiples sub-ramas):
+
+```text
+(simular-combinaciones-triaje 3)
+(+ (simular-combinaciones-triaje 2) (simular-combinaciones-triaje 1))
+(+ (+ (simular-combinaciones-triaje 1) (simular-combinaciones-triaje 0)) (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)))
+(+ (+ (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)) 1) (+ 1 0))
+(+ (+ (+ 1 0) 1) 1)
+(+ (+ 1 1) 1)
+(+ 2 1)
+3
+```
+
+## 1.2.3 Órdenes de Crecimiento (Notación Big-O)
+
+El orden de crecimiento es el constructo matemático que nos permite predecir el consumo de recursos (tiempo y espacio en memoria) a medida que los registros de pacientes escalan en volumen.
+
+| Tipo de Proceso | Equivalente Clínico / Administrativo | Comportamiento con Big Data (NHANES) |
+| :--- | :--- | :--- |
+| **Constante $O(1)$** | Consultar el tipo de sangre en la portada de una Ficha Médica Electrónica indexada. | Toma exactamente el mismo tiempo si la base tiene 10 registros o 100 millones. Es el ideal de eficiencia. |
+| **Lineal $O(n)$** | Tomar manualmente la presión arterial a cada paciente en una fila de consulta externa. | Si duplicas los pacientes ($2n$), el tiempo de ejecución requerido se duplica exactamente. |
+| **Raíz Cuadrada $O(\sqrt{n})$** | Buscar un divisor estructural para validar llaves en un sistema de criptografía médica. | Si los datos crecen a 10,000, el esfuerzo de cómputo solo crece proporcionalmente a $\sqrt{10,000} = 100$. |
+| **Logarítmico $O(\log n)$** | Buscar un paciente alfabéticamente en un archivo ordenado dividiendo el archivero a la mitad en cada paso. | Altamente escalable. Procesar un millón de registros solo consume alrededor de 20 pasos de búsqueda. |
+| **Exponencial $O(a^n)$** | Hacer pruebas cruzadas de compatibilidad inmunológica de "todos contra todos" para trasplantes de órganos. | Inviable para Big Data. Añadir solo unos pocos pacientes provoca que el tiempo de cómputo explote al infinito. |
+
+
+## 1.2.4 Procesos Exponenciales y Logarítmicos
+
+### Caso de Estudio: Proyección Logística de Inflación Médica o Crecimiento de Insumos
+
+Modelamos un escenario del MBA donde el costo de ciertos insumos tecnológicos protegidos por patentes se triplica ($3^n$) de manera compuesta por cada período de tiempo transcurrido.
+
+### Optimización por Exponenciación Binaria ($O(\log n)$)
+
+Calcular la potencia multiplicando la base sucesivamente demanda un tiempo lineal $O(n)$. Se podría acortar camino mediante reglas de exponentes:
+
+- Si el exponente es **par**, elevamos la base al cuadrado y reducimos el exponente a la mitad: $3^6 = (3^2)^3 = 9^3$.
+
+- Si el exponente es **impar**, extraemos una unidad de la base para forzar un escenario par en la siguiente vuelta: $9^3 = 9 \times 9^2$.
+
+Esta técnica reduce drásticamente los pasos necesarios para evaluar grandes volúmenes de datos. He aquí la solución iterativa eficiente que preserva la ecuación invariante $\text{Resultado} = \text{producto} \times (\text{base}^{\text{exponente}})$:
+
+```racket
+#lang racket
+
+(define (par? n) (= (remainder n 2) 0))
+(define (cuadrado x) (* x x))
+
+(define (factor-gasto-iterativo n)
+  ;; iterar: contador (exponente), base, producto (acumulador) -> numero
+  (define (iterar contador base producto)
+    (cond [(= contador 0) producto] ; Caso base: el producto contiene la respuesta final
+          [(par? contador)
+           (iterar (/ contador 2)   ; El exponente se corta a la mitad
+                   (cuadrado base)   ; La base muta y se eleva al cuadrado
+                   producto)]        ; El producto se mantiene intacto
+          [else
+           (iterar (- contador 1)   ; Restamos 1 para convertir el impar en par
+                   base              ; La base se mantiene igual
+                   (* base producto))])) ; El producto absorbe una unidad de la base
+  
+  (iterar n 3 1)) ; Llamada inicial: base inicial = 3, producto inicial = 1
+
+;;(factor-gasto-iterativo 6) ;; -> debe dar 729
+```
+
+### Rastreo del Flujo de Datos
+
+A continuación se visualiza cómo la base cambia cuando el exponente es par y cómo obliga a actualizar el producto acumulado en la siguiente iteración:
+
+```text
+(factor-gasto-iterativo 6)
+(iterar 6 3  1)   ; 6 es par: exponente/2 = 3, base^2 = 9. Producto se mantiene.
+(iterar 3 9  1)   ; 3 es impar: exponente-1 = 2. Producto absorbe la base (1 * 9).
+(iterar 2 9  9)   ; 2 es par: exponente/2 = 1, base^2 = 81. Producto se mantiene.
+(iterar 1 81 9)   ; 1 es impar: exponente-1 = 0. Producto absorbe la base (9 * 81).
+(iterar 0 81 729) ; Exponente es 0: retorna el producto acumulado.
+729
+```
+
+## 1.2.5 El Algoritmo de Euclides (Máximo Común Divisor)
+
+### Caso de Estudio: Sincronización Logística de Comités y Guardias Médicas
+
+En la gestión de operaciones de una clínica, el Máximo Común Divisor (MCD) sirve para resolver problemas de coincidencia de ciclos independientes.
+
+Supongamos que el Comité de Auditoría de Historias Clínicas se reúne cada **16 horas**, mientras que el Simulacro de Emergencias Sanitarias ocurre cada **28 horas**. Si ambos coinciden hoy, el MCD nos otorgará el bloque común de tiempo máximo en el que podemos subdividir ambos ciclos para sincronizar los calendarios del personal.
+
+Usando el residuo de la división (`remainder`), el algoritmo de Euclides reduce geométricamente los parámetros en un proceso iterativo de tiempo logarítmico *O(logn)* y espacio constante *O(1)*:
+
+```racket
+#lang racket
+
+;; mcd-logistico : numero numero -> numero
+(define (mcd-logistico horas-comite horas-simulacro)
+  (if (= horas-simulacro 0)
+      horas-comite
+      (mcd-logistico horas-simulacro (remainder horas-comite horas-simulacro))))
+
+;;(mcd-logistico 28 16) ;; produce: 4
+```
+
+### Rastreo del Proceso de Sincronización
+
+```text
+(mcd-logistico 28 16)
+(mcd-logistico 16 (remainder 28 16)) ; Residuo de 28/16 es 12
+(mcd-logistico 16 12)
+(mcd-logistico 12 (remainder 16 12)) ; Residuo de 16/12 es 4
+(mcd-logistico 12 4)
+(mcd-logistico 4 (remainder 12 4))   ; Residuo de 12/4 es 0
+(mcd-logistico 4 0)
+4                                    ; El bloque común máximo es de 4 horas
+```
+
+## 1.2.6 Prueba de Primalidad
+
+### Caso de Estudio: Validación Criptográfica de Identificadores de Pacientes
+
+Para garantizar el intercambio seguro de historias clínicas electrónicas, se emplean fichas de seguridad respaldadas por números primos. Necesitamos un algoritmo para validar fichas encontrando su menor divisor.
+
+### Optimización en la Frontera de la Raíz Cuadrada $O(\sqrt{n})$
+
+Para no inspeccionar de uno en uno todo el universo de números hasta n, aplicamos la regla de que si un número tiene un divisor, este debe ser menor o igual a su raíz cuadrada $O(\sqrt{n})$
+
+Para evitar lidiar con la imprecisión de los números de punto flotante de la función matemática tradicional de la raíz cuadrada, el código realiza un malabarismo sintáctico seguro y legible mediante el manejo de cadenas de texto:
+
+```racket
+;; divisor-vacio? : numero numero -> boolean
+(define (divide? a b)
+  (= (remainder b a) 0))
+
+;; buscar-menor-divisor : numero -> numero
+(define (menor-divisor n)
+  ;; aux-buscar: numero-a-probar -> numero
+  (define (aux-buscar de-prueba)
+    (cond [(> (string->number ;; pasar la cadena a número
+               (real->decimal-string ;; pasar el número a string
+                (* de-prueba de-prueba) 0)) ;; cero, para cero decimales
+              n)
+           n] ; 1. Si el cuadrado del probador supera a n, n es primo, devolvemos n.
+          [(divide? de-prueba n) de-prueba] ; 2. Si lo divide exactamente, ¡encontramos el menor divisor!
+          [else 
+           (aux-buscar (+ 1 de-prueba))])) ; 3. ¿Cuál es el siguiente número que deberíamos probar? (Pista: vamos de uno en uno hacia arriba)
+  
+  ;; Empezamos a probar desde el número 2
+  (aux-buscar 2))
+
+;; Ejecuciones esperadas:
+;;(menor-divisor 35) ;; -> debe dar 5 (porque 5 * 7 = 35)
+;;(menor-divisor 13) ;; -> debe dar 13 (porque 13 es primo)
+```

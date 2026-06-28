@@ -1,6 +1,6 @@
 ########################
 ##                    ##
-## Capítulo 14        ## 
+## Capítulo 15        ## 
 ##                    ##
 ########################
 
@@ -376,5 +376,509 @@ ggplot(
 # Ejercicio 1
 # Observe las trayectorias simuladas.
 
-# ¿Todas siguen exactamente el mismo camino?
-#  ¿Qué nos enseña esta variabilidad?
+# ¿Todas siguen exactamente el mismo camino? No, para nada, hay
+# trayectorias muy dispersas
+# ¿Qué nos enseña esta variabilidad? Que el futuro es muy incierto
+# y tiene muchas posibilidades
+
+######################
+##
+## Ejercicio 2
+##
+######################
+
+# Ejercicio 2
+
+# Modifique el horizonte de proyección.
+
+# Pruebe:
+  
+#  1:6
+
+# y luego:
+  
+#  1:24
+
+################ Horizonte con 6 #####################
+
+# Crear una tabla con la variable tiempo con 6 meses posteriores o
+# futuros a la tabla original de 48 meses
+futuro_6 <-
+  tibble(
+    tiempo = 
+      max(ventas_mensuales$tiempo) + 
+      1:6
+  )
+futuro_6 # produce:
+# A tibble: 6 × 1
+#  tiempo
+#   <int>
+#1     49
+#2     50
+#3     51
+#4     52
+#5     53
+#6     54
+
+# Basado en el modelo modelo_ventas, generar 1000 simulaciones (1000
+# filas) con los 6 meses futuros (6 columnas)
+simulaciones_6 <-
+  posterior_predict(
+    modelo_ventas,
+    newdata = futuro_6
+  )
+# Generar 6 de las 1000 simulaciones (1000 filas) y 5 de los 6 
+# meses (6 columnas) 
+simulaciones_6[1:6 ,1:5] # produce:
+#             1        2        3         4         5
+#[1,]  42237.13 83932.14 68345.89  95410.29  72474.21
+#[2,]  22809.24 38889.47 76583.77 105747.31  61901.87
+#[3,] 132382.76 26571.92 64251.93 104751.42 124291.87
+#[4,]  89033.74 86659.79 63585.66  97554.28  87146.80
+#[5,]  69044.59 97368.05 11271.45  91283.91 104894.09
+#[6,]  83095.28 33884.56 60665.41  61409.73  41151.64
+
+# Cambiar todas las simulaciones a formato largo
+escenarios_6 <-
+  as_draws_matrix(simulaciones_6) %>% # transformar a matriz
+  as_tibble() %>% # transformar a tibble
+  mutate(
+    sim = row_number() # numerar las filas
+  ) %>%
+  pivot_longer(  # pasar a formato largo
+    -sim, # No incluir sim en el cambio a formato largo
+    names_to = "mes",
+    values_to = "ventas"
+  )
+# Producir una tabla que repite cada una de las 1000 simulaciones
+# (sim ) 6 veces  y cada simulación tiene un valor de ventas
+escenarios_6[1:8,] # produce:
+# A tibble: 8 × 3
+#    sim mes   ventas    
+#  <int> <chr> <drws_mtr>
+#1     1 1     42237.13  
+#2     1 2     83932.14  
+#3     1 3     68345.89  
+#4     1 4     95410.29  
+#5     1 5     72474.21  
+#6     1 6     62978.58  
+#7     2 1     22809.24  
+#8     2 2     38889.47
+
+# Visualizar múltples escenarios de  ventas por mes
+ggplot(
+  escenarios_6,
+  aes(
+    x = as.numeric(mes), # Cambiar el tipo de character a numeric
+    y = ventas,
+    group = sim
+  ) 
+) +
+  geom_line(alpha = 0.03) +
+  labs(
+    title = "Futuros plausibles simulados",
+    x = "Mes"
+  )
+
+# Agrupar las simulaciones por mes y resumir por percentil 5, 50 y
+# 95
+bandas_6 <-
+  escenarios_6 %>%
+  group_by(mes) %>%
+  summarise(
+    p5 = quantile(ventas, 0.05),
+    p50 = median(ventas),
+    p95 = quantile(ventas, 0.95),
+    .groups = "drop"
+  )
+# Mostrar 6 los 6 meses
+bandas_6 # produce:
+# A tibble: 6 × 4
+#  mes   p5            p50 p95       
+#  <chr> <drws_mtr>  <dbl> <drws_mtr>
+#1 1     31860.56   69451. 110389.3  
+#2 2     32360.14   70804. 108880.1  
+#3 3     33457.18   72946. 113454.3  
+#4 4     36637.43   73204. 112224.1  
+#5 5     28608.01   73006. 110821.5  
+#6 6     37003.20   75307. 113596.5 
+
+# Crear bandas predictivas de las ventas por mes
+ggplot(
+  bandas_6,
+  aes(
+    x = as.numeric(mes)
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = p5,
+      ymax = p95
+    ),
+    alpha = 0.3
+  ) +
+  geom_line(
+    aes(y = p50)
+  ) +
+  labs(
+    title = "Bandas predictivas",
+    x = "Mes",
+    y = "Ventas"
+  )
+
+################# Horizonte con 24 ####################
+
+# Crear una tabla con la variable tiempo con 24 meses posteriores o
+# futuros a la tabla original de 48 meses
+futuro_24 <-
+  tibble(
+    tiempo = 
+      max(ventas_mensuales$tiempo) + 
+      1:24
+  )
+futuro_24 # produce:
+# A tibble: 24 × 1
+#  tiempo
+#   <int>
+#1     49
+#2     50
+#3     51
+#4     52
+#5     53
+#6     54
+# ℹ 18more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+# Basado en el modelo modelo_ventas, generar 1000 simulaciones (1000
+# filas) con los 24 meses futuros (24 columnas)
+simulaciones_24 <-
+  posterior_predict(
+    modelo_ventas,
+    newdata = futuro_24
+  )
+# Generar 6 de las 1000 simulaciones (1000 filas) y 5 de los 24 
+# meses (24 columnas) 
+simulaciones_24[1:6 ,1:5] # produce:
+#             1        2        3        4         5
+#[1,]  34602.45 37660.88 46664.33 80291.20  72290.10
+#[2,]  95221.01 13047.34 49607.74 16221.95  40291.79
+#[3,]  55271.37 30572.57 72256.30 57304.39  69490.35
+#[4,] 137734.57 59612.06 19621.68 59344.84 109051.02
+#[5,]  69095.70 28526.38 64708.73 73285.03 107839.98
+#[6,]  61983.41 80690.10 57546.00 71287.02  35031.04
+
+# Cambiar todas las simulaciones a formato largo
+escenarios_24 <-
+  as_draws_matrix(simulaciones_24) %>% # transformar a matriz
+  as_tibble() %>% # transformar a tibble
+  mutate(
+    sim = row_number() # numerar las filas
+  ) %>%
+  pivot_longer(  # pasar a formato largo
+    -sim, # No incluir sim en el cambio a formato largo
+    names_to = "mes",
+    values_to = "ventas"
+  )
+# Producir una tabla que repite cada una de las 1000 simulaciones
+# (sim ) 24 veces  y cada simulación tiene un valor de ventas
+escenarios_24[1:6,] # produce:
+# A tibble: 6 × 3
+#    sim mes   ventas    
+#  <int> <chr> <drws_mtr>
+#1     1 1     60793.35  
+#2     1 2     66403.10  
+#3     1 3     76106.95  
+#4     1 4     76075.38  
+#5     1 5     85807.11  
+#6     1 6     89455.91  
+
+# Visualizar múltples escenarios de  ventas por mes
+ggplot(
+  escenarios_24,
+  aes(
+    x = as.numeric(mes), # Cambiar el tipo de character a numeric
+    y = ventas,
+    group = sim
+  ) 
+) +
+  geom_line(alpha = 0.03) +
+  labs(
+    title = "Futuros plausibles simulados",
+    x = "Mes"
+  )
+
+# Agrupar las simulaciones por mes y resumir por percentil 5, 50 y
+# 95
+bandas_24 <-
+  escenarios_24 %>%
+  group_by(mes) %>%
+  summarise(
+    p5 = quantile(ventas, 0.05),
+    p50 = median(ventas),
+    p95 = quantile(ventas, 0.95),
+    .groups = "drop"
+  )
+# Mostrar 6 de los 24 meses (24 filas)
+bandas_24[1:6,] # produce:
+# A tibble: 6 × 4
+#  mes   p5            p50 p95       
+#  <chr> <drws_mtr>  <dbl> <drws_mtr>
+#1 1     30954.67   69700. 112351.5  
+#2 10    42703.02   76954. 114139.6  
+#3 11    38689.83   79624. 117172.7  
+#4 12    43296.86   81253. 119367.5  
+#5 13    41374.36   80151. 119511.2  
+#6 14    39841.61   81677. 119457.4
+
+ggplot(
+  bandas_24,
+  aes(
+    x = as.numeric(mes)
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = p5,
+      ymax = p95
+    ),
+    alpha = 0.3
+  ) +
+  geom_line(
+    aes(y = p50)
+  ) +
+  labs(
+    title = "Bandas predictivas",
+    x = "Mes",
+    y = "Ventas"
+  )
+
+# ¿Cómo cambia la incertidumbre? La incertidumbre no cambia mucho
+# pero la tendencia se aplana con menos meses, con más meses la 
+# tendencia tiene un pendiente más epinada
+
+####################
+##
+## Ejercicio 3
+##
+####################
+
+# Ejercicio 3
+
+# Compare:
+  
+#  posterior_epred()
+
+# 12 simulaciones
+sims <-
+  posterior_epred(
+    modelo_ventas,
+    newdata = futuro
+  )
+
+# Escenas
+escenas <-
+  as_draws_matrix(sims) %>% # transformar a matriz
+  as_tibble() %>% # transformar a tibble
+  mutate(
+    sim = row_number() # numerar las filas
+  ) %>%
+  pivot_longer(  # pasar a formato largo
+    -sim, # No incluir sim en el cambio a formato largo
+    names_to = "mes",
+    values_to = "ventas"
+  )
+escenas # produce:
+# A tibble: 12,000 × 3
+#    sim mes   ventas    
+#  <int> <chr> <drws_mtr>
+#1     1 1     69285.25  
+#2     1 2     70250.62  
+#3     1 3     71215.99  
+#4     1 4     72181.36  
+#5     1 5     73146.73  
+#6     1 6     74112.10  
+# ℹ 11,994 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+# Visualizar múltples escenarios de  ventas por mes
+ggplot(
+  escenas,
+  aes(
+    x = as.numeric(mes), # Cambiar el tipo de character a numeric
+    y = ventas,
+    group = sim
+  ) 
+) +
+  geom_line(alpha = 0.03) +
+  labs(
+    title = "Futuros plausibles simulados",
+    x = "Mes"
+  )
+
+# Agrupar las simulaciones por mes y resumir por percentil 5, 50 y
+# 95
+ribbons <-
+  escenas %>%
+  group_by(mes) %>%
+  summarise(
+    p5 = quantile(ventas, 0.05),
+    p50 = median(ventas),
+    p95 = quantile(ventas, 0.95),
+    .groups = "drop"
+  )
+# Mostrar 6 de los 48 meses (48 filas)
+ribbons # produce:
+
+# Crear bandas predictivas de las ventas por mes
+ggplot(
+  ribbons,
+  aes(
+    x = as.numeric(mes)
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = p5,
+      ymax = p95
+    ),
+    alpha = 0.3
+  ) +
+  geom_line(
+    aes(y = p50)
+  ) +
+  labs(
+    title = "Bandas predictivas",
+    x = "Mes",
+    y = "Ventas"
+  )
+
+# y
+
+# posterior_predict()
+
+# Crear bandas predictivas de las ventas por mes
+ggplot(
+  bandas,
+  aes(
+    x = as.numeric(mes)
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = p5,
+      ymax = p95
+    ),
+    alpha = 0.3
+  ) +
+  geom_line(
+    aes(y = p50)
+  ) +
+  labs(
+    title = "Bandas predictivas",
+    x = "Mes",
+    y = "Ventas"
+  )
+
+# ¿Cuál produce escenarios más dispersos? posterior_predict() es mucho 
+# más disperso que posterior_epred()
+  
+#  ¿Por qué? Porque posterior_epred() muestra la variabilidad de
+#  la media mientras que posterior_predict() muestra la variabilidad
+#  real de las ventas futuras
+
+#####################
+##
+## Ejercicio 4
+##
+#####################
+
+# Ejercicio 4
+# Construya escenarios:
+  
+#  percentil 10
+#  percentil 50
+#  percentil 90
+
+# Agrupar las simulaciones por mes y resumir por percentil 10, 50 y
+# 90
+bandas2 <-
+  escenarios %>%
+  group_by(mes) %>%
+  summarise(
+    p10 = quantile(ventas, 0.10),
+    p50 = median(ventas),
+    p90 = quantile(ventas, 0.90),
+    .groups = "drop"
+  )
+# Mostrar 6 de los 48 meses (48 filas)
+bandas2[1:6,] # produce:
+# A tibble: 6 × 4
+#  mes   p10           p50 p90       
+#  <chr> <drws_mtr>  <dbl> <drws_mtr>
+#1 1     39766.53   69456. 100506.04 
+#2 10    45329.30   78751. 109011.60 
+#3 11    47540.69   80369. 110748.78 
+#4 12    47691.89   80352. 110262.20 
+#5 2     41171.76   71450.  97689.19 
+#6 3     42670.83   72450. 101313.63 
+
+# Crear bandas predictivas de las ventas por mes
+ggplot(
+  bandas2,
+  aes(
+    x = as.numeric(mes)
+  )
+) +
+  geom_ribbon(
+    aes(
+      ymin = p10,
+      ymax = p90
+    ),
+    alpha = 0.3
+  ) +
+  geom_line(
+    aes(y = p50)
+  ) +
+  labs(
+    title = "Bandas predictivas",
+    x = "Mes",
+    y = "Ventas"
+  )
+
+# Interprete cada uno desde la perspectiva de inventario.
+# Escenario favorable: las ventas van de 100mil a 110mil
+# Escenario desfavorable: las ventas de 40mil a 50mil
+# Escenario moderado: las ventas van de 70mil a 80mil
+
+
+#####################
+##
+## Ejercicio 5
+##
+#####################
+
+# Ejercicio 5
+
+# Suponga que usted es responsable de presupuesto.
+
+# ¿Qué decisiones cambiarían si únicamente observara el escenario 
+# central? Asignaría demasiado presupuesto o muy poco presupuesto
+
+# Con un escenario desfavorable: la pregunta real sería: podemos
+# operar si las ventas caen a este nivel? Qué gastos podrían 
+# reducirse? 
+
+# Un escenario moderado: es una referencia útil para planificación 
+# general. Pero no debe iterpretarse como una garantía
+
+# En un escenario favorable: la preguanta es si hay suficiente inventario
+# o si se puede atender una demanda tan alta?
+
+# En resumen se debe tomar en cuenta todos los escenarios, creo que
+# sobre todo a nivel de presupuesto y recursos, por ejemplo cual
+# sería el mínimo presupuesto para enfrentarse a un escenario 
+# favorable. Siempre habrá que hacer concesiones.
+  
+# ¿Qué riesgos estaría ignorando? El riesgo de quedarme sin stock
+# o de quedarme con demasiado stock
+

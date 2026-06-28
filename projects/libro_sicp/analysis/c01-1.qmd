@@ -1,0 +1,178 @@
+---
+title: "1.1 — Los Elementos Fundamentales de la Programación"
+format: html
+editor: visual
+---
+
+# 1.1 Los Elementos de Programación (SICP Adaptado)
+
+Un lenguaje de programación poderoso combina tres mecanismos fundamentales para organizar el conocimiento (en nuestro caso, la lógica médica y administrativa):
+
+1. **Expresiones primitivas:** Los datos y operaciones más simples.
+2. **Mecanismos de combinación:** Cómo unimos las partes.
+3. **Mecanismos de abstracción:** Cómo les damos un nombre para reutilizarlas.
+
+---
+
+En Racket, al igual que en R, las expresiones primitivas representan los átomos de información. Si escribes un número o un dato básico en la consola, el intérprete simplemente te devolverá su valor.
+
+* `95` (un peso en kg)
+* `1.75` (una talla en metros)
+* `32.5` (un Índice de Masa Corporal - IMC)
+
+---
+
+## 1.1.2 Combinando Operaciones (La Sintaxis de Prefijo)
+
+A diferencia de R, Racket utiliza la **notación de prefijo** encerrada entre paréntesis: `(operador operando1 operando2 ...)`. El operador (verbo o función) siempre se coloca al principio. Piénsalo como una orden médica: *"Administre [Medicamento] a [Paciente A] y [Paciente B]"*.
+
+### Ejemplo Clínico: Suma de Glucosas
+Para calcular la suma de tres mediciones de glucosa capilar de un paciente en ayunas:
+
+```racket
+#lang racket
+
+(+ 105 112 98)
+;; Produce: 315
+```
+
+### Combinaciones Anidadas
+Podemos meter combinaciones dentro de combinaciones (funciones anidadas). Por ejemplo, para calcular el promedio de esas tres mediciones de glucosa:
+
+```racket
+(/ (+ 105 112 98) 3)
+;; Produce: 105
+```
+
+**Lógica de evaluación**: Racket evalúa primero la combinación interna `(+ 105 112 98)` que resulta en `315`, y luego aplica la externa: `(/ 315 3)`.
+
+## 1.1.3 Abstracción: Definiendo Variables (`define`)
+Para construir una semántica médica en nuestro código, necesitamos asociar nombres con valores. En Racket usamos `define`.
+
+```racket
+(define umbral-obesidad 30.0)
+(define peso-paciente-kg 95)
+(define talla-paciente-m 1.70)
+
+;; Usamos las variables para calcular expresiones complejas:
+(define talla-al-cuadrado (* talla-paciente-m talla-paciente-m))
+```
+
+## 1.1.4 Evaluando Combinaciones (El Modelo de Sustitución)
+Para entender cómo piensa el intérprete, visualizamos el **Modelo de Sustitución**. Racket sustituye los nombres por sus valores y luego opera de adentro hacia afuera (Evaluación Aplicativa).
+
+Para calcular el IMC final del paciente:
+
+```racket
+(/ peso-paciente-kg talla-al-cuadrado)
+```
+
+**Paso a paso del modelo**:
+
+1. Sustituye `peso-paciente-kg` por `95`.
+
+2. Sustituye `talla-al-cuadrado` por el resultado de su definición: `(* 1.70 1.70)` → `2.89`.
+
+3. Evalúa la expresión final resultante: `(/ 95 2.89)`.
+
+4. Devuelve `32.87` (Aproximado).
+
+## 1.1.5 El Modelo de Sustitución para Procedimientos (Funciones)
+Para crear lógica reutilizable, usamos `define` con una sintaxis que agrupa el nombre de la función y sus parámetros entre paréntesis:
+
+```racket
+;; calcular-imc : number number -> number
+(define (calcular-imc peso talla)
+  (/ peso (* talla talla)))
+```
+
+Al aplicar el procedimiento:
+
+```racket
+(calcular-imc 95 1.70)
+;; Produce: 32.8719...
+```
+
+El intérprete sustituye los argumentos reales (`95 y 1.70`) en los parámetros formales (`peso e imc`) antes de evaluar el cuerpo de la función.
+
+## 1.1.6 Condicionales y Predicados (Lógica de Diagnóstico)
+Para los algoritmos de diagnóstico clínico, Scheme utiliza la estructura condicional `cond`. Cada línea es una cláusula compuesta por un predicado (una pregunta lógica que devuelve `#t o #f`) y una consecuencia.
+
+### Ejemplo Clínico: Clasificación de Glucosa
+
+```racket
+;; evaluar-glucosa : number -> string
+(define (evaluar-glucosa nivel)
+  (cond [(< nivel 100) "Normal"]
+        [(and (>= nivel 100) (< nivel 126)) "Prediabetes"]
+        [else "Criterio de Diabetes"]))
+```
+
+## Cuaderno de Trabajo: Ejercicios Resueltos
+
+A continuación, se consolidan las soluciones validadas para el control de procesos clínicos y administrativos.
+
+### Ejercicio 1: Gasto Operativo de la Clínica
+
+**Problema**: Definir las variables fijas de una clínica de bariatría y calcular el costo operativo total.
+
+```racket
+(define renta 2500)
+(define nutriologa 1800)
+(define software 200)
+
+(define costo-operativo-total
+  (+ renta nutriologa software))
+;; costo-operativo-total -> produce: 4500
+```
+
+### Ejercicio 2 y 3: Función de Porcentaje de Pérdida de Peso
+
+**Problema**: Diseñar una función reutilizable para calcular el porcentaje de pérdida de peso entre dos consultas.
+
+```racket
+;; calcular-porcentaje-perdida : number number -> number
+(define (calcular-porcentaje-perdida inicial actual)
+  (* (/ (- inicial actual)
+        inicial)
+     100))
+
+(calcular-porcentaje-perdida 140 128)
+;; produce la fracción exacta: 8 4/7 (aprox 8.57%)
+```
+
+### Ejercicio 4: Alerta de Dosis Básica
+
+**Problema**: Calcular una dosis automatizada basada en el peso del paciente (0.05 mg por kg).
+
+```racket
+;; dosis-medicamento : number -> number
+(define (dosis-medicamento peso-paciente)
+  (* peso-paciente 0.05))
+
+(dosis-medicamento 100)
+;; produce: 5.0
+```
+
+### Ejercicio 5: Triaje de IMC (Clasificación OMS Simplificada)
+
+**Problema**: Clasificar pacientes en categorías de peso según los puntos de corte internacionales.
+
+```;; clasificar-imc : number -> string
+(define (clasificar-imc imc)
+  (cond [(< imc 25) "Normal o Bajo Peso"]
+        [(and (< imc 30) (>= imc 25)) "Sobrepeso"]
+        [else "Obesidad"]))
+```
+
+### Ejercicio 6: Validación de Seguridad en Dosis (Código Defensivo)
+
+**Problema**: Validar la seguridad de la entrada de datos antes de calcular una dosis clínica para evitar eventos adversos por errores de dedo.
+
+```racket
+;; dosis-segura-bariatrica : number -> number or string
+(define (dosis-segura-bariatrica peso)
+  (cond [(<= peso 0) "Error: Peso inválido"]
+        [(> peso 250) "Alerta: Requiere validación manual"]
+        [else (dosis-medicamento peso)]))
+```

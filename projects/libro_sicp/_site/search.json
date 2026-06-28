@@ -1,0 +1,301 @@
+[
+  {
+    "objectID": "analysis/c01-1.html",
+    "href": "analysis/c01-1.html",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "Un lenguaje de programación poderoso combina tres mecanismos fundamentales para organizar el conocimiento (en nuestro caso, la lógica médica y administrativa):\n\nExpresiones primitivas: Los datos y operaciones más simples.\nMecanismos de combinación: Cómo unimos las partes.\nMecanismos de abstracción: Cómo les damos un nombre para reutilizarlas.\n\n\nEn Racket, al igual que en R, las expresiones primitivas representan los átomos de información. Si escribes un número o un dato básico en la consola, el intérprete simplemente te devolverá su valor.\n\n95 (un peso en kg)\n1.75 (una talla en metros)\n32.5 (un Índice de Masa Corporal - IMC)\n\n\n\n\nA diferencia de R, Racket utiliza la notación de prefijo encerrada entre paréntesis: (operador operando1 operando2 ...). El operador (verbo o función) siempre se coloca al principio. Piénsalo como una orden médica: “Administre [Medicamento] a [Paciente A] y [Paciente B]”.\n\n\nPara calcular la suma de tres mediciones de glucosa capilar de un paciente en ayunas:\n#lang racket\n\n(+ 105 112 98)\n;; Produce: 315\n\n\n\nPodemos meter combinaciones dentro de combinaciones (funciones anidadas). Por ejemplo, para calcular el promedio de esas tres mediciones de glucosa:\n(/ (+ 105 112 98) 3)\n;; Produce: 105\nLógica de evaluación: Racket evalúa primero la combinación interna (+ 105 112 98) que resulta en 315, y luego aplica la externa: (/ 315 3).\n\n\n\n\nPara construir una semántica médica en nuestro código, necesitamos asociar nombres con valores. En Racket usamos define.\n(define umbral-obesidad 30.0)\n(define peso-paciente-kg 95)\n(define talla-paciente-m 1.70)\n\n;; Usamos las variables para calcular expresiones complejas:\n(define talla-al-cuadrado (* talla-paciente-m talla-paciente-m))\n\n\n\nPara entender cómo piensa el intérprete, visualizamos el Modelo de Sustitución. Racket sustituye los nombres por sus valores y luego opera de adentro hacia afuera (Evaluación Aplicativa).\nPara calcular el IMC final del paciente:\n(/ peso-paciente-kg talla-al-cuadrado)\nPaso a paso del modelo:\n\nSustituye peso-paciente-kg por 95.\nSustituye talla-al-cuadrado por el resultado de su definición: (* 1.70 1.70) → 2.89.\nEvalúa la expresión final resultante: (/ 95 2.89).\nDevuelve 32.87 (Aproximado).\n\n\n\n\nPara crear lógica reutilizable, usamos define con una sintaxis que agrupa el nombre de la función y sus parámetros entre paréntesis:\n;; calcular-imc : number number -&gt; number\n(define (calcular-imc peso talla)\n  (/ peso (* talla talla)))\nAl aplicar el procedimiento:\n(calcular-imc 95 1.70)\n;; Produce: 32.8719...\nEl intérprete sustituye los argumentos reales (95 y 1.70) en los parámetros formales (peso e imc) antes de evaluar el cuerpo de la función.\n\n\n\nPara los algoritmos de diagnóstico clínico, Scheme utiliza la estructura condicional cond. Cada línea es una cláusula compuesta por un predicado (una pregunta lógica que devuelve #t o #f) y una consecuencia.\n\n\n;; evaluar-glucosa : number -&gt; string\n(define (evaluar-glucosa nivel)\n  (cond [(&lt; nivel 100) \"Normal\"]\n        [(and (&gt;= nivel 100) (&lt; nivel 126)) \"Prediabetes\"]\n        [else \"Criterio de Diabetes\"]))\n\n\n\n\nA continuación, se consolidan las soluciones validadas para el control de procesos clínicos y administrativos.\n\n\nProblema: Definir las variables fijas de una clínica de bariatría y calcular el costo operativo total.\n(define renta 2500)\n(define nutriologa 1800)\n(define software 200)\n\n(define costo-operativo-total\n  (+ renta nutriologa software))\n;; costo-operativo-total -&gt; produce: 4500\n\n\n\nProblema: Diseñar una función reutilizable para calcular el porcentaje de pérdida de peso entre dos consultas.\n;; calcular-porcentaje-perdida : number number -&gt; number\n(define (calcular-porcentaje-perdida inicial actual)\n  (* (/ (- inicial actual)\n        inicial)\n     100))\n\n(calcular-porcentaje-perdida 140 128)\n;; produce la fracción exacta: 8 4/7 (aprox 8.57%)\n\n\n\nProblema: Calcular una dosis automatizada basada en el peso del paciente (0.05 mg por kg).\n;; dosis-medicamento : number -&gt; number\n(define (dosis-medicamento peso-paciente)\n  (* peso-paciente 0.05))\n\n(dosis-medicamento 100)\n;; produce: 5.0\n\n\n\nProblema: Clasificar pacientes en categorías de peso según los puntos de corte internacionales.\n;; clasificar-imc : number -&gt; string (define (clasificar-imc imc)   (cond [(&lt; imc 25) \"Normal o Bajo Peso\"]         [(and (&lt; imc 30) (&gt;= imc 25)) \"Sobrepeso\"]         [else \"Obesidad\"]))\n\n\n\nProblema: Validar la seguridad de la entrada de datos antes de calcular una dosis clínica para evitar eventos adversos por errores de dedo.\n;; dosis-segura-bariatrica : number -&gt; number or string\n(define (dosis-segura-bariatrica peso)\n  (cond [(&lt;= peso 0) \"Error: Peso inválido\"]\n        [(&gt; peso 250) \"Alerta: Requiere validación manual\"]\n        [else (dosis-medicamento peso)]))",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#introducción",
+    "href": "analysis/c01-1.html#introducción",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "Cuando la mayoría de las personas piensa en programación, imagina escribir instrucciones para que una computadora haga algo.\nPero esa visión es incompleta.\nUn lenguaje de programación no es solamente una herramienta para controlar una máquina. También es una herramienta para organizar nuestras ideas.\nDe la misma forma que un médico utiliza protocolos para organizar diagnósticos y tratamientos, o un administrador utiliza procedimientos para organizar una empresa, un programador utiliza un lenguaje para organizar procesos.\nEsta idea es tan importante que constituye uno de los mensajes centrales de SICP:\n\nProgramar no consiste únicamente en decirle a una computadora qué hacer.\nProgramar consiste en construir modelos mentales cada vez más complejos de manera organizada.\n\nPara lograrlo, cualquier lenguaje poderoso necesita tres capacidades fundamentales:\n\nElementos básicos.\nMecanismos para combinarlos.\nMecanismos para abstraerlos.\n\nDurante este capítulo aprenderemos cómo Scheme proporciona estas tres herramientas.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#analogía-una-orden-médica",
+    "href": "analysis/c01-1.html#analogía-una-orden-médica",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "Analogía: una orden médica",
+    "text": "Analogía: una orden médica\nImagina una receta médica:\nAdministrar\n    medicamento A\n    medicamento B\nLa acción principal aparece primero.\nLuego aparecen los elementos sobre los que actuará.\nScheme funciona de forma similar:\n(+ 5 7)\nSignifica:\nAplicar suma a 5 y 7\nLa computadora entiende inmediatamente cuál es la operación principal.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#analogía-un-diagnóstico",
+    "href": "analysis/c01-1.html#analogía-un-diagnóstico",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "Analogía: un diagnóstico",
+    "text": "Analogía: un diagnóstico\nSupongamos que un paciente presenta:\n\nhipertensión\nobesidad\nresistencia a la insulina\nhipertrigliceridemia\n\nSería incómodo repetir toda la lista constantemente.\nPor eso utilizamos un nombre:\nSíndrome metabólico\nEse nombre resume una realidad compleja.\nEn programación ocurre exactamente lo mismo.\n(define radius 10)\nAhora “radius” representa un valor que puede utilizarse repetidamente.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#qué-acabamos-de-hacer",
+    "href": "analysis/c01-1.html#qué-acabamos-de-hacer",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "¿Qué acabamos de hacer?",
+    "text": "¿Qué acabamos de hacer?\nHemos creado una nueva operación.\nLa computadora ya sabía multiplicar.\nNosotros le enseñamos a calcular cuadrados.\nEsto es mucho más importante de lo que parece.\nEstamos construyendo nuevas herramientas usando herramientas existentes.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#analogía",
+    "href": "analysis/c01-1.html#analogía",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "Analogía",
+    "text": "Analogía\nImagina una plantilla clínica:\nPaciente: __________\nSi el paciente se llama Ana:\nPaciente: Ana\nSimplemente sustituimos el espacio por un valor concreto.\nEl modelo de sustitución funciona de forma similar.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#analogía-clínica",
+    "href": "analysis/c01-1.html#analogía-clínica",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "Analogía clínica",
+    "text": "Analogía clínica\nUn protocolo podría decir:\nSi la glucosa es alta:\n    iniciar tratamiento\n\nCaso contrario:\n    continuar observación\nEso es exactamente lo que expresa un if.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#conocimiento-declarativo",
+    "href": "analysis/c01-1.html#conocimiento-declarativo",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "Conocimiento declarativo",
+    "text": "Conocimiento declarativo\nDescribe qué es algo.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#conocimiento-procedimental",
+    "href": "analysis/c01-1.html#conocimiento-procedimental",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "Conocimiento procedimental",
+    "text": "Conocimiento procedimental\nDescribe cómo hacerlo.\nLas computadoras necesitan procedimientos.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#analogía-médica",
+    "href": "analysis/c01-1.html#analogía-médica",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "Analogía médica",
+    "text": "Analogía médica\nUn médico solicita una resonancia.\nNo necesita conocer los detalles electrónicos del equipo.\nSolo necesita confiar en que:\nEntrada → paciente\nSalida → imágenes diagnósticas\nLa resonancia funciona como una caja negra.\nLos procedimientos también.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "index.html#bienvenido",
+    "href": "index.html#bienvenido",
+    "title": "SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas",
+    "section": "Bienvenido",
+    "text": "Bienvenido\nEste es el sitio web del libro “SICP Accesible”, Este libro te enseñará programación de paradigmas de programación en scheme.\nEn este libro enconstrarás un manual muy práctico de habilidades para el análisis de datos bayesiano desde los temas más básicos como limpiar datos y crear gráficos, hasta crear modelos bayesianos en un contexto relacionado con la analítica de negocios usando algunas datasets de Kaggle: Superstore Sales, Customer Churn y Marketing Campaign\nEste sitio web es y siempre será gratuito, bajo la licencia CC BY-NC-ND 3.0 .",
+    "crumbs": [
+      "Inicio",
+      "SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#combinando-operaciones-la-sintaxis-de-prefijo",
+    "href": "analysis/c01-1.html#combinando-operaciones-la-sintaxis-de-prefijo",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "A diferencia de R, Racket utiliza la notación de prefijo encerrada entre paréntesis: (operador operando1 operando2 ...). El operador (verbo o función) siempre se coloca al principio. Piénsalo como una orden médica: “Administre [Medicamento] a [Paciente A] y [Paciente B]”.\n\n\nPara calcular la suma de tres mediciones de glucosa capilar de un paciente en ayunas:\n#lang racket\n\n(+ 105 112 98)\n;; Produce: 315\n\n\n\nPodemos meter combinaciones dentro de combinaciones (funciones anidadas). Por ejemplo, para calcular el promedio de esas tres mediciones de glucosa:\n(/ (+ 105 112 98) 3)\n;; Produce: 105\nLógica de evaluación: Racket evalúa primero la combinación interna (+ 105 112 98) que resulta en 315, y luego aplica la externa: (/ 315 3).",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#abstracción-definiendo-variables-define",
+    "href": "analysis/c01-1.html#abstracción-definiendo-variables-define",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "Para construir una semántica médica en nuestro código, necesitamos asociar nombres con valores. En Racket usamos define.\n(define umbral-obesidad 30.0)\n(define peso-paciente-kg 95)\n(define talla-paciente-m 1.70)\n\n;; Usamos las variables para calcular expresiones complejas:\n(define talla-al-cuadrado (* talla-paciente-m talla-paciente-m))",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#evaluando-combinaciones-el-modelo-de-sustitución",
+    "href": "analysis/c01-1.html#evaluando-combinaciones-el-modelo-de-sustitución",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "Para entender cómo piensa el intérprete, visualizamos el Modelo de Sustitución. Racket sustituye los nombres por sus valores y luego opera de adentro hacia afuera (Evaluación Aplicativa).\nPara calcular el IMC final del paciente:\n(/ peso-paciente-kg talla-al-cuadrado)\nPaso a paso del modelo:\n\nSustituye peso-paciente-kg por 95.\nSustituye talla-al-cuadrado por el resultado de su definición: (* 1.70 1.70) → 2.89.\nEvalúa la expresión final resultante: (/ 95 2.89).\nDevuelve 32.87 (Aproximado).",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#el-modelo-de-sustitución-para-procedimientos-funciones",
+    "href": "analysis/c01-1.html#el-modelo-de-sustitución-para-procedimientos-funciones",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "Para crear lógica reutilizable, usamos define con una sintaxis que agrupa el nombre de la función y sus parámetros entre paréntesis:\n;; calcular-imc : number number -&gt; number\n(define (calcular-imc peso talla)\n  (/ peso (* talla talla)))\nAl aplicar el procedimiento:\n(calcular-imc 95 1.70)\n;; Produce: 32.8719...\nEl intérprete sustituye los argumentos reales (95 y 1.70) en los parámetros formales (peso e imc) antes de evaluar el cuerpo de la función.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#condicionales-y-predicados-lógica-de-diagnóstico",
+    "href": "analysis/c01-1.html#condicionales-y-predicados-lógica-de-diagnóstico",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "Para los algoritmos de diagnóstico clínico, Scheme utiliza la estructura condicional cond. Cada línea es una cláusula compuesta por un predicado (una pregunta lógica que devuelve #t o #f) y una consecuencia.\n\n\n;; evaluar-glucosa : number -&gt; string\n(define (evaluar-glucosa nivel)\n  (cond [(&lt; nivel 100) \"Normal\"]\n        [(and (&gt;= nivel 100) (&lt; nivel 126)) \"Prediabetes\"]\n        [else \"Criterio de Diabetes\"]))",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-1.html#cuaderno-de-trabajo-ejercicios-resueltos",
+    "href": "analysis/c01-1.html#cuaderno-de-trabajo-ejercicios-resueltos",
+    "title": "1.1 — Los Elementos Fundamentales de la Programación",
+    "section": "",
+    "text": "A continuación, se consolidan las soluciones validadas para el control de procesos clínicos y administrativos.\n\n\nProblema: Definir las variables fijas de una clínica de bariatría y calcular el costo operativo total.\n(define renta 2500)\n(define nutriologa 1800)\n(define software 200)\n\n(define costo-operativo-total\n  (+ renta nutriologa software))\n;; costo-operativo-total -&gt; produce: 4500\n\n\n\nProblema: Diseñar una función reutilizable para calcular el porcentaje de pérdida de peso entre dos consultas.\n;; calcular-porcentaje-perdida : number number -&gt; number\n(define (calcular-porcentaje-perdida inicial actual)\n  (* (/ (- inicial actual)\n        inicial)\n     100))\n\n(calcular-porcentaje-perdida 140 128)\n;; produce la fracción exacta: 8 4/7 (aprox 8.57%)\n\n\n\nProblema: Calcular una dosis automatizada basada en el peso del paciente (0.05 mg por kg).\n;; dosis-medicamento : number -&gt; number\n(define (dosis-medicamento peso-paciente)\n  (* peso-paciente 0.05))\n\n(dosis-medicamento 100)\n;; produce: 5.0\n\n\n\nProblema: Clasificar pacientes en categorías de peso según los puntos de corte internacionales.\n;; clasificar-imc : number -&gt; string (define (clasificar-imc imc)   (cond [(&lt; imc 25) \"Normal o Bajo Peso\"]         [(and (&lt; imc 30) (&gt;= imc 25)) \"Sobrepeso\"]         [else \"Obesidad\"]))\n\n\n\nProblema: Validar la seguridad de la entrada de datos antes de calcular una dosis clínica para evitar eventos adversos por errores de dedo.\n;; dosis-segura-bariatrica : number -&gt; number or string\n(define (dosis-segura-bariatrica peso)\n  (cond [(&lt;= peso 0) \"Error: Peso inválido\"]\n        [(&gt; peso 250) \"Alerta: Requiere validación manual\"]\n        [else (dosis-medicamento peso)]))",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.1 — Los Elementos Fundamentales de la Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html",
+    "href": "analysis/c01-2.html",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "",
+    "text": "En el diseño de software biomédico y motores de reglas lógicas (como un futuro Datalog semántico), escribir un procedimiento no basta; es imperativo entender cómo se comporta dicho procedimiento en la memoria de la computadora a medida que los datos de salud escalan.\nEste capítulo analiza la diferencia entre la estructura del código (“la receta”) y la evolución del proceso en la memoria (“la cocina”), sustituyendo la matemática abstracta tradicional por escenarios de auditoría clínica, logística de red de frío y encriptación de identidades de pacientes.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html#introducción-al-capítulo",
+    "href": "analysis/c01-2.html#introducción-al-capítulo",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "",
+    "text": "En el diseño de software biomédico y motores de reglas lógicas (como un futuro Datalog semántico), escribir un procedimiento no basta; es imperativo entender cómo se comporta dicho procedimiento en la memoria de la computadora a medida que los datos de salud escalan.\nEste capítulo analiza la diferencia entre la estructura del código (“la receta”) y la evolución del proceso en la memoria (“la cocina”), sustituyendo la matemática abstracta tradicional por escenarios de auditoría clínica, logística de red de frío y encriptación de identidades de pacientes.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html#recursión-lineal-vs.-iteración-lineal",
+    "href": "analysis/c01-2.html#recursión-lineal-vs.-iteración-lineal",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "1.2.1 Recursión Lineal vs. Iteración Lineal",
+    "text": "1.2.1 Recursión Lineal vs. Iteración Lineal\n\nCaso de Estudio: Auditoría de Alertas de Glucosa\nDeseamos procesar una lista de lecturas de glucosa en ayunas de la app de seguimiento de un paciente crónico ('(145 95 160)) y contar cuántas de ellas califican como hiperglucemia (definida estrictamente por guías internacionales como \\(&gt; 126 \\text{ mg/dL}\\)).\n\nEl Enfoque Iterativo Eficiente (Espacio Constante \\(O(1)\\))\nA diferencia de un proceso recursivo lineal que acumula una “deuda de operaciones” en el stack de memoria, el enfoque iterativo utiliza un acumulador. Esto actúa como una máquina de estados o una libreta de auditoría donde el resultado se calcula en tiempo real paso a paso, permitiendo procesar millones de filas de NHANES sin riesgo de Stack Overflow.\n#lang racket\n\n;; hiperglicemia? : number -&gt; boolean\n(define (hiperglicemia? glicemia)\n  (&gt; glicemia 126))\n\n;; contar-alertas-iterativa: lista-de-glicemias -&gt; numero\n(define (contar-alertas-iterativa lista-glicemias)\n  ;; iterar: resto-glicemias, acumulador-glicemias -&gt; numero\n  (define (iterar resto-glicemias acumulador-glicemias)\n    (cond [(empty? resto-glicemias)\n           acumulador-glicemias] ; Caso base: devuelve el total acumulado\n          [(hiperglicemia? (first resto-glicemias))\n           (iterar (rest resto-glicemias)\n                   (+ acumulador-glicemias 1))] ; Incremento inmediato del estado\n          [else \n           (iterar (rest resto-glicemias)\n                   acumulador-glicemias)]))\n  \n  (iterar lista-glicemias 0)) ; Inicialización del acumulador en cero\n\n;; Ejecución de prueba:\n;;(contar-alertas-iterativa '(145 95 160)) ;; produce: 2\n;;(contar-alertas-iterativa '(145 95 60)) ;; produce: 1\n;;(contar-alertas-iterativa '(45 95 60)) ;; produce: 0\n;;(contar-alertas-iterativa '(145 195 160)) ;; produce: 3\n\n\n\nEvolución Histórica del Estado en Memoria\nEl siguiente rastreo demuestra cómo las variables de la función interna mutan de forma lineal y compacta en cada iteración del intérprete:\n(contar-alertas-iterativa '(145 95 160))\n(iterar '(145 95 160) 0)  ; Estado inicial: lista completa, acumulador en 0\n(iterar '(95 160)     1)  ; 145 &gt; 126: acumulador pasa a 1 (0 + 1)\n(iterar '(160)        1)  ; 95 &lt;= 126: acumulador se mantiene en 1\n(iterar '()           2)  ; 160 &gt; 126: acumulador pasa a 2 (1 + 1)\n2                         ; Lista vacía: retorna el acumulador",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html#recursión-arbórea-tree-recursion",
+    "href": "analysis/c01-2.html#recursión-arbórea-tree-recursion",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "1.2.2 Recursión Arbórea (Tree Recursion)",
+    "text": "1.2.2 Recursión Arbórea (Tree Recursion)\n\nCaso de Estudio: Triaje de Emergencias en Catástrofes (Saturación de Camas)\nModelamos el flujo de decisiones logísticas cuando un hospital se encuentra colapsado. Cada vez que ingresa un paciente crítico, la dirección médica tiene dos opciones exclusivas para acomodarlo: Opción A (reasignar internamente desprotegiendo otra área) u Opción B (derivar en ambulancia de soporte crítico a la red periférica).\nSi el proceso se ramifica exponencialmente en dos decisiones por cada paciente entrante n, se genera un árbol de llamadas idénticas y redundantes en la memoria.\n\n\nCódigo Ineficiente Exponencial:\n#lang racket\n\n(define (simular-combinaciones-triaje n)\n  (cond [(= n 0) 1] ; Si no quedan pacientes por asignar, 1 ruta válida encontrada.\n        [(&lt; n 0) 0] ; Combinación inválida.\n        [else \n         (+ (simular-combinaciones-triaje (- n 1))   ; Rama Opción A\n            (simular-combinaciones-triaje (- n 2)))] ; Rama Opción B\n  ))\n\n\nEl Rastreo de la Explosión Arbórea\nPara solo \\(n = 3\\) pacientes, observa cómo el intérprete se ve obligado a evaluar expresiones idénticas de forma redundante (como (sim-com-triaje 0) y (sim-com-triaje -1) en múltiples sub-ramas):\n(simular-combinaciones-triaje 3)\n(+ (simular-combinaciones-triaje 2) (simular-combinaciones-triaje 1))\n(+ (+ (simular-combinaciones-triaje 1) (simular-combinaciones-triaje 0)) (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)))\n(+ (+ (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)) 1) (+ 1 0))\n(+ (+ (+ 1 0) 1) 1)\n(+ (+ 1 1) 1)\n(+ 2 1)\n3",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html#órdenes-de-crecimiento-notación-big-o",
+    "href": "analysis/c01-2.html#órdenes-de-crecimiento-notación-big-o",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "1.2.3 Órdenes de Crecimiento (Notación Big-O)",
+    "text": "1.2.3 Órdenes de Crecimiento (Notación Big-O)\nEl orden de crecimiento es el constructo matemático que nos permite predecir el consumo de recursos (tiempo y espacio en memoria) a medida que los registros de pacientes escalan en volumen.\n\n\n\n\n\n\n\n\nTipo de Proceso\nEquivalente Clínico / Administrativo\nComportamiento con Big Data (NHANES)\n\n\n\n\nConstante \\(O(1)\\)\nConsultar el tipo de sangre en la portada de una Ficha Médica Electrónica indexada.\nToma exactamente el mismo tiempo si la base tiene 10 registros o 100 millones. Es el ideal de eficiencia.\n\n\nLineal \\(O(n)\\)\nTomar manualmente la presión arterial a cada paciente en una fila de consulta externa.\nSi duplicas los pacientes (\\(2n\\)), el tiempo de ejecución requerido se duplica exactamente.\n\n\nRaíz Cuadrada \\(O(\\sqrt{n})\\)\nBuscar un divisor estructural para validar llaves en un sistema de criptografía médica.\nSi los datos crecen a 10,000, el esfuerzo de cómputo solo crece proporcionalmente a \\(\\sqrt{10,000} = 100\\).\n\n\nLogarítmico \\(O(\\log n)\\)\nBuscar un paciente alfabéticamente en un archivo ordenado dividiendo el archivero a la mitad en cada paso.\nAltamente escalable. Procesar un millón de registros solo consume alrededor de 20 pasos de búsqueda.\n\n\nExponencial \\(O(a^n)\\)\nHacer pruebas cruzadas de compatibilidad inmunológica de “todos contra todos” para trasplantes de órganos.\nInviable para Big Data. Añadir solo unos pocos pacientes provoca que el tiempo de cómputo explote al infinito.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html#procesos-exponenciales-y-logarítmicos",
+    "href": "analysis/c01-2.html#procesos-exponenciales-y-logarítmicos",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "1.2.4 Procesos Exponenciales y Logarítmicos",
+    "text": "1.2.4 Procesos Exponenciales y Logarítmicos\n\nCaso de Estudio: Proyección Logística de Inflación Médica o Crecimiento de Insumos\nModelamos un escenario del MBA donde el costo de ciertos insumos tecnológicos protegidos por patentes se triplica (\\(3^n\\)) de manera compuesta por cada período de tiempo transcurrido.\n\n\nOptimización por Exponenciación Binaria (\\(O(\\log n)\\))\nCalcular la potencia multiplicando la base sucesivamente demanda un tiempo lineal \\(O(n)\\). Se podría acortar camino mediante reglas de exponentes:\n\nSi el exponente es par, elevamos la base al cuadrado y reducimos el exponente a la mitad: \\(3^6 = (3^2)^3 = 9^3\\).\nSi el exponente es impar, extraemos una unidad de la base para forzar un escenario par en la siguiente vuelta: \\(9^3 = 9 \\times 9^2\\).\n\nEsta técnica reduce drásticamente los pasos necesarios para evaluar grandes volúmenes de datos. He aquí la solución iterativa eficiente que preserva la ecuación invariante \\(\\text{Resultado} = \\text{producto} \\times (\\text{base}^{\\text{exponente}})\\):\n#lang racket\n\n(define (par? n) (= (remainder n 2) 0))\n(define (cuadrado x) (* x x))\n\n(define (factor-gasto-iterativo n)\n  ;; iterar: contador (exponente), base, producto (acumulador) -&gt; numero\n  (define (iterar contador base producto)\n    (cond [(= contador 0) producto] ; Caso base: el producto contiene la respuesta final\n          [(par? contador)\n           (iterar (/ contador 2)   ; El exponente se corta a la mitad\n                   (cuadrado base)   ; La base muta y se eleva al cuadrado\n                   producto)]        ; El producto se mantiene intacto\n          [else\n           (iterar (- contador 1)   ; Restamos 1 para convertir el impar en par\n                   base              ; La base se mantiene igual\n                   (* base producto))])) ; El producto absorbe una unidad de la base\n  \n  (iterar n 3 1)) ; Llamada inicial: base inicial = 3, producto inicial = 1\n\n;;(factor-gasto-iterativo 6) ;; -&gt; debe dar 729\n\n\nRastreo del Flujo de Datos\nA continuación se visualiza cómo la base cambia cuando el exponente es par y cómo obliga a actualizar el producto acumulado en la siguiente iteración:\n(factor-gasto-iterativo 6)\n(iterar 6 3  1)   ; 6 es par: exponente/2 = 3, base^2 = 9. Producto se mantiene.\n(iterar 3 9  1)   ; 3 es impar: exponente-1 = 2. Producto absorbe la base (1 * 9).\n(iterar 2 9  9)   ; 2 es par: exponente/2 = 1, base^2 = 81. Producto se mantiene.\n(iterar 1 81 9)   ; 1 es impar: exponente-1 = 0. Producto absorbe la base (9 * 81).\n(iterar 0 81 729) ; Exponente es 0: retorna el producto acumulado.\n729",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html#el-algoritmo-de-euclides-máximo-común-divisor",
+    "href": "analysis/c01-2.html#el-algoritmo-de-euclides-máximo-común-divisor",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "1.2.5 El Algoritmo de Euclides (Máximo Común Divisor)",
+    "text": "1.2.5 El Algoritmo de Euclides (Máximo Común Divisor)\n\nCaso de Estudio: Sincronización Logística de Comités y Guardias Médicas\nEn la gestión de operaciones de una clínica, el Máximo Común Divisor (MCD) sirve para resolver problemas de coincidencia de ciclos independientes.\nSupongamos que el Comité de Auditoría de Historias Clínicas se reúne cada 16 horas, mientras que el Simulacro de Emergencias Sanitarias ocurre cada 28 horas. Si ambos coinciden hoy, el MCD nos otorgará el bloque común de tiempo máximo en el que podemos subdividir ambos ciclos para sincronizar los calendarios del personal.\nUsando el residuo de la división (remainder), el algoritmo de Euclides reduce geométricamente los parámetros en un proceso iterativo de tiempo logarítmico O(logn) y espacio constante O(1):\n#lang racket\n\n;; mcd-logistico : numero numero -&gt; numero\n(define (mcd-logistico horas-comite horas-simulacro)\n  (if (= horas-simulacro 0)\n      horas-comite\n      (mcd-logistico horas-simulacro (remainder horas-comite horas-simulacro))))\n\n;;(mcd-logistico 28 16) ;; produce: 4\n\n\nRastreo del Proceso de Sincronización\n(mcd-logistico 28 16)\n(mcd-logistico 16 (remainder 28 16)) ; Residuo de 28/16 es 12\n(mcd-logistico 16 12)\n(mcd-logistico 12 (remainder 16 12)) ; Residuo de 16/12 es 4\n(mcd-logistico 12 4)\n(mcd-logistico 4 (remainder 12 4))   ; Residuo de 12/4 es 0\n(mcd-logistico 4 0)\n4                                    ; El bloque común máximo es de 4 horas",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01-2.html#prueba-de-primalidad",
+    "href": "analysis/c01-2.html#prueba-de-primalidad",
+    "title": "1.2 — Los Procedimientos y los Procesos que Generan",
+    "section": "1.2.6 Prueba de Primalidad",
+    "text": "1.2.6 Prueba de Primalidad\n\nCaso de Estudio: Validación Criptográfica de Identificadores de Pacientes\nPara garantizar el intercambio seguro de historias clínicas electrónicas, se emplean fichas de seguridad respaldadas por números primos. Necesitamos un algoritmo para validar fichas encontrando su menor divisor.\n\n\nOptimización en la Frontera de la Raíz Cuadrada \\(O(\\sqrt{n})\\)\nPara no inspeccionar de uno en uno todo el universo de números hasta n, aplicamos la regla de que si un número tiene un divisor, este debe ser menor o igual a su raíz cuadrada \\(O(\\sqrt{n})\\)\nPara evitar lidiar con la imprecisión de los números de punto flotante de la función matemática tradicional de la raíz cuadrada, el código realiza un malabarismo sintáctico seguro y legible mediante el manejo de cadenas de texto:\n;; divisor-vacio? : numero numero -&gt; boolean\n(define (divide? a b)\n  (= (remainder b a) 0))\n\n;; buscar-menor-divisor : numero -&gt; numero\n(define (menor-divisor n)\n  ;; aux-buscar: numero-a-probar -&gt; numero\n  (define (aux-buscar de-prueba)\n    (cond [(&gt; (string-&gt;number ;; pasar la cadena a número\n               (real-&gt;decimal-string ;; pasar el número a string\n                (* de-prueba de-prueba) 0)) ;; cero, para cero decimales\n              n)\n           n] ; 1. Si el cuadrado del probador supera a n, n es primo, devolvemos n.\n          [(divide? de-prueba n) de-prueba] ; 2. Si lo divide exactamente, ¡encontramos el menor divisor!\n          [else \n           (aux-buscar (+ 1 de-prueba))])) ; 3. ¿Cuál es el siguiente número que deberíamos probar? (Pista: vamos de uno en uno hacia arriba)\n  \n  ;; Empezamos a probar desde el número 2\n  (aux-buscar 2))\n\n;; Ejecuciones esperadas:\n;;(menor-divisor 35) ;; -&gt; debe dar 5 (porque 5 * 7 = 35)\n;;(menor-divisor 13) ;; -&gt; debe dar 13 (porque 13 es primo)",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  }
+]

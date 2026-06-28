@@ -294,7 +294,7 @@ simulaciones <-
   )
 # Generar 6 de las 1000 simulaciones (1000 filas) y 5 de los 12 
 # meses (12 columnas) 
-#simulaciones[1:6 ,1:5] # produce:
+simulaciones[1:6 ,1:5] # produce:
 ```
 
 Aquí aparece una diferencia importante respecto a capítulos anteriores.
@@ -381,7 +381,7 @@ bandas <-
     p95 = quantile(ventas, 0.95),
     .groups = "drop"
   )
-# Mostrar 6 de los 48 meses (48 filas)
+# Mostrar 6 de los 12 meses (12 filas)
 bandas[1:6,] # produce:
 ```
 

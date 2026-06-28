@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1.2 — Los Procedimientos y los Procesos que Generan – SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c01-2.html">1.2 — Los Procedimientos y los Procesos que Generan</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">1. Construcción de abstracciones con procedimientos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 — Los Elementos Fundamentales de la Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">1.2 — Los Procedimientos y los Procesos que Generan</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción-al-capítulo" id="toc-introducción-al-capítulo" class="nav-link active" data-scroll-target="#introducción-al-capítulo">Introducción al Capítulo</a></li>
+  <li><a href="#recursión-lineal-vs.-iteración-lineal" id="toc-recursión-lineal-vs.-iteración-lineal" class="nav-link" data-scroll-target="#recursión-lineal-vs.-iteración-lineal">1.2.1 Recursión Lineal vs.&nbsp;Iteración Lineal</a>
+  <ul class="collapse">
+  <li><a href="#caso-de-estudio-auditoría-de-alertas-de-glucosa" id="toc-caso-de-estudio-auditoría-de-alertas-de-glucosa" class="nav-link" data-scroll-target="#caso-de-estudio-auditoría-de-alertas-de-glucosa">Caso de Estudio: Auditoría de Alertas de Glucosa</a></li>
+  <li><a href="#evolución-histórica-del-estado-en-memoria" id="toc-evolución-histórica-del-estado-en-memoria" class="nav-link" data-scroll-target="#evolución-histórica-del-estado-en-memoria">Evolución Histórica del Estado en Memoria</a></li>
+  </ul></li>
+  <li><a href="#recursión-arbórea-tree-recursion" id="toc-recursión-arbórea-tree-recursion" class="nav-link" data-scroll-target="#recursión-arbórea-tree-recursion">1.2.2 Recursión Arbórea (Tree Recursion)</a>
+  <ul class="collapse">
+  <li><a href="#caso-de-estudio-triaje-de-emergencias-en-catástrofes-saturación-de-camas" id="toc-caso-de-estudio-triaje-de-emergencias-en-catástrofes-saturación-de-camas" class="nav-link" data-scroll-target="#caso-de-estudio-triaje-de-emergencias-en-catástrofes-saturación-de-camas">Caso de Estudio: Triaje de Emergencias en Catástrofes (Saturación de Camas)</a></li>
+  <li><a href="#código-ineficiente-exponencial" id="toc-código-ineficiente-exponencial" class="nav-link" data-scroll-target="#código-ineficiente-exponencial">Código Ineficiente Exponencial:</a></li>
+  <li><a href="#el-rastreo-de-la-explosión-arbórea" id="toc-el-rastreo-de-la-explosión-arbórea" class="nav-link" data-scroll-target="#el-rastreo-de-la-explosión-arbórea">El Rastreo de la Explosión Arbórea</a></li>
+  </ul></li>
+  <li><a href="#órdenes-de-crecimiento-notación-big-o" id="toc-órdenes-de-crecimiento-notación-big-o" class="nav-link" data-scroll-target="#órdenes-de-crecimiento-notación-big-o">1.2.3 Órdenes de Crecimiento (Notación Big-O)</a></li>
+  <li><a href="#procesos-exponenciales-y-logarítmicos" id="toc-procesos-exponenciales-y-logarítmicos" class="nav-link" data-scroll-target="#procesos-exponenciales-y-logarítmicos">1.2.4 Procesos Exponenciales y Logarítmicos</a>
+  <ul class="collapse">
+  <li><a href="#caso-de-estudio-proyección-logística-de-inflación-médica-o-crecimiento-de-insumos" id="toc-caso-de-estudio-proyección-logística-de-inflación-médica-o-crecimiento-de-insumos" class="nav-link" data-scroll-target="#caso-de-estudio-proyección-logística-de-inflación-médica-o-crecimiento-de-insumos">Caso de Estudio: Proyección Logística de Inflación Médica o Crecimiento de Insumos</a></li>
+  <li><a href="#optimización-por-exponenciación-binaria-olog-n" id="toc-optimización-por-exponenciación-binaria-olog-n" class="nav-link" data-scroll-target="#optimización-por-exponenciación-binaria-olog-n">Optimización por Exponenciación Binaria (<span class="math inline">\(O(\log n)\)</span>)</a></li>
+  <li><a href="#rastreo-del-flujo-de-datos" id="toc-rastreo-del-flujo-de-datos" class="nav-link" data-scroll-target="#rastreo-del-flujo-de-datos">Rastreo del Flujo de Datos</a></li>
+  </ul></li>
+  <li><a href="#el-algoritmo-de-euclides-máximo-común-divisor" id="toc-el-algoritmo-de-euclides-máximo-común-divisor" class="nav-link" data-scroll-target="#el-algoritmo-de-euclides-máximo-común-divisor">1.2.5 El Algoritmo de Euclides (Máximo Común Divisor)</a>
+  <ul class="collapse">
+  <li><a href="#caso-de-estudio-sincronización-logística-de-comités-y-guardias-médicas" id="toc-caso-de-estudio-sincronización-logística-de-comités-y-guardias-médicas" class="nav-link" data-scroll-target="#caso-de-estudio-sincronización-logística-de-comités-y-guardias-médicas">Caso de Estudio: Sincronización Logística de Comités y Guardias Médicas</a></li>
+  <li><a href="#rastreo-del-proceso-de-sincronización" id="toc-rastreo-del-proceso-de-sincronización" class="nav-link" data-scroll-target="#rastreo-del-proceso-de-sincronización">Rastreo del Proceso de Sincronización</a></li>
+  </ul></li>
+  <li><a href="#prueba-de-primalidad" id="toc-prueba-de-primalidad" class="nav-link" data-scroll-target="#prueba-de-primalidad">1.2.6 Prueba de Primalidad</a>
+  <ul class="collapse">
+  <li><a href="#caso-de-estudio-validación-criptográfica-de-identificadores-de-pacientes" id="toc-caso-de-estudio-validación-criptográfica-de-identificadores-de-pacientes" class="nav-link" data-scroll-target="#caso-de-estudio-validación-criptográfica-de-identificadores-de-pacientes">Caso de Estudio: Validación Criptográfica de Identificadores de Pacientes</a></li>
+  <li><a href="#optimización-en-la-frontera-de-la-raíz-cuadrada-osqrtn" id="toc-optimización-en-la-frontera-de-la-raíz-cuadrada-osqrtn" class="nav-link" data-scroll-target="#optimización-en-la-frontera-de-la-raíz-cuadrada-osqrtn">Optimización en la Frontera de la Raíz Cuadrada <span class="math inline">\(O(\sqrt{n})\)</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c01-2.html">1.2 — Los Procedimientos y los Procesos que Generan</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">1.2 — Los Procedimientos y los Procesos que Generan</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introducción-al-capítulo" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-al-capítulo">Introducción al Capítulo</h2>
+<p>En el diseño de software biomédico y motores de reglas lógicas (como un futuro Datalog semántico), escribir un procedimiento no basta; es imperativo entender cómo se comporta dicho procedimiento en la memoria de la computadora a medida que los datos de salud escalan.</p>
+<p>Este capítulo analiza la diferencia entre la estructura del código (“la receta”) y la evolución del proceso en la memoria (“la cocina”), sustituyendo la matemática abstracta tradicional por escenarios de auditoría clínica, logística de red de frío y encriptación de identidades de pacientes.</p>
+<hr>
+</section>
+<section id="recursión-lineal-vs.-iteración-lineal" class="level2">
+<h2 class="anchored" data-anchor-id="recursión-lineal-vs.-iteración-lineal">1.2.1 Recursión Lineal vs.&nbsp;Iteración Lineal</h2>
+<section id="caso-de-estudio-auditoría-de-alertas-de-glucosa" class="level3">
+<h3 class="anchored" data-anchor-id="caso-de-estudio-auditoría-de-alertas-de-glucosa">Caso de Estudio: Auditoría de Alertas de Glucosa</h3>
+<p>Deseamos procesar una lista de lecturas de glucosa en ayunas de la app de seguimiento de un paciente crónico (<code>'(145 95 160)</code>) y contar cuántas de ellas califican como <strong>hiperglucemia</strong> (definida estrictamente por guías internacionales como <span class="math inline">\(&gt; 126 \text{ mg/dL}\)</span>).</p>
+<section id="el-enfoque-iterativo-eficiente-espacio-constante-o1" class="level4">
+<h4 class="anchored" data-anchor-id="el-enfoque-iterativo-eficiente-espacio-constante-o1">El Enfoque Iterativo Eficiente (Espacio Constante <span class="math inline">\(O(1)\)</span>)</h4>
+<p>A diferencia de un proceso recursivo lineal que acumula una “deuda de operaciones” en el stack de memoria, el enfoque iterativo utiliza un <strong>acumulador</strong>. Esto actúa como una máquina de estados o una libreta de auditoría donde el resultado se calcula en tiempo real paso a paso, permitiendo procesar millones de filas de NHANES sin riesgo de <em>Stack Overflow</em>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; hiperglicemia? : number -&gt; boolean</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>hiperglicemia? glicemia<span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(&gt;</span> glicemia <span class="dv">126</span><span class="op">))</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; contar-alertas-iterativa: lista-de-glicemias -&gt; numero</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contar-alertas-iterativa lista-glicemias<span class="op">)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; iterar: resto-glicemias, acumulador-glicemias -&gt; numero</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>iterar resto-glicemias acumulador-glicemias<span class="op">)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">cond</span> <span class="op">[(</span>empty? resto-glicemias<span class="op">)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>           acumulador-glicemias<span class="op">]</span> <span class="co">; Caso base: devuelve el total acumulado</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>          <span class="op">[(</span>hiperglicemia? <span class="op">(</span>first resto-glicemias<span class="op">))</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span>iterar <span class="op">(</span>rest resto-glicemias<span class="op">)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                   <span class="op">(+</span> acumulador-glicemias <span class="dv">1</span><span class="op">))]</span> <span class="co">; Incremento inmediato del estado</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>          <span class="op">[</span><span class="kw">else</span> </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span>iterar <span class="op">(</span>rest resto-glicemias<span class="op">)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                   acumulador-glicemias<span class="op">)]))</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>iterar lista-glicemias <span class="dv">0</span><span class="op">))</span> <span class="co">; Inicialización del acumulador en cero</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejecución de prueba:</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">;;(contar-alertas-iterativa '(145 95 160)) ;; produce: 2</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">;;(contar-alertas-iterativa '(145 95 60)) ;; produce: 1</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">;;(contar-alertas-iterativa '(45 95 60)) ;; produce: 0</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">;;(contar-alertas-iterativa '(145 195 160)) ;; produce: 3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="evolución-histórica-del-estado-en-memoria" class="level3">
+<h3 class="anchored" data-anchor-id="evolución-histórica-del-estado-en-memoria">Evolución Histórica del Estado en Memoria</h3>
+<p>El siguiente rastreo demuestra cómo las variables de la función interna mutan de forma lineal y compacta en cada iteración del intérprete:</p>
+<pre class="text"><code>(contar-alertas-iterativa '(145 95 160))
+(iterar '(145 95 160) 0)  ; Estado inicial: lista completa, acumulador en 0
+(iterar '(95 160)     1)  ; 145 &gt; 126: acumulador pasa a 1 (0 + 1)
+(iterar '(160)        1)  ; 95 &lt;= 126: acumulador se mantiene en 1
+(iterar '()           2)  ; 160 &gt; 126: acumulador pasa a 2 (1 + 1)
+2                         ; Lista vacía: retorna el acumulador</code></pre>
+</section>
+</section>
+<section id="recursión-arbórea-tree-recursion" class="level2">
+<h2 class="anchored" data-anchor-id="recursión-arbórea-tree-recursion">1.2.2 Recursión Arbórea (Tree Recursion)</h2>
+<section id="caso-de-estudio-triaje-de-emergencias-en-catástrofes-saturación-de-camas" class="level3">
+<h3 class="anchored" data-anchor-id="caso-de-estudio-triaje-de-emergencias-en-catástrofes-saturación-de-camas">Caso de Estudio: Triaje de Emergencias en Catástrofes (Saturación de Camas)</h3>
+<p>Modelamos el flujo de decisiones logísticas cuando un hospital se encuentra colapsado. Cada vez que ingresa un paciente crítico, la dirección médica tiene dos opciones exclusivas para acomodarlo: <strong>Opción A</strong> (reasignar internamente desprotegiendo otra área) u <strong>Opción B</strong> (derivar en ambulancia de soporte crítico a la red periférica).</p>
+<p>Si el proceso se ramifica exponencialmente en dos decisiones por cada paciente entrante n, se genera un árbol de llamadas idénticas y redundantes en la memoria.</p>
+</section>
+<section id="código-ineficiente-exponencial" class="level3">
+<h3 class="anchored" data-anchor-id="código-ineficiente-exponencial">Código Ineficiente Exponencial:</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>simular-combinaciones-triaje n<span class="op">)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">cond</span> <span class="op">[(=</span> n <span class="dv">0</span><span class="op">)</span> <span class="dv">1</span><span class="op">]</span> <span class="co">; Si no quedan pacientes por asignar, 1 ruta válida encontrada.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">[(&lt;</span> n <span class="dv">0</span><span class="op">)</span> <span class="dv">0</span><span class="op">]</span> <span class="co">; Combinación inválida.</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">[</span><span class="kw">else</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>         <span class="op">(+</span> <span class="op">(</span>simular-combinaciones-triaje <span class="op">(-</span> n <span class="dv">1</span><span class="op">))</span>   <span class="co">; Rama Opción A</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>simular-combinaciones-triaje <span class="op">(-</span> n <span class="dv">2</span><span class="op">)))]</span> <span class="co">; Rama Opción B</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="el-rastreo-de-la-explosión-arbórea" class="level3">
+<h3 class="anchored" data-anchor-id="el-rastreo-de-la-explosión-arbórea">El Rastreo de la Explosión Arbórea</h3>
+<p>Para solo <em><span class="math inline">\(n = 3\)</span></em> pacientes, observa cómo el intérprete se ve obligado a evaluar expresiones idénticas de forma redundante (como <code>(sim-com-triaje 0)</code> y <code>(sim-com-triaje -1)</code> en múltiples sub-ramas):</p>
+<pre class="text"><code>(simular-combinaciones-triaje 3)
+(+ (simular-combinaciones-triaje 2) (simular-combinaciones-triaje 1))
+(+ (+ (simular-combinaciones-triaje 1) (simular-combinaciones-triaje 0)) (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)))
+(+ (+ (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)) 1) (+ 1 0))
+(+ (+ (+ 1 0) 1) 1)
+(+ (+ 1 1) 1)
+(+ 2 1)
+3</code></pre>
+</section>
+</section>
+<section id="órdenes-de-crecimiento-notación-big-o" class="level2">
+<h2 class="anchored" data-anchor-id="órdenes-de-crecimiento-notación-big-o">1.2.3 Órdenes de Crecimiento (Notación Big-O)</h2>
+<p>El orden de crecimiento es el constructo matemático que nos permite predecir el consumo de recursos (tiempo y espacio en memoria) a medida que los registros de pacientes escalan en volumen.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Tipo de Proceso</th>
+<th style="text-align: left;">Equivalente Clínico / Administrativo</th>
+<th style="text-align: left;">Comportamiento con Big Data (NHANES)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Constante <span class="math inline">\(O(1)\)</span></strong></td>
+<td style="text-align: left;">Consultar el tipo de sangre en la portada de una Ficha Médica Electrónica indexada.</td>
+<td style="text-align: left;">Toma exactamente el mismo tiempo si la base tiene 10 registros o 100 millones. Es el ideal de eficiencia.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Lineal <span class="math inline">\(O(n)\)</span></strong></td>
+<td style="text-align: left;">Tomar manualmente la presión arterial a cada paciente en una fila de consulta externa.</td>
+<td style="text-align: left;">Si duplicas los pacientes (<span class="math inline">\(2n\)</span>), el tiempo de ejecución requerido se duplica exactamente.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Raíz Cuadrada <span class="math inline">\(O(\sqrt{n})\)</span></strong></td>
+<td style="text-align: left;">Buscar un divisor estructural para validar llaves en un sistema de criptografía médica.</td>
+<td style="text-align: left;">Si los datos crecen a 10,000, el esfuerzo de cómputo solo crece proporcionalmente a <span class="math inline">\(\sqrt{10,000} = 100\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Logarítmico <span class="math inline">\(O(\log n)\)</span></strong></td>
+<td style="text-align: left;">Buscar un paciente alfabéticamente en un archivo ordenado dividiendo el archivero a la mitad en cada paso.</td>
+<td style="text-align: left;">Altamente escalable. Procesar un millón de registros solo consume alrededor de 20 pasos de búsqueda.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Exponencial <span class="math inline">\(O(a^n)\)</span></strong></td>
+<td style="text-align: left;">Hacer pruebas cruzadas de compatibilidad inmunológica de “todos contra todos” para trasplantes de órganos.</td>
+<td style="text-align: left;">Inviable para Big Data. Añadir solo unos pocos pacientes provoca que el tiempo de cómputo explote al infinito.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="procesos-exponenciales-y-logarítmicos" class="level2">
+<h2 class="anchored" data-anchor-id="procesos-exponenciales-y-logarítmicos">1.2.4 Procesos Exponenciales y Logarítmicos</h2>
+<section id="caso-de-estudio-proyección-logística-de-inflación-médica-o-crecimiento-de-insumos" class="level3">
+<h3 class="anchored" data-anchor-id="caso-de-estudio-proyección-logística-de-inflación-médica-o-crecimiento-de-insumos">Caso de Estudio: Proyección Logística de Inflación Médica o Crecimiento de Insumos</h3>
+<p>Modelamos un escenario del MBA donde el costo de ciertos insumos tecnológicos protegidos por patentes se triplica (<span class="math inline">\(3^n\)</span>) de manera compuesta por cada período de tiempo transcurrido.</p>
+</section>
+<section id="optimización-por-exponenciación-binaria-olog-n" class="level3">
+<h3 class="anchored" data-anchor-id="optimización-por-exponenciación-binaria-olog-n">Optimización por Exponenciación Binaria (<span class="math inline">\(O(\log n)\)</span>)</h3>
+<p>Calcular la potencia multiplicando la base sucesivamente demanda un tiempo lineal <span class="math inline">\(O(n)\)</span>. Se podría acortar camino mediante reglas de exponentes:</p>
+<ul>
+<li><p>Si el exponente es <strong>par</strong>, elevamos la base al cuadrado y reducimos el exponente a la mitad: <span class="math inline">\(3^6 = (3^2)^3 = 9^3\)</span>.</p></li>
+<li><p>Si el exponente es <strong>impar</strong>, extraemos una unidad de la base para forzar un escenario par en la siguiente vuelta: <span class="math inline">\(9^3 = 9 \times 9^2\)</span>.</p></li>
+</ul>
+<p>Esta técnica reduce drásticamente los pasos necesarios para evaluar grandes volúmenes de datos. He aquí la solución iterativa eficiente que preserva la ecuación invariante <span class="math inline">\(\text{Resultado} = \text{producto} \times (\text{base}^{\text{exponente}})\)</span>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>par? n<span class="op">)</span> <span class="op">(=</span> <span class="op">(</span><span class="kw">remainder</span> n <span class="dv">2</span><span class="op">)</span> <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>cuadrado x<span class="op">)</span> <span class="op">(*</span> x x<span class="op">))</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>factor-gasto-iterativo n<span class="op">)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; iterar: contador (exponente), base, producto (acumulador) -&gt; numero</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>iterar contador base producto<span class="op">)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">cond</span> <span class="op">[(=</span> contador <span class="dv">0</span><span class="op">)</span> producto<span class="op">]</span> <span class="co">; Caso base: el producto contiene la respuesta final</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>          <span class="op">[(</span>par? contador<span class="op">)</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span>iterar <span class="op">(/</span> contador <span class="dv">2</span><span class="op">)</span>   <span class="co">; El exponente se corta a la mitad</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                   <span class="op">(</span>cuadrado base<span class="op">)</span>   <span class="co">; La base muta y se eleva al cuadrado</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                   producto<span class="op">)]</span>        <span class="co">; El producto se mantiene intacto</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>          <span class="op">[</span><span class="kw">else</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span>iterar <span class="op">(-</span> contador <span class="dv">1</span><span class="op">)</span>   <span class="co">; Restamos 1 para convertir el impar en par</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                   base              <span class="co">; La base se mantiene igual</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                   <span class="op">(*</span> base producto<span class="op">))]))</span> <span class="co">; El producto absorbe una unidad de la base</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>iterar n <span class="dv">3</span> <span class="dv">1</span><span class="op">))</span> <span class="co">; Llamada inicial: base inicial = 3, producto inicial = 1</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">;;(factor-gasto-iterativo 6) ;; -&gt; debe dar 729</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="rastreo-del-flujo-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="rastreo-del-flujo-de-datos">Rastreo del Flujo de Datos</h3>
+<p>A continuación se visualiza cómo la base cambia cuando el exponente es par y cómo obliga a actualizar el producto acumulado en la siguiente iteración:</p>
+<pre class="text"><code>(factor-gasto-iterativo 6)
+(iterar 6 3  1)   ; 6 es par: exponente/2 = 3, base^2 = 9. Producto se mantiene.
+(iterar 3 9  1)   ; 3 es impar: exponente-1 = 2. Producto absorbe la base (1 * 9).
+(iterar 2 9  9)   ; 2 es par: exponente/2 = 1, base^2 = 81. Producto se mantiene.
+(iterar 1 81 9)   ; 1 es impar: exponente-1 = 0. Producto absorbe la base (9 * 81).
+(iterar 0 81 729) ; Exponente es 0: retorna el producto acumulado.
+729</code></pre>
+</section>
+</section>
+<section id="el-algoritmo-de-euclides-máximo-común-divisor" class="level2">
+<h2 class="anchored" data-anchor-id="el-algoritmo-de-euclides-máximo-común-divisor">1.2.5 El Algoritmo de Euclides (Máximo Común Divisor)</h2>
+<section id="caso-de-estudio-sincronización-logística-de-comités-y-guardias-médicas" class="level3">
+<h3 class="anchored" data-anchor-id="caso-de-estudio-sincronización-logística-de-comités-y-guardias-médicas">Caso de Estudio: Sincronización Logística de Comités y Guardias Médicas</h3>
+<p>En la gestión de operaciones de una clínica, el Máximo Común Divisor (MCD) sirve para resolver problemas de coincidencia de ciclos independientes.</p>
+<p>Supongamos que el Comité de Auditoría de Historias Clínicas se reúne cada <strong>16 horas</strong>, mientras que el Simulacro de Emergencias Sanitarias ocurre cada <strong>28 horas</strong>. Si ambos coinciden hoy, el MCD nos otorgará el bloque común de tiempo máximo en el que podemos subdividir ambos ciclos para sincronizar los calendarios del personal.</p>
+<p>Usando el residuo de la división (<code>remainder</code>), el algoritmo de Euclides reduce geométricamente los parámetros en un proceso iterativo de tiempo logarítmico <em>O(logn)</em> y espacio constante <em>O(1)</em>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; mcd-logistico : numero numero -&gt; numero</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>mcd-logistico horas-comite horas-simulacro<span class="op">)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(=</span> horas-simulacro <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      horas-comite</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>mcd-logistico horas-simulacro <span class="op">(</span><span class="kw">remainder</span> horas-comite horas-simulacro<span class="op">))))</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">;;(mcd-logistico 28 16) ;; produce: 4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="rastreo-del-proceso-de-sincronización" class="level3">
+<h3 class="anchored" data-anchor-id="rastreo-del-proceso-de-sincronización">Rastreo del Proceso de Sincronización</h3>
+<pre class="text"><code>(mcd-logistico 28 16)
+(mcd-logistico 16 (remainder 28 16)) ; Residuo de 28/16 es 12
+(mcd-logistico 16 12)
+(mcd-logistico 12 (remainder 16 12)) ; Residuo de 16/12 es 4
+(mcd-logistico 12 4)
+(mcd-logistico 4 (remainder 12 4))   ; Residuo de 12/4 es 0
+(mcd-logistico 4 0)
+4                                    ; El bloque común máximo es de 4 horas</code></pre>
+</section>
+</section>
+<section id="prueba-de-primalidad" class="level2">
+<h2 class="anchored" data-anchor-id="prueba-de-primalidad">1.2.6 Prueba de Primalidad</h2>
+<section id="caso-de-estudio-validación-criptográfica-de-identificadores-de-pacientes" class="level3">
+<h3 class="anchored" data-anchor-id="caso-de-estudio-validación-criptográfica-de-identificadores-de-pacientes">Caso de Estudio: Validación Criptográfica de Identificadores de Pacientes</h3>
+<p>Para garantizar el intercambio seguro de historias clínicas electrónicas, se emplean fichas de seguridad respaldadas por números primos. Necesitamos un algoritmo para validar fichas encontrando su menor divisor.</p>
+</section>
+<section id="optimización-en-la-frontera-de-la-raíz-cuadrada-osqrtn" class="level3">
+<h3 class="anchored" data-anchor-id="optimización-en-la-frontera-de-la-raíz-cuadrada-osqrtn">Optimización en la Frontera de la Raíz Cuadrada <span class="math inline">\(O(\sqrt{n})\)</span></h3>
+<p>Para no inspeccionar de uno en uno todo el universo de números hasta n, aplicamos la regla de que si un número tiene un divisor, este debe ser menor o igual a su raíz cuadrada <span class="math inline">\(O(\sqrt{n})\)</span></p>
+<p>Para evitar lidiar con la imprecisión de los números de punto flotante de la función matemática tradicional de la raíz cuadrada, el código realiza un malabarismo sintáctico seguro y legible mediante el manejo de cadenas de texto:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; divisor-vacio? : numero numero -&gt; boolean</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>divide? a b<span class="op">)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(=</span> <span class="op">(</span><span class="kw">remainder</span> b a<span class="op">)</span> <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; buscar-menor-divisor : numero -&gt; numero</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>menor-divisor n<span class="op">)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; aux-buscar: numero-a-probar -&gt; numero</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>aux-buscar de-prueba<span class="op">)</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">cond</span> <span class="op">[(&gt;</span> <span class="op">(</span><span class="kw">string-&gt;number</span> <span class="co">;; pasar la cadena a número</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>               <span class="op">(</span>real-&gt;decimal-string <span class="co">;; pasar el número a string</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">(*</span> de-prueba de-prueba<span class="op">)</span> <span class="dv">0</span><span class="op">))</span> <span class="co">;; cero, para cero decimales</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>              n<span class="op">)</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>           n<span class="op">]</span> <span class="co">; 1. Si el cuadrado del probador supera a n, n es primo, devolvemos n.</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>          <span class="op">[(</span>divide? de-prueba n<span class="op">)</span> de-prueba<span class="op">]</span> <span class="co">; 2. Si lo divide exactamente, ¡encontramos el menor divisor!</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>          <span class="op">[</span><span class="kw">else</span> </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span>aux-buscar <span class="op">(+</span> <span class="dv">1</span> de-prueba<span class="op">))]))</span> <span class="co">; 3. ¿Cuál es el siguiente número que deberíamos probar? (Pista: vamos de uno en uno hacia arriba)</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Empezamos a probar desde el número 2</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>aux-buscar <span class="dv">2</span><span class="op">))</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejecuciones esperadas:</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">;;(menor-divisor 35) ;; -&gt; debe dar 5 (porque 5 * 7 = 35)</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">;;(menor-divisor 13) ;; -&gt; debe dar 13 (porque 13 es primo)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
