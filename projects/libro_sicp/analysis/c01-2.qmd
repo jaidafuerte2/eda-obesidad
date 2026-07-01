@@ -6,21 +6,23 @@ editor: visual
 
 ## Introducción al Capítulo
 
-En el diseño de software biomédico y motores de reglas lógicas (como un futuro Datalog semántico), escribir un procedimiento no basta; es imperativo entender cómo se comporta dicho procedimiento en la memoria de la computadora a medida que los datos de salud escalan. 
+En el diseño de software biomédico y motores de reglas lógicas (como un futuro Datalog semántico), escribir un procedimiento no basta; es imperativo entender cómo se comporta dicho procedimiento en la memoria de la computadora a medida que los datos de salud escalan.
 
 Este capítulo analiza la diferencia entre la estructura del código ("la receta") y la evolución del proceso en la memoria ("la cocina"), sustituyendo la matemática abstracta tradicional por escenarios de auditoría clínica, logística de red de frío y encriptación de identidades de pacientes.
 
----
+------------------------------------------------------------------------
 
 ## 1.2.1 Recursión Lineal vs. Iteración Lineal
 
 ### Caso de Estudio: Auditoría de Alertas de Glucosa
+
 Deseamos procesar una lista de lecturas de glucosa en ayunas de la app de seguimiento de un paciente crónico (`'(145 95 160)`) y contar cuántas de ellas califican como **hiperglucemia** (definida estrictamente por guías internacionales como $> 126 \text{ mg/dL}$).
 
 #### El Enfoque Iterativo Eficiente (Espacio Constante $O(1)$)
+
 A diferencia de un proceso recursivo lineal que acumula una "deuda de operaciones" en el stack de memoria, el enfoque iterativo utiliza un **acumulador**. Esto actúa como una máquina de estados o una libreta de auditoría donde el resultado se calcula en tiempo real paso a paso, permitiendo procesar millones de filas de NHANES sin riesgo de *Stack Overflow*.
 
-```racket
+``` racket
 #lang racket
 
 ;; hiperglicemia? : number -> boolean
@@ -53,7 +55,7 @@ A diferencia de un proceso recursivo lineal que acumula una "deuda de operacione
 
 El siguiente rastreo demuestra cómo las variables de la función interna mutan de forma lineal y compacta en cada iteración del intérprete:
 
-```text
+``` text
 (contar-alertas-iterativa '(145 95 160))
 (iterar '(145 95 160) 0)  ; Estado inicial: lista completa, acumulador en 0
 (iterar '(95 160)     1)  ; 145 > 126: acumulador pasa a 1 (0 + 1)
@@ -72,7 +74,7 @@ Si el proceso se ramifica exponencialmente en dos decisiones por cada paciente e
 
 ### Código Ineficiente Exponencial:
 
-```racket
+``` racket
 #lang racket
 
 (define (simular-combinaciones-triaje n)
@@ -86,9 +88,9 @@ Si el proceso se ramifica exponencialmente en dos decisiones por cada paciente e
 
 ### El Rastreo de la Explosión Arbórea
 
-Para solo *$n = 3$* pacientes, observa cómo el intérprete se ve obligado a evaluar expresiones idénticas de forma redundante (como `(sim-com-triaje 0)` y `(sim-com-triaje -1)` en múltiples sub-ramas):
+Para solo $n = 3$ pacientes, observa cómo el intérprete se ve obligado a evaluar expresiones idénticas de forma redundante (como `(sim-com-triaje 0)` y `(sim-com-triaje -1)` en múltiples sub-ramas):
 
-```text
+``` text
 (simular-combinaciones-triaje 3)
 (+ (simular-combinaciones-triaje 2) (simular-combinaciones-triaje 1))
 (+ (+ (simular-combinaciones-triaje 1) (simular-combinaciones-triaje 0)) (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)))
@@ -104,13 +106,12 @@ Para solo *$n = 3$* pacientes, observa cómo el intérprete se ve obligado a eva
 El orden de crecimiento es el constructo matemático que nos permite predecir el consumo de recursos (tiempo y espacio en memoria) a medida que los registros de pacientes escalan en volumen.
 
 | Tipo de Proceso | Equivalente Clínico / Administrativo | Comportamiento con Big Data (NHANES) |
-| :--- | :--- | :--- |
-| **Constante $O(1)$** | Consultar el tipo de sangre en la portada de una Ficha Médica Electrónica indexada. | Toma exactamente el mismo tiempo si la base tiene 10 registros o 100 millones. Es el ideal de eficiencia. |
-| **Lineal $O(n)$** | Tomar manualmente la presión arterial a cada paciente en una fila de consulta externa. | Si duplicas los pacientes ($2n$), el tiempo de ejecución requerido se duplica exactamente. |
-| **Raíz Cuadrada $O(\sqrt{n})$** | Buscar un divisor estructural para validar llaves en un sistema de criptografía médica. | Si los datos crecen a 10,000, el esfuerzo de cómputo solo crece proporcionalmente a $\sqrt{10,000} = 100$. |
-| **Logarítmico $O(\log n)$** | Buscar un paciente alfabéticamente en un archivo ordenado dividiendo el archivero a la mitad en cada paso. | Altamente escalable. Procesar un millón de registros solo consume alrededor de 20 pasos de búsqueda. |
-| **Exponencial $O(a^n)$** | Hacer pruebas cruzadas de compatibilidad inmunológica de "todos contra todos" para trasplantes de órganos. | Inviable para Big Data. Añadir solo unos pocos pacientes provoca que el tiempo de cómputo explote al infinito. |
-
+|:-----------------------|:-----------------------|:-----------------------|
+| **Constante** $O(1)$ | Consultar el tipo de sangre en la portada de una Ficha Médica Electrónica indexada. | Toma exactamente el mismo tiempo si la base tiene 10 registros o 100 millones. Es el ideal de eficiencia. |
+| **Lineal** $O(n)$ | Tomar manualmente la presión arterial a cada paciente en una fila de consulta externa. | Si duplicas los pacientes ($2n$), el tiempo de ejecución requerido se duplica exactamente. |
+| **Raíz Cuadrada** $O(\sqrt{n})$ | Buscar un divisor estructural para validar llaves en un sistema de criptografía médica. | Si los datos crecen a 10,000, el esfuerzo de cómputo solo crece proporcionalmente a $\sqrt{10,000} = 100$. |
+| **Logarítmico** $O(\log n)$ | Buscar un paciente alfabéticamente en un archivo ordenado dividiendo el archivero a la mitad en cada paso. | Altamente escalable. Procesar un millón de registros solo consume alrededor de 20 pasos de búsqueda. |
+| **Exponencial** $O(a^n)$ | Hacer pruebas cruzadas de compatibilidad inmunológica de "todos contra todos" para trasplantes de órganos. | Inviable para Big Data. Añadir solo unos pocos pacientes provoca que el tiempo de cómputo explote al infinito. |
 
 ## 1.2.4 Procesos Exponenciales y Logarítmicos
 
@@ -128,7 +129,7 @@ Calcular la potencia multiplicando la base sucesivamente demanda un tiempo linea
 
 Esta técnica reduce drásticamente los pasos necesarios para evaluar grandes volúmenes de datos. He aquí la solución iterativa eficiente que preserva la ecuación invariante $\text{Resultado} = \text{producto} \times (\text{base}^{\text{exponente}})$:
 
-```racket
+``` racket
 #lang racket
 
 (define (par? n) (= (remainder n 2) 0))
@@ -156,7 +157,7 @@ Esta técnica reduce drásticamente los pasos necesarios para evaluar grandes vo
 
 A continuación se visualiza cómo la base cambia cuando el exponente es par y cómo obliga a actualizar el producto acumulado en la siguiente iteración:
 
-```text
+``` text
 (factor-gasto-iterativo 6)
 (iterar 6 3  1)   ; 6 es par: exponente/2 = 3, base^2 = 9. Producto se mantiene.
 (iterar 3 9  1)   ; 3 es impar: exponente-1 = 2. Producto absorbe la base (1 * 9).
@@ -176,7 +177,7 @@ Supongamos que el Comité de Auditoría de Historias Clínicas se reúne cada **
 
 Usando el residuo de la división (`remainder`), el algoritmo de Euclides reduce geométricamente los parámetros en un proceso iterativo de tiempo logarítmico *O(logn)* y espacio constante *O(1)*:
 
-```racket
+``` racket
 #lang racket
 
 ;; mcd-logistico : numero numero -> numero
@@ -190,7 +191,7 @@ Usando el residuo de la división (`remainder`), el algoritmo de Euclides reduce
 
 ### Rastreo del Proceso de Sincronización
 
-```text
+``` text
 (mcd-logistico 28 16)
 (mcd-logistico 16 (remainder 28 16)) ; Residuo de 28/16 es 12
 (mcd-logistico 16 12)
@@ -213,7 +214,7 @@ Para no inspeccionar de uno en uno todo el universo de números hasta n, aplicam
 
 Para evitar lidiar con la imprecisión de los números de punto flotante de la función matemática tradicional de la raíz cuadrada, el código realiza un malabarismo sintáctico seguro y legible mediante el manejo de cadenas de texto:
 
-```racket
+``` racket
 ;; divisor-vacio? : numero numero -> boolean
 (define (divide? a b)
   (= (remainder b a) 0))

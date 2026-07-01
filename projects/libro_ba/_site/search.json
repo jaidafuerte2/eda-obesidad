@@ -3835,5 +3835,113 @@
       "PARTE VI — COMUNICAR Y PENSAR MEJOR",
       "16.- Correlación, causalidad y sentido común"
     ]
+  },
+  {
+    "objectID": "analysis/c17.html",
+    "href": "analysis/c17.html",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "",
+    "text": "Imagina que dos analistas presentan exactamente el mismo modelo de pronóstico de ventas.\nEl primero concluye:\n\n“Las ventas del próximo trimestre serán de 120 000 dólares.”\n\nEl segundo dice:\n\n“Nuestro modelo considera más plausibles ventas cercanas a 120 000 dólares, aunque valores entre 110 000 y 130 000 dólares también son perfectamente compatibles con la información disponible.”\n\nAmbos utilizaron el mismo conjunto de datos.\nAmbos ajustaron exactamente el mismo modelo.\nAmbos obtuvieron la misma distribución posterior.\nSin embargo, la impresión que dejan es completamente distinta.\nEl primer analista transmite una sensación de precisión absoluta.\nEl segundo comunica una realidad mucho más cercana al funcionamiento del mundo: toda predicción está rodeada de incertidumbre.\nEsa diferencia puede parecer únicamente una cuestión de estilo, pero en realidad cambia la forma en que otras personas toman decisiones.\nUn gerente que escucha una cifra única puede interpretar que el futuro ya está determinado. En cambio, cuando conoce el rango de escenarios plausibles puede prepararse para distintas posibilidades, evaluar riesgos y diseñar planes alternativos.\nA lo largo de este libro hemos insistido en una idea fundamental:\n\nLos modelos no producen certezas; producen escenarios plausibles basados en la información disponible.\n\nComunicar esos escenarios con honestidad es tan importante como construir el modelo que los generó.\nEn este capítulo no aprenderemos nuevos modelos estadísticos. En cambio, desarrollaremos una habilidad igual de valiosa: explicar resultados probabilísticos de forma clara, útil y responsable.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#introducción",
+    "href": "analysis/c17.html#introducción",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "",
+    "text": "Imagina que dos analistas presentan exactamente el mismo modelo de pronóstico de ventas.\nEl primero concluye:\n\n“Las ventas del próximo trimestre serán de 120 000 dólares.”\n\nEl segundo dice:\n\n“Nuestro modelo considera más plausibles ventas cercanas a 120 000 dólares, aunque valores entre 110 000 y 130 000 dólares también son perfectamente compatibles con la información disponible.”\n\nAmbos utilizaron el mismo conjunto de datos.\nAmbos ajustaron exactamente el mismo modelo.\nAmbos obtuvieron la misma distribución posterior.\nSin embargo, la impresión que dejan es completamente distinta.\nEl primer analista transmite una sensación de precisión absoluta.\nEl segundo comunica una realidad mucho más cercana al funcionamiento del mundo: toda predicción está rodeada de incertidumbre.\nEsa diferencia puede parecer únicamente una cuestión de estilo, pero en realidad cambia la forma en que otras personas toman decisiones.\nUn gerente que escucha una cifra única puede interpretar que el futuro ya está determinado. En cambio, cuando conoce el rango de escenarios plausibles puede prepararse para distintas posibilidades, evaluar riesgos y diseñar planes alternativos.\nA lo largo de este libro hemos insistido en una idea fundamental:\n\nLos modelos no producen certezas; producen escenarios plausibles basados en la información disponible.\n\nComunicar esos escenarios con honestidad es tan importante como construir el modelo que los generó.\nEn este capítulo no aprenderemos nuevos modelos estadísticos. En cambio, desarrollaremos una habilidad igual de valiosa: explicar resultados probabilísticos de forma clara, útil y responsable.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#comunicar-probabilidades-en-lugar-de-certezas",
+    "href": "analysis/c17.html#comunicar-probabilidades-en-lugar-de-certezas",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "17.2 Comunicar probabilidades en lugar de certezas",
+    "text": "17.2 Comunicar probabilidades en lugar de certezas\nCuando una persona escucha el resultado de un análisis suele formular una pregunta muy sencilla:\n\nEntonces… ¿qué va a pasar?\n\nEs una pregunta natural, pero difícil de responder con absoluta precisión.\nLos datos describen el pasado y ayudan a construir escenarios para el futuro, pero no eliminan la incertidumbre.\nPor eso, uno de los mayores cambios que propone el enfoque bayesiano consiste en reemplazar afirmaciones categóricas por afirmaciones probabilísticas.\nComparemos algunos ejemplos.\n\n\n\n\n\n\n\nComunicación categórica\nComunicación probabilística\n\n\n\n\nLas ventas serán de $120 000.\nEl modelo considera más plausibles ventas cercanas a $120 000.\n\n\nEste cliente abandonará la empresa.\nEste cliente presenta una alta probabilidad de abandono.\n\n\nLa campaña funcionará.\nLos resultados sugieren una probabilidad elevada de éxito, aunque existen escenarios menos favorables.\n\n\nEste tratamiento será efectivo.\nLos datos indican que el tratamiento tiene una alta probabilidad de ser efectivo para pacientes similares.\n\n\n\nLas diferencias parecen pequeñas, pero modifican profundamente la interpretación.\nLa primera columna presenta el futuro como si fuera conocido.\nLa segunda reconoce que existen distintos escenarios compatibles con la evidencia.\nEse cambio de lenguaje no hace que el análisis sea más débil.\nLo hace más honesto.\n\nPensar en distribuciones, no en números\nDurante todo el libro hemos trabajado con distribuciones posteriores.\n¿Por qué?\nPorque un único número rara vez resume toda la información relevante.\nCuando observamos una distribución estamos viendo algo mucho más rico:\n\ncuál es el resultado más plausible;\ncuánto varían los escenarios posibles;\nqué tan incierta es la predicción;\ncuáles son los valores extremos pero todavía posibles.\n\nEn otras palabras, la distribución cuenta una historia mucho más completa que una cifra aislada.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#el-poder-de-las-visualizaciones-honestas",
+    "href": "analysis/c17.html#el-poder-de-las-visualizaciones-honestas",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "17.3 El poder de las visualizaciones honestas",
+    "text": "17.3 El poder de las visualizaciones honestas\nUna buena visualización no elimina la incertidumbre.\nLa hace visible.\nEn los capítulos anteriores utilizamos varios gráficos para representar distribuciones posteriores, intervalos plausibles y predicciones.\nEn este capítulo veremos cómo esos mismos gráficos ayudan a comunicar resultados de forma más transparente.\n\nMostrar intervalos plausibles\nSupongamos que ya disponemos de un modelo bayesiano para pronosticar ventas.\nEn lugar de mostrar únicamente la predicción promedio, podemos representar también el intervalo plausible.\n\nEl código incorpora un elemento que el lector ya conoce: geom_ribbon().\nLa línea central representa el valor más plausible según el modelo.\nLa banda sombreada muestra el rango donde también podrían encontrarse las ventas futuras.\nEse pequeño cambio transforma completamente el mensaje del gráfico.\nYa no observamos una única trayectoria inevitable.\nObservamos un conjunto de escenarios compatibles con la información disponible.\n\n\nDistribuciones posteriores\nOtro gráfico familiar consiste en representar directamente la distribución posterior de un parámetro.\n\nEste gráfico comunica inmediatamente dos aspectos:\n\ndónde se concentran los valores más plausibles;\ncuánta incertidumbre existe alrededor del parámetro.\n\nNo necesitamos explicar algoritmos de muestreo ni detalles técnicos sobre MCMC.\nLa propia forma de la distribución transmite la información esencial.\n\n\nMenos decoración, más claridad\nCuando comunicamos resultados probabilísticos conviene evitar gráficos recargados.\nCon frecuencia, un gráfico sencillo comunica mucho mejor que uno lleno de elementos decorativos.\nAntes de añadir colores, etiquetas o múltiples capas de información, conviene preguntarse:\n\n¿Este elemento ayuda a comprender la incertidumbre o simplemente hace el gráfico más llamativo?",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#contar-la-historia-correcta",
+    "href": "analysis/c17.html#contar-la-historia-correcta",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "17.4 Contar la historia correcta",
+    "text": "17.4 Contar la historia correcta\nUn gráfico nunca habla por sí solo.\nNecesita contexto.\nSupongamos que un gerente observa la siguiente figura.\nLa predicción media de ventas aumenta ligeramente durante los próximos meses.\n¿Significa eso que la empresa debe duplicar inmediatamente su producción?\nNo necesariamente.\nQuizá el intervalo plausible también aumentó considerablemente.\nQuizá existe una probabilidad importante de que las ventas permanezcan prácticamente estables.\nQuizá el crecimiento esperado sea demasiado pequeño para justificar una inversión costosa.\nEl gráfico muestra datos.\nEl analista debe explicar qué significan esos datos para la decisión que se va a tomar.\n\nDel dato a la decisión\nUna forma útil de estructurar la comunicación consiste en responder cuatro preguntas.\n\n¿Qué observamos?\n¿Qué tan seguros estamos?\n¿Qué escenarios alternativos siguen siendo plausibles?\n¿Qué implicaciones tiene esto para la decisión?\n\nResponder estas preguntas obliga a conectar el análisis con el problema de negocio.\nEse puente entre evidencia y decisión es el verdadero valor del analista.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#errores-frecuentes-al-comunicar-resultados",
+    "href": "analysis/c17.html#errores-frecuentes-al-comunicar-resultados",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "17.5 Errores frecuentes al comunicar resultados",
+    "text": "17.5 Errores frecuentes al comunicar resultados\nIncluso un excelente modelo puede conducir a malas decisiones si se comunica de forma inadecuada.\nAlgunos errores aparecen con mucha frecuencia.\n\nOcultar la incertidumbre\nPresentar únicamente un valor promedio hace creer que ese resultado ocurrirá con certeza.\nSiempre que sea posible, acompañe la estimación con un intervalo plausible o una distribución.\n\n\nExagerar diferencias pequeñas\nDos estrategias pueden diferir muy poco y, sin embargo, una presentación exagerada puede hacer parecer que existe una gran ventaja.\nAntes de destacar una diferencia conviene preguntarse:\n\n¿La incertidumbre permite afirmar que esa diferencia es realmente importante?\n\n\n\nConfundir probabilidad con certeza\nUna probabilidad del 80 % no significa que el evento ocurrirá inevitablemente.\nSignifica que todavía existe un 20 % de escenarios donde el resultado será diferente.\n\n\nUtilizar lenguaje excesivamente categórico\nExpresiones como:\n\n“demostramos”;\n“garantizamos”;\n“ocurrirá”;\n“es seguro”;\n\ndeberían utilizarse con mucha cautela.\nEn la mayoría de los problemas reales resulta más apropiado utilizar expresiones como:\n\n“la evidencia sugiere”;\n“es plausible”;\n“los datos indican”;\n“el modelo considera probable”.\n\nEse pequeño cambio refleja mejor la naturaleza incierta de los fenómenos que estudiamos.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#pensar-en-quien-toma-la-decisión",
+    "href": "analysis/c17.html#pensar-en-quien-toma-la-decisión",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "17.6 Pensar en quien toma la decisión",
+    "text": "17.6 Pensar en quien toma la decisión\nLos análisis no se realizan para impresionar a otros analistas.\nSe realizan para ayudar a alguien a decidir.\nEsa persona puede ser un gerente comercial, un responsable de marketing, un director financiero, un médico o cualquier profesional que deba elegir entre varias alternativas.\nCada uno necesita respuestas diferentes.\nUn gerente de ventas probablemente quiera conocer el rango de ventas esperado para planificar inventarios.\nUn equipo de marketing puede interesarse por la probabilidad de éxito de una campaña.\nUn médico quizá necesite estimar el riesgo de complicaciones antes de recomendar un tratamiento.\nAunque las decisiones cambien, la necesidad es la misma: comprender la incertidumbre.\nPor eso, una buena comunicación no consiste únicamente en explicar el modelo.\nConsiste en traducir los resultados a un lenguaje que facilite la decisión.\nEl objetivo final no es demostrar que el modelo es sofisticado.\nEs ayudar a otra persona a actuar con mayor confianza, sabiendo también cuáles son las limitaciones del análisis.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#reflexión-bayesiana",
+    "href": "analysis/c17.html#reflexión-bayesiana",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "17.7 Reflexión bayesiana",
+    "text": "17.7 Reflexión bayesiana\nA lo largo de este libro hemos aprendido que los modelos bayesianos describen un conjunto de escenarios plausibles y no un único futuro inevitable.\nEsa filosofía también debe reflejarse en la forma de comunicar los resultados.\nMostrar incertidumbre no disminuye la calidad del análisis.\nAl contrario, demuestra que comprendemos la naturaleza limitada de nuestros datos y que respetamos la complejidad del mundo real.\nCuando comunicamos intervalos plausibles, distribuciones posteriores o probabilidades, no estamos añadiendo dudas innecesarias.\nEstamos ofreciendo una imagen más completa de la evidencia disponible.\nEn ese sentido, comunicar incertidumbre forma parte del propio análisis.\nNo es un detalle de presentación, sino una expresión del pensamiento probabilístico que ha guiado todo este libro.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
+  },
+  {
+    "objectID": "analysis/c17.html#ejercicios",
+    "href": "analysis/c17.html#ejercicios",
+    "title": "17.- Cómo comunicar incertidumbre",
+    "section": "17.8 Ejercicios",
+    "text": "17.8 Ejercicios\n\nEjercicio 1. Reescribiendo conclusiones\nReescriba las siguientes afirmaciones utilizando un lenguaje probabilístico.\n\nLas ventas serán de $95 000.\nEste cliente cancelará el servicio.\nLa campaña será exitosa. 4.- El nuevo precio aumentará las ventas.\n\n\n\nEjercicio 2. Mejorando un gráfico\nObserve uno de los gráficos de predicción construidos en capítulos anteriores.\n¿Qué información adicional podría incorporarse para comunicar mejor la incertidumbre?\n\n\nEjercicio 3. Detectando falsas certezas\nLea las siguientes frases e identifique cuáles transmiten una falsa sensación de certeza.\n\nLa estrategia A funcionará mejor.\nExiste una alta probabilidad de que la estrategia A obtenga mejores resultados.\nEl proyecto tendrá éxito.\nLos datos sugieren un escenario favorable para el proyecto.\n\nExplique su respuesta.\n\n\nEjercicio 4. Escribiendo para un gerente\nImagine que un gerente le pregunta si debe aumentar el inventario para el próximo trimestre.\nUtilizando uno de los modelos desarrollados en el libro, redacte un informe breve (entre 150 y 200 palabras) que:\n\ndescriba el escenario más plausible;\nmencione la incertidumbre existente;\nexplique qué riesgos deberían considerarse antes de tomar la decisión;\nevite afirmaciones categóricas.\n\n\n\nEjercicio 5. Reflexión personal\nPiense en alguna noticia, informe o presentación que haya visto recientemente.\n¿Se comunicaban los resultados como certezas absolutas o como escenarios probabilísticos?\n¿Qué efecto cree que tuvo esa forma de comunicar la información sobre quienes debían tomar decisiones?",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "17.- Cómo comunicar incertidumbre"
+    ]
   }
 ]

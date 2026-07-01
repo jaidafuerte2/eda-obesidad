@@ -1,0 +1,152 @@
+---
+title: "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+format: html
+editor: visual
+---
+
+## 1. ¿Cómo se Estudia un Lenguaje de Programación? (Sin morir en la Torre de Babel)
+
+Cuando decides adentrarte en el mundo de los lenguajes de programación, es fácil abrumarse ante la cantidad de nombres que flotan en el ambiente: Python, R, Java, C++, SQL, Racket. La primera tentación (y el enfoque de muchos cursos tradicionales) es intentar aprender una docena de lenguajes para "compararlos".
+
+Aprender Java, luego C# y después C++ para entender la programación es el equivalente a estudiar la gestión de salud pública visitando tres hospitales idénticos que solo cambian el color de las paredes y el logotipo de las batas. Te vas a comer una cantidad brutal de detalles administrativos irrelevantes (sintaxis, librerías, burocracia del compilador) sin aprender nada nuevo sobre cómo atender al paciente (el proceso computacional).
+
+El verdadero problema radica en las etiquetas que usamos en los paneles de discusión:
+
+- ¿Es de alto nivel o bajo nivel?
+
+- ¿Es procedimental, orientado a objetos (OO), funcional o declarativo?
+
+- ¿Es un lenguaje de scripting o compilado?
+
+Si intentas clasificar lenguajes comerciales como Python, JavaScript o tu querido R bajo estas etiquetas fijas, vas a terminar con un dolor de cabeza metodológico.
+
+**Nota de gestión**: Los lenguajes del mundo real no son "puros"; son auténticos **monstruos multi-paradigma (BLOBs de características)**. Tienen un trozo de objetos, un injerto funcional y una base procedimental. Para un analista de datos, esto es como un paciente con síndrome metabólico crónico: una amalgama de síntomas interconectados que no caben en una sola caja clínica.
+
+## 2. Hacia una Ciencia de los Lenguajes (De Linneo a Dr. Racket)
+
+En la ciencia tradicional, nos encanta meter cosas en cajas para registrar nuestro entendimiento del mundo:
+
+1.  **Carl Linneo** creó la nomenclatura binomial para categorizar seres vivos (gracias a él dices Homo sapiens o Escherichia coli).
+
+2.  **John Dalton** nos dio la teoría atómica para identificar los bloques fundamentales de la materia.
+
+3.  **Erwin Chargaff** descubrió las reglas de composición de las bases nitrogenadas en el ADN (las reglas gramaticales de la biología).
+
+Los informáticos intentaron hacer lo mismo con los lenguajes de programación, pero con resultados bastante deficientes. Al no ponerse de acuerdo sobre cuáles son los "átomos" del software, crearon una taxonomía confusa. Tomemos de nuevo a Python: es procedimental, pero tiene clases (OO), sirve para hacer scripts de pegamento, es interpretado pero se compila just-in-time... Un caos organizativo.
+
+Para construir tu **motor semántico y lógico (Datalog)** sobre los datos de NHANES, no necesitamos estudiar el "BLOB" entero de un lenguaje comercial. Lo que haremos en este curso es aplicar un proceso clínico de aislamiento: el **DESUGAR** (desazucarar).
+
+```         
+   +-----------------------------------+
+   |    BLOB de un Lenguaje Comercial  | (Python, R, JavaScript...)
+   +-----------------------------------+
+                     |
+                     v  [DESUGAR] (Quitar azúcar sintáctica y ruido)
+   +-----------------------------------+
+   |         NÚCLEO ESENCIAL          | (Bloques de construcción puros)
+   +-----------------------------------+
+   
+```
+
+Al remover la "azúcar sintáctica" (esos atajos visuales y características redundantes que ponen los diseñadores para que el código se vea bonito), nos quedamos con el núcleo esencial: un conjunto mínimo de bloques de construcción (átomos) y reglas de composición. Si entendemos estos átomos (como las funciones de primera clase o la inmutabilidad), podrás diseñar las reglas de tu motor lógico sin importar el lenguaje final.
+
+## 3. El Lenguaje como un Marco de Trabajo para Procesos
+
+Abelson y Sussman (los autores de SICP) dejaron caer una definición dorada, desprovista de la matemática densa que nos fastidia:
+
+"Un lenguaje de programación es un marco de trabajo para organizar ideas sobre procesos."
+
+A diferencia de un modelo estadístico estático en un papel, lo fascinante de la computación es que **nuestros modelos están vivos**. Cuando escribes código para analizar la prevalencia de la obesidad, estás creando un proceso dinámico que cobra vida al ejecutarse.
+
+¿Y qué es un **paradigma**? Olvídate de la definición filosófica corporativa. Piensa en él simplemente como un **estilo o un patrón de práctica médica**.
+
+Es exactamente igual a los lenguajes humanos. Si hablas español, te costará menos aprender italiano que mandarín, porque el italiano comparte la misma "familia" e historia cultural. En programación, si dominas la manipulación de vectores y *data frames* en R, saltar a un enfoque declarativo y lógico (como SQL o Datalog) te resultará mucho más natural que pelearte con la gestión de memoria explícita de C++. El paradigma es la cultura del lenguaje.
+
+## 4. El Enfoque Funcional: Tu Primer "Tratamiento" Sin Efectos Secundarios
+
+Como analista en NHANES, sabes perfectamente lo que ocurre cuando alguien altera la base de datos original a mitad de un script de análisis en R: las variables se contaminan, los resultados de la regresión se vuelven locos y pierdes la trazabilidad del estudio.
+
+En la programación tradicional (procedimental/OO), los programadores sufren de una adicción peligrosa: la **mutación de datos** (cambiar el valor de una variable global de forma destructiva) y la dependencia del **estado externo**. Mira este flujo problemático:
+
+``` text
+# Malas prácticas analíticas (Efectos secundarios)
+IMC_PACIENTE <- 32.5
+
+calcular_riesgo <- function() {
+  # Depende de una variable global y altera el estado externo
+  if (IMC_PACIENTE > 30) {
+    print("Alerta: Obesidad detectada")
+  }
+}
+```
+
+La función `calcular_riesgo` tiene una "entrada oculta" (`IMC_PACIENTE`) y no retorna un valor limpio, sino que altera la consola. Si la variable global cambia en otro lugar del código, tu función se rompe sin que te des cuenta.
+
+El **paradigma funcional** que estudiaremos usando Racket nos obliga a adoptar una disciplina clínica estricta basada en dos reglas de oro:
+
+1.  **No mutarás datos**: Los datos no se modifican de forma destructiva; se transforman en nuevos datos.
+
+2.  **No dependerás del estado externo**: Las funciones solo saben lo que entra explícitamente por sus parámetros.
+
+Una función pura se comporta como un laboratorio clínico automatizado bien calibrado:
+
+``` text
+   [ Datos de Entrada ] ---> ( Proceso Aislado ) ---> [ Valor de Retorno ]
+(Muestra de sangre/Filtro)                      (Resultado de laboratorio limpio)
+```
+
+Al remover la mutación y el estado externo, cada bloque de código se vuelve autónomo. Es predecible, es fácil de testear y, lo más importante para ti: **es el cimiento perfecto para un motor semántico basado en lógica y reglas**, donde necesitas tener la certeza absoluta de que una regla (`A -> B`) no va a cambiar de significado a mitad de la ejecución debido a un efecto secundario inesperado.
+
+## 5. Conclusión y Siguiente Consulta
+
+Este libro usa **Racket** no porque vayamos a construir aplicaciones web comerciales en él, sino porque es el bisturí perfecto para abrir el tórax de los lenguajes y estudiar sus órganos vitales. Al principio, su sintaxis llena de paréntesis te parecerá extraña, pero confía en el proceso. Hacer un esfuerzo honesto por aprender este estilo te va a abrir la mente tanto como aprender a volar un avión abre la perspectiva de alguien que solo sabe conducir automóviles.
+
+## 6. Diagnóstico Práctico (Sección de Ejercicios)
+
+Para consolidar el ojo clínico de esta sesión, resuelve los siguientes escenarios aplicados.
+
+### Escenario 1: El Historial Clínico Contaminado (Análisis de Paradigmas)
+
+Estás revisando un script en R diseñado por un colega para filtrar pacientes de la encuesta NHANES con hipertensión arterial sistólica $> 140$. El código utiliza un bucle `for` global que va modificando una variable externa `conteo_hipertensos <- conteo_hipertensos + 1` a medida que recorre las filas.
+
+- **Pregunta**: Explica, utilizando los conceptos del capítulo, por qué este enfoque procedimental genera "efectos secundarios" y cómo un enfoque funcional (como el uso de `filter()` en `tidyverse` o funciones puras en Racket) reduce el riesgo de errores en el análisis epidemiológico.
+
+### Escenario 2: Desazucarando la Evaluación de Obesidad
+
+En muchos lenguajes, la estructura condicional se escribe con una sintaxis compleja llena de llaves o palabras clave (`if-else`). Imagina que en nuestro núcleo esencial de diseño de lenguajes, la única regla sintáctica válida es que **todo debe ser una llamada a una función** con el formato (`operación argumento1 argumento2 ...`).
+
+- **Reto de Diseño**: Si tuvieras que reescribir la regla lógica "Si el IMC es mayor a 30, clasificar como Obesidad, de lo contrario clasificar como Normal" siguiendo ese formato estricto de función (sin usar la palabra `if` tradicional), ¿cómo estructurarías los elementos visualmente? (Tip: Piensa en cómo *The Little Schemer* organiza sus preguntas).
+
+### Escenario 3: La Anatomía de Racket (Homework 0)
+
+Basándote en tus lecturas iniciales de la documentación de Racket y la sesión:
+
+1.  Redacta una síntesis corta (tres frases) que defina qué es Racket, cuáles son sus rasgos principales y en qué se diferencia conceptualmente de un lenguaje de análisis de datos puro como R.
+
+2.  Plantea una pregunta crítica sobre la **semántica** (el comportamiento en ejecución) de un lenguaje que prohíbe la mutación de datos cuando se trabaja con bases de datos masivas como NHANES.
+
+## Resolviendo los ejercicios
+
+### Solución al Ejercicio 1: El Historial Clínico Contaminado
+
+El enfoque procedimental basado en un bucle `for` y una variable global mutable `conteo_hipertensos` genera un **efecto secundario** porque el resultado de la función depende del momento exacto en que se ejecuta y del estado previo de la memoria. Si otra función del script altera esa variable global, el análisis epidemiológico arrojará un falso positivo o un falso negativo.
+
+El enfoque funcional (usar `filter` en R o Racket) elimina la mutación. En lugar de "ir sumando de uno en uno", el paradigma funcional toma el set de datos original de NHANES como una entrada inmutable y genera un *nuevo* set de datos que contiene únicamente a los pacientes que cumplen la regla. No hay variables globales que puedan contaminarse.
+
+### Solución al Ejercicio 2: Desazucarando la Evaluación de Obesidad
+
+Si eliminamos la palabra clave `if` tradicional y nos obligamos a que todo sea una función con formato de prefijo `(operación argumento1 argumento2)`, la evaluación lógica se estructuraría como una expresión de evaluación pura:
+
+``` racket
+(cond
+  ((> imc 30) "Obesidad")
+  (else "Normal"))
+```
+
+En este diseño, `cond` no es un interruptor procedimental; es una función que recibe parejas de "Pregunta-Respuesta" (predicados). El motor evalúa de forma lógica la primera pregunta; si es verdadera, toda la expresión se transforma inmediatamente en el valor `"Obesidad"`, sin pasos intermedios ni asignaciones de variables de estado.
+
+### Solución al Ejercicio 3: La Anatomía de Racket (Homework 0)
+
+1.  **Síntesis:** Racket es un lenguaje de la familia Lisp/Scheme diseñado para explorar el diseño de sistemas mediante la creación de nuevos lenguajes y componentes. Sus rasgos principales son una sintaxis uniforme basada en expresiones entre paréntesis y un soporte nativo de primer nivel para el paradigma funcional. A diferencia de R, que nació especializado en el análisis estadístico y manipulación de data frames, Racket es un lenguaje de propósito general optimizado para construir procesadores de lenguajes, intérpretes y motores de reglas lógicas.
+
+2.  **Pregunta Semántica sobre Datos Masivos:** *Si el paradigma funcional prohíbe la mutación destructiva de datos y nos obliga a generar copias transformadas, ¿cómo gestiona la semántica de Racket la memoria ram al procesar millones de registros de la encuesta NHANES sin sufrir un colapso por duplicación de estructuras?*

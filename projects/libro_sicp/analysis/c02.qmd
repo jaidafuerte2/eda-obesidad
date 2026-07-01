@@ -1,0 +1,258 @@
+---
+title: "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+format: html
+editor: visual
+---
+
+## Introducción: El Ecosistema y los Datos
+
+Al igual que en la medicina no existe un único fármaco para todas las patologías, en informática no existe un único lenguaje para todos los problemas. 
+
+> **Nota Importante:** Python es el "paracetamol" de la programación en este curso: muy popular y útil para muchas cosas (como generar nubes de palabras rápidamente). Sin embargo, para nuestra meta de construir un motor semántico para NHANES, necesitamos un instrumento más preciso y maleable. Ahí es donde entra Racket. Racket nos permitirá abstraer conceptos médicos de una forma que Python o Java no pueden hacer fácilmente.
+
+## El REPL: Nuestro Monitor de Signos Vitales
+
+Para aprender Racket, no vamos a escribir largos tratados de código de inmediato. Usaremos el **REPL** (Read-Eval-Print Loop), que es el corazón interactivo de DrRacket. Piensa en el REPL como un monitor de signos vitales: tú haces una intervención (teclas código) y el monitor te da una lectura instantánea (el resultado).
+
+En DrRacket, tenemos dos paneles principales:
+
+1. **Panel de Definiciones (arriba):** Aquí escribimos el "tratamiento complete" (el programa).
+2. **Panel de Interacciones (abajo):** Este es el REPL. Aquí "oscultamos" expresiones individuales.
+
+> **Regla de Oro del Copiloto:** Para limpiar el monitor de signos vitales (las interacciones) y empezar de cero, simplemente pulsa el botón **"Run"** en la parte superior.
+
+## Anatomía de una Expresión en Racket (Sin Notación Matemática)
+
+Olvida las fórmulas complejas. En Racket, todo se reduce a diagnósticos y tratamientos.
+
+### La Notación Prefija
+
+En Racket, siempre pones la acción (el operador o función) *antes* de los datos (los operandos).
+
+En R, usas esta sintaxis para tus análisis de NHANES:
+
+```R
+# Sintaxis en R: Función(Dato)
+select(mis_datos_nhanes, obesidad)
+
+```
+
+Racket usa exactamente la misma lógica para **todo**. Es como dar una orden médica clara: `(Acción Paciente1 Paciente2 ...)`.
+
+```racket
+; Sintaxis en Racket: (Función Dato1 Dato2 ...)
+> (+ 10 5)  ; "Haga una suma de 10 y 5"
+15
+
+```
+
+Las ventajas de este enfoque son clínicas:
+
+1. **Cero ambigüedad:** Sabes exactamente qué función se aplica a qué datos.
+2. **Parámetros variables:** Una sola "orden" puede aceptar múltiples "pacientes".
+
+```racket
+> (+ 1 2 3 4 5 6 7 8 9 10) ; Suma una lista larga de datos de una sola vez
+55
+
+```
+
+### Evaluación en Árbol
+
+Cuando anidamos expresiones, Racket las procesa como el metabolismo de un fármaco: de adentro hacia afuera.
+
+Considera este cálculo de un indicador metabólico complejo:
+
+```racket
+> (- 100 (/ (* 5 10) (+ 2 3)))
+
+```
+
+Racket no se confunde con la precedencia. Lo desglosa así:
+
+1. Primero diagnostica/evalúa lo más interno: `(* 5 10)` se convierte en `50`, y `(+ 2 3)` se convierte en `5`.
+2. La expresión ahora es: `(- 100 (/ 50 5))`.
+3. Evalúa la siguiente capa: `(/ 50 5)` se convierte en `10`.
+4. La expresión final es: `(- 100 10)`.
+5. Resultado final: `90`.
+
+> **¡Cuidado con los Paréntesis!** En Racket, los paréntesis son sagrados. No son opcionales como en R o Python. Poner paréntesis de más o de menos no es un error de estilo; cambia el significado del código. `(5)` en Racket significa "llame a la función número 5", lo cual no tiene sentido y causará un error.
+
+## Tipos de Datos Básicos: Los Ladrillos de la Historia Clínica
+
+Para tu motor semántico de NHANES, necesitas categorizar tus datos. Racket tiene "tipos de sangre" (tipos de datos) muy claros para esto.
+
+### Números Exactos e Inexactos
+
+Aquí es donde Racket brilla con precisión quirúrgica, a diferencia de R, Java o Ada. Racket distingue entre:
+
+* **Números Exactos:** Como los enteros o las fracciones. Si divides 1 entre 3, Racket te da *exactamente* un tercio, no una aproximación decimal. Esto es vital para calcular dosis exactas.
+* **Números Inexactos:** Aproximaciones decimales (como los *floats* en R). Se usan cuando la medición tiene un margen de error inherente.
+
+```racket
+> (/ 1 3)   ; Resultado exacto (Racional)
+1/3
+> (sqrt 2)  ; Resultado inexacto
+1.4142135623730951
+> (+ 3 5.2) ; Combinación: el resultado es inexacto
+8.2
+
+```
+
+### Cadenas, Símbolos y Booleanos
+
+* **Strings (Cadenas):** Texto plano entre comillas dobles, usado para notas narrativas o nombres de pacientes.
+`"Paciente con IMC elevado"`
+* **Booleans (Booleanos):** Los diagnósticos binarios de toda la vida: verdadero (`#t`) o falso (`#f`).
+* **Symbols (Símbolos):** Etiquetas categóricas muy potentes. Son como los *factors* en R, pero más flexibles. En Racket, se escriben con una comilla simple al principio (`'`). Son fundamentales para nuestro motor semántico.
+
+> **Uso Clínico de Símbolos:** Podemos usar símbolos para etiquetar diagnósticos sin la pesada carga de procesar texto largo.
+
+```racket
+> (define diagnostico 'obesidad_morbida)
+> (eq? diagnostico 'obesidad_morbida) ; Prueba diagnóstica rápida
+#t
+
+```
+
+## Hacia el Motor Semántico: Pensando en Reglas y Datos
+
+El primer paso para tu motor de NHANES es aprender a dar nombres a los valores diagnósticos. Usamos la forma especial `define`.
+
+> **Nota Técnica:** `define` no es una función normal; es una "forma especial". Su regla es distinta: el primer argumento (`area`) *no* se evalúa, se convierte en el nombre.
+
+```racket
+; Definimos constantes diagnósticas para nuestro análisis
+(define IMC-umbral-obesidad 30.0)
+(define IMC-umbral-sobrepeso 25.0)
+
+; Asignamos datos de un paciente hipotético de NHANES
+(define peso-kg 95.0)
+(define altura-m 1.75)
+
+; Calculamos el IMC (Tratamiento de datos)
+(define IMC-paciente (/ peso-kg (* altura-m altura-m)))
+
+; Mostramos el resultado en el REPL (Monitor)
+> IMC-paciente
+31.020408163265305
+
+```
+
+## Ejercicios Prácticos: Pruebas de Laboratorio Racket
+
+Usa el Panel de Interacciones (REPL) de DrRacket para confirmar estas "pruebas de laboratorio".
+
+### Ejercicio 1 
+
+Transcribe las siguientes expresiones aritméticas complejas a la sintaxis limpia de Racket y evalúalas:
+
+a) $4 \times 7 - 11 + 6$
+
+```racket
+; Tu código Racket aquí
+
+```
+
+b) $1.6 + 1/3 \times (6 - (-1.7))$
+
+```racket
+; Tu código Racket aquí
+
+```
+
+### Ejercicio 2 (Caso Clínico/Datos Metabólicos)
+
+Vamos a modelar una regla semántica simple.
+
+1. Define una constante para el umbral de glucosa en ayunas para diabetes (digamos, 126 mg/dL).
+2. Define el valor de glucosa de un paciente (digamos, 140 mg/dL).
+3. Escribe una expresión Racket que devuelva `#t` si el paciente supera el umbral y `#f` si no (pista: usa la función `>`).
+
+```racket
+; 1. Definir umbral
+(define umbral-diabetes ...)
+
+; 2. Definir dato paciente
+(define glucosa-paciente ...)
+
+; 3. Expresión de diagnóstico binario
+> (... glucosa-paciente umbral-diabetes)
+
+```
+
+### Ejercicio 3 (Pensamiento Datalog)
+
+Imagina que en tu motor semántico tienes una regla: *"Si un paciente tiene obesidad (IMC > 30) Y hipertensión, requiere seguimiento metabólico"*.
+
+Traduce esa lógica de diagnóstico combinado a una expresión de Racket usando `#t` y `#f` para representar la presencia de las condiciones. Deberás usar la función booleana `(and ...)`.
+
+```racket
+; Asumimos: Paciente SÍ tiene obesidad (#t) Y SÍ tiene hipertensión (#t)
+> (and ... ...) ; Debería devolver #t
+
+; Asumimos: Paciente SÍ tiene obesidad (#t) pero NO tiene hipertensión (#f)
+> (and ... ...) ; Debería devolver #f
+
+```
+
+## Solucionario de Ejercicios Prácticos
+
+Aquí tienes las soluciones corregidas a tus "pruebas de laboratorio" de Racket.
+
+### Ejercicio 1 (Basado en `home01.pdf`)
+
+Transcripción de expresiones aritméticas complejas a la sintaxis prefija de Racket:
+
+a) $4 \times 7 - 11 + 6$
+
+```racket
+; Solución: Primero multiplicamos, luego restamos 11, y al final sumamos 6.
+> (+ (- (* 4 7) 11) 6)
+23
+```
+
+b) $1.6 + 1/3 \times (6 - (-1.7))$
+
+```racket
+; Solución: Cuidado con el doble negativo (- -1.7). Racket maneja el 1/3 exactamente.
+> (+ 1.6 (* (/ 1 3) (- 6 -1.7)))
+4.166666666666666 ; El resultado es inexacto debido al 1.6 inicial.
+```
+
+### Ejercicio 2 (Caso Clínico/Datos Metabólicos)
+
+Modelado de una regla semántica simple de diagnóstico de diabetes.
+
+1.  Define una constante para el umbral de glucosa en ayunas para diabetes (digamos, 126 mg/dL).
+2.  Define el valor de glucosa de un paciente (digamos, 140 mg/dL).
+3.  Expresión que devuelve `#t` si el paciente supera el umbral y `#f` si no.
+
+```racket
+; Solución
+; 1. Definir umbral
+(define umbral-diabetes 126)
+
+; 2. Definir dato paciente
+(define glucosa-paciente 140)
+
+; 3. Expresión de diagnóstico binario
+> (> glucosa-paciente umbral-diabetes)
+#t
+```
+
+### Ejercicio 3 (Pensamiento Datalog)
+
+Traducción de una regla de diagnóstico combinado ("Si un paciente tiene obesidad (IMC > 30) Y hipertensión, requiere seguimiento metabólico") usando la función booleana `and`.
+
+```racket
+; Solución
+
+; Escenario A: Paciente SÍ tiene obesidad (#t) Y SÍ tiene hipertensión (#t)
+> (and #t #t) ; Debería devolver #t
+#t
+
+; Escenario B: Paciente SÍ tiene obesidad (#t) pero NO tiene hipertensión (#f)
+> (and #t #f) ; Debería devolver #f
+#f
+```

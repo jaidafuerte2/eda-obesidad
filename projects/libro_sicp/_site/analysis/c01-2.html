@@ -365,7 +365,7 @@ window.Quarto = {
 </section>
 <section id="el-rastreo-de-la-explosión-arbórea" class="level3">
 <h3 class="anchored" data-anchor-id="el-rastreo-de-la-explosión-arbórea">El Rastreo de la Explosión Arbórea</h3>
-<p>Para solo <em><span class="math inline">\(n = 3\)</span></em> pacientes, observa cómo el intérprete se ve obligado a evaluar expresiones idénticas de forma redundante (como <code>(sim-com-triaje 0)</code> y <code>(sim-com-triaje -1)</code> en múltiples sub-ramas):</p>
+<p>Para solo <span class="math inline">\(n = 3\)</span> pacientes, observa cómo el intérprete se ve obligado a evaluar expresiones idénticas de forma redundante (como <code>(sim-com-triaje 0)</code> y <code>(sim-com-triaje -1)</code> en múltiples sub-ramas):</p>
 <pre class="text"><code>(simular-combinaciones-triaje 3)
 (+ (simular-combinaciones-triaje 2) (simular-combinaciones-triaje 1))
 (+ (+ (simular-combinaciones-triaje 1) (simular-combinaciones-triaje 0)) (+ (simular-combinaciones-triaje 0) (simular-combinaciones-triaje -1)))
@@ -394,27 +394,27 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>Constante <span class="math inline">\(O(1)\)</span></strong></td>
+<td style="text-align: left;"><strong>Constante</strong> <span class="math inline">\(O(1)\)</span></td>
 <td style="text-align: left;">Consultar el tipo de sangre en la portada de una Ficha Médica Electrónica indexada.</td>
 <td style="text-align: left;">Toma exactamente el mismo tiempo si la base tiene 10 registros o 100 millones. Es el ideal de eficiencia.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Lineal <span class="math inline">\(O(n)\)</span></strong></td>
+<td style="text-align: left;"><strong>Lineal</strong> <span class="math inline">\(O(n)\)</span></td>
 <td style="text-align: left;">Tomar manualmente la presión arterial a cada paciente en una fila de consulta externa.</td>
 <td style="text-align: left;">Si duplicas los pacientes (<span class="math inline">\(2n\)</span>), el tiempo de ejecución requerido se duplica exactamente.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>Raíz Cuadrada <span class="math inline">\(O(\sqrt{n})\)</span></strong></td>
+<td style="text-align: left;"><strong>Raíz Cuadrada</strong> <span class="math inline">\(O(\sqrt{n})\)</span></td>
 <td style="text-align: left;">Buscar un divisor estructural para validar llaves en un sistema de criptografía médica.</td>
 <td style="text-align: left;">Si los datos crecen a 10,000, el esfuerzo de cómputo solo crece proporcionalmente a <span class="math inline">\(\sqrt{10,000} = 100\)</span>.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Logarítmico <span class="math inline">\(O(\log n)\)</span></strong></td>
+<td style="text-align: left;"><strong>Logarítmico</strong> <span class="math inline">\(O(\log n)\)</span></td>
 <td style="text-align: left;">Buscar un paciente alfabéticamente en un archivo ordenado dividiendo el archivero a la mitad en cada paso.</td>
 <td style="text-align: left;">Altamente escalable. Procesar un millón de registros solo consume alrededor de 20 pasos de búsqueda.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>Exponencial <span class="math inline">\(O(a^n)\)</span></strong></td>
+<td style="text-align: left;"><strong>Exponencial</strong> <span class="math inline">\(O(a^n)\)</span></td>
 <td style="text-align: left;">Hacer pruebas cruzadas de compatibilidad inmunológica de “todos contra todos” para trasplantes de órganos.</td>
 <td style="text-align: left;">Inviable para Big Data. Añadir solo unos pocos pacientes provoca que el tiempo de cómputo explote al infinito.</td>
 </tr>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
+<title>17.- Cómo comunicar incertidumbre – Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,25 +23,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -80,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span>
     </a>
   </div>
@@ -91,15 +91,15 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./analysis/c00_sobre_el_autor.html"> 
+    <a class="nav-link" href="../analysis/c00_sobre_el_autor.html"> 
 <span class="menu-text">Sobre el autor</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./analysis/c00_proyectos.html"> 
+    <a class="nav-link" href="../analysis/c00_proyectos.html"> 
 <span class="menu-text">Proyectos</span></a>
   </li>  
 </ul>
@@ -130,7 +130,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c16.html">PARTE VI — COMUNICAR Y PENSAR MEJOR</a></li><li class="breadcrumb-item"><a href="../analysis/c17.html">17.- Cómo comunicar incertidumbre</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -144,19 +144,19 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Prefacio</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sobre el autor</span></a>
   </div>
 </li>
@@ -171,19 +171,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c01.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">1.- Los datos nunca cuentan toda la historia</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c02.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">2.- Distribuciones: pensar más allá de un promedio</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c03.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">3.- Simulación y mundos posibles</span></a>
   </div>
 </li>
@@ -200,19 +200,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c04.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">4.- Bayes: aprender de nueva evidencia</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c05.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">5.- Probabilidades útiles para tomar decisiones</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c06.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">6.- Modelos bayesianos prácticos con rstanarm</span></a>
   </div>
 </li>
@@ -229,19 +229,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c07.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">7.- Relaciones entre variables</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c08.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">8.- Interpretar modelos probabilísticos</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c09.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">9.- Predicciones probabilísticas</span></a>
   </div>
 </li>
@@ -258,25 +258,25 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c10.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">10.- Introducción al churn y al riesgo de abandono</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c11.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">11.- Regresión logística bayesiana</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c12.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">12.- Interpretar riesgo individual</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c13.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">13.- Tomar decisiones bajo incertidumbre</span></a>
   </div>
 </li>
@@ -293,13 +293,13 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c14.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">14.- Forecasting para humanos normales</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c15.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">15.- Escenarios futuros plausibles</span></a>
   </div>
 </li>
@@ -316,13 +316,13 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c16.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c16.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">16.- Correlación, causalidad y sentido común</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysis/c17.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c17.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">17.- Cómo comunicar incertidumbre</span></a>
   </div>
 </li>
@@ -338,16 +338,47 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#bienvenido" id="toc-bienvenido" class="nav-link active" data-scroll-target="#bienvenido">Bienvenido</a></li>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">17.1 Introducción</a></li>
+  <li><a href="#comunicar-probabilidades-en-lugar-de-certezas" id="toc-comunicar-probabilidades-en-lugar-de-certezas" class="nav-link" data-scroll-target="#comunicar-probabilidades-en-lugar-de-certezas">17.2 Comunicar probabilidades en lugar de certezas</a>
+  <ul class="collapse">
+  <li><a href="#pensar-en-distribuciones-no-en-números" id="toc-pensar-en-distribuciones-no-en-números" class="nav-link" data-scroll-target="#pensar-en-distribuciones-no-en-números">Pensar en distribuciones, no en números</a></li>
+  </ul></li>
+  <li><a href="#el-poder-de-las-visualizaciones-honestas" id="toc-el-poder-de-las-visualizaciones-honestas" class="nav-link" data-scroll-target="#el-poder-de-las-visualizaciones-honestas">17.3 El poder de las visualizaciones honestas</a>
+  <ul class="collapse">
+  <li><a href="#mostrar-intervalos-plausibles" id="toc-mostrar-intervalos-plausibles" class="nav-link" data-scroll-target="#mostrar-intervalos-plausibles">Mostrar intervalos plausibles</a></li>
+  <li><a href="#distribuciones-posteriores" id="toc-distribuciones-posteriores" class="nav-link" data-scroll-target="#distribuciones-posteriores">Distribuciones posteriores</a></li>
+  <li><a href="#menos-decoración-más-claridad" id="toc-menos-decoración-más-claridad" class="nav-link" data-scroll-target="#menos-decoración-más-claridad">Menos decoración, más claridad</a></li>
+  </ul></li>
+  <li><a href="#contar-la-historia-correcta" id="toc-contar-la-historia-correcta" class="nav-link" data-scroll-target="#contar-la-historia-correcta">17.4 Contar la historia correcta</a>
+  <ul class="collapse">
+  <li><a href="#del-dato-a-la-decisión" id="toc-del-dato-a-la-decisión" class="nav-link" data-scroll-target="#del-dato-a-la-decisión">Del dato a la decisión</a></li>
+  </ul></li>
+  <li><a href="#errores-frecuentes-al-comunicar-resultados" id="toc-errores-frecuentes-al-comunicar-resultados" class="nav-link" data-scroll-target="#errores-frecuentes-al-comunicar-resultados">17.5 Errores frecuentes al comunicar resultados</a>
+  <ul class="collapse">
+  <li><a href="#ocultar-la-incertidumbre" id="toc-ocultar-la-incertidumbre" class="nav-link" data-scroll-target="#ocultar-la-incertidumbre">Ocultar la incertidumbre</a></li>
+  <li><a href="#exagerar-diferencias-pequeñas" id="toc-exagerar-diferencias-pequeñas" class="nav-link" data-scroll-target="#exagerar-diferencias-pequeñas">Exagerar diferencias pequeñas</a></li>
+  <li><a href="#confundir-probabilidad-con-certeza" id="toc-confundir-probabilidad-con-certeza" class="nav-link" data-scroll-target="#confundir-probabilidad-con-certeza">Confundir probabilidad con certeza</a></li>
+  <li><a href="#utilizar-lenguaje-excesivamente-categórico" id="toc-utilizar-lenguaje-excesivamente-categórico" class="nav-link" data-scroll-target="#utilizar-lenguaje-excesivamente-categórico">Utilizar lenguaje excesivamente categórico</a></li>
+  </ul></li>
+  <li><a href="#pensar-en-quien-toma-la-decisión" id="toc-pensar-en-quien-toma-la-decisión" class="nav-link" data-scroll-target="#pensar-en-quien-toma-la-decisión">17.6 Pensar en quien toma la decisión</a></li>
+  <li><a href="#reflexión-bayesiana" id="toc-reflexión-bayesiana" class="nav-link" data-scroll-target="#reflexión-bayesiana">17.7 Reflexión bayesiana</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">17.8 Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1.-reescribiendo-conclusiones" id="toc-ejercicio-1.-reescribiendo-conclusiones" class="nav-link" data-scroll-target="#ejercicio-1.-reescribiendo-conclusiones">Ejercicio 1. Reescribiendo conclusiones</a></li>
+  <li><a href="#ejercicio-2.-mejorando-un-gráfico" id="toc-ejercicio-2.-mejorando-un-gráfico" class="nav-link" data-scroll-target="#ejercicio-2.-mejorando-un-gráfico">Ejercicio 2. Mejorando un gráfico</a></li>
+  <li><a href="#ejercicio-3.-detectando-falsas-certezas" id="toc-ejercicio-3.-detectando-falsas-certezas" class="nav-link" data-scroll-target="#ejercicio-3.-detectando-falsas-certezas">Ejercicio 3. Detectando falsas certezas</a></li>
+  <li><a href="#ejercicio-4.-escribiendo-para-un-gerente" id="toc-ejercicio-4.-escribiendo-para-un-gerente" class="nav-link" data-scroll-target="#ejercicio-4.-escribiendo-para-un-gerente">Ejercicio 4. Escribiendo para un gerente</a></li>
+  <li><a href="#ejercicio-5.-reflexión-personal" id="toc-ejercicio-5.-reflexión-personal" class="nav-link" data-scroll-target="#ejercicio-5.-reflexión-personal">Ejercicio 5. Reflexión personal</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c16.html">PARTE VI — COMUNICAR Y PENSAR MEJOR</a></li><li class="breadcrumb-item"><a href="../analysis/c17.html">17.- Cómo comunicar incertidumbre</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Decisiones bajo incertidumbre - Business Analytics Bayesiano con R</h1>
+<h1 class="title">17.- Cómo comunicar incertidumbre</h1>
 </div>
 
 
@@ -364,14 +395,272 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><img src="files/images/portada.jpg" class="img-fluid" style="width:35.0%" alt="Portada de la práctica del borrador del análisis de la tabla obesity latin"></p>
-<section id="bienvenido" class="level2">
-<h2 class="anchored" data-anchor-id="bienvenido">Bienvenido</h2>
-<p>Este es el sitio web del libro “Decisiones bajo incertidumbre”, Este libro te enseñará a hacer análisis usando estadística bayesiana con R.</p>
-<p>En este libro enconstrarás un manual muy práctico de habilidades para el análisis de datos bayesiano desde los temas más básicos como limpiar datos y crear gráficos, hasta crear modelos bayesianos en un contexto relacionado con la analítica de negocios usando algunas datasets de Kaggle: <a href="https://www.kaggle.com/datasets/rohitsahoo/sales-forecasting">Superstore Sales</a>, <a href="https://www.kaggle.com/datasets/blastchar/telco-customer-churn">Customer Churn</a> y <a href="https://www.kaggle.com/datasets/rodsaldanha/arketing-campaign">Marketing Campaign</a></p>
-<p>Este sitio web es y siempre será gratuito, bajo la licencia CC <a href="https://creativecommons.org/licenses/by-nc-nd/3.0/us/">BY-NC-ND 3.0</a> .</p>
+<section id="introducción" class="level2">
+<h2 class="anchored" data-anchor-id="introducción">17.1 Introducción</h2>
+<p>Imagina que dos analistas presentan exactamente el mismo modelo de pronóstico de ventas.</p>
+<p>El primero concluye:</p>
+<blockquote class="blockquote">
+<p>“Las ventas del próximo trimestre serán de <strong>120 000</strong> dólares.”</p>
+</blockquote>
+<p>El segundo dice:</p>
+<blockquote class="blockquote">
+<p>“Nuestro modelo considera más plausibles ventas cercanas a <strong>120 000 dólares</strong>, aunque valores entre <strong>110 000 y 130 000 dólares</strong> también son perfectamente compatibles con la información disponible.”</p>
+</blockquote>
+<p>Ambos utilizaron el mismo conjunto de datos.</p>
+<p>Ambos ajustaron exactamente el mismo modelo.</p>
+<p>Ambos obtuvieron la misma distribución posterior.</p>
+<p>Sin embargo, la impresión que dejan es completamente distinta.</p>
+<p>El primer analista transmite una sensación de precisión absoluta.</p>
+<p>El segundo comunica una realidad mucho más cercana al funcionamiento del mundo: toda predicción está rodeada de incertidumbre.</p>
+<p>Esa diferencia puede parecer únicamente una cuestión de estilo, pero en realidad cambia la forma en que otras personas toman decisiones.</p>
+<p>Un gerente que escucha una cifra única puede interpretar que el futuro ya está determinado. En cambio, cuando conoce el rango de escenarios plausibles puede prepararse para distintas posibilidades, evaluar riesgos y diseñar planes alternativos.</p>
+<p>A lo largo de este libro hemos insistido en una idea fundamental:</p>
+<blockquote class="blockquote">
+<p>Los modelos no producen certezas; producen escenarios plausibles basados en la información disponible.</p>
+</blockquote>
+<p>Comunicar esos escenarios con honestidad es tan importante como construir el modelo que los generó.</p>
+<p>En este capítulo no aprenderemos nuevos modelos estadísticos. En cambio, desarrollaremos una habilidad igual de valiosa: explicar resultados probabilísticos de forma clara, útil y responsable.</p>
+</section>
+<section id="comunicar-probabilidades-en-lugar-de-certezas" class="level2">
+<h2 class="anchored" data-anchor-id="comunicar-probabilidades-en-lugar-de-certezas">17.2 Comunicar probabilidades en lugar de certezas</h2>
+<p>Cuando una persona escucha el resultado de un análisis suele formular una pregunta muy sencilla:</p>
+<blockquote class="blockquote">
+<p><strong>Entonces… ¿qué va a pasar?</strong></p>
+</blockquote>
+<p>Es una pregunta natural, pero difícil de responder con absoluta precisión.</p>
+<p>Los datos describen el pasado y ayudan a construir escenarios para el futuro, pero no eliminan la incertidumbre.</p>
+<p>Por eso, uno de los mayores cambios que propone el enfoque bayesiano consiste en reemplazar afirmaciones categóricas por afirmaciones probabilísticas.</p>
+<p>Comparemos algunos ejemplos.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Comunicación categórica</th>
+<th>Comunicación probabilística</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Las ventas serán de $120 000.</td>
+<td>El modelo considera más plausibles ventas cercanas a $120 000.</td>
+</tr>
+<tr class="even">
+<td>Este cliente abandonará la empresa.</td>
+<td>Este cliente presenta una alta probabilidad de abandono.</td>
+</tr>
+<tr class="odd">
+<td>La campaña funcionará.</td>
+<td>Los resultados sugieren una probabilidad elevada de éxito, aunque existen escenarios menos favorables.</td>
+</tr>
+<tr class="even">
+<td>Este tratamiento será efectivo.</td>
+<td>Los datos indican que el tratamiento tiene una alta probabilidad de ser efectivo para pacientes similares.</td>
+</tr>
+</tbody>
+</table>
+<p>Las diferencias parecen pequeñas, pero modifican profundamente la interpretación.</p>
+<p>La primera columna presenta el futuro como si fuera conocido.</p>
+<p>La segunda reconoce que existen distintos escenarios compatibles con la evidencia.</p>
+<p>Ese cambio de lenguaje no hace que el análisis sea más débil.</p>
+<p>Lo hace más honesto.</p>
+<section id="pensar-en-distribuciones-no-en-números" class="level3">
+<h3 class="anchored" data-anchor-id="pensar-en-distribuciones-no-en-números">Pensar en distribuciones, no en números</h3>
+<p>Durante todo el libro hemos trabajado con distribuciones posteriores.</p>
+<p>¿Por qué?</p>
+<p>Porque un único número rara vez resume toda la información relevante.</p>
+<p>Cuando observamos una distribución estamos viendo algo mucho más rico:</p>
+<ul>
+<li>cuál es el resultado más plausible;</li>
+<li>cuánto varían los escenarios posibles;</li>
+<li>qué tan incierta es la predicción;</li>
+<li>cuáles son los valores extremos pero todavía posibles.</li>
+</ul>
+<p>En otras palabras, la distribución cuenta una historia mucho más completa que una cifra aislada.</p>
+</section>
+</section>
+<section id="el-poder-de-las-visualizaciones-honestas" class="level2">
+<h2 class="anchored" data-anchor-id="el-poder-de-las-visualizaciones-honestas">17.3 El poder de las visualizaciones honestas</h2>
+<p>Una buena visualización no elimina la incertidumbre.</p>
+<p>La hace visible.</p>
+<p>En los capítulos anteriores utilizamos varios gráficos para representar distribuciones posteriores, intervalos plausibles y predicciones.</p>
+<p>En este capítulo veremos cómo esos mismos gráficos ayudan a comunicar resultados de forma más transparente.</p>
+<section id="mostrar-intervalos-plausibles" class="level3">
+<h3 class="anchored" data-anchor-id="mostrar-intervalos-plausibles">Mostrar intervalos plausibles</h3>
+<p>Supongamos que ya disponemos de un modelo bayesiano para pronosticar ventas.</p>
+<p>En lugar de mostrar únicamente la predicción promedio, podemos representar también el intervalo plausible.</p>
+<p><img src="../files/images/c18/ventas-estimadas.png" class="img-fluid" style="width:65.0%" alt="Ventas estimadas"></p>
+<p>El código incorpora un elemento que el lector ya conoce: <code>geom_ribbon()</code>.</p>
+<p>La línea central representa el valor más plausible según el modelo.</p>
+<p>La banda sombreada muestra el rango donde también podrían encontrarse las ventas futuras.</p>
+<p>Ese pequeño cambio transforma completamente el mensaje del gráfico.</p>
+<p>Ya no observamos una única trayectoria inevitable.</p>
+<p>Observamos un conjunto de escenarios compatibles con la información disponible.</p>
+</section>
+<section id="distribuciones-posteriores" class="level3">
+<h3 class="anchored" data-anchor-id="distribuciones-posteriores">Distribuciones posteriores</h3>
+<p>Otro gráfico familiar consiste en representar directamente la distribución posterior de un parámetro.</p>
+<p><img src="../files/images/c18/tiempo-sobre-ventas1.png" class="img-fluid" style="width:65.0%" alt="Ventas estimadas"></p>
+<p>Este gráfico comunica inmediatamente dos aspectos:</p>
+<ul>
+<li>dónde se concentran los valores más plausibles;</li>
+<li>cuánta incertidumbre existe alrededor del parámetro.</li>
+</ul>
+<p>No necesitamos explicar algoritmos de muestreo ni detalles técnicos sobre MCMC.</p>
+<p>La propia forma de la distribución transmite la información esencial.</p>
+</section>
+<section id="menos-decoración-más-claridad" class="level3">
+<h3 class="anchored" data-anchor-id="menos-decoración-más-claridad">Menos decoración, más claridad</h3>
+<p>Cuando comunicamos resultados probabilísticos conviene evitar gráficos recargados.</p>
+<p>Con frecuencia, un gráfico sencillo comunica mucho mejor que uno lleno de elementos decorativos.</p>
+<p>Antes de añadir colores, etiquetas o múltiples capas de información, conviene preguntarse:</p>
+<blockquote class="blockquote">
+<p>¿Este elemento ayuda a comprender la incertidumbre o simplemente hace el gráfico más llamativo?</p>
+</blockquote>
+</section>
+</section>
+<section id="contar-la-historia-correcta" class="level2">
+<h2 class="anchored" data-anchor-id="contar-la-historia-correcta">17.4 Contar la historia correcta</h2>
+<p>Un gráfico nunca habla por sí solo.</p>
+<p>Necesita contexto.</p>
+<p>Supongamos que un gerente observa la siguiente figura.</p>
+<p>La predicción media de ventas aumenta ligeramente durante los próximos meses.</p>
+<p>¿Significa eso que la empresa debe duplicar inmediatamente su producción?</p>
+<p>No necesariamente.</p>
+<p>Quizá el intervalo plausible también aumentó considerablemente.</p>
+<p>Quizá existe una probabilidad importante de que las ventas permanezcan prácticamente estables.</p>
+<p>Quizá el crecimiento esperado sea demasiado pequeño para justificar una inversión costosa.</p>
+<p>El gráfico muestra datos.</p>
+<p>El analista debe explicar qué significan esos datos para la decisión que se va a tomar.</p>
+<section id="del-dato-a-la-decisión" class="level3">
+<h3 class="anchored" data-anchor-id="del-dato-a-la-decisión">Del dato a la decisión</h3>
+<p>Una forma útil de estructurar la comunicación consiste en responder cuatro preguntas.</p>
+<ol type="1">
+<li>¿Qué observamos?</li>
+<li>¿Qué tan seguros estamos?</li>
+<li>¿Qué escenarios alternativos siguen siendo plausibles?</li>
+<li>¿Qué implicaciones tiene esto para la decisión?</li>
+</ol>
+<p>Responder estas preguntas obliga a conectar el análisis con el problema de negocio.</p>
+<p>Ese puente entre evidencia y decisión es el verdadero valor del analista.</p>
+</section>
+</section>
+<section id="errores-frecuentes-al-comunicar-resultados" class="level2">
+<h2 class="anchored" data-anchor-id="errores-frecuentes-al-comunicar-resultados">17.5 Errores frecuentes al comunicar resultados</h2>
+<p>Incluso un excelente modelo puede conducir a malas decisiones si se comunica de forma inadecuada.</p>
+<p>Algunos errores aparecen con mucha frecuencia.</p>
+<section id="ocultar-la-incertidumbre" class="level3">
+<h3 class="anchored" data-anchor-id="ocultar-la-incertidumbre">Ocultar la incertidumbre</h3>
+<p>Presentar únicamente un valor promedio hace creer que ese resultado ocurrirá con certeza.</p>
+<p>Siempre que sea posible, acompañe la estimación con un intervalo plausible o una distribución.</p>
+</section>
+<section id="exagerar-diferencias-pequeñas" class="level3">
+<h3 class="anchored" data-anchor-id="exagerar-diferencias-pequeñas">Exagerar diferencias pequeñas</h3>
+<p>Dos estrategias pueden diferir muy poco y, sin embargo, una presentación exagerada puede hacer parecer que existe una gran ventaja.</p>
+<p>Antes de destacar una diferencia conviene preguntarse:</p>
+<blockquote class="blockquote">
+<p>¿La incertidumbre permite afirmar que esa diferencia es realmente importante?</p>
+</blockquote>
+</section>
+<section id="confundir-probabilidad-con-certeza" class="level3">
+<h3 class="anchored" data-anchor-id="confundir-probabilidad-con-certeza">Confundir probabilidad con certeza</h3>
+<p>Una probabilidad del 80 % no significa que el evento ocurrirá inevitablemente.</p>
+<p>Significa que todavía existe un 20 % de escenarios donde el resultado será diferente.</p>
+</section>
+<section id="utilizar-lenguaje-excesivamente-categórico" class="level3">
+<h3 class="anchored" data-anchor-id="utilizar-lenguaje-excesivamente-categórico">Utilizar lenguaje excesivamente categórico</h3>
+<p>Expresiones como:</p>
+<ul>
+<li>“demostramos”;</li>
+<li>“garantizamos”;</li>
+<li>“ocurrirá”;</li>
+<li>“es seguro”;</li>
+</ul>
+<p>deberían utilizarse con mucha cautela.</p>
+<p>En la mayoría de los problemas reales resulta más apropiado utilizar expresiones como:</p>
+<ul>
+<li>“la evidencia sugiere”;</li>
+<li>“es plausible”;</li>
+<li>“los datos indican”;</li>
+<li>“el modelo considera probable”.</li>
+</ul>
+<p>Ese pequeño cambio refleja mejor la naturaleza incierta de los fenómenos que estudiamos.</p>
+</section>
+</section>
+<section id="pensar-en-quien-toma-la-decisión" class="level2">
+<h2 class="anchored" data-anchor-id="pensar-en-quien-toma-la-decisión">17.6 Pensar en quien toma la decisión</h2>
+<p>Los análisis no se realizan para impresionar a otros analistas.</p>
+<p>Se realizan para ayudar a alguien a decidir.</p>
+<p>Esa persona puede ser un gerente comercial, un responsable de marketing, un director financiero, un médico o cualquier profesional que deba elegir entre varias alternativas.</p>
+<p>Cada uno necesita respuestas diferentes.</p>
+<p>Un gerente de ventas probablemente quiera conocer el rango de ventas esperado para planificar inventarios.</p>
+<p>Un equipo de marketing puede interesarse por la probabilidad de éxito de una campaña.</p>
+<p>Un médico quizá necesite estimar el riesgo de complicaciones antes de recomendar un tratamiento.</p>
+<p>Aunque las decisiones cambien, la necesidad es la misma: comprender la incertidumbre.</p>
+<p>Por eso, una buena comunicación no consiste únicamente en explicar el modelo.</p>
+<p>Consiste en traducir los resultados a un lenguaje que facilite la decisión.</p>
+<p>El objetivo final no es demostrar que el modelo es sofisticado.</p>
+<p>Es ayudar a otra persona a actuar con mayor confianza, sabiendo también cuáles son las limitaciones del análisis.</p>
+</section>
+<section id="reflexión-bayesiana" class="level2">
+<h2 class="anchored" data-anchor-id="reflexión-bayesiana">17.7 Reflexión bayesiana</h2>
+<p>A lo largo de este libro hemos aprendido que los modelos bayesianos describen un conjunto de escenarios plausibles y no un único futuro inevitable.</p>
+<p>Esa filosofía también debe reflejarse en la forma de comunicar los resultados.</p>
+<p>Mostrar incertidumbre no disminuye la calidad del análisis.</p>
+<p>Al contrario, demuestra que comprendemos la naturaleza limitada de nuestros datos y que respetamos la complejidad del mundo real.</p>
+<p>Cuando comunicamos intervalos plausibles, distribuciones posteriores o probabilidades, no estamos añadiendo dudas innecesarias.</p>
+<p>Estamos ofreciendo una imagen más completa de la evidencia disponible.</p>
+<p>En ese sentido, comunicar incertidumbre forma parte del propio análisis.</p>
+<p>No es un detalle de presentación, sino una expresión del pensamiento probabilístico que ha guiado todo este libro.</p>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">17.8 Ejercicios</h2>
+<section id="ejercicio-1.-reescribiendo-conclusiones" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1.-reescribiendo-conclusiones">Ejercicio 1. Reescribiendo conclusiones</h3>
+<p>Reescriba las siguientes afirmaciones utilizando un lenguaje probabilístico.</p>
+<ol type="1">
+<li>Las ventas serán de $95 000.</li>
+<li>Este cliente cancelará el servicio.</li>
+<li>La campaña será exitosa. 4.- El nuevo precio aumentará las ventas.</li>
+</ol>
+</section>
+<section id="ejercicio-2.-mejorando-un-gráfico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2.-mejorando-un-gráfico">Ejercicio 2. Mejorando un gráfico</h3>
+<p>Observe uno de los gráficos de predicción construidos en capítulos anteriores.</p>
+<p>¿Qué información adicional podría incorporarse para comunicar mejor la incertidumbre?</p>
+</section>
+<section id="ejercicio-3.-detectando-falsas-certezas" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3.-detectando-falsas-certezas">Ejercicio 3. Detectando falsas certezas</h3>
+<p>Lea las siguientes frases e identifique cuáles transmiten una falsa sensación de certeza.</p>
+<ul>
+<li>La estrategia A funcionará mejor.</li>
+<li>Existe una alta probabilidad de que la estrategia A obtenga mejores resultados.</li>
+<li>El proyecto tendrá éxito.</li>
+<li>Los datos sugieren un escenario favorable para el proyecto.</li>
+</ul>
+<p>Explique su respuesta.</p>
+</section>
+<section id="ejercicio-4.-escribiendo-para-un-gerente" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4.-escribiendo-para-un-gerente">Ejercicio 4. Escribiendo para un gerente</h3>
+<p>Imagine que un gerente le pregunta si debe aumentar el inventario para el próximo trimestre.</p>
+<p>Utilizando uno de los modelos desarrollados en el libro, redacte un informe breve (entre 150 y 200 palabras) que:</p>
+<ul>
+<li>describa el escenario más plausible;</li>
+<li>mencione la incertidumbre existente;</li>
+<li>explique qué riesgos deberían considerarse antes de tomar la decisión;</li>
+<li>evite afirmaciones categóricas.</li>
+</ul>
+</section>
+<section id="ejercicio-5.-reflexión-personal" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-5.-reflexión-personal">Ejercicio 5. Reflexión personal</h3>
+<p>Piense en alguna noticia, informe o presentación que haya visto recientemente.</p>
+<p>¿Se comunicaban los resultados como certezas absolutas o como escenarios probabilísticos?</p>
+<p>¿Qué efecto cree que tuvo esa forma de comunicar la información sobre quienes debían tomar decisiones?</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

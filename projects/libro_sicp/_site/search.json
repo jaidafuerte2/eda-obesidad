@@ -124,7 +124,7 @@
     "href": "index.html#bienvenido",
     "title": "SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas",
     "section": "Bienvenido",
-    "text": "Bienvenido\nEste es el sitio web del libro “SICP Accesible”, Este libro te enseñará programación de paradigmas de programación en scheme.\nEn este libro enconstrarás un manual muy práctico de habilidades para el análisis de datos bayesiano desde los temas más básicos como limpiar datos y crear gráficos, hasta crear modelos bayesianos en un contexto relacionado con la analítica de negocios usando algunas datasets de Kaggle: Superstore Sales, Customer Churn y Marketing Campaign\nEste sitio web es y siempre será gratuito, bajo la licencia CC BY-NC-ND 3.0 .",
+    "text": "Bienvenido\nEste es el sitio web del libro “SICP Accesible”, Este libro te enseñará programación de paradigmas de programación en scheme.\nEn este libro enconstrarás un manual muy práctico de habilidades para entender paradigmas de programación en un contexto relacionado con la medicina y la administración de la salud usando algunos ejemplos de estas áreas.\nEste sitio web es y siempre será gratuito, bajo la licencia CC BY-NC-ND 3.0 .",
     "crumbs": [
       "Inicio",
       "SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas"
@@ -296,6 +296,205 @@
       "Inicio",
       "1. Construcción de abstracciones con procedimientos",
       "1.2 — Los Procedimientos y los Procesos que Generan"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html",
+    "href": "analysis/c01.html",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "",
+    "text": "Cuando decides adentrarte en el mundo de los lenguajes de programación, es fácil abrumarse ante la cantidad de nombres que flotan en el ambiente: Python, R, Java, C++, SQL, Racket. La primera tentación (y el enfoque de muchos cursos tradicionales) es intentar aprender una docena de lenguajes para “compararlos”.\nAprender Java, luego C# y después C++ para entender la programación es el equivalente a estudiar la gestión de salud pública visitando tres hospitales idénticos que solo cambian el color de las paredes y el logotipo de las batas. Te vas a comer una cantidad brutal de detalles administrativos irrelevantes (sintaxis, librerías, burocracia del compilador) sin aprender nada nuevo sobre cómo atender al paciente (el proceso computacional).\nEl verdadero problema radica en las etiquetas que usamos en los paneles de discusión:\n\n¿Es de alto nivel o bajo nivel?\n¿Es procedimental, orientado a objetos (OO), funcional o declarativo?\n¿Es un lenguaje de scripting o compilado?\n\nSi intentas clasificar lenguajes comerciales como Python, JavaScript o tu querido R bajo estas etiquetas fijas, vas a terminar con un dolor de cabeza metodológico.\nNota de gestión: Los lenguajes del mundo real no son “puros”; son auténticos monstruos multi-paradigma (BLOBs de características). Tienen un trozo de objetos, un injerto funcional y una base procedimental. Para un analista de datos, esto es como un paciente con síndrome metabólico crónico: una amalgama de síntomas interconectados que no caben en una sola caja clínica.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#cómo-se-estudia-un-lenguaje-de-programación-sin-morir-en-la-torre-de-babel",
+    "href": "analysis/c01.html#cómo-se-estudia-un-lenguaje-de-programación-sin-morir-en-la-torre-de-babel",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "",
+    "text": "Cuando decides adentrarte en el mundo de los lenguajes de programación, es fácil abrumarse ante la cantidad de nombres que flotan en el ambiente: Python, R, Java, C++, SQL, Racket. La primera tentación (y el enfoque de muchos cursos tradicionales) es intentar aprender una docena de lenguajes para “compararlos”.\nAprender Java, luego C# y después C++ para entender la programación es el equivalente a estudiar la gestión de salud pública visitando tres hospitales idénticos que solo cambian el color de las paredes y el logotipo de las batas. Te vas a comer una cantidad brutal de detalles administrativos irrelevantes (sintaxis, librerías, burocracia del compilador) sin aprender nada nuevo sobre cómo atender al paciente (el proceso computacional).\nEl verdadero problema radica en las etiquetas que usamos en los paneles de discusión:\n\n¿Es de alto nivel o bajo nivel?\n¿Es procedimental, orientado a objetos (OO), funcional o declarativo?\n¿Es un lenguaje de scripting o compilado?\n\nSi intentas clasificar lenguajes comerciales como Python, JavaScript o tu querido R bajo estas etiquetas fijas, vas a terminar con un dolor de cabeza metodológico.\nNota de gestión: Los lenguajes del mundo real no son “puros”; son auténticos monstruos multi-paradigma (BLOBs de características). Tienen un trozo de objetos, un injerto funcional y una base procedimental. Para un analista de datos, esto es como un paciente con síndrome metabólico crónico: una amalgama de síntomas interconectados que no caben en una sola caja clínica.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#hacia-una-ciencia-de-los-lenguajes-de-linneo-a-dr.-racket",
+    "href": "analysis/c01.html#hacia-una-ciencia-de-los-lenguajes-de-linneo-a-dr.-racket",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "2. Hacia una Ciencia de los Lenguajes (De Linneo a Dr. Racket)",
+    "text": "2. Hacia una Ciencia de los Lenguajes (De Linneo a Dr. Racket)\nEn la ciencia tradicional, nos encanta meter cosas en cajas para registrar nuestro entendimiento del mundo:\n\nCarl Linneo creó la nomenclatura binomial para categorizar seres vivos (gracias a él dices Homo sapiens o Escherichia coli).\nJohn Dalton nos dio la teoría atómica para identificar los bloques fundamentales de la materia.\nErwin Chargaff descubrió las reglas de composición de las bases nitrogenadas en el ADN (las reglas gramaticales de la biología).\n\nLos informáticos intentaron hacer lo mismo con los lenguajes de programación, pero con resultados bastante deficientes. Al no ponerse de acuerdo sobre cuáles son los “átomos” del software, crearon una taxonomía confusa. Tomemos de nuevo a Python: es procedimental, pero tiene clases (OO), sirve para hacer scripts de pegamento, es interpretado pero se compila just-in-time… Un caos organizativo.\nPara construir tu motor semántico y lógico (Datalog) sobre los datos de NHANES, no necesitamos estudiar el “BLOB” entero de un lenguaje comercial. Lo que haremos en este curso es aplicar un proceso clínico de aislamiento: el DESUGAR (desazucarar).\n   +-----------------------------------+\n   |    BLOB de un Lenguaje Comercial  | (Python, R, JavaScript...)\n   +-----------------------------------+\n                     |\n                     v  [DESUGAR] (Quitar azúcar sintáctica y ruido)\n   +-----------------------------------+\n   |         NÚCLEO ESENCIAL          | (Bloques de construcción puros)\n   +-----------------------------------+\n   \nAl remover la “azúcar sintáctica” (esos atajos visuales y características redundantes que ponen los diseñadores para que el código se vea bonito), nos quedamos con el núcleo esencial: un conjunto mínimo de bloques de construcción (átomos) y reglas de composición. Si entendemos estos átomos (como las funciones de primera clase o la inmutabilidad), podrás diseñar las reglas de tu motor lógico sin importar el lenguaje final.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#el-lenguaje-como-un-marco-de-trabajo-para-procesos",
+    "href": "analysis/c01.html#el-lenguaje-como-un-marco-de-trabajo-para-procesos",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "3. El Lenguaje como un Marco de Trabajo para Procesos",
+    "text": "3. El Lenguaje como un Marco de Trabajo para Procesos\nAbelson y Sussman (los autores de SICP) dejaron caer una definición dorada, desprovista de la matemática densa que nos fastidia:\n“Un lenguaje de programación es un marco de trabajo para organizar ideas sobre procesos.”\nA diferencia de un modelo estadístico estático en un papel, lo fascinante de la computación es que nuestros modelos están vivos. Cuando escribes código para analizar la prevalencia de la obesidad, estás creando un proceso dinámico que cobra vida al ejecutarse.\n¿Y qué es un paradigma? Olvídate de la definición filosófica corporativa. Piensa en él simplemente como un estilo o un patrón de práctica médica.\nEs exactamente igual a los lenguajes humanos. Si hablas español, te costará menos aprender italiano que mandarín, porque el italiano comparte la misma “familia” e historia cultural. En programación, si dominas la manipulación de vectores y data frames en R, saltar a un enfoque declarativo y lógico (como SQL o Datalog) te resultará mucho más natural que pelearte con la gestión de memoria explícita de C++. El paradigma es la cultura del lenguaje.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#el-enfoque-funcional-tu-primer-tratamiento-sin-efectos-secundarios",
+    "href": "analysis/c01.html#el-enfoque-funcional-tu-primer-tratamiento-sin-efectos-secundarios",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "4. El Enfoque Funcional: Tu Primer “Tratamiento” Sin Efectos Secundarios",
+    "text": "4. El Enfoque Funcional: Tu Primer “Tratamiento” Sin Efectos Secundarios\nComo analista en NHANES, sabes perfectamente lo que ocurre cuando alguien altera la base de datos original a mitad de un script de análisis en R: las variables se contaminan, los resultados de la regresión se vuelven locos y pierdes la trazabilidad del estudio.\nEn la programación tradicional (procedimental/OO), los programadores sufren de una adicción peligrosa: la mutación de datos (cambiar el valor de una variable global de forma destructiva) y la dependencia del estado externo. Mira este flujo problemático:\n# Malas prácticas analíticas (Efectos secundarios)\nIMC_PACIENTE &lt;- 32.5\n\ncalcular_riesgo &lt;- function() {\n  # Depende de una variable global y altera el estado externo\n  if (IMC_PACIENTE &gt; 30) {\n    print(\"Alerta: Obesidad detectada\")\n  }\n}\nLa función calcular_riesgo tiene una “entrada oculta” (IMC_PACIENTE) y no retorna un valor limpio, sino que altera la consola. Si la variable global cambia en otro lugar del código, tu función se rompe sin que te des cuenta.\nEl paradigma funcional que estudiaremos usando Racket nos obliga a adoptar una disciplina clínica estricta basada en dos reglas de oro:\n\nNo mutarás datos: Los datos no se modifican de forma destructiva; se transforman en nuevos datos.\nNo dependerás del estado externo: Las funciones solo saben lo que entra explícitamente por sus parámetros.\n\nUna función pura se comporta como un laboratorio clínico automatizado bien calibrado:\n   [ Datos de Entrada ] ---&gt; ( Proceso Aislado ) ---&gt; [ Valor de Retorno ]\n(Muestra de sangre/Filtro)                      (Resultado de laboratorio limpio)\nAl remover la mutación y el estado externo, cada bloque de código se vuelve autónomo. Es predecible, es fácil de testear y, lo más importante para ti: es el cimiento perfecto para un motor semántico basado en lógica y reglas, donde necesitas tener la certeza absoluta de que una regla (A -&gt; B) no va a cambiar de significado a mitad de la ejecución debido a un efecto secundario inesperado.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#conclusión-y-siguiente-consulta",
+    "href": "analysis/c01.html#conclusión-y-siguiente-consulta",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "5. Conclusión y Siguiente Consulta",
+    "text": "5. Conclusión y Siguiente Consulta\nEste libro usa Racket no porque vayamos a construir aplicaciones web comerciales en él, sino porque es el bisturí perfecto para abrir el tórax de los lenguajes y estudiar sus órganos vitales. Al principio, su sintaxis llena de paréntesis te parecerá extraña, pero confía en el proceso. Hacer un esfuerzo honesto por aprender este estilo te va a abrir la mente tanto como aprender a volar un avión abre la perspectiva de alguien que solo sabe conducir automóviles.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#diagnóstico-práctico-sección-de-ejercicios",
+    "href": "analysis/c01.html#diagnóstico-práctico-sección-de-ejercicios",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "6. Diagnóstico Práctico (Sección de Ejercicios)",
+    "text": "6. Diagnóstico Práctico (Sección de Ejercicios)\nPara consolidar el ojo clínico de esta sesión, resuelve los siguientes escenarios aplicados.\n\nEscenario 1: El Historial Clínico Contaminado (Análisis de Paradigmas)\nEstás revisando un script en R diseñado por un colega para filtrar pacientes de la encuesta NHANES con hipertensión arterial sistólica \\(&gt; 140\\). El código utiliza un bucle for global que va modificando una variable externa conteo_hipertensos &lt;- conteo_hipertensos + 1 a medida que recorre las filas.\n\nPregunta: Explica, utilizando los conceptos del capítulo, por qué este enfoque procedimental genera “efectos secundarios” y cómo un enfoque funcional (como el uso de filter() en tidyverse o funciones puras en Racket) reduce el riesgo de errores en el análisis epidemiológico.\n\n\n\nEscenario 2: Desazucarando la Evaluación de Obesidad\nEn muchos lenguajes, la estructura condicional se escribe con una sintaxis compleja llena de llaves o palabras clave (if-else). Imagina que en nuestro núcleo esencial de diseño de lenguajes, la única regla sintáctica válida es que todo debe ser una llamada a una función con el formato (operación argumento1 argumento2 ...).\n\nReto de Diseño: Si tuvieras que reescribir la regla lógica “Si el IMC es mayor a 30, clasificar como Obesidad, de lo contrario clasificar como Normal” siguiendo ese formato estricto de función (sin usar la palabra if tradicional), ¿cómo estructurarías los elementos visualmente? (Tip: Piensa en cómo The Little Schemer organiza sus preguntas).\n\n\n\nEscenario 3: La Anatomía de Racket (Homework 0)\nBasándote en tus lecturas iniciales de la documentación de Racket y la sesión:\n\nRedacta una síntesis corta (tres frases) que defina qué es Racket, cuáles son sus rasgos principales y en qué se diferencia conceptualmente de un lenguaje de análisis de datos puro como R.\nPlantea una pregunta crítica sobre la semántica (el comportamiento en ejecución) de un lenguaje que prohíbe la mutación de datos cuando se trabaja con bases de datos masivas como NHANES.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#resolviendo-los-ejercicios",
+    "href": "analysis/c01.html#resolviendo-los-ejercicios",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "Resolviendo los ejercicios",
+    "text": "Resolviendo los ejercicios\n\nSolución al Ejercicio 1: El Historial Clínico Contaminado\nEl enfoque procedimental basado en un bucle for y una variable global mutable conteo_hipertensos genera un efecto secundario porque el resultado de la función depende del momento exacto en que se ejecuta y del estado previo de la memoria. Si otra función del script altera esa variable global, el análisis epidemiológico arrojará un falso positivo o un falso negativo.\nEl enfoque funcional (usar filter en R o Racket) elimina la mutación. En lugar de “ir sumando de uno en uno”, el paradigma funcional toma el set de datos original de NHANES como una entrada inmutable y genera un nuevo set de datos que contiene únicamente a los pacientes que cumplen la regla. No hay variables globales que puedan contaminarse.\n\n\nSolución al Ejercicio 2: Desazucarando la Evaluación de Obesidad\nSi eliminamos la palabra clave if tradicional y nos obligamos a que todo sea una función con formato de prefijo (operación argumento1 argumento2), la evaluación lógica se estructuraría como una expresión de evaluación pura:\n(cond\n  ((&gt; imc 30) \"Obesidad\")\n  (else \"Normal\"))\nEn este diseño, cond no es un interruptor procedimental; es una función que recibe parejas de “Pregunta-Respuesta” (predicados). El motor evalúa de forma lógica la primera pregunta; si es verdadera, toda la expresión se transforma inmediatamente en el valor \"Obesidad\", sin pasos intermedios ni asignaciones de variables de estado.\n\n\nSolución al Ejercicio 3: La Anatomía de Racket (Homework 0)\n\nSíntesis: Racket es un lenguaje de la familia Lisp/Scheme diseñado para explorar el diseño de sistemas mediante la creación de nuevos lenguajes y componentes. Sus rasgos principales son una sintaxis uniforme basada en expresiones entre paréntesis y un soporte nativo de primer nivel para el paradigma funcional. A diferencia de R, que nació especializado en el análisis estadístico y manipulación de data frames, Racket es un lenguaje de propósito general optimizado para construir procesadores de lenguajes, intérpretes y motores de reglas lógicas.\nPregunta Semántica sobre Datos Masivos: Si el paradigma funcional prohíbe la mutación destructiva de datos y nos obliga a generar copias transformadas, ¿cómo gestiona la semántica de Racket la memoria ram al procesar millones de registros de la encuesta NHANES sin sufrir un colapso por duplicación de estructuras?",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "1. Una Introducción Médica al Estudio de los Lenguajes de Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c01.html#solución-al-ejercicio-2-desazucarando-la-evaluación-de-obesidad",
+    "href": "analysis/c01.html#solución-al-ejercicio-2-desazucarando-la-evaluación-de-obesidad",
+    "title": "1. Una Introducción Médica al Estudio de los Lenguajes de Programación",
+    "section": "Solución al Ejercicio 2: Desazucarando la Evaluación de Obesidad",
+    "text": "Solución al Ejercicio 2: Desazucarando la Evaluación de Obesidad\nSi eliminamos la palabra clave if tradicional y nos obligamos a que todo sea una función con formato de prefijo (operación argumento1 argumento2), la evaluación lógica se estructuraría como una expresión de evaluación pura:\n(cond\n  ((&gt; imc 30) \"Obesidad\")\n  (else \"Normal\"))\nEn este diseño, cond no es un interruptor procedimental; es una función que recibe parejas de “Pregunta-Respuesta” (predicados). El motor evalúa de forma lógica la primera pregunta; si es verdadera, toda la expresión se transforma inmediatamente en el valor \"Obesidad\", sin pasos intermedios ni asignaciones de variables de estado.\n\nSolución al Ejercicio 3: La Anatomía de Racket (Homework 0)\n\nSíntesis: Racket es un lenguaje de la familia Lisp/Scheme diseñado para explorar el diseño de sistemas mediante la creación de nuevos lenguajes y componentes. Sus rasgos principales son una sintaxis uniforme basada en expresiones entre paréntesis y un soporte nativo de primer nivel para el paradigma funcional. A diferencia de R, que nació especializado en el análisis estadístico y manipulación de data frames, Racket es un lenguaje de propósito general optimizado para construir procesadores de lenguajes, intérpretes y motores de reglas lógicas.\nPregunta Semántica sobre Datos Masivos: Si el paradigma funcional prohíbe la mutación destructiva de datos y nos obliga a generar copias transformadas, ¿cómo gestiona la semántica de Racket la memoria ram al procesar millones de registros de la encuesta NHANES sin sufrir un colapso por duplicación de estructuras?"
+  },
+  {
+    "objectID": "analysis/c02.html",
+    "href": "analysis/c02.html",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "",
+    "text": "Al igual que en la medicina no existe un único fármaco para todas las patologías, en informática no existe un único lenguaje para todos los problemas.\n\nNota Importante: Python es el “paracetamol” de la programación en este curso: muy popular y útil para muchas cosas (como generar nubes de palabras rápidamente). Sin embargo, para nuestra meta de construir un motor semántico para NHANES, necesitamos un instrumento más preciso y maleable. Ahí es donde entra Racket. Racket nos permitirá abstraer conceptos médicos de una forma que Python o Java no pueden hacer fácilmente.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#introducción-el-ecosistema-y-los-datos",
+    "href": "analysis/c02.html#introducción-el-ecosistema-y-los-datos",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "",
+    "text": "Al igual que en la medicina no existe un único fármaco para todas las patologías, en informática no existe un único lenguaje para todos los problemas.\n\nNota Importante: Python es el “paracetamol” de la programación en este curso: muy popular y útil para muchas cosas (como generar nubes de palabras rápidamente). Sin embargo, para nuestra meta de construir un motor semántico para NHANES, necesitamos un instrumento más preciso y maleable. Ahí es donde entra Racket. Racket nos permitirá abstraer conceptos médicos de una forma que Python o Java no pueden hacer fácilmente.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#el-repl-nuestro-monitor-de-signos-vitales",
+    "href": "analysis/c02.html#el-repl-nuestro-monitor-de-signos-vitales",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "El REPL: Nuestro Monitor de Signos Vitales",
+    "text": "El REPL: Nuestro Monitor de Signos Vitales\nPara aprender Racket, no vamos a escribir largos tratados de código de inmediato. Usaremos el REPL (Read-Eval-Print Loop), que es el corazón interactivo de DrRacket. Piensa en el REPL como un monitor de signos vitales: tú haces una intervención (teclas código) y el monitor te da una lectura instantánea (el resultado).\nEn DrRacket, tenemos dos paneles principales:\n\nPanel de Definiciones (arriba): Aquí escribimos el “tratamiento complete” (el programa).\nPanel de Interacciones (abajo): Este es el REPL. Aquí “oscultamos” expresiones individuales.\n\n\nRegla de Oro del Copiloto: Para limpiar el monitor de signos vitales (las interacciones) y empezar de cero, simplemente pulsa el botón “Run” en la parte superior.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#anatomía-de-una-expresión-en-racket-sin-notación-matemática",
+    "href": "analysis/c02.html#anatomía-de-una-expresión-en-racket-sin-notación-matemática",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "Anatomía de una Expresión en Racket (Sin Notación Matemática)",
+    "text": "Anatomía de una Expresión en Racket (Sin Notación Matemática)\nOlvida las fórmulas complejas. En Racket, todo se reduce a diagnósticos y tratamientos.\n\nLa Notación Prefija\nEn Racket, siempre pones la acción (el operador o función) antes de los datos (los operandos).\nEn R, usas esta sintaxis para tus análisis de NHANES:\n# Sintaxis en R: Función(Dato)\nselect(mis_datos_nhanes, obesidad)\nRacket usa exactamente la misma lógica para todo. Es como dar una orden médica clara: (Acción Paciente1 Paciente2 ...).\n; Sintaxis en Racket: (Función Dato1 Dato2 ...)\n&gt; (+ 10 5)  ; \"Haga una suma de 10 y 5\"\n15\nLas ventajas de este enfoque son clínicas:\n\nCero ambigüedad: Sabes exactamente qué función se aplica a qué datos.\nParámetros variables: Una sola “orden” puede aceptar múltiples “pacientes”.\n\n&gt; (+ 1 2 3 4 5 6 7 8 9 10) ; Suma una lista larga de datos de una sola vez\n55\n\n\nEvaluación en Árbol\nCuando anidamos expresiones, Racket las procesa como el metabolismo de un fármaco: de adentro hacia afuera.\nConsidera este cálculo de un indicador metabólico complejo:\n&gt; (- 100 (/ (* 5 10) (+ 2 3)))\nRacket no se confunde con la precedencia. Lo desglosa así:\n\nPrimero diagnostica/evalúa lo más interno: (* 5 10) se convierte en 50, y (+ 2 3) se convierte en 5.\nLa expresión ahora es: (- 100 (/ 50 5)).\nEvalúa la siguiente capa: (/ 50 5) se convierte en 10.\nLa expresión final es: (- 100 10).\nResultado final: 90.\n\n\n¡Cuidado con los Paréntesis! En Racket, los paréntesis son sagrados. No son opcionales como en R o Python. Poner paréntesis de más o de menos no es un error de estilo; cambia el significado del código. (5) en Racket significa “llame a la función número 5”, lo cual no tiene sentido y causará un error.",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#tipos-de-datos-básicos-los-ladrillos-de-la-historia-clínica",
+    "href": "analysis/c02.html#tipos-de-datos-básicos-los-ladrillos-de-la-historia-clínica",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "Tipos de Datos Básicos: Los Ladrillos de la Historia Clínica",
+    "text": "Tipos de Datos Básicos: Los Ladrillos de la Historia Clínica\nPara tu motor semántico de NHANES, necesitas categorizar tus datos. Racket tiene “tipos de sangre” (tipos de datos) muy claros para esto.\n\nNúmeros Exactos e Inexactos\nAquí es donde Racket brilla con precisión quirúrgica, a diferencia de R, Java o Ada. Racket distingue entre:\n\nNúmeros Exactos: Como los enteros o las fracciones. Si divides 1 entre 3, Racket te da exactamente un tercio, no una aproximación decimal. Esto es vital para calcular dosis exactas.\nNúmeros Inexactos: Aproximaciones decimales (como los floats en R). Se usan cuando la medición tiene un margen de error inherente.\n\n&gt; (/ 1 3)   ; Resultado exacto (Racional)\n1/3\n&gt; (sqrt 2)  ; Resultado inexacto\n1.4142135623730951\n&gt; (+ 3 5.2) ; Combinación: el resultado es inexacto\n8.2\n\n\nCadenas, Símbolos y Booleanos\n\nStrings (Cadenas): Texto plano entre comillas dobles, usado para notas narrativas o nombres de pacientes. \"Paciente con IMC elevado\"\nBooleans (Booleanos): Los diagnósticos binarios de toda la vida: verdadero (#t) o falso (#f).\nSymbols (Símbolos): Etiquetas categóricas muy potentes. Son como los factors en R, pero más flexibles. En Racket, se escriben con una comilla simple al principio ('). Son fundamentales para nuestro motor semántico.\n\n\nUso Clínico de Símbolos: Podemos usar símbolos para etiquetar diagnósticos sin la pesada carga de procesar texto largo.\n\n&gt; (define diagnostico 'obesidad_morbida)\n&gt; (eq? diagnostico 'obesidad_morbida) ; Prueba diagnóstica rápida\n#t",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#hacia-el-motor-semántico-pensando-en-reglas-y-datos",
+    "href": "analysis/c02.html#hacia-el-motor-semántico-pensando-en-reglas-y-datos",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "Hacia el Motor Semántico: Pensando en Reglas y Datos",
+    "text": "Hacia el Motor Semántico: Pensando en Reglas y Datos\nEl primer paso para tu motor de NHANES es aprender a dar nombres a los valores diagnósticos. Usamos la forma especial define.\n\nNota Técnica: define no es una función normal; es una “forma especial”. Su regla es distinta: el primer argumento (area) no se evalúa, se convierte en el nombre.\n\n; Definimos constantes diagnósticas para nuestro análisis\n(define IMC-umbral-obesidad 30.0)\n(define IMC-umbral-sobrepeso 25.0)\n\n; Asignamos datos de un paciente hipotético de NHANES\n(define peso-kg 95.0)\n(define altura-m 1.75)\n\n; Calculamos el IMC (Tratamiento de datos)\n(define IMC-paciente (/ peso-kg (* altura-m altura-m)))\n\n; Mostramos el resultado en el REPL (Monitor)\n&gt; IMC-paciente\n31.020408163265305",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#ejercicios-prácticos-pruebas-de-laboratorio-racket",
+    "href": "analysis/c02.html#ejercicios-prácticos-pruebas-de-laboratorio-racket",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "Ejercicios Prácticos: Pruebas de Laboratorio Racket",
+    "text": "Ejercicios Prácticos: Pruebas de Laboratorio Racket\nUsa el Panel de Interacciones (REPL) de DrRacket para confirmar estas “pruebas de laboratorio”.\n\nEjercicio 1\nTranscribe las siguientes expresiones aritméticas complejas a la sintaxis limpia de Racket y evalúalas:\n\n\\(4 \\times 7 - 11 + 6\\)\n\n; Tu código Racket aquí\n\n\\(1.6 + 1/3 \\times (6 - (-1.7))\\)\n\n; Tu código Racket aquí\n\n\nEjercicio 2 (Caso Clínico/Datos Metabólicos)\nVamos a modelar una regla semántica simple.\n\nDefine una constante para el umbral de glucosa en ayunas para diabetes (digamos, 126 mg/dL).\nDefine el valor de glucosa de un paciente (digamos, 140 mg/dL).\nEscribe una expresión Racket que devuelva #t si el paciente supera el umbral y #f si no (pista: usa la función &gt;).\n\n; 1. Definir umbral\n(define umbral-diabetes ...)\n\n; 2. Definir dato paciente\n(define glucosa-paciente ...)\n\n; 3. Expresión de diagnóstico binario\n&gt; (... glucosa-paciente umbral-diabetes)\n\n\nEjercicio 3 (Pensamiento Datalog)\nImagina que en tu motor semántico tienes una regla: “Si un paciente tiene obesidad (IMC &gt; 30) Y hipertensión, requiere seguimiento metabólico”.\nTraduce esa lógica de diagnóstico combinado a una expresión de Racket usando #t y #f para representar la presencia de las condiciones. Deberás usar la función booleana (and ...).\n; Asumimos: Paciente SÍ tiene obesidad (#t) Y SÍ tiene hipertensión (#t)\n&gt; (and ... ...) ; Debería devolver #t\n\n; Asumimos: Paciente SÍ tiene obesidad (#t) pero NO tiene hipertensión (#f)\n&gt; (and ... ...) ; Debería devolver #f",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
+    ]
+  },
+  {
+    "objectID": "analysis/c02.html#solucionario-de-ejercicios-prácticos",
+    "href": "analysis/c02.html#solucionario-de-ejercicios-prácticos",
+    "title": "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación",
+    "section": "Solucionario de Ejercicios Prácticos",
+    "text": "Solucionario de Ejercicios Prácticos\nAquí tienes las soluciones corregidas a tus “pruebas de laboratorio” de Racket.\n\nEjercicio 1 (Basado en home01.pdf)\nTranscripción de expresiones aritméticas complejas a la sintaxis prefija de Racket:\n\n\\(4 \\times 7 - 11 + 6\\)\n\n; Solución: Primero multiplicamos, luego restamos 11, y al final sumamos 6.\n&gt; (+ (- (* 4 7) 11) 6)\n23\n\n\\(1.6 + 1/3 \\times (6 - (-1.7))\\)\n\n; Solución: Cuidado con el doble negativo (- -1.7). Racket maneja el 1/3 exactamente.\n&gt; (+ 1.6 (* (/ 1 3) (- 6 -1.7)))\n4.166666666666666 ; El resultado es inexacto debido al 1.6 inicial.\n\n\nEjercicio 2 (Caso Clínico/Datos Metabólicos)\nModelado de una regla semántica simple de diagnóstico de diabetes.\n\nDefine una constante para el umbral de glucosa en ayunas para diabetes (digamos, 126 mg/dL).\nDefine el valor de glucosa de un paciente (digamos, 140 mg/dL).\nExpresión que devuelve #t si el paciente supera el umbral y #f si no.\n\n; Solución\n; 1. Definir umbral\n(define umbral-diabetes 126)\n\n; 2. Definir dato paciente\n(define glucosa-paciente 140)\n\n; 3. Expresión de diagnóstico binario\n&gt; (&gt; glucosa-paciente umbral-diabetes)\n#t\n\n\nEjercicio 3 (Pensamiento Datalog)\nTraducción de una regla de diagnóstico combinado (“Si un paciente tiene obesidad (IMC &gt; 30) Y hipertensión, requiere seguimiento metabólico”) usando la función booleana and.\n; Solución\n\n; Escenario A: Paciente SÍ tiene obesidad (#t) Y SÍ tiene hipertensión (#t)\n&gt; (and #t #t) ; Debería devolver #t\n#t\n\n; Escenario B: Paciente SÍ tiene obesidad (#t) pero NO tiene hipertensión (#f)\n&gt; (and #t #f) ; Debería devolver #f\n#f",
+    "crumbs": [
+      "Inicio",
+      "1. Construcción de abstracciones con procedimientos",
+      "2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación"
     ]
   }
 ]

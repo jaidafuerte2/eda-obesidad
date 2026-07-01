@@ -1,0 +1,189 @@
+#| label: setup
+#| include: false
+
+options(scipen = 999) # desactivar la notación científica
+
+library(tidyverse)
+library(rstanarm)
+library(posterior) 
+library(bayesplot)
+library(lubridate)
+
+sales <- read_csv("../data/superstore_sales.csv",
+                  guess_max = 10000,
+                  show_col_types = FALSE)
+#glimpse(superstore) # produce:
+
+
+----------------------------------------------------------
+
+
+#1 Agregar la variable de fecha de orden, con formato de fecha; basado 
+# en la variable existente 
+sales <- sales %>%
+  mutate(
+    Order_Date = as.Date(
+      `Order Date`,
+      format = "%m/%d/%Y"
+    )
+  )
+
+------------------------------------------------------------
+
+#2 Agrupar las ventas por mes
+ventas_mensuales <-
+  sales |>
+  mutate(
+    Month = lubridate::floor_date(Order_Date, "month")
+  ) |>
+  group_by(Month) |>
+  summarise(
+    Sales = sum(Sales),
+    .groups = "drop"
+  )
+
+------------------------------------------------------------
+
+#3 Convertir el tiempo en un índice, crear un contador de meses
+ventas_mensuales <-
+  ventas_mensuales |>
+  mutate(
+    Month = row_number()
+  )
+
+-------------------------------------------------------------
+
+#4 Crear modelo de la influencia del tiempo sobre las ventas
+modelo_ventas <-
+  stan_glm(
+    Sales ~ Month,
+    data = ventas_mensuales,
+    family = gaussian(),
+    chains = 2,
+    iter = 1000,
+    refresh = 0
+  )
+
+--------------------------------------------------------------
+
+#5 Crear nuevos meses para pronosticar
+nuevos_meses <- tibble(
+  Month = 37:48
+)
+
+# Generar predicciones posteriores
+predicciones_posteriores <-
+  posterior_predict(
+    modelo_ventas,
+    newdata = nuevos_meses
+  )
+#dim(predicciones_posteriores) # produce: [1] 1000   12
+
+--------------------------------------------------------
+
+#6 Obtener el promedio esperado
+mean_pred <- apply(
+  predicciones_posteriores,
+  2,
+  mean
+)
+
+# Calcular el intervalo inferior
+lower_pred <-
+  apply(
+    predicciones_posteriores,
+    2,
+    quantile,
+    probs = 0.025
+  )
+
+# Calcular el intervalo superior
+upper_pred <-
+  apply(
+    predicciones_posteriores,
+    2,
+    quantile,
+    probs = 0.975
+  )
+
+---------------------------------------------------------
+
+#7 Construir un dataframe de predicciones
+predicciones <-
+  tibble(
+    Month = nuevos_meses$Month,
+    mean = mean_pred,
+    lower = lower_pred,
+    upper = upper_pred
+  )
+
+------------------------------------------------------------
+
+#8 Extraer muestras posteriores 
+posterior_samples <-
+  as_draws_df(modelo_ventas)
+  
+  
+--------------------------------------------------------------
+
+#9
+coeficientes <-
+  as_draws_df(modelo_ventas)
+
+
+---------------------------------------------------------------
+
+#10 Diagrama de líneas que relaciona el mes con las ventas. 
+# Además de Gráfico de bandas para visualizar las ventas estimadas o
+# o plausible de cada mes.
+ggplot(
+  predicciones,
+  aes(
+    x = Month,
+    y = mean
+  )
+) +
+  geom_line(size = 1) +
+  geom_ribbon(
+    aes(
+      ymin = lower,
+      ymax = upper
+    ),
+    alpha = 0.25
+  ) +
+  
+  labs(
+    title = "Pronóstico de ventas con incertidumbre",
+    x = "Mes",
+    y = "Ventas estimadas"
+  )
+  
+---------------------------------------------------------------
+
+#11 Gráfico de la distribución posterior que muestra la variación 
+# de las ventas cada mes
+posterior_samples |>
+  ggplot(
+    aes(x = Month)
+  ) +
+  geom_density()
+
+
+----------------------------------------------------------------
+
+#12 Distribución posterior la variación de las ventas cada mes
+coeficientes |>
+  ggplot(aes(x = Month)) +
+  geom_density(
+    fill = "steelblue",
+    alpha = 0.4
+  ) +
+  labs(
+    title = "Distribución posterior del tiempo sobre las ventas",
+    x = "Coeficiente asociado a Month",
+    y = "Densidad"
+  )
+
+
+
+
