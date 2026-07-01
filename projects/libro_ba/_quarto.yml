@@ -63,7 +63,7 @@ website:
         contents:
         - analysis/c16.qmd
         - analysis/c17.qmd
-        #- analysis/c17.qmd
+        - analysis/c18.qmd
       #- section: "Módulo 7: Decisiones bajo incertidumbre"
         #href: analysis/m07.qmd
         #contents:

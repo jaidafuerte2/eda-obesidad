@@ -3943,5 +3943,329 @@
       "PARTE VI — COMUNICAR Y PENSAR MEJOR",
       "17.- Cómo comunicar incertidumbre"
     ]
+  },
+  {
+    "objectID": "analysis/c18.html",
+    "href": "analysis/c18.html",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "",
+    "text": "Cuando comenzamos este libro, probablemente tenías una idea bastante clara de lo que esperabas encontrar. Tal vez querías aprender a crear modelos estadísticos, hacer mejores gráficos o utilizar R para analizar datos. Quizá imaginabas que, al finalizar, serías capaz de responder preguntas de negocio con mayor precisión.\nEs muy probable que también esperaras algo más profundo, aunque no lo expresaras con esas palabras: encontrar respuestas.\nDespués de todo, esa es una expectativa natural. Cuando buscamos datos, solemos hacerlo porque existe una decisión difícil por delante. Queremos reducir la incertidumbre y sentir que contamos con información suficiente para elegir el mejor camino.\nUn gerente desea saber cuánto venderá el próximo trimestre antes de decidir cuánto inventario comprar.\nUn responsable de marketing quiere conocer qué campaña tiene mayor probabilidad de generar nuevos clientes.\nUn equipo de atención al cliente intenta identificar qué usuarios presentan mayor riesgo de abandonar la empresa para actuar antes de que eso ocurra.\nEn todos estos casos, el análisis de datos parece prometer una respuesta. Sin embargo, a lo largo de este libro hemos descubierto que esa promesa no es del todo correcta.\nLos datos rara vez responden nuestras preguntas con un simple “sí” o “no”. En cambio, nos ayudan a comprender qué escenarios son más plausibles, cuáles son menos probables y cuánta incertidumbre sigue existiendo alrededor de cada posibilidad.\nEse pequeño cambio de perspectiva transforma por completo la manera de analizar información.\nAl principio del libro hablamos de variabilidad. Aprendimos que dos observaciones nunca son exactamente iguales y que incluso procesos aparentemente estables presentan fluctuaciones naturales. Esa variabilidad no era un defecto de los datos; era una característica del mundo real.\nMás adelante descubrimos que la probabilidad no consiste únicamente en calcular porcentajes. También representa una forma de expresar qué tan compatibles son los datos con distintos escenarios posibles. En lugar de buscar una única respuesta correcta, comenzamos a trabajar con distribuciones de resultados plausibles.\nCuando introdujimos el enfoque bayesiano, apareció una idea todavía más poderosa: nuestras conclusiones pueden cambiar cuando obtenemos nueva evidencia. Las creencias dejan de ser posiciones rígidas para convertirse en hipótesis que evolucionan con la información disponible.\nFinalmente, utilizamos modelos para organizar esa información y apoyar decisiones reales. Ya fuera estimando ventas futuras, evaluando el riesgo de pérdida de clientes o interpretando campañas de marketing, el objetivo nunca fue adivinar el futuro con exactitud. El objetivo siempre fue comprender mejor la incertidumbre.\nSi existe una diferencia entre la persona que abrió este libro y la que ahora está leyendo este último capítulo, probablemente no sea que conoce más funciones de R o que puede construir modelos ligeramente más sofisticados.\nLa diferencia más importante es otra.\nAhora sabes que analizar datos no significa encontrar certezas.\nSignifica aprender a formular mejores preguntas, interpretar la evidencia con humildad y tomar decisiones aun cuando la incertidumbre nunca desaparezca por completo.\nEsa forma de pensar resulta útil mucho más allá del análisis de datos. También influye en cómo evaluamos información, cómo cambiamos de opinión cuando aparecen nuevas evidencias y cómo reconocemos que, en muchas ocasiones, las mejores decisiones no son aquellas que garantizan el éxito, sino aquellas que fueron tomadas considerando honestamente la información disponible en ese momento.\nEse ha sido, desde el principio, el verdadero propósito de este libro.\nNo enseñarte a eliminar la incertidumbre.\nEnseñarte a pensar mejor dentro de ella.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#introducción",
+    "href": "analysis/c18.html#introducción",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "",
+    "text": "Cuando comenzamos este libro, probablemente tenías una idea bastante clara de lo que esperabas encontrar. Tal vez querías aprender a crear modelos estadísticos, hacer mejores gráficos o utilizar R para analizar datos. Quizá imaginabas que, al finalizar, serías capaz de responder preguntas de negocio con mayor precisión.\nEs muy probable que también esperaras algo más profundo, aunque no lo expresaras con esas palabras: encontrar respuestas.\nDespués de todo, esa es una expectativa natural. Cuando buscamos datos, solemos hacerlo porque existe una decisión difícil por delante. Queremos reducir la incertidumbre y sentir que contamos con información suficiente para elegir el mejor camino.\nUn gerente desea saber cuánto venderá el próximo trimestre antes de decidir cuánto inventario comprar.\nUn responsable de marketing quiere conocer qué campaña tiene mayor probabilidad de generar nuevos clientes.\nUn equipo de atención al cliente intenta identificar qué usuarios presentan mayor riesgo de abandonar la empresa para actuar antes de que eso ocurra.\nEn todos estos casos, el análisis de datos parece prometer una respuesta. Sin embargo, a lo largo de este libro hemos descubierto que esa promesa no es del todo correcta.\nLos datos rara vez responden nuestras preguntas con un simple “sí” o “no”. En cambio, nos ayudan a comprender qué escenarios son más plausibles, cuáles son menos probables y cuánta incertidumbre sigue existiendo alrededor de cada posibilidad.\nEse pequeño cambio de perspectiva transforma por completo la manera de analizar información.\nAl principio del libro hablamos de variabilidad. Aprendimos que dos observaciones nunca son exactamente iguales y que incluso procesos aparentemente estables presentan fluctuaciones naturales. Esa variabilidad no era un defecto de los datos; era una característica del mundo real.\nMás adelante descubrimos que la probabilidad no consiste únicamente en calcular porcentajes. También representa una forma de expresar qué tan compatibles son los datos con distintos escenarios posibles. En lugar de buscar una única respuesta correcta, comenzamos a trabajar con distribuciones de resultados plausibles.\nCuando introdujimos el enfoque bayesiano, apareció una idea todavía más poderosa: nuestras conclusiones pueden cambiar cuando obtenemos nueva evidencia. Las creencias dejan de ser posiciones rígidas para convertirse en hipótesis que evolucionan con la información disponible.\nFinalmente, utilizamos modelos para organizar esa información y apoyar decisiones reales. Ya fuera estimando ventas futuras, evaluando el riesgo de pérdida de clientes o interpretando campañas de marketing, el objetivo nunca fue adivinar el futuro con exactitud. El objetivo siempre fue comprender mejor la incertidumbre.\nSi existe una diferencia entre la persona que abrió este libro y la que ahora está leyendo este último capítulo, probablemente no sea que conoce más funciones de R o que puede construir modelos ligeramente más sofisticados.\nLa diferencia más importante es otra.\nAhora sabes que analizar datos no significa encontrar certezas.\nSignifica aprender a formular mejores preguntas, interpretar la evidencia con humildad y tomar decisiones aun cuando la incertidumbre nunca desaparezca por completo.\nEsa forma de pensar resulta útil mucho más allá del análisis de datos. También influye en cómo evaluamos información, cómo cambiamos de opinión cuando aparecen nuevas evidencias y cómo reconocemos que, en muchas ocasiones, las mejores decisiones no son aquellas que garantizan el éxito, sino aquellas que fueron tomadas considerando honestamente la información disponible en ese momento.\nEse ha sido, desde el principio, el verdadero propósito de este libro.\nNo enseñarte a eliminar la incertidumbre.\nEnseñarte a pensar mejor dentro de ella.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#mirar-hacia-atrás",
+    "href": "analysis/c18.html#mirar-hacia-atrás",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Mirar hacia atrás",
+    "text": "Mirar hacia atrás\nLlegados a este punto, resulta tentador resumir todo lo que hemos estudiado capítulo por capítulo. Sin embargo, ese no sería el mejor cierre. Más que recordar cada técnica o cada función utilizada en R, vale la pena detenernos en las cuatro ideas que dieron sentido a todo el recorrido.\nNo son cuatro temas independientes. Son cuatro maneras de mirar un mismo problema: cómo tomar mejores decisiones cuando el futuro nunca está completamente bajo nuestro control.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#aprendimos-a-convivir-con-la-variabilidad",
+    "href": "analysis/c18.html#aprendimos-a-convivir-con-la-variabilidad",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Aprendimos a convivir con la variabilidad",
+    "text": "Aprendimos a convivir con la variabilidad\nUno de los primeros descubrimientos del libro fue que los datos nunca son perfectamente ordenados.\nLas ventas cambian de un mes a otro.\n\nSin embargo, no todos los meses se comportan exactamente igual. Hay meses que las ventas pueden aumentar 1500 dólares, otros meses las ventas pueden aumentar sólo 500 dólares, pero puede ser que lo más común sea que cada mes las ventas aumenten cerca de 900 dólares\nLas campañas de marketing producen resultados distintos incluso cuando parecen similares.\nLos tratamientos médicos generan respuestas diferentes entre pacientes.\nDurante mucho tiempo, muchas personas interpretan esa variabilidad como un problema que debe eliminarse. Si un resultado cambia, pensamos que algo salió mal.\nSin embargo, la realidad funciona de otra manera.\nLa variabilidad no es un error del análisis.\nEs una propiedad natural de casi todos los fenómenos que intentamos comprender.\nAceptar esa idea cambia profundamente nuestra relación con los datos. En lugar de frustrarnos porque los resultados fluctúan, empezamos a preguntarnos cuánto fluctúan, por qué lo hacen y qué información útil puede esconderse detrás de esas diferencias.\nEsa fue la primera lección del libro: antes de buscar patrones, debemos aceptar que el mundo real es inherentemente variable.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#aprendimos-a-pensar-probabilísticamente",
+    "href": "analysis/c18.html#aprendimos-a-pensar-probabilísticamente",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Aprendimos a pensar probabilísticamente",
+    "text": "Aprendimos a pensar probabilísticamente\nUna vez aceptada la variabilidad, apareció una pregunta inevitable.\nSi el futuro nunca es completamente predecible, ¿cómo podemos tomar decisiones?\nLa respuesta fue aprender a pensar en términos de probabilidades.\nDurante todo el libro dejamos de formular preguntas como:\n“¿Qué ocurrirá?”\ny empezamos a formular otras mucho más útiles:\n“¿Qué escenarios parecen más plausibles?”\n“¿Qué tan probable es cada uno?”\n“¿Cuánta incertidumbre sigue existiendo?”\nEste cambio puede parecer pequeño, pero modifica profundamente la forma de interpretar los resultados.\nUn pronóstico de ventas deja de ser un único número para convertirse en un conjunto de escenarios posibles.\nLa probabilidad de que un cliente abandone la empresa deja de verse como una etiqueta definitiva y pasa a interpretarse como un nivel de riesgo que puede ayudar a priorizar acciones.\nIncluso una estimación aparentemente sencilla adquiere un significado diferente cuando entendemos que siempre existe un margen razonable de incertidumbre.\nPensar probabilísticamente no significa renunciar a tomar decisiones.\nSignifica reconocer que toda decisión importante implica evaluar escenarios, no certezas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#aprendimos-a-construir-modelos-útiles",
+    "href": "analysis/c18.html#aprendimos-a-construir-modelos-útiles",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Aprendimos a construir modelos útiles",
+    "text": "Aprendimos a construir modelos útiles\nEn varios momentos del libro utilizamos regresiones lineales, regresiones logísticas, distribuciones posteriores y simulaciones.\nSería fácil pensar que el objetivo consistía en aprender esas técnicas.\nEn realidad, todas ellas fueron herramientas para lograr algo mucho más importante.\nCada modelo nos obligó a hacer explícitas nuestras preguntas.\n¿Qué variables parecen estar relacionadas?\n¿Qué información consideramos relevante?\n¿Qué supuestos estamos aceptando?\n¿Qué incertidumbre permanece después del análisis?\nPoco a poco descubrimos que un buen modelo no es necesariamente el más complejo.\nEs aquel que ayuda a comprender mejor un problema y facilita una conversación más informada entre las personas que deben tomar decisiones.\nEn varias ocasiones utilizamos modelos sencillos que explicaban suficientemente bien la situación analizada. Esa elección fue deliberada.\nEn la práctica profesional, un modelo comprensible suele generar mucho más valor que uno extremadamente sofisticado pero imposible de interpretar.\nDespués de todo, las decisiones las toman personas, no algoritmos.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#aprendimos-a-decidir-bajo-incertidumbre",
+    "href": "analysis/c18.html#aprendimos-a-decidir-bajo-incertidumbre",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Aprendimos a decidir bajo incertidumbre",
+    "text": "Aprendimos a decidir bajo incertidumbre\nQuizá esta haya sido la enseñanza más importante de todo el libro.\nAl comenzar, muchos lectores imaginan que el análisis de datos sirve para descubrir la respuesta correcta.\nCon el paso de los capítulos vimos que la realidad es distinta.\nIncluso después de realizar un buen análisis, todavía existen riesgos.\nTodavía pueden ocurrir eventos inesperados.\nTodavía es posible equivocarse.\nLejos de ser una limitación del análisis, esta situación refleja la naturaleza del mundo en que vivimos.\nLas empresas toman decisiones sin conocer exactamente cómo evolucionará el mercado.\nLos hospitales asignan recursos sin saber cuántos pacientes llegarán mañana.\nLas organizaciones lanzan nuevos productos sin conocer con certeza cómo reaccionarán los consumidores.\nEsperar información perfecta suele ser imposible.\nPor eso, el verdadero valor del análisis consiste en reducir la incertidumbre lo suficiente para tomar decisiones mejor fundamentadas.\nNo elimina el riesgo.\nPero ayuda a comprenderlo.\nNo garantiza el éxito.\nPero permite actuar con mayor conocimiento de las posibilidades.\nY quizá esa sea una de las ideas más valiosas que puede aprender cualquier analista.\nLos datos no sustituyen la responsabilidad de decidir.\nLa hacen más consciente.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#una-transformación-que-va-más-allá-del-análisis",
+    "href": "analysis/c18.html#una-transformación-que-va-más-allá-del-análisis",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Una transformación que va más allá del análisis",
+    "text": "Una transformación que va más allá del análisis\nSi observamos estas cuatro ideas en conjunto, aparece un patrón interesante.\nAprendimos que la variabilidad es normal.\nAprendimos a pensar en probabilidades.\nAprendimos a construir modelos que organizan nuestra comprensión del problema.\nY aprendimos que las decisiones siempre requieren convivir con cierto grado de incertidumbre.\nNinguna de estas ideas pertenece exclusivamente al análisis de datos.\nTambién son útiles para dirigir una empresa, diseñar una política pública, atender un paciente, planificar un proyecto o incluso tomar decisiones personales.\nEn otras palabras, el recorrido de este libro no consistió únicamente en aprender nuevas herramientas.\nConsistió en desarrollar una forma distinta de observar el mundo.\nY esa nueva forma de pensar será el punto de partida de la reflexión central del siguiente apartado: ¿qué papel cumplen realmente los modelos en nuestras decisiones?",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#los-modelos-como-herramientas-para-pensar",
+    "href": "analysis/c18.html#los-modelos-como-herramientas-para-pensar",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Los modelos como herramientas para pensar",
+    "text": "Los modelos como herramientas para pensar\nHasta este punto del libro hemos hablado de distribuciones, probabilidades, intervalos plausibles, regresiones, pronósticos y riesgo. Aunque cada una de estas herramientas tiene características propias, todas comparten un mismo propósito.\nAyudarnos a pensar mejor.\nEsa afirmación puede parecer demasiado sencilla, pero contiene una idea profunda. Con frecuencia se habla de los modelos estadísticos como si fueran máquinas capaces de producir respuestas objetivas e incuestionables. En la práctica, ocurre algo diferente.\nUn modelo no toma decisiones.\nUn modelo no conoce el negocio.\nUn modelo no entiende las prioridades de una organización.\nUn modelo tampoco sabe qué consecuencias tendría equivocarse.\nTodo eso sigue dependiendo de las personas.\nEntonces, ¿qué hace realmente un modelo?\nLa respuesta es que organiza nuestro razonamiento para que podamos analizar un problema de forma más clara, más explícita y más honesta.\nEn cierto sentido, un modelo se parece más a un buen mapa que a un oráculo.\nUn mapa no reemplaza al viajero. Tampoco decide cuál es el mejor destino. Lo que hace es mostrar el terreno con suficiente claridad para que la persona pueda elegir el camino más conveniente.\nLos modelos cumplen un papel muy parecido.\nNo nos dicen exactamente qué ocurrirá.\nNos ayudan a comprender mejor el escenario en el que debemos actuar.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#organizar-información-que-de-otro-modo-sería-difícil-de-interpretar",
+    "href": "analysis/c18.html#organizar-información-que-de-otro-modo-sería-difícil-de-interpretar",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Organizar información que, de otro modo, sería difícil de interpretar",
+    "text": "Organizar información que, de otro modo, sería difícil de interpretar\nImagina que una empresa registra sus ventas diarias durante cinco años.\nLa base de datos contiene miles de filas.\nCada venta está asociada con una fecha, una categoría de producto, una región, un descuento aplicado, el tipo de cliente y muchas otras variables.\nToda esa información es valiosa.\nPero también puede resultar abrumadora.\nObservar únicamente la tabla de datos rara vez permite responder preguntas como:\n\n¿Las ventas están creciendo?\n¿Existe una tendencia?\n¿Qué tan variable es el comportamiento mensual?\n¿Qué podría ocurrir durante los próximos meses?\n\nLos datos, por sí solos, contienen mucha información, pero poca estructura.\nEl modelo aporta precisamente esa estructura.\nResume relaciones, identifica patrones y organiza la evidencia para que podamos interpretarla con mayor facilidad.\nDurante el libro utilizamos modelos relativamente sencillos. Sin embargo, incluso esos modelos fueron capaces de transformar miles de observaciones dispersas en una historia coherente sobre el comportamiento de las ventas, el riesgo de abandono de clientes o la efectividad de una campaña de marketing.\nEse es uno de los mayores aportes del análisis estadístico.\nNo consiste en fabricar información nueva.\nConsiste en revelar patrones que ya estaban presentes, pero que resultaban difíciles de apreciar.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#hacer-visibles-nuestros-supuestos",
+    "href": "analysis/c18.html#hacer-visibles-nuestros-supuestos",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Hacer visibles nuestros supuestos",
+    "text": "Hacer visibles nuestros supuestos\nExiste otra característica importante que suele pasar desapercibida.\nTodo análisis incorpora supuestos.\nIncluso cuando alguien afirma que está “dejando que los datos hablen por sí solos”, en realidad ya tomó muchas decisiones antes de comenzar.\nEligió qué datos incluir.\nDecidió qué variables analizar.\nSeleccionó un período de tiempo.\nDefinió una pregunta.\nEscogió una forma de resumir la información.\nLos modelos tienen una ventaja importante: obligan a hacer explícitas muchas de esas decisiones.\nCuando ajustábamos una regresión lineal, estábamos suponiendo que existía una relación aproximada entre las variables.\nCuando construíamos una regresión logística, asumíamos que determinados factores podían modificar la probabilidad de que un cliente abandonara la empresa.\nCuando realizábamos un pronóstico, aceptábamos que el comportamiento pasado podía aportar información útil sobre el futuro.\nNinguno de esos supuestos garantiza que el modelo sea perfecto.\nPero al menos quedan sobre la mesa.\nY eso hace posible discutirlos, revisarlos y mejorarlos.\nEn muchas ocasiones, un modelo no fracasa porque esté mal programado.\nFracasa porque sus supuestos no representan adecuadamente la realidad que intenta describir.\nReconocer esa posibilidad forma parte del pensamiento probabilístico.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#comparar-escenarios-no-adivinar-el-futuro",
+    "href": "analysis/c18.html#comparar-escenarios-no-adivinar-el-futuro",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Comparar escenarios, no adivinar el futuro",
+    "text": "Comparar escenarios, no adivinar el futuro\nUno de los cambios más importantes que introduce un modelo consiste en modificar la naturaleza de nuestras preguntas.\nAntes del análisis solemos preguntar:\n\n“¿Qué va a ocurrir?”\n\nDespués de construir un modelo, empezamos a preguntar:\n\n“¿Qué escenarios parecen más plausibles?”\n\nLa diferencia puede parecer sutil, pero cambia completamente la conversación.\nRecordemos el capítulo de pronósticos de ventas.\nEl objetivo nunca fue descubrir exactamente cuánto vendería la empresa el próximo mes.\nEso habría sido imposible.\nLo importante era comprender que existían varios escenarios razonables.\nUn escenario optimista.\nUno moderado.\nY otro más conservador.\n\nCada uno con una probabilidad distinta y con diferentes implicaciones para el negocio.\nGracias a esa información, un responsable de inventarios podía evaluar cuánto riesgo estaba dispuesto a asumir.\nNo necesitaba conocer el futuro con exactitud.\nNecesitaba comprender suficientemente bien las alternativas disponibles.\nEse mismo principio apareció cuando analizamos el abandono de clientes.\nLa probabilidad estimada por la regresión logística nunca debía interpretarse como una sentencia definitiva.\nUn cliente con una probabilidad del 80 % de abandonar la empresa todavía puede quedarse.\nOtro con una probabilidad del 20 % puede marcharse inesperadamente.\nEl modelo no elimina la incertidumbre.\nLa organiza.\nY esa organización hace posible asignar recursos de manera más inteligente.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#los-modelos-también-mejoran-nuestras-preguntas",
+    "href": "analysis/c18.html#los-modelos-también-mejoran-nuestras-preguntas",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Los modelos también mejoran nuestras preguntas",
+    "text": "Los modelos también mejoran nuestras preguntas\nAl principio del libro muchas preguntas eran bastante generales.\n“¿Qué producto vende más?”\n“¿Qué cliente abandonará la empresa?”\n“¿Cuál será la venta del próximo trimestre?”\nCon el tiempo aprendimos que esas preguntas podían formularse de manera mucho más útil.\nPor ejemplo:\n\n¿Qué tan incierto es nuestro pronóstico?\n¿Qué variables parecen estar más relacionadas con el resultado?\n¿Qué información adicional reduciría la incertidumbre?\n¿Qué decisión cambiaría si el escenario fuera distinto?\n\nObserva que ninguna de estas preguntas busca eliminar la incertidumbre.\nTodas intentan comprenderla mejor.\nEsa es una consecuencia muy interesante del trabajo analítico.\nLos modelos no solo producen respuestas.\nTambién nos enseñan a formular preguntas más inteligentes.\nY, con frecuencia, una buena pregunta aporta más valor que una respuesta demasiado confiada.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#una-conversación-entre-datos-y-experiencia",
+    "href": "analysis/c18.html#una-conversación-entre-datos-y-experiencia",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Una conversación entre datos y experiencia",
+    "text": "Una conversación entre datos y experiencia\nEn ocasiones se presenta una falsa oposición entre el análisis de datos y la experiencia profesional.\nComo si fuera necesario elegir entre confiar en los modelos o confiar en las personas.\nEn realidad, las mejores decisiones suelen surgir cuando ambas fuentes de conocimiento trabajan juntas.\nPensemos nuevamente en el pronóstico de ventas.\nSupongamos que el modelo predice un crecimiento moderado para el siguiente trimestre.\nAl mismo tiempo, el equipo comercial informa que un competidor importante abandonará el mercado durante las próximas semanas.\nEse acontecimiento todavía no aparece en los datos históricos.\nEl modelo no puede anticiparlo.\nSin embargo, el conocimiento del negocio sí puede incorporarlo a la decisión final.\nO imaginemos la situación inversa.\nUn gerente está convencido de que las ventas aumentarán porque “siempre ocurre lo mismo”.\nAl revisar los datos, descubre que el patrón histórico no respalda esa percepción.\nEn ese caso, el modelo actúa como un mecanismo para cuestionar una intuición que quizá era demasiado optimista.\nEn ambos ejemplos ocurre exactamente lo mismo.\nNi el modelo reemplaza la experiencia.\nNi la experiencia vuelve innecesario el modelo.\nCada uno aporta información distinta.\nLa mejor decisión aparece cuando ambas perspectivas dialogan entre sí.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#un-buen-modelo-también-sabe-decir-no-lo-sé",
+    "href": "analysis/c18.html#un-buen-modelo-también-sabe-decir-no-lo-sé",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Un buen modelo también sabe decir “no lo sé”",
+    "text": "Un buen modelo también sabe decir “no lo sé”\nPuede parecer extraño, pero una de las mayores virtudes de un modelo bayesiano consiste en reconocer aquello que todavía no puede afirmar con suficiente confianza.\nDurante el libro dedicamos mucho tiempo a interpretar distribuciones posteriores e intervalos plausibles.\nA veces esos intervalos eran estrechos.\nEn otras ocasiones resultaban bastante amplios.\nLejos de ser una debilidad, esos intervalos nos recordaban algo muy importante:\nLa evidencia disponible tiene límites.\nCuando el modelo mostraba mucha incertidumbre, no estaba fallando.\nNos estaba diciendo que los datos aún no permitían distinguir claramente entre varios escenarios posibles.\nEse mensaje puede resultar menos satisfactorio que una respuesta categórica.\nPero también es mucho más honesto.\nEn el mundo real, admitir que todavía existe incertidumbre suele ser una señal de rigor, no de incompetencia.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#reflexión-bayesiana",
+    "href": "analysis/c18.html#reflexión-bayesiana",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Reflexión bayesiana",
+    "text": "Reflexión bayesiana\nUna de las ideas más poderosas del enfoque bayesiano nunca estuvo relacionada únicamente con las matemáticas.\nSiempre estuvo relacionada con la humildad.\nCada distribución posterior que analizamos representaba una creencia actualizada después de observar nueva evidencia.\nNunca una verdad definitiva.\nEse mismo principio puede extenderse a nuestra manera de pensar.\nLas mejores decisiones no provienen de aferrarnos a nuestras primeras conclusiones.\nProvienen de estar dispuestos a revisarlas cuando aparece información nueva.\nLos modelos nos ayudan precisamente en ese proceso.\nNo porque tengan siempre la razón.\nSino porque hacen visible aquello que sabemos, aquello que todavía ignoramos y aquello que podría cambiar mañana.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#la-incertidumbre-permanece",
+    "href": "analysis/c18.html#la-incertidumbre-permanece",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "La incertidumbre permanece",
+    "text": "La incertidumbre permanece\nDespués de construir un modelo, analizar los resultados e interpretar las probabilidades, todavía queda una pregunta importante.\n¿Ahora sí conocemos el futuro?\nLa respuesta sigue siendo la misma que al comienzo del libro.\nNo.\nY eso no debería decepcionarnos.\nDe hecho, si un análisis nos hiciera creer que el futuro ya está completamente resuelto, probablemente deberíamos desconfiar de él.\nLa incertidumbre no desaparece porque hayamos utilizado mejores herramientas.\nPermanece porque el mundo cambia constantemente.\nLos mercados cambian.\nLas personas cambian.\nLas empresas cambian.\nNosotros mismos cambiamos.\nNingún modelo puede capturar por completo esa complejidad.\nY tampoco necesita hacerlo para resultar útil.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#el-análisis-reduce-incertidumbre-no-la-elimina",
+    "href": "analysis/c18.html#el-análisis-reduce-incertidumbre-no-la-elimina",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "El análisis reduce incertidumbre, no la elimina",
+    "text": "El análisis reduce incertidumbre, no la elimina\nImaginemos nuevamente el problema del inventario.\nAntes de analizar los datos, la empresa prácticamente desconoce cómo podrían comportarse las ventas durante los próximos meses.\nDespués del análisis, dispone de una distribución de escenarios plausibles.\nAhora entiende qué resultados parecen más probables y cuáles serían menos frecuentes.\n¿Desapareció la incertidumbre?\nNo.\nPero disminuyó.\nPasamos de una incertidumbre casi absoluta a una incertidumbre mejor comprendida.\nEsa diferencia puede parecer pequeña.\nEn realidad, es exactamente el valor que aporta el análisis.\nNo convierte el futuro en algo seguro.\nConvierte lo desconocido en algo más manejable.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#el-mundo-siempre-puede-sorprendernos",
+    "href": "analysis/c18.html#el-mundo-siempre-puede-sorprendernos",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "El mundo siempre puede sorprendernos",
+    "text": "El mundo siempre puede sorprendernos\nDurante el libro utilizamos datos históricos para construir modelos.\nEra una decisión razonable.\nEl pasado suele contener información útil.\nPero nunca contiene toda la información.\nPuede aparecer una nueva regulación.\nPuede cambiar la economía.\nPuede surgir un competidor inesperado.\nPuede modificarse el comportamiento de los consumidores.\nPuede producirse un evento completamente extraordinario.\nNada de eso implica que el modelo estuviera “equivocado”.\nSimplemente significa que el mundo continuó evolucionando.\nLos modelos describen la realidad disponible hasta el momento del análisis.\nLa realidad, mientras tanto, sigue escribiendo nuevos capítulos.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#la-incertidumbre-también-protege-contra-el-exceso-de-confianza",
+    "href": "analysis/c18.html#la-incertidumbre-también-protege-contra-el-exceso-de-confianza",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "La incertidumbre también protege contra el exceso de confianza",
+    "text": "La incertidumbre también protege contra el exceso de confianza\nAceptar que siempre existe incertidumbre produce un efecto muy valioso.\nNos vuelve más prudentes.\nCuando reconocemos que nuestros pronósticos tienen límites, solemos preparar planes alternativos.\nEvaluamos riesgos.\nPensamos en escenarios.\nDiseñamos estrategias de contingencia.\nEn cambio, cuando creemos que conocemos el futuro con absoluta certeza, dejamos de prepararnos para lo inesperado.\nParadójicamente, aceptar la incertidumbre suele conducir a decisiones mucho más sólidas.\nPorque nos obliga a considerar posibilidades que de otro modo habríamos ignorado.\nEl criterio sigue siendo humano",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#llegamos-al-último-tramo-de-este-libro.",
+    "href": "analysis/c18.html#llegamos-al-último-tramo-de-este-libro.",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Llegamos al último tramo de este libro.",
+    "text": "Llegamos al último tramo de este libro.\nA lo largo de los capítulos anteriores aprendimos a explorar datos, construir modelos, interpretar probabilidades y comunicar incertidumbre. Sin embargo, todavía queda una idea por comprender. Quizá sea la más importante de todas.\nLos modelos ayudan a decidir.\nPero no deciden.\nPuede parecer una diferencia pequeña, aunque en realidad cambia por completo el papel del análisis de datos dentro de una organización.\nImaginemos que una empresa utiliza un modelo para estimar la probabilidad de que sus clientes abandonen el servicio. El modelo identifica a cien clientes con un riesgo elevado.\n¿Qué debería hacer la empresa?\nLa respuesta no aparece en el modelo.\nPodría ofrecer descuentos.\nPodría llamar personalmente a esos clientes.\nPodría mejorar el servicio.\nPodría decidir no intervenir porque el costo de la campaña supera el beneficio esperado.\nTodas esas decisiones son compatibles con el mismo análisis.\nLa diferencia no está en los datos.\nEstá en los objetivos de la organización, en sus recursos disponibles y en la estrategia que ha decidido seguir.\nEl análisis aporta evidencia.\nLa decisión incorpora, además, prioridades, restricciones y valores.\nEse ha sido un mensaje constante durante todo el libro.\nLos modelos reducen la incertidumbre.\nEl criterio humano decide cómo actuar con esa incertidumbre.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#dos-personas-pueden-llegar-a-decisiones-distintas",
+    "href": "analysis/c18.html#dos-personas-pueden-llegar-a-decisiones-distintas",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Dos personas pueden llegar a decisiones distintas",
+    "text": "Dos personas pueden llegar a decisiones distintas\nSupongamos ahora que dos directivos observan exactamente el mismo pronóstico de ventas para el próximo trimestre.\nAmbos ven la misma distribución predictiva.\nAmbos interpretan correctamente los intervalos plausibles.\nAmbos entienden la incertidumbre del modelo.\nSin embargo, llegan a decisiones diferentes.\n\nLa primera persona decide aumentar el inventario porque considera que perder ventas sería muy costoso.\nLa segunda prefiere mantener un inventario más pequeño porque teme acumular productos que después no se vendan.\n¿Quién tiene razón?\nProbablemente, ambos.\nNo porque las dos decisiones produzcan exactamente el mismo resultado, sino porque responden a prioridades distintas.\nEl análisis no determina cuánto riesgo estamos dispuestos a asumir.\nEsa decisión pertenece a las personas.\nEn este punto resulta útil recordar que una buena decisión no siempre conduce al mejor resultado posible.\nA veces tomamos una decisión razonable con la información disponible y, aun así, los acontecimientos evolucionan de manera desfavorable.\nDel mismo modo, una decisión poco fundamentada puede terminar produciendo un buen resultado simplemente por azar.\nPor eso nunca deberíamos evaluar una decisión únicamente por su desenlace.\nTambién debemos preguntarnos si fue tomada considerando honestamente la evidencia disponible en ese momento.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#la-humildad-analítica",
+    "href": "analysis/c18.html#la-humildad-analítica",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "La humildad analítica",
+    "text": "La humildad analítica\nExiste una actitud que aparece una y otra vez entre los buenos analistas.\nLa humildad.\nNo significa desconfiar permanentemente de los modelos.\nSignifica reconocer sus límites.\nUn analista humilde puede decir:\n“Con la información disponible, este escenario parece el más plausible.”\nPero también puede añadir:\n“Si obtenemos nueva evidencia, estaremos dispuestos a revisar esta conclusión.”\nLejos de transmitir inseguridad, esa forma de comunicar inspira confianza.\nLas organizaciones necesitan personas capaces de reconocer cuándo existe suficiente evidencia para actuar y cuándo todavía conviene seguir investigando.\nLa humildad analítica también evita otro problema frecuente: el exceso de confianza.\nCuando un modelo produce un resultado muy preciso, puede resultar tentador pensar que la incertidumbre ha desaparecido.\nSin embargo, a lo largo del libro vimos repetidamente que incluso los mejores modelos conservan cierto grado de incertidumbre.\nAceptar ese hecho no debilita el análisis.\nLo fortalece.\nPorque nos recuerda que siempre existe la posibilidad de aprender algo nuevo.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#comunicar-con-honestidad-también-es-parte-del-análisis",
+    "href": "analysis/c18.html#comunicar-con-honestidad-también-es-parte-del-análisis",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Comunicar con honestidad también es parte del análisis",
+    "text": "Comunicar con honestidad también es parte del análisis\nUna buena decisión depende tanto de un buen análisis como de una buena comunicación.\nImaginemos que presentamos un pronóstico diciendo:\n“Las ventas serán de 120 000 dólares.”\nAhora comparemos ese mensaje con otro ligeramente diferente:\n“El escenario más plausible se sitúa alrededor de los 120 000 dólares, aunque todavía existe una variabilidad razonable que conviene considerar antes de planificar el inventario.”\nAmbas frases se basan en el mismo modelo.\nSin embargo, transmiten ideas muy distintas.\nLa primera sugiere una certeza que probablemente no existe.\nLa segunda comunica tanto la evidencia como la incertidumbre.\nDurante este libro insistimos en que la comunicación no es un paso final del análisis.\nEs parte del análisis.\nUn modelo correctamente interpretado, pero mal comunicado, puede conducir a decisiones equivocadas.\nEn cambio, un análisis honesto ayuda a que todos comprendan no solo lo que muestran los datos, sino también aquello que todavía permanece incierto.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#el-mejor-análisis-no-reemplaza-las-conversaciones",
+    "href": "analysis/c18.html#el-mejor-análisis-no-reemplaza-las-conversaciones",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "El mejor análisis no reemplaza las conversaciones",
+    "text": "El mejor análisis no reemplaza las conversaciones\nEn muchas ocasiones, el resultado más valioso de un análisis no es una cifra.\nEs la conversación que genera.\nUn pronóstico puede motivar al equipo financiero a revisar el presupuesto.\nUna estimación de riesgo puede impulsar mejoras en la atención al cliente.\nUna distribución posterior puede abrir un debate sobre nuevas oportunidades de negocio.\nEn todos esos casos, el modelo cumple una función muy importante.\nNo cierra la discusión.\nLa mejora.\nHace que las conversaciones sean más objetivas, más transparentes y mejor fundamentadas.\nQuizá esa sea una de las formas más útiles de entender el papel del análisis de datos.\nNo como un mecanismo para terminar las discusiones.\nSino como una herramienta para que las discusiones sean mejores.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#una-última-reflexión-bayesiana",
+    "href": "analysis/c18.html#una-última-reflexión-bayesiana",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Una última reflexión bayesiana",
+    "text": "Una última reflexión bayesiana\nDesde los primeros capítulos apareció una idea sencilla que acompañó todo nuestro recorrido.\nLas creencias pueden cambiar cuando aparece nueva evidencia.\nAl principio la utilizamos para comprender el enfoque bayesiano.\nDespués la aplicamos a regresiones, pronósticos y probabilidades.\nPero, al llegar al final del libro, vale la pena observar que esa idea también puede extenderse mucho más allá de los modelos estadísticos.\nTodos construimos explicaciones sobre el mundo.\nTodos formulamos hipótesis.\nTodos interpretamos la información desde nuestra experiencia.\nEl pensamiento bayesiano nos recuerda que cambiar de opinión frente a una buena evidencia no es una señal de debilidad.\nEs una señal de aprendizaje.\nQuizá ese sea uno de los hábitos intelectuales más valiosos que puede desarrollar cualquier analista.\nEscuchar la evidencia.\nActualizar sus conclusiones.\nY mantener siempre la disposición para seguir aprendiendo.\nEn cierto modo, esa actitud representa el verdadero espíritu del análisis de datos.\nNo consiste en demostrar que siempre tenemos razón.\nConsiste en acercarnos, poco a poco, a una mejor comprensión de la realidad.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
+  },
+  {
+    "objectID": "analysis/c18.html#cierre-del-libro",
+    "href": "analysis/c18.html#cierre-del-libro",
+    "title": "18.- Los modelos ayudan a pensar",
+    "section": "Cierre del libro",
+    "text": "Cierre del libro\nCuando comenzamos este recorrido, probablemente los modelos parecían herramientas complejas.\nLas distribuciones posteriores eran desconocidas.\nLos intervalos plausibles resultaban extraños.\nLas regresiones parecían técnicas reservadas para especialistas.\nHoy esas herramientas forman parte de tu manera de analizar problemas.\nPero espero que ese no sea el aprendizaje que recuerdes con más frecuencia.\nEspero que, al cerrar este libro, recuerdes algo mucho más sencillo.\nQue los datos rara vez hablan por sí solos.\nNecesitan preguntas.\nNecesitan contexto.\nNecesitan interpretación.\nY, sobre todo, necesitan personas capaces de utilizarlos con criterio.\nA lo largo de estas páginas vimos empresas que intentaban anticipar sus ventas, comprender el comportamiento de sus clientes y evaluar campañas de marketing. En todos esos ejemplos, los modelos fueron herramientas extraordinariamente útiles.\nPero nunca sustituyeron la experiencia de quienes conocían el negocio.\nNunca reemplazaron la responsabilidad de decidir.\nNunca eliminaron completamente la incertidumbre.\nY precisamente por eso fueron valiosos.\nPorque ayudaron a tomar decisiones mejor informadas en un mundo donde la certeza absoluta simplemente no existe.\nVivimos rodeados de información.\nCada día aparecen nuevos datos, nuevas métricas y nuevos modelos.\nSin embargo, disponer de más información no garantiza tomar mejores decisiones.\nLo que realmente marca la diferencia es desarrollar la capacidad de interpretar esa información con prudencia, comunicarla con honestidad y actuar reconociendo tanto lo que sabemos como aquello que todavía ignoramos.\nEse es el tipo de pensamiento que el enfoque bayesiano intenta cultivar.\nNo promete respuestas perfectas.\nPropone una manera más flexible, más transparente y más humana de aprender a partir de la evidencia.\nTal vez dentro de algunos años olvides el nombre de alguna función de R.\nQuizá tengas que volver a consultar cómo ajustar un modelo o cómo construir un gráfico.\nEso es completamente normal.\nLo verdaderamente importante es que conserves la forma de pensar que has desarrollado durante este recorrido.\nQue, frente a un problema complejo, recuerdes hacer preguntas antes de buscar respuestas.\nQue distingas entre certeza y plausibilidad.\nQue no confundas una probabilidad con una garantía.\nQue estés dispuesto a cambiar de opinión cuando aparezca nueva evidencia.\nY que nunca pierdas de vista que detrás de cada modelo existen personas que deberán convivir con las consecuencias de las decisiones que tomen.\nSi este libro logra acompañarte en ese camino, habrá cumplido su propósito.\nPorque el mejor analista no es quien construye el modelo más sofisticado.\nNi quien realiza las predicciones más espectaculares.\nEs quien ayuda a tomar mejores decisiones porque comprende mejor la incertidumbre.\nY así llegamos al final de este libro.\nPero no al final del aprendizaje.\nCada nuevo conjunto de datos, cada decisión difícil y cada pregunta sin una respuesta evidente serán una oportunidad para seguir practicando esta forma de pensar.\nLos modelos continuarán evolucionando.\nLas herramientas cambiarán.\nLos algoritmos serán cada vez más potentes.\nSin embargo, habrá una idea que seguirá siendo tan valiosa como el primer día.\nLa incertidumbre no es un problema que deba eliminarse.\nEs una realidad que debemos aprender a interpretar.\nY quizá esa sea la enseñanza más importante que puede llevarse un analista.\nNo aprender a predecir un mundo perfecto.\nSino aprender a tomar mejores decisiones en el mundo real.",
+    "crumbs": [
+      "Inicio",
+      "PARTE VI — COMUNICAR Y PENSAR MEJOR",
+      "18.- Los modelos ayudan a pensar"
+    ]
   }
 ]
