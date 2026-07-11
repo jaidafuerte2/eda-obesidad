@@ -1,0 +1,216 @@
+---
+title: "3. Más Racket Primitivo — El Triaje del Lenguaje"
+format: html
+editor: visual
+---
+
+## 1. Los Tres Pilares de cualquier Sistema Genómico/Lenguaje
+
+Cualquier lenguaje de programación —desde Racket hasta el sistema con el que consultas las bases de datos de NHANES— cuenta con tres mecanismos fundamentales:
+
+1. **Expresiones Primitivas:** Las unidades mínimas e indivisibles de información. En el ámbito clínico, piensa en esto como los signos vitales puros de un paciente: una temperatura de `37.5`, un identificador como `'paciente-04` o un estado booleano como `#t`.
+2. **Medios de Combinación:** Las herramientas del lenguaje para agrupar elementos simples en estructuras compuestas. En Racket, el único medio de combinación que usamos es la expresión prefija completamente parentetizada: `(<operador> <operandos>*)`.
+3. **Medios de Abstracción:** Los métodos para empaquetar combinaciones complejas bajo un nombre sencillo y reutilizable. En lugar de recalcular manualmente la fórmula del Índice de Masa Corporal (IMC) cada vez, creas un procedimiento abstracto que encapsula ese protocolo técnico.
+
+### La paradoja del `if` en el triaje de lenguajes
+
+Las estructuras condicionales tradicionales (como el `if`) **no** forman parte de los tres pilares obligatorios que un lenguaje debe poseer de manera nativa. 
+
+> **Nota de Arquitectura:** En Smalltalk, por ejemplo, no existe la palabra reservada `if` dentro del compilador. Todo se maneja enviando mensajes a objetos. Los valores de verdad `True` y `False` son objetos que responden al mismo mensaje condicional ejecutando bloques de código diferentes.
+
+Esto nos enseña una lección vital: lo importante no es tener la sintaxis rígida de un `if` tradicional, sino proveer un mecanismo (el que sea) para realizar una selección funcional y desviar el flujo de los datos según las reglas del negocio clínico.
+
+---
+
+## 2. Control de Flujo sin Jerga Matemática: El Triaje Clínico con `if` y `cond`
+
+En Racket, las decisiones no son "sentencias" que ejecutan acciones; son **expresiones** que evalúan un valor final basado en una condición.
+
+### La expresión `if`
+
+La sintaxis del `if` en Racket sigue estrictamente la estructura de combinación prefija:
+
+```racket
+(if test-expression then-expression else-expression)
+
+```
+
+Evaluemos un escenario práctico de epidemiología nutricional. Supongamos que en una cohorte de NHANES queremos calcular un ajuste basado en si el ingreso de un paciente supera un umbral ético o censal:
+
+```racket
+(define income 30000)
+
+(if (> income 20000)
+    (* 0.20 (- income 20000))
+    0)
+
+```
+
+> ⚠️ **Regla de Evaluación Crítica:** El `if` es una **forma especial** (*special form*). A diferencia de una función normal (donde Racket evalúa absolutamente todos los argumentos antes de aplicarla), el `if` primero evalúa la `test-expression`. Dependiendo del resultado (`#t` o `#f`), evalúa la rama correspondiente y **nunca** toca la otra. Esto evita cálculos innecesarios o errores por evaluar datos inexistentes.
+
+#### El concepto de "Truthiness" (Certeza clínica)
+
+Racket define que el único valor estrictamente falso es el literal booleano `#f`. Cualquier otra estructura, número, símbolo o incluso una lista vacía `()` se evalúa como verdadera en un contexto condicional.
+
+### La expresión `cond` (El árbol de decisión multiplexado)
+
+Cuando necesitas evaluar múltiples criterios excluyentes, anidar expresiones `if` se vuelve caótico. Para mantener limpio el código de tu futuro motor semántico, usamos `cond`.
+
+La estructura general de `cond` agrupa pares de hipótesis (predicados) y conclusiones (consecuentes):
+
+```racket
+(cond (<predicado-1> <consecuente-1>)
+      (<predicado-2> <consecuente-2>)
+      ...
+      (else <consecuente-por-defecto>))
+
+```
+
+Miremos cómo clasificaríamos una variable metabólica simulada `x` para determinar su polaridad diagnóstica:
+
+```racket
+(define x -12)
+
+(cond [(= x 0) 'zero]
+      [(< x 0) 'negative]
+      [else    'positive])
+
+```
+
+> **Consejo de Legibilidad:** Racket permite intercambiar paréntesis `()` por corchetes `[]` para agrupar las cláusulas de un `cond`. Funcionalmente son idénticos, pero visualmente separan la estructura del condicional de las operaciones internas, salvando tus ojos de la fatiga visual.
+
+---
+
+## 3. Anatomía de las Listas en Racket: De los Vectores de R a la Cadena de Custodia de Datos
+
+Como analista en R con experiencia en NHANES, estás acostumbrado a pensar en vectores de memoria contigua y Data Frames indexados. Si pides la posición 500 de un vector en R, el sistema matemático salta directamente allí de forma inmediata.
+
+**En Racket, las listas son Listas Enlazadas (*Linked Lists*)**.
+
+Esto significa que una lista es una cadena de nodos secuenciales donde cada eslabón conoce su propio dato y contiene un puntero hacia el resto de la cadena. Acceder a un elemento intermedio es una operación lineal: debes recorrer la cadena eslabón por eslabón.
+
+### Los dos inspectores fundamentales: `first` y `rest`
+
+Para interactuar con esta cadena de custodia de datos, disponemos de dos funciones básicas de acceso:
+
+* `first` (antiguo `car`): Extrae el elemento que está al frente de la estructura.
+* `rest` (antiguo `cdr`): Extrae la sublista restante, excluyendo el primer elemento.
+
+Comparemos conceptualmente cómo se mapea esto con Python si tuviéramos que emular el comportamiento con segmentos de listas:
+
+```python
+# Mapeo conceptual en archivo "list.py"
+my_list = [1, 2, 3, 4]
+
+def first(a_list):           # Equivalente a (first ...)
+    return a_list[0]
+
+def rest(a_list):            # Equivalente a (rest ...)
+    return a_list[1:]
+
+```
+
+En Racket, si evaluamos expresiones complejas o listas anidadas (un formato muy común para estructurar reglas lógicas en Datalog), podemos inspeccionar sus componentes combinando estos selectores:
+
+```racket
+(first (rest '(anything (a b) anything-or-nothing)))
+;; Devolverá: '(a b)
+
+```
+
+### El Constructor de Datos: `cons`
+
+¿Cómo se expande una lista enlazada? En programación funcional, la mutación de estructuras existentes está prohibida. En su lugar, construimos una nueva vista de la información inyectando un nodo directamente en la **cabeza** de la lista usando `cons`.
+
+```racket
+(cons 0 '(1 2 3 4))
+;; Resultado: '(0 1 2 3 4)
+
+```
+
+> **Principio de Inmutabilidad:** `cons` no altera la lista original bajo el capó; simplemente crea un nuevo eslabón inicial cuyo puntero apunta a la lista existente. Esto garantiza la integridad referencial de tus datos epidemiológicos.
+
+---
+
+## 4. Automatización y Control de Calidad: Pruebas Sanitarias con `rackunit`
+
+Para asegurar que los algoritmos de análisis de datos que diseñemos no tengan fallas de lógica, implementaremos metodologías de desarrollo guiado por pruebas. Racket cuenta con una suite nativa llamada `rackunit`.
+
+Para cargar este laboratorio de diagnóstico en nuestro archivo, usamos la instrucción `require` en la cabecera:
+
+```racket
+#lang racket
+(require rackunit)
+
+```
+
+Esto nos habilita predicados de verificación automatizados:
+
+* `(check-equal? <expresión-a-probar> <valor-esperado>)`: Verifica igualdad exacta entre tipos de datos discretos o enteros.
+* `(check-= <expresión-flotante> <valor-esperado> <tolerancia>)`: Ideal para cálculos epidemiológicos con punto flotante, donde los decimales residuales impiden una igualdad exacta.
+
+Por ejemplo:
+
+```racket
+(define square
+  (lambda (n)
+    (* n n)))
+
+(check-equal? (square 7) 49) ; Pasa la prueba silenciosamente si es correcto
+
+```
+
+---
+
+## 5. Laboratorio Práctico (Ejercicios)
+
+Desarrolla las soluciones dentro de tu archivo de trabajo reemplazando el código base.
+
+### Ejercicio 1: El Discriminador de Riesgo Metabólico
+
+Crea una función llamada `discriminant` que reciba tres coeficientes enteros `a`, `b`, y `c` correspondientes a un modelo cuadrático de ajuste analítico ($ax^2 + bx + c$) y retorne el valor del discriminante matemático definido por la relación: $b^2 - 4ac$.
+
+```racket
+(define discriminant
+  (lambda (a b c)
+    0 )) ; <-- Reemplaza este 0 con tu código
+
+;; Pruebas clínicas de validación:
+(check-equal? (discriminant 1 4 4) 0)
+(check-equal? (discriminant 1 5 6) 1)
+
+```
+
+### Ejercicio 2: Rangos de Tolerancia para Biomarcadores Séricos
+
+Debido a la variabilidad de calibración en las máquinas de laboratorio clínico que reportan datos a NHANES, dos mediciones consecutivas de un mismo biomarcador pueden no ser idénticas, pero sí clínicamente equivalentes si están dentro de un rango de tolerancia ($\epsilon$).
+
+Escribe la función `in-range?` que reciba tres argumentos numéricos: `actual` (la medición observada), `desired` (el valor de referencia basal), y `epsilon` (la tolerancia permitida). Usa la primitiva `abs` para calcular la distancia absoluta.
+
+```racket
+(define in-range?
+  (lambda (actual desired epsilon)
+    #f )) ; <-- Reemplaza este #f con tu código
+
+;; Pruebas de control de calidad:
+(check-true  (in-range? 4.95 5.0 0.1))
+(check-false (in-range? 4.95 5.0 0.01))
+(check-true  (in-range? 5.0 4.95 0.1))
+
+```
+
+### Ejercicio 3: Extracción de Historiales Clínicos Aninados
+
+Imagina que una consulta lógica en tu futuro motor semántico para NHANES te devuelve el siguiente registro anidado de pacientes y diagnósticos:
+
+```racket
+(define registro-nhanes '((obesidad-tipo1 (glucosa 105)) (sano (glucosa 85)) (sindrome-metabolico (glucosa 140))))
+
+```
+
+Utilizando combinaciones puras de las funciones de acceso analizadas en clase (`first` y `rest`), escribe las expresiones necesarias para extraer de la estructura de datos:
+
+1. El registro del segundo paciente: `'(sano (glucosa 85))`
+2. La etiqueta de diagnóstico del tercer paciente: `'sindrome-metabolico`
+
+

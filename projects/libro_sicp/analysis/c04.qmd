@@ -1,0 +1,388 @@
+---
+title: "4. Estructuras de Datos en Racket"
+format: html
+editor: visual
+---
+
+## 1. Tomando Decisiones en el Triaje: `if`, `cond` y `case`
+
+### 1.1 El flujo de decisión clínica: De los `if` anidados a la elegancia del `cond`
+
+En tu práctica como médico, el triaje es automático: llega un paciente, evalúas sus signos vitales y decides el nivel de urgencia. En programación, esto es el flujo de control. Si estuviéramos programando una función para asignar calificaciones escolares (un clásico de la academia) o niveles de riesgo metabólico, podríamos usar la estructura condicional básica de Racket: el `if`.
+
+El problema es que el `if` en Racket es estrictamente binario: toma una condición, una ruta para el "sí" y otra para el "no". Si tienes múltiples escenarios, te ves obligado a anidar un `if` dentro de otro, creando una estructura difícil de leer:
+
+```racket
+(if (>= student-grade 0.90)
+    'A
+    (if (>= student-grade 0.80)
+        'B
+        (if (>= student-grade 0.70)
+            'C
+            (if (>= student-grade 0.60)
+                'D
+                'F))))
+
+```
+
+Estructuralmente, esto es lo que llamamos código con "aroma" a fatiga cognitiva. Para resolver este dolor de cabeza, Racket nos ofrece una herramienta mucho más limpia: `cond`. Piensa en `cond` como una hoja de ruta clínica o un protocolo de decisión donde evalúas múltiples condiciones secuencialmente hasta que una resulta verdadera:
+
+```racket
+(cond [((>= student-grade 0.90) 'A)]
+      [((>= student-grade 0.80) 'B)]
+      [((>= student-grade 0.70) 'C)]
+      [((>= student-grade 0.60) 'D)]
+      [(else 'F)])
+
+```
+
+### 1.2 `case` y las limitaciones del diagnóstico por descarte
+
+Racket incluye otra estructura de selección llamada `case`. A diferencia de `cond`, que evalúa expresiones lógicas complejas (como rangos numéricos), `case` realiza una comparación directa y exacta contra listas de valores fijos:
+
+```racket
+(case (random 6)
+  [((0) 'zero)]
+  [((1) 'one)]
+  [((2 3 4) 'few)]
+  [(else 'many)])
+
+```
+
+> ⚠️ **Nota de diseño:** No podemos usar `case` para diagnosticar rangos continuos (como niveles de glucosa en sangre o percentiles de IMC de NHANES) porque sería imposible listar explícitamente todos los números decimales intermedios. Quédate con esta regla: `if` para decisiones de dos vías, `cond` para lógica multivariable.
+> 
+> 
+
+### 1.3 ¿Función o Forma Especial?: Cómo auditar el comportamiento de Racket
+
+Si intentas pasarle variables no evaluadas a una función normal en Racket, el motor se quejará de inmediato. ¿Por qué `cond` o `if` no fallan cuando sus ramas contienen expresiones que aún no deben ejecutarse? Porque **no son funciones, son Formas Especiales**. Una función evalúa todos sus argumentos antes de ejecutarse; una forma especial tiene reglas de evaluación personalizadas (por ejemplo, `if` solo evalúa la rama ganadora, ignorando por completo la otra).
+
+---
+
+## 2. El Control de Calidad del Diagnóstico: Rackunit y Tolerancia Numérica
+
+### 2.1 Pruebas unitarias sin dolor
+
+Cuando manejas datos de NHANES, necesitas asegurar que tus algoritmos de limpieza no alteren la información. En Racket, usamos la librería `rackunit` para automatizar este control de calidad. Nos permite fijar expectativas directamente en el código:
+
+```racket
+(require rackunit)
+
+(check-equal? (letter-grade-for 0.95) 'A)
+(check-true (in-range? 10 5 15))
+
+```
+Estas llamadas a funciones se refieren a estas definiciones:
+
+```racket
+;; Calcular la nota cualitativa correspodiente a la nota numperica
+(define (letter-grade-for student-grade)
+  (cond [(>= student-grade 0.90) 'A]
+        [(>= student-grade 0.80) 'B]
+        [(>= student-grade 0.70) 'C]
+        [(>= student-grade 0.60) 'D]
+        [else 'F]))
+
+;; Conocer si un valor numérico está dentro del rango dado un valor
+;; de base y un rango 
+(define in-range?
+  (lambda (actual desired epsilon)
+    (cond [(and (<= actual (+ desired epsilon))
+                (>= actual (- desired epsilon)))
+           #t]
+          [else #f])))
+```
+
+
+### 2.2 El problema del laboratorio (Floating-Points)
+
+Aquí viene una alerta clínica importante. En el análisis de laboratorio, los instrumentos tienen un margen de error. En computación ocurre lo mismo con los números de punto flotante (los decimales). Debido a cómo se representan en binario, `0.1 + 0.2` no siempre es exactamente `0.3`.
+
+Por esta razón, `check-equal?` fallará miserablemente si intentas comparar decimales con precisión matemática pura. Para variables analíticas continuas, usamos `check-=`. Esta función introduce un tercer argumento: la **tolerancia**.
+
+```racket
+;; Verifica si el resultado está dentro del margen de error aceptable (0.001)
+(check-= (calcular-imc 90 1.80) 27.777 0.001)
+
+```
+
+La llamada a la función calcular-imc() viene de esta definición:
+
+```racket
+;; Calcular el IMC
+(define (calcular-imc peso-kg altura-m)
+  (/ peso-kg (* altura-m altura-m)))
+```
+
+### 2.3 La Jerarquía de la Corrección
+
+Cuando estés construyendo scripts para procesar tus datos, tu código pasará por un proceso de salud diagnóstica que se estructura de la siguiente manera
+
+```
+[Menos Correcto]
+  1. El código no carga (error de sintaxis).
+  2. Las pruebas no corren (errores en el entorno de pruebas).
+  3. Las pruebas fallan (la lógica es incorrecta).
+  4. Las pruebas pasan (el código está sano).
+[Más Correcto]
+
+```
+
+---
+
+## 3. La Anatomía del Par (`Pair`): El Bloque de Construcción Primario
+
+### 3.1 El par como receptor/ligando (`cons`): Constructores y accesores
+
+Para construir un motor semántico que relacione variables clínicas (por ejemplo, conectar un identificador de paciente con su diagnóstico de obesidad), necesitamos estructuras agregadas. La más fundamental en Racket es el **Par** (`Pair`).
+
+Pensémoslo como un complejo receptor-ligando: dos elementos unidos indisolublemente.
+
+* **Constructor (`cons`):** Une dos objetos cualesquiera.
+
+
+* **Accesores (`car` y `cdr`):** Extraen la primera y la segunda parte respectivamente.
+
+
+
+```racket
+(define paciente-1 (cons "ID-9482" 32.5)) ; Une un identificador con su IMC
+
+(car paciente-1) ; Devuelve "ID-9482" (la cabeza)
+(cdr paciente-1) ; Devuelve 32.5 (la cola)
+
+```
+
+### 3.2 Diagramas de Cajas y Punteros
+
+La mejor manera de visualizar cómo se conectan los datos en la memoria del computador no es mediante fórmulas, sino mediante mapas anatómicos llamados diagramas de cajas y punteros. Un par `cons` se representa como una celda dividida en dos compartimientos, donde cada uno almacena una dirección (puntero) hacia el valor real.
+
+Si anidamos pares, creamos estructuras en red:
+
+```racket
+(define registro (cons (cons "Obesidad" #t) (cons "Diabetes" #f)))
+
+```
+
+Estructuralmente en memoria, el puntero principal apunta a una caja cuyo lado izquierdo (`car`) apunta a otro par, y su lado derecho (`cdr`) apunta a uno diferente.
+
+### 3.3 Violaciones de Contrato
+
+Si intentas aplicar un accesor a una estructura que no le corresponde, Racket detendrá el proceso de inmediato emitiendo una violación de contrato (`contract violation`). Es el equivalente informático a un rechazo inmunológico: `car` y `cdr` exigen estrictamente un par como argumento. Si les das un número plano, la operación falla automáticamente.
+
+---
+
+## 4. Listas en Racket: Las Cadenas de Datos para NHANES
+
+### 4.1 Definición inductiva de una lista
+
+Una lista en Racket no es un contenedor rígido (como un vector o un array de C). Una lista es una estructura de datos recursiva construida mediante eslabones de pares encadenados. Clínicamente, imagínala como una cadena molecular donde cada eslabón conoce al elemento actual y sostiene el enlace hacia el resto de la cadena.
+
+La definición formal e inductiva nos dice:
+
+1. La lista vacía `()` (también llamada `nil`) es una lista.
+
+
+2. Un par no vacío es una lista **si y solo si** su `cdr` es una lista.
+
+
+
+Para cerrar una lista correctamente, el último elemento debe apuntar obligatoriamente a la lista vacía:
+
+```racket
+(cons 3 (cons 4 (cons 5 '()))) ; Produce la lista '(3 4 5)
+
+```
+
+Si olvidas el `'()`, terminas con lo que Racket llama un *par punteado* (`dotted pair`), impreso como `(3 . 4)`, el cual no califica como una lista bien formada.
+
+### 4.2 Azúcar Sintáctico: `first` y `rest`
+
+Usar `car` y `cdr` para navegar por listas largas puede ser confuso. Por conveniencia, Racket introduce sinónimos semánticos llamados azúcar sintáctico: `first` y `rest`. No cambian el comportamiento subyacente, pero hacen que el código sea mucho más legible para propósitos analíticos.
+
+```racket
+(define biomarcadores '(glucosa insulina colesterol hdl))
+
+(first biomarcadores) ; 'glucosa
+(rest biomarcadores)  ; '(insulina colesterol hdl)
+
+```
+
+---
+
+## 5. El Dilema de la Evaluación: El Interludio de la Citación (`quote`)
+
+### 5.1 Datos que parecen código y código que parece datos
+
+Racket posee una característica sumamente poderosa para la creación de motores semánticos: la **homoiconicidad**. Esto significa que los programas y las estructuras de datos utilizan exactamente la misma representación visual (listas delimitadas por paréntesis).
+
+Si escribes `(obesidad-riesgo 35)`, Racket asume de inmediato que estás intentando ejecutar una función llamada `obesidad-riesgo` pasándole el parámetro `35`. ¿Pero qué pasa si simplemente quieres almacenar el hecho de que un paciente presenta esa condición?
+
+### 5.2 El uso de `quote` (`'`)
+
+Para indicarle al intérprete que no evalúe una expresión y que la trate estrictamente como datos literales, utilizamos la forma especial `quote`, abreviada con una comilla simple (`'`).
+
+```racket
+(define hecho-clinico '(paciente-01 tiene obesidad))
+
+```
+
+Gracias a esto, puedes construir listas que representen reglas lógicas directas para tu motor semántico de NHANES sin que Racket intente ejecutarlas como funciones antes de tiempo.
+
+---
+
+## 6. Inmutabilidad y Estructuras Funcionales: Datos Médicos Seguros
+
+### 6.1 Compartir memoria sin contaminar la muestra
+
+A diferencia de las listas en Python, que son mutables y propensas a alteraciones accidentales en memoria, las estructuras de datos estándar de Racket son estrictamente **inmutables**.
+
+Cuando "modificas" una lista en Racket agregando un elemento con `cons`, no estás alterando ni copiando toda la lista original en memoria. Racket crea un nuevo eslabón inicial cuyo puntero se conecta a la estructura existente. Ambas listas coexisten de manera segura compartiendo la misma memoria interna.
+
+```racket
+(define muestra-control '(pacienteA pacienteB))
+(define muestra-exp (cons 'pacienteC muestra-control)) 
+;; 'muestra-control' permanece intacta y libre de contaminación.
+
+```
+
+### 6.2 El enfoque funcional vs. la mutabilidad de Python
+
+Esta inmutabilidad garantiza que tus funciones analíticas operen de manera pura: calculan nuevos resultados sin alterar el estado global de tus variables. En proyectos de datos a gran escala como NHANES, esto elimina por completo los efectos secundarios no deseados, facilitando el procesamiento paralelo en múltiples procesadores.
+
+---
+
+## Ejercicios Prácticos (Sección NHANES & Racket Aplicado)
+
+### Ejercicio 1: Triaje Metabólico con `cond`
+
+Utilizando datos simulados de NHANES, completa la función `clasificar-riesgo-metabolico` empleando una estructura `cond`. La función debe recibir un valor continuo de circunferencia de cintura en centímetros y devolver un símbolo de riesgo (`'Bajo`, `'Moderado`, `'Alto`) basado en los siguientes criterios lógicos:
+
+* Mayor o igual a 102 cm: `'Alto`
+* Mayor o igual a 94 cm pero menor a 102 cm: `'Moderado`
+* Menor a 94 cm: `'Bajo`
+
+```racket
+#lang racket
+(require rackunit)
+
+(define (clasificar-riesgo-metabolico cintura)
+  ;; --- TU CÓDIGO AQUÍ ---
+  'completar)
+
+;; Pruebas unitarias de control de calidad
+(check-equal? (clasificar-riesgo-metabolico 105) 'Alto)
+(check-equal? (clasificar-riesgo-metabolico 96) 'Moderado)
+(check-equal? (clasificar-riesgo-metabolico 88) 'Bajo)
+
+```
+
+### Ejercicio 2: Diagnóstico Anatómico de Memoria
+
+Dibuja el diagrama de cajas y punteros para la siguiente lista que representa un registro estructurado de un paciente en tu futuro motor de reglas:
+
+```racket
+(define registro-paciente (cons 'ID-1024 (cons '(edad 45) '(imc 31.2))))
+
+```
+
+*Pregunta analítica:* ¿Es esta estructura una lista válida de acuerdo con la definición inductiva de Racket? Explica por qué basándote en la presencia o ausencia del elemento terminal `()`.
+
+### Ejercicio 3: Extracción en el Motor Semántico
+
+Supón que tu motor semántico recibe un hecho indexado de NHANES estructurado exactamente de la siguiente manera utilizando literales (`quote`):
+
+```racket
+(define hecho-nhanes '(sujeto-84321 (antropometria (imc 28.4) (cintura 98))))
+
+```
+
+Escribe una secuencia de operaciones utilizando exclusivamente `first` y `rest` (o `car`/`cdr`) para aislar y extraer únicamente la sublista que representa el valor de la masa corporal, es decir, el fragmento `(imc 28.4)`.
+
+```racket
+#lang racket
+(require rackunit)
+
+(define hecho-nhanes '(sujeto-84321 (antropometria (imc 28.4) (cintura 98))))
+
+;; Completa la expresión utilizando accesores en cadena
+(define resultado-imc
+  ;; --- TU CÓDIGO AQUÍ ---
+  'completar)
+
+(check-equal? resultado-imc '(imc 28.4))
+
+```
+
+## Soluciones a los Ejercicios Prácticos
+
+### Ejercicio 1: Triaje Metabólico con `cond`
+
+La implementación del algoritmo de triaje metabólico utiliza una estructura `cond` secuencial. Al evaluar primero el umbral más alto, garantizamos un filtrado limpio y eficiente de las variables analíticas de cintura[cite: 1, 3]:
+
+```racket
+#lang racket
+(require rackunit)
+
+(define (clasificar-riesgo-metabolico cintura)
+  (cond [(>= cintura 102) 'Alto]
+        [(>= cintura 94) 'Moderado]
+        [else 'Bajo]))
+
+;; Pruebas unitarias de control de calidad
+(check-equal? (clasificar-riesgo-metabolico 105) 'Alto)
+(check-equal? (clasificar-riesgo-metabolico 96) 'Moderado)
+(check-equal? (clasificar-riesgo-metabolico 88) 'Bajo)
+```
+
+### Ejercicio 2: Diagnóstico Anatómico de Memoria
+
+Para la estructura dada:
+
+```racket
+(define registro-paciente (cons 'ID-1024 (cons '(edad 45) '(imc 31.2))))
+
+```
+
+**Respuesta Analítica:**
+Sí, esta estructura **es una lista válida y completamente plana**. Al ejecutar la expresión de control de calidad, la prueba pasa limpiamente:
+
+```racket
+(check-equal? registro-paciente '(ID-1024 (edad 45) imc 31.2))
+
+```
+
+**Explicación Anatómica:**
+A primera vista, la sintaxis anidada de `cons` podría sugerir la creación de un par punteado o una estructura alterada. Sin embargo, el último argumento evaluado es la lista literal `'(imc 31.2)`. Por definición de azúcar sintáctico, esta lista ya cuenta con un puntero implícito hacia la lista vacía `'()` en su extremo derecho.
+
+Al aplicar el constructor `cons` de forma sucesiva hacia la izquierda, Racket simplemente extiende la cadena de punteros. La lista resultante no genera puntos en memoria porque hereda el cierre hermético (`()`) de la última sublista, logrando una estructura lineal homogénea de tres elementos.
+
+El mapa de cajas y punteros real se distribuye en memoria de la siguiente manera:
+
+```
+[ registro-paciente ]
+        │
+        ▼
+   ┌───┬───┐       ┌───┬───┐       ┌───┬───┐       ┌───┬───┐
+   │ * │ * ├──────>│ * │ * ├──────>│ * │ * ├──────>│ * │ / │ (Lista vacía terminal)
+   └─┬─┴───┘       └─┬─┴───┘       └─┬─┴───┘       └─┬─┴───┘
+     │               │               │               │
+     ▼               ▼               ▼               ▼
+ 'ID-1024        '(edad 45)        'imc            31.2
+
+```
+
+### Ejercicio 3: Extracción en el Motor Semántico
+
+Para extraer de forma segura el biomarcador de masa corporal a partir de la estructura homoicónica del hecho analítico, navegamos por los niveles de anidamiento utilizando los accesores de listas first y rest:
+
+```racket
+(define hecho-nhanes '(sujeto-84321 (antropometria (imc 28.4) (cintura 98))))
+
+;; Extracción en cadena aislando la sublista de interés
+(define resultado-imc
+  (first (rest (first (rest hecho-nhanes)))))
+
+;; Verificación de la integridad del dato extraído
+(check-equal? resultado-imc '(imc 28.4))
+```

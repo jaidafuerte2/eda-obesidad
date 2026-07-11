@@ -1,0 +1,328 @@
+---
+title: "6. Funciones de Orden Superior y Motores Semánticos"
+format: html
+editor: visual
+---
+
+## 1. El REPL y el Enfoque Clínico: Construcción Gradual de Programas
+
+En la práctica médica, rara vez emites un diagnóstico final complejo en el segundo uno. Sigues un enfoque interactivo: evalúas un síntoma, pides un laboratorio, ajustas tu hipótesis y prescribes un tratamiento base que vas refinando según la respuesta del paciente.
+
+Programar en el **REPL (Read-Eval-Print Loop)** de Racket sigue exactamente esa misma filosofía clínica. En lugar de encerrarte a diseñar una arquitectura monolítica de mil líneas que probablemente fallará en la primera ejecución, los programadores funcionales "cultivan" sus programas bloque a bloque. Pruebas una expresión pequeña en la consola, presionas `Ctrl + ↑` para recuperarla, le haces una pequeña modificación terapéutica y vuelves a evaluar.
+
+### Caso de estudio: El extractor de acrónimos clínicos
+Imagina que estás importando variables de texto de un sistema hospitalario y necesitas generar identificadores rápidos (acrónimos) para ciertas combinaciones de palabras. 
+
+Racket maneja strings con un sutil sabor funcional. Contamos con dos herramientas primitivas básicas:
+* `(string char1 char2 ...)`: El constructor que toma caracteres individuales y sutura un string.
+* `(string-ref str k)`: El acceso posicional (basado en índice 0) para extraer un carácter específico.
+
+Míralo en acción en el REPL:
+
+```racket
+> (string #\O #\b #\e #\s #\i #\d #\a #\d)
+"Obesidad"
+
+> (string-ref "NHANES" 1)
+#\H
+
+```
+
+> **Nota de diagnóstico:** En Racket, la notación `#\H` representa un carácter literal, diferenciándose del string `"H"`. Es el equivalente a diferenciar una célula individual del tejido completo.
+
+Si queremos construir una función `acronym` que reciba una lista de strings como `("National" "Health" "And" "Nutrition")` y nos devuelva `"NHAN"`, el enfoque tradicional de la programación imperativa te obligaría a inicializar un string vacío, armar un bucle `for`, definir un índice mutante y acumular caracteres.
+
+Un programador funcional detesta los estados mutables porque son como variables clínicas descontroladas en una Unidad de Cuidados Intensivos. En su lugar, pensamos en tuberías (*pipelines*) de transformación de datos usando funciones de orden superior.
+
+---
+
+## 2. Las Funciones como "Medicamentos de Primera Clase" (First-Class Citizens)
+
+Para que un lenguaje sea una plataforma apta para construir un motor semántico, las funciones no pueden ser simples subrutinas secundarias. Tienen que ser **ciudadanos de primera clase** (*First-Class Citizens*).
+
+En la gestión de una institución de salud, un "protocolo de atención" es un objeto concreto: puedes tenerlo impreso (escribirlo de forma literal), asignarle un nombre en un manual de procedimientos, pasarlo como directriz a un jefe de piso o recibirlo como resultado de una auditoría externa.
+
+En Racket, las funciones tienen exactamente ese mismo estatus de primera clase:
+
+1. **Escribirse literalmente:** Usando la forma especial `lambda`.
+2. **Asignarse a variables:** Los nombres de las funciones son simples enlaces (*bindings*), igual que los números.
+3. **Pasarse como argumentos:** Inyectar un protocolo dentro de otro.
+4. **Retornarse como valores:** Una función cuya salida es otra función.
+
+Cuando una función toma otra función como argumento o devuelve una función como resultado, la llamamos **Función de Orden Superior** (*Higher-Order Function*). Las dos herramientas de orden superior más icónicas que revisamos la sesión pasada son `map` y `apply`.
+
+### `map`: El tratamiento epidemiológico masivo
+
+Piensa en `map` como un protocolo de salud pública. Tienes una cohorte entera de pacientes (una lista) y les aplicas exactamente el mismo examen de laboratorio individual a cada uno. `map` se encarga de recorrer la lista de manera segura y te devuelve la lista con los resultados procesados.
+
+Para resolver nuestro problema del acrónimo, necesitamos extraer el primer carácter de un string. `string-ref` requiere dos argumentos, pero `map` necesita una función que reciba un solo elemento (el string actual de la lista). Así que fabricamos un asistente rápido:
+
+```racket
+(define first-char
+  (lambda (str)
+    (string-ref str 0)))
+
+```
+
+Ahora, pasamos este asistente clínico a través de nuestra cohorte de datos:
+
+```racket
+> (map first-char '("National" "Health" "Nutrition"))
+'(#\N #\H #\N)
+
+```
+
+### `apply`: El consolidador de métricas agregadas
+
+Ahora tenemos una lista de caracteres independientes, pero el laboratorio central exige un único string consolidado. La función primitiva `string` une caracteres, pero espera los argumentos separados, no metidos en una lista.
+
+Aquí es donde entra `apply`. Su trabajo es romper la jeringa protectora de la lista y esparcir los elementos como argumentos individuales de la función objetivo.
+
+```racket
+> (apply string '(#\N #\H #\N))
+"NHN"
+
+```
+
+Al unirlos en una sola función limpia, el cuerpo de tu extractor queda libre de bucles peligrosos:
+
+```racket
+(define acronym
+  (lambda (list-of-strings)
+    (apply string
+           (map first-char
+                list-of-strings))))
+
+```
+
+---
+
+## 3. Fábricas de Funciones: Retornar Tratamientos Personalizados
+
+¿Qué pasa cuando necesitas que una función devuelva otra función como su output? No necesitas sintaxis nueva; simplemente haces que el cuerpo interno de tu función sea un bloque `lambda`.
+
+Supongamos que en tus análisis de obesidad con NHANES necesitas ajustar constantemente métricas sumándoles umbrales fijos (v.g., sumar un factor de corrección de 6 unidades a un puntaje metabólico, o a veces 10, o a veces 122). Podrías definir manualmente cada una:
+
+```racket
+(define (add6 x) (+ x 6))
+(define (add10 x) (+ x 10))
+
+```
+
+Esto es ineficiente y viola el principio fundamental del diseño de software: la reutilización de código. En su lugar, diseñamos una **fábrica de dosificadores** (un concepto ligado al *Currying*, técnica que consiste en transformar una función que recibe múltiples argumentos en una secuencia de funciones de un solo argumento):
+
+```racket
+(define add
+  (lambda (n)
+    (lambda (m)
+      (+ m n))))
+
+```
+
+Míralo con ojos de médico: `add` es un laboratorio farmacéutico. Le inyectas un insumo `(add 6)` y lo que sale de la línea de producción no es un número, sino un **inyector personalizado** que le sumará 6 a lo que sea que toque.
+
+```racket
+> (map (add 6) '(1 4 9 16 25))
+'(7 10 15 22 31)
+
+> (map (add 10) '(1 4 9 16 25))
+'(11 14 19 26 35)
+
+```
+
+> **Conexión con un Motor Semántico:** Para un motor semántico basado en reglas para NHANES, esta capacidad de "fábrica de funciones" es oro puro. Te permitirá escribir un validador genérico de condiciones clínicas (por ejemplo, un validador que reciba el nombre de un biomarcador y un umbral de riesgo) y generar sobre la marcha reglas lógicas personalizadas como `(crear-filtro 'IMC 30)` para identificar pacientes con obesidad, sin escribir un validador nuevo para cada variable del dataset.
+
+---
+
+## 4. Conexión con el Motor Semántico: El Paradigma MapReduce en Salud
+
+Es muy probable que hayas escuchado hablar de **MapReduce** y **Hadoop** en el ecosistema del Big Data y el análisis de grandes repositorios clínicos. Sorpresa: no inventaron nada nuevo; simplemente tomaron el `map` y el `apply` de la programación funcional y los distribuyeron en miles de servidores corporativos.
+
+La arquitectura de nuestro pipeline de acrónimos es exactamente un MapReduce clásico:
+
+1. **Fase Map:** Mapeas la lista original de strings transformándolos individualmente a caracteres independientes.
+2. **Fase Reduce:** Colapsas (reduces) esa lista de caracteres intermedios en un único string final unificado (`apply string`).
+
+### Analizando un pipeline funcional de datos de masa molecular
+
+Vamos con un reto. Para esto procesamos un archivo físico (`modules.txt`) que contiene masas moleculares o pesos de módulos. El objetivo es leer el archivo, transformar los renglones, calcular una dosificación de combustible por cada peso y sumar el total.
+
+En la programación estructurada tradicional llenarías tu pantalla de variables temporales. En el paradigma funcional estructuramos un flujo continuo de datos:
+
+```racket
+(define mass->fuel
+  (lambda (m)
+    (- (quotient m 3) 2)))
+
+(define total-fuel
+  (lambda (filename)
+    (apply +
+           (map mass->fuel
+                (map string->number
+                     (file->lines filename))))))
+
+```
+
+Visualiza el recorrido del flujo sanguíneo de estos datos de derecha a izquierda (desde adentro hacia afuera):
+
+
+$$\text{Archivo Físico} \xrightarrow{\text{file->lines}} \text{Strings} \xrightarrow{\text{map string->number}} \text{Números} \xrightarrow{\text{map mass->fuel}} \text{Combustibles} \xrightarrow{\text{apply +}} \text{Resultado Único}$$
+
+Es exactamente la misma lógica que utilizas cuando anidas tuberías en la consola de comandos de Linux/Bash:
+
+```bash
+cat modules.txt | grep [0-9] | wc -l
+
+```
+
+---
+
+## 5. Protocolos de Admisión Flexibles: Funciones de Aridad Variable
+
+La **aridad** es un término elegante para referirse al número de parámetros de admisión que acepta una función. Una función como `sqrt` tiene una aridad estricta de 1 (es unaria). Sin embargo, la función suma `+` o la función `list` de Racket aceptan un número indeterminado de argumentos; su aridad es variable.
+
+Cuando diseñes un motor semántico para NHANES, tus consultas basadas en reglas requerirán flexibilidad: a veces querrás pasarle 2 criterios de filtrado metabólico y a veces 5. No puedes limitar tus funciones lógicas a un número rígido de parámetros.
+
+Para declarar una función de aridad variable en Racket usando la sintaxis pura de `lambda`, basta con eliminar los paréntesis del bloque de parámetros:
+
+```racket
+(define average
+  (lambda numbers
+    (/ (apply + numbers)
+       (length numbers))))
+
+```
+
+Al omitir los paréntesis en `numbers`, le estás diciendo a Racket: *"No importa cuántos pacientes lleguen a la clínica de admisión, tómalos a todos, empaquétalos en una sola lista y asígnale a esa lista el nombre `numbers`"*. Dentro del cuerpo, `apply +` y `length` se encargarán de procesar esa lista sin importar si venía vacía, con 3 elementos o con 10,000 registros de NHANES.
+
+Si prefieres usar la sintaxis abreviada de definición (`define`), Racket implementa el operador punto (`.`) para separar los argumentos obligatorios fijados de los opcionales acumulados:
+
+```racket
+(define (average . numbers)
+  (/ (apply + numbers)
+     (length numbers)))
+
+```
+
+---
+
+## 6. Diagnóstico y Práctica: Ejercicios Clínicos con Racket y Datos de Salud
+
+Llegó el momento de consolidar el aprendizaje en el laboratorio de simulación. Completa los siguientes ejercicios diseñados para conectar Racket con tu lógica analítica médica.
+
+### Ejercicio 1: El Optimizador de Filtros de NHANES (Uso de `filter`)
+
+En el archivo `racket-fu.rkt` se explora la función primitiva `filter`. Al igual que `map`, `filter` es una función de orden superior, pero en lugar de transformar los datos, evalúa cada elemento con un predicado lógico (una función que devuelve verdadero o falso) y conserva únicamente los registros que pasan la prueba.
+
+Dada la lista de variables de texto que representan observaciones clínicas:
+
+```racket
+(define observaciones '("obesidad_g1" "edad_meses" "of" "at" "glucosa_ayuno" "the" "colesterol_hdl"))
+
+```
+
+Escribe una función de orden superior llamada `limpiar-variables` que reciba esta lista y elimine los conectores irrelevantes como `"of"`, `"at"`, `"the"`, `"in"` utilizando `filter`, preparando el terreno para aislar solo los nombres de los biomarcadores reales.
+
+### Ejercicio 2: El Inyector de Riesgo Metabólico (Fábrica de Funciones)
+
+Utilizando el concepto de funciones que retornan funciones (Currying), diseña una función llamada `generar-evaluador-riesgo`. Esta función debe recibir un número que represente el umbral de corte del Índice de Masa Corporal (IMC) y devolver una nueva función de un solo argumento. La función retornada recibirá el IMC de un paciente de NHANES y devolverá `#t` si el valor es estrictamente mayor o igual al umbral, o `#f` en caso contrario.
+
+*Ejemplo de uso esperado:*
+
+```racket
+(define predictor-obesidad (generar-evaluador-riesgo 30))
+(predictor-obesidad 28.5) ; Debe retornar #f
+(predictor-obesidad 32.1) ; Debe retornar #t
+
+```
+
+### Ejercicio 3: Consulta Lógica de Aridad Variable (Pre-Datalog)
+
+Para simular una regla básica de tu futuro motor semántico, escribe una función de aridad variable llamada `verificar-sindrome-metabolico` que reciba un número indeterminado de banderas lógicas booleans (parámetros como `#t`, `#f`, `#t`...) correspondientes a los criterios diagnósticos del paciente (hipertensión, triglicéridos altos, resistencia a la insulina, etc.). La función debe retornar `#t` si el paciente cumple con **al menos 3** de los criterios ingresados. Utiliza las funciones de orden superior aprendidas para procesar la lista acumulada de argumentos sin usar bucles imperativos.
+
+## Solución a los Ejercicios Prácticos (Sección de Laboratorio)
+
+A continuación, se presentan las soluciones implementadas y validadas mediante pruebas unitarias (`rackunit`) para el procesamiento de variables clínicas y reglas lógicas.
+
+### Solución al Ejercicio 1: El Optimizador de Filtros de NHANES
+
+Para filtrar los conectores irrelevantes, aprovechamos la función nativa `member` de Racket (evitando recursiones manuales propensas a errores de desbordamiento en listas vacías) y la combinamos con la función de orden superior `filter`.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Lista de control de conectores a omitir
+(define *words-to-drop* '("of" "at" "the" "in"))
+
+;; Predicado lógico: Determina si una variable es clínicamente significativa
+(define relevante?
+  (lambda (word)
+    (not (member word *words-to-drop*))))
+
+;; Pruebas del predicado
+(check-true (relevante? "obesidad_g1"))
+(check-false (relevante? "of"))
+(check-false (relevante? "the"))
+
+;; Cohorte de variables crudas de NHANES
+(define observaciones '("obesidad_g1" "edad_meses" "of" "at" "glucosa_ayuno" "the" "colesterol_hdl"))
+
+;; Función de orden superior para limpiar el dataset de texto
+(define (limpiar-variables alow)
+  (filter relevante? alow))
+
+;; Validación del pipeline de limpieza
+(check-equal? (limpiar-variables observaciones)
+              '("obesidad_g1" "edad_meses" "glucosa_ayuno" "colesterol_hdl"))
+```
+
+**Nota de análisis**: Al usar `filter` junto con un predicado lógico basado en member, delegamos el control del bucle interno al motor de Racket, asegurando que el filtrado de variables sea óptimo y libre de mutaciones de estado.
+
+### Solución al Ejercicio 2: El Inyector de Riesgo Metabólico
+Aplicando la técnica de Currying, diseñamos una fábrica que encapsula el umbral de corte del Índice de Masa Corporal (IMC) y retorna un evaluador dinámico.
+
+```racket
+;; Fábrica de funciones para evaluación de umbrales metabólicos
+(define generar-evaluador-riesgo
+  (lambda (umbral-imc)
+    (lambda (imc)
+      (>= imc umbral-imc))))
+
+;; Inicialización de un inyector específico para Obesidad (Punto de corte: 30)
+(define predictor-obesidad (generar-evaluador-riesgo 30))
+
+;; Pruebas unitarias del evaluador generado
+(check-true (predictor-obesidad 31))
+(check-true (predictor-obesidad 30))
+(check-false (predictor-obesidad 29.5))
+```
+
+### Solución al Ejercicio 3: Consulta Lógica de Aridad Variable (Pre-Datalog)
+
+Esta solución utiliza un elegante pipeline *MapReduce* para transformar criterios de diagnóstico booleanos en unidades numéricas, permitiendo que la aridad variable (gracias al parámetro sin paréntesis `diagnosticos`) admita cualquier cantidad de condiciones médicas sin alterar la lógica de agregación.
+
+```racket
+;; Función adaptadora: Traduce el estado clínico booleano a una métrica entera
+(define (boolean->number abool)
+  (if abool 1 0))
+
+;; Pruebas de la función adaptadora
+(check-equal? (boolean->number #t) 1)
+(check-equal? (boolean->number #f) 0)
+
+;; Función de aridad variable para validar criterios de Síndrome Metabólico (Mínimo 3)
+(define verificar-sindrome-metabolico
+  (lambda diagnosticos
+    (>= (apply + (map boolean->number diagnosticos))
+        3)))
+
+;; Validación de casos clínicos (Reglas de admisión)
+(check-true (verificar-sindrome-metabolico #t #t #f #t #f #t))  ; 4 criterios -> #t
+(check-true (verificar-sindrome-metabolico #t #t #f #t #f))     ; 3 criterios -> #t
+(check-false (verificar-sindrome-metabolico #t #t #f #f))       ; 2 criterios -> #f
+```
+**Conexión con el Motor Semántico**: Esta estructura es el cimiento de un motor Datalog. Modificando el operador de comparación final o mapeando estructuras de datos más complejas en lugar de simples booleanos, podrás evaluar de forma indeterminada múltiples reglas lógicas en una sola consulta sobre los microdatos de NHANES.
+
+
+

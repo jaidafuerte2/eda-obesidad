@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos – SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c05.html">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">1. Construcción de abstracciones con procedimientos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 — Los Elementos Fundamentales de la Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.2 — Los Procedimientos y los Procesos que Generan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#calentamiento-en-el-laboratorio-diagramas-de-cajas-y-punteros" id="toc-calentamiento-en-el-laboratorio-diagramas-de-cajas-y-punteros" class="nav-link active" data-scroll-target="#calentamiento-en-el-laboratorio-diagramas-de-cajas-y-punteros">5.1 Calentamiento en el Laboratorio: Diagramas de Cajas y Punteros</a></li>
+  <li><a href="#de-protocolos-médicos-a-funciones-la-abstracción-del-comportamiento" id="toc-de-protocolos-médicos-a-funciones-la-abstracción-del-comportamiento" class="nav-link" data-scroll-target="#de-protocolos-médicos-a-funciones-la-abstracción-del-comportamiento">5.2 De Protocolos Médicos a Funciones: La Abstracción del Comportamiento</a></li>
+  <li><a href="#expresiones-lambda-el-motor-de-reglas-anónimo" id="toc-expresiones-lambda-el-motor-de-reglas-anónimo" class="nav-link" data-scroll-target="#expresiones-lambda-el-motor-de-reglas-anónimo">## 5.3 Expresiones <code>lambda</code>: El Motor de Reglas Anónimo</a>
+  <ul class="collapse">
+  <li><a href="#el-triaje-de-argumentos-evitando-el-arity-mismatch" id="toc-el-triaje-de-argumentos-evitando-el-arity-mismatch" class="nav-link" data-scroll-target="#el-triaje-de-argumentos-evitando-el-arity-mismatch">### El Triaje de Argumentos: Evitando el <code>arity mismatch</code></a></li>
+  <li><a href="#azúcar-sintáctico-para-médicos-ocupados" id="toc-azúcar-sintáctico-para-médicos-ocupados" class="nav-link" data-scroll-target="#azúcar-sintáctico-para-médicos-ocupados">Azúcar Sintáctico para Médicos Ocupados</a></li>
+  </ul></li>
+  <li><a href="#ciudadanos-de-primera-clase-first-class-objects" id="toc-ciudadanos-de-primera-clase-first-class-objects" class="nav-link" data-scroll-target="#ciudadanos-de-primera-clase-first-class-objects">5.4 Ciudadanos de Primera Clase (First-Class Objects)</a>
+  <ul class="collapse">
+  <li><a href="#funciones-como-argumentos-el-poder-de-apply-y-map" id="toc-funciones-como-argumentos-el-poder-de-apply-y-map" class="nav-link" data-scroll-target="#funciones-como-argumentos-el-poder-de-apply-y-map">### 1. Funciones como Argumentos: El Poder de <code>apply</code> y <code>map</code></a></li>
+  <li><a href="#funciones-como-respuestas-fábricas-de-protocolos" id="toc-funciones-como-respuestas-fábricas-de-protocolos" class="nav-link" data-scroll-target="#funciones-como-respuestas-fábricas-de-protocolos">2. Funciones como Respuestas: Fábricas de Protocolos</a></li>
+  </ul></li>
+  <li><a href="#práctica-en-el-hospital-ejercicios-quarto-ready" id="toc-práctica-en-el-hospital-ejercicios-quarto-ready" class="nav-link" data-scroll-target="#práctica-en-el-hospital-ejercicios-quarto-ready">5.5 Práctica en el Hospital (Ejercicios Quarto-Ready)</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-el-cubo-metabólico" id="toc-ejercicio-1-el-cubo-metabólico" class="nav-link" data-scroll-target="#ejercicio-1-el-cubo-metabólico">Ejercicio 1: El Cubo Metabólico</a></li>
+  <li><a href="#ejercicio-2-promedio-de-peso-en-muestras-de-nhanes" id="toc-ejercicio-2-promedio-de-peso-en-muestras-de-nhanes" class="nav-link" data-scroll-target="#ejercicio-2-promedio-de-peso-en-muestras-de-nhanes">Ejercicio 2: Promedio de Peso en Muestras de NHANES</a></li>
+  <li><a href="#ejercicio-3-el-historial-de-variación-clínica" id="toc-ejercicio-3-el-historial-de-variación-clínica" class="nav-link" data-scroll-target="#ejercicio-3-el-historial-de-variación-clínica">Ejercicio 3: El Historial de Variación Clínica</a></li>
+  <li><a href="#soluciones-sugeridas" id="toc-soluciones-sugeridas" class="nav-link" data-scroll-target="#soluciones-sugeridas">Soluciones sugeridas</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c05.html">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>En las sesiones anteriores dejamos claro que cualquier lenguaje de programación digno tiene tres pilares: expresiones primitivas, medios de combinación y medios de abstracción. Hasta ahora, solo hemos usado la abstracción para ponerle “etiquetas” a los datos (como cuando asignas <code>(define pi 3.14159)</code>).</p>
+<p>Hoy vamos a dar el salto cuántico hacia la <strong>abstracción de comportamiento</strong>. En el mundo de la medicina, esto es el equivalente a pasar de registrar la presión arterial de un paciente (un dato estático) a diseñar el protocolo de triaje que decide automáticamente si ese paciente va a urgencias o a consulta externa (un comportamiento reutilizable).</p>
+<section id="calentamiento-en-el-laboratorio-diagramas-de-cajas-y-punteros" class="level2">
+<h2 class="anchored" data-anchor-id="calentamiento-en-el-laboratorio-diagramas-de-cajas-y-punteros">5.1 Calentamiento en el Laboratorio: Diagramas de Cajas y Punteros</h2>
+<p>Antes de ver cómo se comportan las funciones, aseguremonos de que entiendes cómo almacena Racket los datos compuestos en la memoria del “hospital”.</p>
+<p>Cuando haces análisis de datos, cada registro ocupa espacio en memoria. En Racket, el pegamento básico es el par (<code>cons</code>), el cual visualizamos mediante diagramas de cajas y punteros.</p>
+<p>Evaluemos cuántas cajas de memoria (<code>cons cells</code>) requieren estas dos estructuras:</p>
+<ol type="1">
+<li><code>(cons 1 (cons 2 3))</code></li>
+<li><code>(cons (list 3 4) (cons (list 3 4) (list 45)))</code></li>
+</ol>
+<pre><code>1. [ * | * ] ---&gt; [ * | * ] ---&gt; 3
+     |               |
+     v               v
+     1               2
+
+2. [ * | * ] ---&gt; [ * | * ] ---&gt; [ * | / ]
+     |               |             |
+     v               v             v
+  [ 3 , 4 ]       [ 3 , 4 ]       45
+</code></pre>
+<blockquote class="blockquote">
+<p><strong>Nota de Memoria:</strong> Recuerda la regla de oro del triaje de listas: El primer objeto <strong>no</strong> es una lista legítima porque no termina en una lista vacía <code>'()</code>; es un “par punteado” (<code>improper list</code>). El segundo objeto <strong>sí</strong> es una lista estructurada, ya que el azúcar sintáctico de <code>(list 45)</code> garantiza que el cierre de la estructura apunta a un final de lista vacío.</p>
+</blockquote>
+<hr>
+</section>
+<section id="de-protocolos-médicos-a-funciones-la-abstracción-del-comportamiento" class="level2">
+<h2 class="anchored" data-anchor-id="de-protocolos-médicos-a-funciones-la-abstracción-del-comportamiento">5.2 De Protocolos Médicos a Funciones: La Abstracción del Comportamiento</h2>
+<p>Imagina que estás calculando el Índice de Masa Corporal (IMC) o la tasa de filtrado glomerular en tus estudios de obesidad con NHANES. El patrón siempre es el mismo: la fórmula matemática (la estructura del cálculo) permanece constante, mientras que las métricas específicas del paciente (peso, talla, creatinina) cambian en cada consulta.</p>
+<p>Abstraer un comportamiento significa <strong>mantener constante lo que es constante y convertir lo que cambia en un parámetro</strong>.</p>
+<p>En Python o en R, estamos acostumbrados a crear y nombrar una función en un solo paso:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Archivo: lambda.py</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> circunferencia(radius):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">2</span> <span class="op">*</span> <span class="fl">3.14159</span> <span class="op">*</span> radius</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Este enfoque tradicional tiene una limitación: amarra la existencia de la función a su nombre. En Racket, <strong>crear una función</strong> y <strong>ponerle un nombre</strong> son dos acciones completamente independientes. Las funciones son objetos de software autónomos (como un virus o una enzima) que pueden existir de forma anónima flotando en el sistema.</p>
+<hr>
+</section>
+<section id="expresiones-lambda-el-motor-de-reglas-anónimo" class="level2">
+<h2 class="anchored" data-anchor-id="expresiones-lambda-el-motor-de-reglas-anónimo">## 5.3 Expresiones <code>lambda</code>: El Motor de Reglas Anónimo</h2>
+<p>Para crear una función en Racket sin necesidad de nombrarla, usamos la forma especial <code>lambda</code>. Piensa en ella como una jeringa médica precargada con un protocolo, pero sin etiqueta en el frasco.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Archivo: session05.rkt</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>radius<span class="op">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(*</span> <span class="dv">2</span> <span class="fl">3.14159</span> radius<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Si ejecutas esto directamente en DrRacket, el intérprete te devolverá algo como <code>#&lt;procedure&gt;</code>. Es la forma en que el sistema te dice: <em>“Tengo un protocolo listo para actuar, solo necesito que me des un paciente (argumento)”</em>.</p>
+<p>Como la expresión <code>lambda</code> se evalúa directamente como una función, podemos usarla inmediatamente como el operador de una combinación, pasando el argumento a la derecha:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">((</span><span class="kw">lambda</span> <span class="op">(</span>x<span class="op">)</span> <span class="op">(*</span> x x<span class="op">))</span> <span class="dv">5</span><span class="op">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dv">25</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="el-triaje-de-argumentos-evitando-el-arity-mismatch" class="level3">
+<h3 class="anchored" data-anchor-id="el-triaje-de-argumentos-evitando-el-arity-mismatch">### El Triaje de Argumentos: Evitando el <code>arity mismatch</code></h3>
+<p>Las funciones en Racket tienen un contrato estricto basado en su <strong>aridad</strong> (el número de parámetros que esperan recibir). Si tu protocolo exige exactamente un dato y tú le pasas dos (o ninguno), el sistema genera un colapso:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">((</span><span class="kw">lambda</span> <span class="op">(</span>x<span class="op">)</span> <span class="op">(*</span> x x<span class="op">))</span> <span class="dv">2</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">;; X_X ¡Error! procedure: arity mismatch; expected 1, given 2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Alerta Clínica:</strong> En un futuro motor semántico para NHANES, el control de aridad será vital. Si una regla lógica espera <code>(paciente_id factor_riesgo)</code>, pasarle un tercer argumento romperá la ejecución en tiempo de ejecución de manera inmediata.</p>
+</blockquote>
+</section>
+<section id="azúcar-sintáctico-para-médicos-ocupados" class="level3">
+<h3 class="anchored" data-anchor-id="azúcar-sintáctico-para-médicos-ocupados">Azúcar Sintáctico para Médicos Ocupados</h3>
+<p>Escribir <code>lambda</code> todo el tiempo puede agotar los dedos. Racket nos permite usar un atajo sintáctico (<code>syntactic sugar</code>) usando <code>define</code> para crear y nombrar la función al mismo tiempo:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Sintaxis explícita (La realidad bajo el capó)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> square</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>x<span class="op">)</span> <span class="op">(*</span> x x<span class="op">)))</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Azúcar sintáctico (Lo que escribimos para ahorrar tiempo)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>square x<span class="op">)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">(*</span> x x<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Ambas opciones son idénticas para Racket. El intérprete toma la segunda versión y secretamente la reescribe como una expresión <code>lambda</code>.</p>
+<hr>
+</section>
+</section>
+<section id="ciudadanos-de-primera-clase-first-class-objects" class="level2">
+<h2 class="anchored" data-anchor-id="ciudadanos-de-primera-clase-first-class-objects">5.4 Ciudadanos de Primera Clase (First-Class Objects)</h2>
+<p>Aquí es donde Racket deja de ser un juguete y se convierte en el quirófano de tu motor semántico. En este lenguaje, <strong>las funciones son ciudadanos de primera clase</strong>. Esto significa que una función puede ser tratada exactamente igual que un número o una cadena de texto: puedes pasarla como argumento a otra función o hacer que una función devuelva una nueva función como resultado.</p>
+<section id="funciones-como-argumentos-el-poder-de-apply-y-map" class="level3">
+<h3 class="anchored" data-anchor-id="funciones-como-argumentos-el-poder-de-apply-y-map">### 1. Funciones como Argumentos: El Poder de <code>apply</code> y <code>map</code></h3>
+<p>Imagínate que desde una base de datos de NHANES extraes una lista de biomarcadores de un paciente: <code>' (90 80 90)</code>. Quieres sumarlos. Si intentas hacer <code>(+ '(90 80 90))</code>, el sistema te lanzará una violación de contrato porque <code>+</code> espera números sueltos, no una lista empaquetada.</p>
+<section id="el-despachador-general-apply" class="level4">
+<h4 class="anchored" data-anchor-id="el-despachador-general-apply">El Despachador General: <code>apply</code></h4>
+<p><code>apply</code> toma una función y una lista, y se encarga de “despaquetar” los elementos de la lista para pasárselos a la función como argumentos individuales.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">apply</span> <span class="op">+</span> '<span class="op">(</span><span class="dv">90</span> <span class="dv">80</span> <span class="dv">90</span><span class="op">))</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dv">260</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>¡Es magia! Calculaste un total sin escribir un solo bucle <code>for</code> ni alterar variables globales.</p>
+</section>
+<section id="el-filtro-epidemiológico-map" class="level4">
+<h4 class="anchored" data-anchor-id="el-filtro-epidemiológico-map">El Filtro Epidemiológico: <code>map</code></h4>
+<p>¿Qué pasa si quieres aplicar una transformación a <em>toda</em> una cohorte de pacientes individualmente? <code>map</code> toma una función y una lista, aplica la función a cada elemento uno por uno y te devuelve una lista nueva con los resultados.</p>
+<p>Hagamos una analogía con un análisis de registros médicos de NHANES:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> list-of-students</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>jerry  <span class="fl">3.7</span> <span class="fl">4.0</span> <span class="fl">3.3</span><span class="op">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>elaine <span class="fl">4.0</span> <span class="fl">3.7</span> <span class="fl">3.7</span><span class="op">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>george <span class="fl">3.3</span> <span class="fl">3.3</span> <span class="fl">3.3</span><span class="op">)))</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Una función auxiliar que calcula el promedio de una lista variable de números</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>average . grades<span class="op">)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(/</span> <span class="op">(</span><span class="kw">apply</span> <span class="op">+</span> grades<span class="op">)</span> <span class="op">(</span><span class="kw">length</span> grades<span class="op">)))</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; Procesador individual de registros de salud/calificaciones</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> compute-gpa</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>student<span class="op">)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">apply</span> average <span class="op">(</span><span class="kw">cdr</span> student<span class="op">))))</span> <span class="co">;; Usamos cdr (or rest) para ignorar el nombre</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Si queremos computar el promedio de toda la muestra médica de un solo golpe, ejecutamos:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">map</span> compute-gpa list-of-students<span class="op">)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>'<span class="op">(</span><span class="fl">3.6666666666666665</span> <span class="fl">3.8</span> <span class="fl">3.3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Criterio de Diseño:</strong> <code>map</code> y <code>apply</code> eliminan la necesidad de usar iteraciones primitivas. En el procesamiento de reglas lógicas para un motor semántico, utilizarás <code>map</code> constantemente para evaluar si múltiples registros médicos cumplen o no con un criterio clínico determinado sin riesgo de efectos secundarios.</p>
+</blockquote>
+</section>
+</section>
+<section id="funciones-como-respuestas-fábricas-de-protocolos" class="level3">
+<h3 class="anchored" data-anchor-id="funciones-como-respuestas-fábricas-de-protocolos">2. Funciones como Respuestas: Fábricas de Protocolos</h3>
+<p>¿Puede una función parir otra función? Totalmente. Imagina que trabajas con laboratorios clínicos y el margen de error aceptado (tolerancia) está fijo en <code>0.01</code> para el estudio de este mes, pero podría cambiar el próximo año. Estar escribiendo el parámetro de tolerancia en cada validación es ineficiente.</p>
+<p>Creemos una <strong>fábrica de validadores</strong> (Currificación):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Archivo: self-verifying-numbers.rkt</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> in-range-of?</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>epsilon<span class="op">)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>val1 val2<span class="op">)</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      <span class="op">(&lt;</span> <span class="op">(</span><span class="kw">abs</span> <span class="op">(-</span> val1 val2<span class="op">))</span> epsilon<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Al evaluar <code>(in-range-of? 0.01)</code>, Racket nos devuelve una función personalizada lista para usarse en el laboratorio:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="ex">define</span><span class="fu"> within-0.01? </span><span class="op">(</span>in-range-of? <span class="fl">0.01</span><span class="op">))</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span>within-0.01? <span class="fl">4.99</span> <span class="fl">5.0</span><span class="op">)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="dv">#t</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span>within-0.01? <span class="fl">4.90</span> <span class="fl">5.0</span><span class="op">)</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="dv">#f</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="práctica-en-el-hospital-ejercicios-quarto-ready" class="level2">
+<h2 class="anchored" data-anchor-id="práctica-en-el-hospital-ejercicios-quarto-ready">5.5 Práctica en el Hospital (Ejercicios Quarto-Ready)</h2>
+<p>¡Hora de ensuciarse las manos en la consola! Utiliza los conceptos de orden superior (<code>map</code>, <code>apply</code>, <code>lambda</code>) sin usar recursión explícita ni bucles mutables para resolver los siguientes escenarios orientados a datos de salud.</p>
+<section id="ejercicio-1-el-cubo-metabólico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-el-cubo-metabólico">Ejercicio 1: El Cubo Metabólico</h3>
+<p>Crea una función llamada <code>cube</code> que calcule el cubo de su argumento. Diseña una segunda versión que aproveche la función <code>square</code> definida previamente en el capítulo. Luego, utilizando una expresión <code>lambda</code> pura y anónima, calcula la suma de los cubos de los valores de índice metabólico <code>5</code> y <code>6</code>.</p>
+</section>
+<section id="ejercicio-2-promedio-de-peso-en-muestras-de-nhanes" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-promedio-de-peso-en-muestras-de-nhanes">Ejercicio 2: Promedio de Peso en Muestras de NHANES</h3>
+<p>Supón que extraes de NHANES una lista que contiene pares de datos correspondientes a <code>(altura . peso)</code> de un grupo de pacientes con síndrome metabólico:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>'<span class="op">((</span><span class="dv">76</span> . <span class="dv">195</span><span class="op">)</span> <span class="op">(</span><span class="dv">81</span> . <span class="dv">212</span><span class="op">)</span> <span class="op">(</span><span class="dv">79</span> . <span class="dv">225</span><span class="op">)</span> <span class="op">(</span><span class="dv">78</span> . <span class="dv">206</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Escribe la función <code>average-weight</code> utilizando exclusivamente <code>map</code> y <code>apply</code> (más la función auxiliar <code>average</code> provista abajo) para obtener el peso promedio de la cohorte analizada.</p>
+<p><em>Pista:</em> Recuerda que <code>cdr</code> extrae el segundo elemento de un par ordenado.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Helper provisto en el archivo de la tarea (homework03.rkt)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> average</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> numbers</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">(/</span> <span class="op">(</span><span class="kw">apply</span> <span class="op">+</span> numbers<span class="op">)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span><span class="kw">length</span> numbers<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-3-el-historial-de-variación-clínica" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-el-historial-de-variación-clínica">Ejercicio 3: El Historial de Variación Clínica</h3>
+<p>Un equipo de monitorización registra los puntajes de glucosa postprandial de un paciente antes y después de un fármaco experimental. Cada registro es una lista de dos elementos <code>(antes despues)</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> variacion-glucosa </span>'<span class="op">((</span><span class="dv">149</span> <span class="dv">163</span><span class="op">)</span> <span class="op">(</span><span class="dv">158</span> <span class="dv">122</span><span class="op">)</span> <span class="op">(</span><span class="dv">141</span> <span class="dv">174</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La variación absoluta es el valor absoluto de la diferencia entre ambos estados: <code>(abs (- antes despues))</code>. Escribe una función llamada <code>total-margin</code> que reciba esta lista de pares y devuelva la suma total de todas las variaciones absolutas registradas en la muestra.</p>
+<hr>
+</section>
+<section id="soluciones-sugeridas" class="level3">
+<h3 class="anchored" data-anchor-id="soluciones-sugeridas">Soluciones sugeridas</h3>
+<p>Si necesitas contrastar tus respuestas mientras construyes el libro, aquí tienes el bloque de código limpio que resuelve la lógica médica planteada:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 1</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>square x<span class="op">)</span> <span class="op">(*</span> x x<span class="op">))</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>cube x<span class="op">)</span> <span class="op">(*</span> x <span class="op">(</span>square x<span class="op">)))</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; Evaluación anónima pedida:</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">;; ((lambda (x y) (+ (cube x) (cube y))) 5 6) -&gt; Retorna 341</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 2</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>average-weight height-weight-list<span class="op">)</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">apply</span> average <span class="op">(</span><span class="kw">map</span> <span class="kw">cdr</span> height-weight-list<span class="op">)))</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 3</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>total-margin list-of-pairs<span class="op">)</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">apply</span> <span class="op">+</span> <span class="op">(</span><span class="kw">map</span> <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>pair<span class="op">)</span> <span class="op">(</span><span class="kw">abs</span> <span class="op">(-</span> <span class="op">(</span><span class="kw">car</span> pair<span class="op">)</span> <span class="op">(</span><span class="kw">cadr</span> pair<span class="op">))))</span> list-of-pairs<span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

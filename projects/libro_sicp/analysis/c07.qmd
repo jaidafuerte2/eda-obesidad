@@ -1,0 +1,306 @@
+---
+title: "7. Pensar Funcionalmente – El Pipeline de Datos Clínicos"
+format: html
+editor: visual
+---
+
+En los capítulos anteriores, consolidamos las bases de Racket: aprendimos a estructurar datos mediante listas y a crear abstracciones mediante funciones. Sin embargo, cuando nos enfrentamos a un volumen masivo de datos (como las miles de observaciones epidemiológicas en los microdatos de NHANES), el verdadero desafío no es la sintaxis, sino la estrategia de resolución de problemas.
+
+Este capítulo marca un hito en nuestro viaje hacia el motor semántico. Dejaremos atrás la tentación de microgestionar el flujo de ejecución (pensamiento imperativo) para adoptar un enfoque de diseño de protocolos de datos de alto orden.
+
+## 1. El Cambio de Mentalidad: De Recetar Pasos a Diseñar Protocolos
+
+### Rompiendo el Hábito Iterativo
+
+En la programación tradicional o en el análisis de scripts convencionales, solemos pensar en términos de bucles iterativos (como los ciclos `for` o `while`). Ante un problema, nuestra mente entrenada nos impulsa a desglosarlo en pasos cronológicos: "toma la primera fila, evalúa si cumple la condición, guárdala en una variable temporal, pasa a la siguiente fila". Esto es el equivalente informático a que un director médico supervise manualmente a cada enfermero mientras administra una dosis, paciente por paciente.
+
+El enfoque funcional elimina la microgestión. En lugar de recetar una secuencia de pasos sobre cómo manipular un registro individual, definimos **protocolos de transformación global**. Le suministramos al lenguaje un "mecanismo de ejecución" (`map`, `filter`, `apply`) y un "criterio o instrucción" (una función reactiva o lambda), delegando en el motor del lenguaje toda la mecánica del bucle.
+
+### Del Expediente Clínico Físico al Procesamiento en Paralelo (MapReduce)
+
+Esta abstracción no es caprichosa. En la informática moderna y en el análisis de Big Data (como los gigantescos repositorios de secuenciación genómica o registros de salud poblacional a nivel nacional), las arquitecturas MapReduce se crearon precisamente porque el enfoque imperativo no escala.
+
+Cuando diseñas tu código dividiendo el problema estrictamente en una fase de transformación independiente (`map`) y una fase de consolidación de resultados (`apply` o un reductor), abres la puerta inmediata a la ejecución paralela. En lugar de procesar un millón de registros secuencialmente en un hilo, el motor funcional puede distribuir cien mil registros a diez núcleos diferentes en un clúster de servidores de forma nativa. Al no existir variables globales mutables ni estados compartidos entre los pasos de la lista, cada transformación es segura y aislada. Lo que empieza hoy como un script de Racket para entender abstracciones, es conceptualmente la misma arquitectura con la que Google procesa la web o con la que se analizan biobancos masivos en la nube.
+
+---
+
+## 2. Los Componentes del Laboratorio Automatizado (Funciones de Alto Orden)
+
+Para construir nuestro pipeline de datos metabólicos, utilizaremos tres herramientas angulares en la programación funcional. Se denominan **funciones de alto orden** porque no solo operan con datos comunes (números o cadenas), sino que reciben otras funciones como argumentos de entrada para modular su comportamiento.
+
+### A. El Analizador (`map`)
+
+El propósito fundamental de `map` es aplicar un procedimiento analítico o de transformación a cada uno de los elementos de una lista, de forma estrictamente homogénea y aislada. Su salida es una nueva lista que posee exactamente la misma longitud que la lista original, pero cuyos elementos han sido transformados.
+
+Imagine un brazo robótico en un laboratorio clínico que recibe una gradilla con $n$ tubos de ensayo con muestras de suero. El robot aplica reactivo a cada tubo individualmente. El resultado final es otra gradilla con $n$ tubos, pero ahora las muestras reflejan el cambio químico provocado por el reactivo.
+
+### B. El Tamiz (`filter`)
+
+No siempre queremos procesar todos los elementos de una población. Con frecuencia, nuestro análisis epidemiológico requiere aislar subpoblaciones específicas basándonos en condiciones clínicas estrictas. Para esta tarea empleamos `filter`.
+
+`filter` toma un **predicado** (una función que devuelve un valor booleano: `#t` o `#f`) y una lista. Evalúa cada elemento bajo ese predicado; si el resultado es verdadero, el elemento se retiene en la lista de salida; si es falso, es descartado inmediatamente.
+
+Piénselo como un tamiz molecular o un filtro biológico: la muestra fluye a través de una membrana que retiene únicamente las macromoléculas que superan cierto peso molecular, dejando pasar el resto libremente.
+
+### C. El Consolidador (`apply`)
+
+Mientras que `map` y `filter` preservan la estructura de listas, con frecuencia el paso final de una investigación médica exige resumir esa colección de datos dispersos en un único indicador sumario o biomarcador concluyente. Aquí interviene `apply`.
+
+`apply` toma una función diseñada para operar sobre múltiples argumentos sueltos (como la suma `+` o el valor máximo `max`) y le "desempaqueta" una lista completa de valores encima, reduciéndolos a un único resultado final. Es la analogía exacta de vaciar todos los contenidos individuales de una pipeta en un solo vaso de precipitados para obtener la masa molecular combinada de la muestra.
+
+---
+
+## 3. El Patrón Map-Reduce Aplicado a Datos de Salud
+
+Al acoplar estas herramientas, emerge un patrón de diseño computacional sumamente elegante y poderoso para resolver problemas analíticos complejos:
+
+```racket
+(apply reducer
+       (map item-function list-of-values))
+
+```
+
+Este patrón se lee de adentro hacia afuera:
+
+1. Se toma la lista cruda (`list-of-values`).
+
+
+2. Se ejecuta un mapeo (`map item-function`) para estandarizar o extraer la variable médica de interés en cada registro.
+
+
+3. La lista resultante de valores transformados se colapsa mediante una función de reducción (`apply reducer`) para obtener la métrica epidemiológica final.
+
+
+
+### Implementación del Modelo de Datos
+
+Para ver este patrón en acción con un enfoque clínico realista, modelaremos una lista de registros médicos de NHANES adaptada. Cada paciente será representado por una sublista con la siguiente estructura analítica:
+
+```racket
+;; Estructura de un Registro Clínico:
+;; (id-paciente edad imc colesterol-hdl glucemia-ayunas)
+
+```
+
+Definamos nuestro set de datos de prueba en Racket:
+
+```racket
+#lang racket
+
+(define nhanes-data
+  '((p001 45 28.4 42 105)
+    (p002 62 34.1 38 142)
+    (p003 29 22.0 55  88)
+    (p004 53 31.5 47 118)
+    (p005 38 24.6 61  94)
+    (p006 71 39.2 31 165)))
+
+```
+
+### Funciones de Acceso Semántico
+
+Evitaremos el uso directo de funciones genéricas de Racket como `second`, `third` o `fourth` a lo largo de la lógica de negocio. En su lugar, crearemos funciones accesorias explícitas que doten de semántica clínica a nuestro código:
+
+```racket
+(define (get-edad paciente) (second paciente))
+(define (get-imc paciente) (third paciente))
+(define (get-hdl si-paciente) (fourth si-paciente))
+(define (get-glucemia paciente) (fifth paciente))
+
+```
+
+### Caso de Estudio 1: Extracción y Consolidación Básica
+
+Supongamos que nuestro protocolo de investigación nos solicita calcular el Índice de Masa Corporal (IMC) promedio de toda nuestra cohorte. Siguiendo el patrón clásico de Map-Reduce, podemos estructurarlo de la siguiente forma:
+
+```racket
+;; 1. Definimos una función para sumar una lista de números de forma limpia
+(define (sumar-lista numeros)
+  (apply + numeros))
+
+;; 2. Implementamos el Pipeline Map-Reduce para el promedio de IMC
+(define (calcular-promedio-imc cohorte)
+  (let ([lista-imcs (map get-imc cohorte)])
+    (/ (sumar-lista lista-imcs) (length cohorte))))
+
+;; Ejecución en el REPL:
+;; > (calcular-promedio-imc nhanes-data)
+;; 29.96666666666667
+
+```
+
+> 📊 **Nota de Estructura:** Note cómo `map` extrae quirúrgicamente el IMC de cada paciente transformando la lista de registros estructurados en una lista simple de valores de punto flotante. Luego, `apply` a través de `sumar-lista` colapsa esos datos en una sumatoria total.
+
+### Pipelining Avanzado: Combinando Filtros y Mapeos
+
+En la práctica epidemiológica real, rara vez analizamos una muestra sin aplicar criterios de inclusión o exclusión previos. Suponga que ahora necesitamos identificar los niveles de glucemia en ayunas únicamente de aquellos pacientes que entran en la categoría clínica de **obesidad** (definida como un IMC $\ge 30$).
+
+Para resolver esto, extendemos el patrón incorporando un eslabón intermedio: `filter`.
+
+```racket
+;; Predicado Clínico: Evalúa si un paciente presenta obesidad
+(define (tiene-obesidad? paciente)
+  (>= (get-imc paciente) 30.0))
+
+;; Pipeline: Filtrar -> Mapear -> Reducir
+(define (glucemia-maxima-en-obesidad cohorte)
+  (apply max 
+         (map get-glucemia 
+              (filter tiene-obesidad? cohorte))))
+
+;; Ejecución en el REPL:
+;; > (glucemia-maxima-en-obesidad nhanes-data)
+;; 165
+
+```
+
+Analicemos minuciosamente el flujo que siguen los datos a través de este pipeline clínico:
+
+1. **Datos Originales (`nhanes-data`)**: Entran 6 registros médicos.
+2. 
+**`filter tiene-obesidad?`**: La lista se reduce exclusivamente a los registros de los pacientes `p002` (IMC: 34.1), `p004` (IMC: 31.5) y `p006` (IMC: 39.2). Los pacientes normopeso o con sobrepeso son bloqueados por el tamiz.
+
+
+3. 
+**`map get-glucemia`**: Extrae los valores de glucemia correspondientes a la subpoblación filtrada: `'(142 118 165)`.
+
+
+4. **`apply max`**: Evalúa esos tres números en bloque y extrae el valor biológico más crítico: `165`.
+
+---
+
+## 4. Hacia un Motor Semántico: Pensando en Reglas y Filtros Logísticos
+
+A largo plazo, nuestra meta es programar un motor declarativo basado en lógica (tipo Datalog) para interrogar bases de datos biomédicas complejas. El corazón de un motor semántico no radica en cómo se almacenan físicamente los bytes en el disco duro, sino en la capacidad de evaluar si ciertos hechos empíricos (los datos de NHANES) satisfacen un conjunto de reglas lógicas abstractas de manera combinatoria.
+
+Las herramientas de alto orden que acabamos de revisar constituyen los fundamentos lógicos de un motor de inferencia:
+
+* Un **Predicado Clínico** (como `tiene-obesidad?`) es conceptualmente idéntico a una **Regla Lógica** en Datalog. Define una restricción o un hecho que un registro debe cumplir para formar parte del conjunto de soluciones válidas.
+* Al anidar funciones de alto orden (`map` y `filter`), estás construyendo un motor de consultas declarativo primitivo. Le estás diciendo al sistema *qué* condiciones médicas requiere el reporte epidemiológico, abstrayendo por completo el *cómo* se filtran los arrays internamente en la memoria de la máquina.
+
+Dominar la composición de mappers, predicados y reducciones en Racket te dará la solidez estructural necesaria para, en capítulos posteriores, escribir un intérprete capaz de parsear reglas complejas (ej: "Encontrar pacientes con riesgo de síndrome metabólico si cumplen obesidad, bajo HDL e hiperglucemia de manera simultánea") y ejecutarlas eficientemente sobre cualquier set de datos tabulares.
+
+---
+
+## 5. Estación de Práctica Clínica (Ejercicios Aplicados)
+
+Llegó el momento de consolidar estas destrezas en tu entorno de desarrollo. Resuelve los siguientes problemas utilizando un enfoque puramente funcional (prohibido mutar variables o usar estructuras de control imperativas).
+
+### Ejercicio 1: El Convertidor de Unidades Metabólicas (Mappers)
+
+En bioquímica analítica, los niveles de glucosa en sangre en los Estados Unidos (como en NHANES) se reportan comunmente en miligramos por decilitro ($\text{mg/dL}$). Sin embargo, las publicaciones internacionales exigen los resultados en unidades del Sistema Internacional: milimoles por litro ($\text{mmol/L}$).
+La fórmula estándar de conversión para la glucosa es:
+
+
+$$\text{mmol/L} = \frac{\text{mg/dL}}{18.016}$$
+
+**Tu misión:** 1. Escribe una función llamada `glucemia->mmol` que reciba un único valor numérico en $\text{mg/dL}$ y devuelva su equivalente bioquímico en $\text{mmol/L}$.
+2. Utilizando la función previa y `map`, escribe un procedimiento llamado `convertir-glucemias-cohorte` que reciba una lista de pacientes estructurada (como `nhanes-data`) y devuelva una lista simple exclusivamente con todas las glucemias convertidas a $\text{mmol/L}$.
+
+### Ejercicio 2: El Filtro de Alerta de Riesgo Cardiovascular (Predicados)
+
+El colesterol HDL (conocido popularmente como "colesterol bueno") actúa como un factor protector contra eventos cardiovasculares. Clínicamente, un valor de HDL inferior a $40\text{ mg/dL}$ en hombres o inferior a $50\text{ mg/dL}$ en mujeres se considera un marcador de riesgo metabólico severo. Para simplificar nuestra cohorte general, fijaremos el umbral crítico de alerta de HDL por debajo de $45\text{ mg/dL}$ para cualquier paciente.
+
+**Tu misión:**
+
+1. Diseña un predicado funcional estricto denominado `riesgo-hdl?` que devuelva `#t` si el paciente posee un HDL menor a $45\text{ mg/dL}$, y `#f` en caso contrario.
+2. Usando `filter`, programa la función `obtener-pacientes-en-riesgo` para extraer las fichas clínicas completas de los individuos expuestos a esta vulnerabilidad cardiovascular.
+
+### Ejercicio 3: El Pipeline Completo de NHANES en Miniatura (Map-Reduce)
+
+Combinemos todas nuestras herramientas en un flujo epidemiológico final de alto nivel. La literatura científica indica que la inflamación sistémica y el desarreglo metabólico se potencian gravemente cuando un paciente combina una edad avanzada con problemas de peso.
+
+**Tu misión:**
+Diseña una función consolidadora avanzada llamada `imc-maximo-en-adultos-mayores`. Esta función debe procesar una lista de pacientes y devolver el valor de IMC más alto encontrado **únicamente** entre aquellos pacientes cuya edad sea estrictamente mayor a $50$ años.
+
+*Requisitos metodológicos:* Debes emplear de forma integrada el patrón funcional estudiado: tamizar la cohorte por edad utilizando `filter`, extraer los índices de masa corporal correspondientes utilizando `map`, y reducir el vector numérico final al valor crítico absoluto utilizando `apply`.
+
+## 6. Soluciones a la Estación de Práctica Clínica
+
+A continuación se presentan las soluciones óptimas para los ejercicios planteados, incorporando pruebas unitarias mediante el módulo rackunit para garantizar la fidelidad de los datos analizados.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; ==========================================
+;; DATOS DE BASE Y ACCESORES SEMÁNTICOS
+;; ==========================================
+
+(define nhanes-data
+  '((p001 45 28.4 42 105)
+    (p002 62 34.1 38 142)
+    (p003 29 22.0 55  88)
+    (p004 53 31.5 47 118)
+    (p005 38 24.6 61  94)
+    (p006 71 39.2 31 165)))
+
+(define (get-edad paciente) (second paciente))
+(define (get-imc paciente) (third paciente))
+(define (get-hdl paciente) (fourth paciente))
+(define (get-glucemia paciente) (fifth paciente))
+
+;; ==========================================
+;; EJERCICIO 1: Convertidor Metabólico
+;; ==========================================
+
+;; glucemia->mmol : Realiza la conversión bioquímica de mg/dL a mmol/L
+(define (glucemia->mmol glucemia)
+  (/ glucemia 18.016))
+
+;; Prueba unitaria para la conversión de un paciente con criterio de diabetes (126 mg/dL)
+(check-= (glucemia->mmol 126) 6.9 0.1)
+
+;; convertir-glucemias-cohorte : Extrae y transforma las glucemias a unidades SI
+(define (convertir-glucemias-cohorte cohorte)
+  (map glucemia->mmol
+       (map get-glucemia cohorte)))
+
+;; Prueba del pipeline de mapeo anidado
+(check-equal? (map (lambda (x) (real->decimal-string x 1)) 
+                   (convertir-glucemias-cohorte nhanes-data))
+              '("5.8" "7.8" "4.8" "6.5" "5.2" "9.1"))
+
+;; ==========================================
+;; EJERCICIO 2: Alerta de Riesgo Cardiovascular
+;; ==========================================
+
+;; dislipidemia-hdl? : Predicado clínico basado en el umbral crítico (< 45 mg/dL)
+(define (dislipidemia-hdl? registro-medico)
+  (< (get-hdl registro-medico) 45))
+
+;; Pruebas unitarias de control posicional
+(check-true (dislipidemia-hdl? '(1 2 3 42 5)))
+(check-false (dislipidemia-hdl? '(1 2 3 45 5)))
+
+;; obtener-pacientes-en-riesgo : Filtra la cohorte según vulnerabilidad metabólica
+(define (obtener-pacientes-en-riesgo cohorte)
+  (filter dislipidemia-hdl? cohorte))
+
+;; Verificación con el set de datos NHANES
+(check-equal? (obtener-pacientes-en-riesgo nhanes-data)
+              '((p001 45 28.4 42 105)
+                (p002 62 34.1 38 142)
+                (p006 71 39.2 31 165)))
+
+;; ==========================================
+;; EJERCICIO 3: Pipeline de Adultos Mayores
+;; ==========================================
+
+;; edad-50+? : Predicado de inclusión etaria
+(define (edad-50+? registro-medico)
+  (> (get-edad registro-medico) 50))
+
+;; Pruebas unitarias de control de fronteras
+(check-false (edad-50+? '(1 50 3 4 5)))
+(check-true (edad-50+? '(1 51 3 4 5)))
+
+;; imc-maximo-en-adultos-mayores : Pipeline funcional compuesto (Filter -> Map -> Reduce)
+(define (imc-maximo-en-adultos-mayores cohorte)
+  (apply max
+         (map get-imc
+              (filter edad-50+? cohorte))))
+
+;; Verificación del indicador crítico final
+(check-equal? (imc-maximo-en-adultos-mayores nhanes-data) 39.2)
+```

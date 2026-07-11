@@ -1,0 +1,265 @@
+---
+title: "5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos"
+format: html
+editor: visual
+---
+
+En las sesiones anteriores dejamos claro que cualquier lenguaje de programación digno tiene tres pilares: expresiones primitivas, medios de combinación y medios de abstracción. Hasta ahora, solo hemos usado la abstracción para ponerle "etiquetas" a los datos (como cuando asignas `(define pi 3.14159)`).
+
+Hoy vamos a dar el salto cuántico hacia la **abstracción de comportamiento**. En el mundo de la medicina, esto es el equivalente a pasar de registrar la presión arterial de un paciente (un dato estático) a diseñar el protocolo de triaje que decide automáticamente si ese paciente va a urgencias o a consulta externa (un comportamiento reutilizable).
+
+## 5.1 Calentamiento en el Laboratorio: Diagramas de Cajas y Punteros
+
+Antes de ver cómo se comportan las funciones, aseguremonos de que entiendes cómo almacena Racket los datos compuestos en la memoria del "hospital".
+
+Cuando haces análisis de datos, cada registro ocupa espacio en memoria. En Racket, el pegamento básico es el par (`cons`), el cual visualizamos mediante diagramas de cajas y punteros.
+
+Evaluemos cuántas cajas de memoria (`cons cells`) requieren estas dos estructuras:
+
+1. `(cons 1 (cons 2 3))`
+2. `(cons (list 3 4) (cons (list 3 4) (list 45)))`
+
+```
+1. [ * | * ] ---> [ * | * ] ---> 3
+     |               |
+     v               v
+     1               2
+
+2. [ * | * ] ---> [ * | * ] ---> [ * | / ]
+     |               |             |
+     v               v             v
+  [ 3 , 4 ]       [ 3 , 4 ]       45
+
+```
+
+> **Nota de Memoria:**
+> Recuerda la regla de oro del triaje de listas: El primer objeto **no** es una lista legítima porque no termina en una lista vacía `'()`; es un "par punteado" (`improper list`). El segundo objeto **sí** es una lista estructurada, ya que el azúcar sintáctico de `(list 45)` garantiza que el cierre de la estructura apunta a un final de lista vacío.
+> 
+> 
+
+---
+
+## 5.2 De Protocolos Médicos a Funciones: La Abstracción del Comportamiento
+
+Imagina que estás calculando el Índice de Masa Corporal (IMC) o la tasa de filtrado glomerular en tus estudios de obesidad con NHANES. El patrón siempre es el mismo: la fórmula matemática (la estructura del cálculo) permanece constante, mientras que las métricas específicas del paciente (peso, talla, creatinina) cambian en cada consulta.
+
+Abstraer un comportamiento significa **mantener constante lo que es constante y convertir lo que cambia en un parámetro**.
+
+En Python o en R, estamos acostumbrados a crear y nombrar una función en un solo paso:
+
+```python
+# Archivo: lambda.py
+def circunferencia(radius):
+    return 2 * 3.14159 * radius
+
+```
+
+Este enfoque tradicional tiene una limitación: amarra la existencia de la función a su nombre. En Racket, **crear una función** y **ponerle un nombre** son dos acciones completamente independientes. Las funciones son objetos de software autónomos (como un virus o una enzima) que pueden existir de forma anónima flotando en el sistema.
+
+---
+
+## ## 5.3 Expresiones `lambda`: El Motor de Reglas Anónimo
+
+Para crear una función en Racket sin necesidad de nombrarla, usamos la forma especial `lambda`. Piensa en ella como una jeringa médica precargada con un protocolo, pero sin etiqueta en el frasco.
+
+```racket
+;; Archivo: session05.rkt
+(lambda (radius)
+  (* 2 3.14159 radius))
+
+```
+
+Si ejecutas esto directamente en DrRacket, el intérprete te devolverá algo como `#<procedure>`. Es la forma en que el sistema te dice: *"Tengo un protocolo listo para actuar, solo necesito que me des un paciente (argumento)"*.
+
+Como la expresión `lambda` se evalúa directamente como una función, podemos usarla inmediatamente como el operador de una combinación, pasando el argumento a la derecha:
+
+```racket
+> ((lambda (x) (* x x)) 5)
+25
+
+```
+
+### ### El Triaje de Argumentos: Evitando el `arity mismatch`
+
+Las funciones en Racket tienen un contrato estricto basado en su **aridad** (el número de parámetros que esperan recibir). Si tu protocolo exige exactamente un dato y tú le pasas dos (o ninguno), el sistema genera un colapso:
+
+```racket
+> ((lambda (x) (* x x)) 2 3)
+;; X_X ¡Error! procedure: arity mismatch; expected 1, given 2
+
+```
+
+> **Alerta Clínica:**
+> En un futuro motor semántico para NHANES, el control de aridad será vital. Si una regla lógica espera `(paciente_id factor_riesgo)`, pasarle un tercer argumento romperá la ejecución en tiempo de ejecución de manera inmediata.
+> 
+> 
+
+### Azúcar Sintáctico para Médicos Ocupados
+
+Escribir `lambda` todo el tiempo puede agotar los dedos. Racket nos permite usar un atajo sintáctico (`syntactic sugar`) usando `define` para crear y nombrar la función al mismo tiempo:
+
+```racket
+;; Sintaxis explícita (La realidad bajo el capó)
+(define square
+  (lambda (x) (* x x)))
+
+;; Azúcar sintáctico (Lo que escribimos para ahorrar tiempo)
+(define (square x)
+  (* x x))
+
+```
+
+Ambas opciones son idénticas para Racket. El intérprete toma la segunda versión y secretamente la reescribe como una expresión `lambda`.
+
+---
+
+## 5.4 Ciudadanos de Primera Clase (First-Class Objects)
+
+Aquí es donde Racket deja de ser un juguete y se convierte en el quirófano de tu motor semántico. En este lenguaje, **las funciones son ciudadanos de primera clase**. Esto significa que una función puede ser tratada exactamente igual que un número o una cadena de texto: puedes pasarla como argumento a otra función o hacer que una función devuelva una nueva función como resultado.
+
+### ### 1. Funciones como Argumentos: El Poder de `apply` y `map`
+
+Imagínate que desde una base de datos de NHANES extraes una lista de biomarcadores de un paciente: `' (90 80 90)`. Quieres sumarlos. Si intentas hacer `(+ '(90 80 90))`, el sistema te lanzará una violación de contrato porque `+` espera números sueltos, no una lista empaquetada.
+
+#### El Despachador General: `apply`
+
+`apply` toma una función y una lista, y se encarga de "despaquetar" los elementos de la lista para pasárselos a la función como argumentos individuales.
+
+```racket
+> (apply + '(90 80 90))
+260
+
+```
+
+¡Es magia! Calculaste un total sin escribir un solo bucle `for` ni alterar variables globales.
+
+#### El Filtro Epidemiológico: `map`
+
+¿Qué pasa si quieres aplicar una transformación a *toda* una cohorte de pacientes individualmente? `map` toma una función y una lista, aplica la función a cada elemento uno por uno y te devuelve una lista nueva con los resultados.
+
+Hagamos una analogía con un análisis de registros médicos de NHANES:
+
+```racket
+(define list-of-students
+  '((jerry  3.7 4.0 3.3)
+    (elaine 4.0 3.7 3.7)
+    (george 3.3 3.3 3.3)))
+
+;; Una función auxiliar que calcula el promedio de una lista variable de números
+(define (average . grades)
+  (/ (apply + grades) (length grades)))
+
+;; Procesador individual de registros de salud/calificaciones
+(define compute-gpa
+  (lambda (student)
+    (apply average (cdr student)))) ;; Usamos cdr (or rest) para ignorar el nombre
+
+```
+
+Si queremos computar el promedio de toda la muestra médica de un solo golpe, ejecutamos:
+
+```racket
+> (map compute-gpa list-of-students)
+'(3.6666666666666665 3.8 3.3)
+
+```
+
+> **Criterio de Diseño:**
+> `map` y `apply` eliminan la necesidad de usar iteraciones primitivas. En el procesamiento de reglas lógicas para un motor semántico, utilizarás `map` constantemente para evaluar si múltiples registros médicos cumplen o no con un criterio clínico determinado sin riesgo de efectos secundarios.
+> 
+> 
+
+### 2. Funciones como Respuestas: Fábricas de Protocolos
+
+¿Puede una función parir otra función? Totalmente. Imagina que trabajas con laboratorios clínicos y el margen de error aceptado (tolerancia) está fijo en `0.01` para el estudio de este mes, pero podría cambiar el próximo año. Estar escribiendo el parámetro de tolerancia en cada validación es ineficiente.
+
+Creemos una **fábrica de validadores** (Currificación):
+
+```racket
+;; Archivo: self-verifying-numbers.rkt
+(define in-range-of?
+  (lambda (epsilon)
+    (lambda (val1 val2)
+      (< (abs (- val1 val2)) epsilon))))
+
+```
+
+Al evaluar `(in-range-of? 0.01)`, Racket nos devuelve una función personalizada lista para usarse en el laboratorio:
+
+```racket
+> (define within-0.01? (in-range-of? 0.01))
+> (within-0.01? 4.99 5.0)
+#t
+> (within-0.01? 4.90 5.0)
+#f
+
+```
+
+---
+
+## 5.5 Práctica en el Hospital (Ejercicios Quarto-Ready)
+
+¡Hora de ensuciarse las manos en la consola! Utiliza los conceptos de orden superior (`map`, `apply`, `lambda`) sin usar recursión explícita ni bucles mutables para resolver los siguientes escenarios orientados a datos de salud.
+
+### Ejercicio 1: El Cubo Metabólico
+
+Crea una función llamada `cube` que calcule el cubo de su argumento. Diseña una segunda versión que aproveche la función `square` definida previamente en el capítulo. Luego, utilizando una expresión `lambda` pura y anónima, calcula la suma de los cubos de los valores de índice metabólico `5` y `6`.
+
+### Ejercicio 2: Promedio de Peso en Muestras de NHANES
+
+Supón que extraes de NHANES una lista que contiene pares de datos correspondientes a `(altura . peso)` de un grupo de pacientes con síndrome metabólico:
+
+```racket
+'((76 . 195) (81 . 212) (79 . 225) (78 . 206))
+
+```
+
+Escribe la función `average-weight` utilizando exclusivamente `map` y `apply` (más la función auxiliar `average` provista abajo) para obtener el peso promedio de la cohorte analizada.
+
+*Pista:* Recuerda que `cdr` extrae el segundo elemento de un par ordenado.
+
+```racket
+;; Helper provisto en el archivo de la tarea (homework03.rkt)
+(define average
+  (lambda numbers
+    (/ (apply + numbers)
+       (length numbers))))
+
+```
+
+### Ejercicio 3: El Historial de Variación Clínica
+
+Un equipo de monitorización registra los puntajes de glucosa postprandial de un paciente antes y después de un fármaco experimental. Cada registro es una lista de dos elementos `(antes despues)`:
+
+```racket
+(define variacion-glucosa '((149 163) (158 122) (141 174)))
+
+```
+
+La variación absoluta es el valor absoluto de la diferencia entre ambos estados: `(abs (- antes despues))`. Escribe una función llamada `total-margin` que reciba esta lista de pares y devuelva la suma total de todas las variaciones absolutas registradas en la muestra.
+
+---
+
+### Soluciones sugeridas 
+
+Si necesitas contrastar tus respuestas mientras construyes el libro, aquí tienes el bloque de código limpio que resuelve la lógica médica planteada:
+
+```racket
+#lang racket
+
+;; Ejercicio 1
+(define (square x) (* x x))
+(define (cube x) (* x (square x)))
+
+;; Evaluación anónima pedida:
+;; ((lambda (x y) (+ (cube x) (cube y))) 5 6) -> Retorna 341
+
+;; Ejercicio 2
+(define (average-weight height-weight-list)
+  (apply average (map cdr height-weight-list)))
+
+;; Ejercicio 3
+(define (total-margin list-of-pairs)
+  (apply + (map (lambda (pair) (abs (- (car pair) (cadr pair)))) list-of-pairs)))
+
+```

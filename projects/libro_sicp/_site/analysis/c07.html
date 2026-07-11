@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7. Pensar Funcionalmente – El Pipeline de Datos Clínicos – SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c07.html">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">1. Construcción de abstracciones con procedimientos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 — Los Elementos Fundamentales de la Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.2 — Los Procedimientos y los Procesos que Generan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#el-cambio-de-mentalidad-de-recetar-pasos-a-diseñar-protocolos" id="toc-el-cambio-de-mentalidad-de-recetar-pasos-a-diseñar-protocolos" class="nav-link active" data-scroll-target="#el-cambio-de-mentalidad-de-recetar-pasos-a-diseñar-protocolos">1. El Cambio de Mentalidad: De Recetar Pasos a Diseñar Protocolos</a>
+  <ul class="collapse">
+  <li><a href="#rompiendo-el-hábito-iterativo" id="toc-rompiendo-el-hábito-iterativo" class="nav-link" data-scroll-target="#rompiendo-el-hábito-iterativo">Rompiendo el Hábito Iterativo</a></li>
+  <li><a href="#del-expediente-clínico-físico-al-procesamiento-en-paralelo-mapreduce" id="toc-del-expediente-clínico-físico-al-procesamiento-en-paralelo-mapreduce" class="nav-link" data-scroll-target="#del-expediente-clínico-físico-al-procesamiento-en-paralelo-mapreduce">Del Expediente Clínico Físico al Procesamiento en Paralelo (MapReduce)</a></li>
+  </ul></li>
+  <li><a href="#los-componentes-del-laboratorio-automatizado-funciones-de-alto-orden" id="toc-los-componentes-del-laboratorio-automatizado-funciones-de-alto-orden" class="nav-link" data-scroll-target="#los-componentes-del-laboratorio-automatizado-funciones-de-alto-orden">2. Los Componentes del Laboratorio Automatizado (Funciones de Alto Orden)</a>
+  <ul class="collapse">
+  <li><a href="#a.-el-analizador-map" id="toc-a.-el-analizador-map" class="nav-link" data-scroll-target="#a.-el-analizador-map">A. El Analizador (<code>map</code>)</a></li>
+  <li><a href="#b.-el-tamiz-filter" id="toc-b.-el-tamiz-filter" class="nav-link" data-scroll-target="#b.-el-tamiz-filter">B. El Tamiz (<code>filter</code>)</a></li>
+  <li><a href="#c.-el-consolidador-apply" id="toc-c.-el-consolidador-apply" class="nav-link" data-scroll-target="#c.-el-consolidador-apply">C. El Consolidador (<code>apply</code>)</a></li>
+  </ul></li>
+  <li><a href="#el-patrón-map-reduce-aplicado-a-datos-de-salud" id="toc-el-patrón-map-reduce-aplicado-a-datos-de-salud" class="nav-link" data-scroll-target="#el-patrón-map-reduce-aplicado-a-datos-de-salud">3. El Patrón Map-Reduce Aplicado a Datos de Salud</a>
+  <ul class="collapse">
+  <li><a href="#implementación-del-modelo-de-datos" id="toc-implementación-del-modelo-de-datos" class="nav-link" data-scroll-target="#implementación-del-modelo-de-datos">Implementación del Modelo de Datos</a></li>
+  <li><a href="#funciones-de-acceso-semántico" id="toc-funciones-de-acceso-semántico" class="nav-link" data-scroll-target="#funciones-de-acceso-semántico">Funciones de Acceso Semántico</a></li>
+  <li><a href="#caso-de-estudio-1-extracción-y-consolidación-básica" id="toc-caso-de-estudio-1-extracción-y-consolidación-básica" class="nav-link" data-scroll-target="#caso-de-estudio-1-extracción-y-consolidación-básica">Caso de Estudio 1: Extracción y Consolidación Básica</a></li>
+  <li><a href="#pipelining-avanzado-combinando-filtros-y-mapeos" id="toc-pipelining-avanzado-combinando-filtros-y-mapeos" class="nav-link" data-scroll-target="#pipelining-avanzado-combinando-filtros-y-mapeos">Pipelining Avanzado: Combinando Filtros y Mapeos</a></li>
+  </ul></li>
+  <li><a href="#hacia-un-motor-semántico-pensando-en-reglas-y-filtros-logísticos" id="toc-hacia-un-motor-semántico-pensando-en-reglas-y-filtros-logísticos" class="nav-link" data-scroll-target="#hacia-un-motor-semántico-pensando-en-reglas-y-filtros-logísticos">4. Hacia un Motor Semántico: Pensando en Reglas y Filtros Logísticos</a></li>
+  <li><a href="#estación-de-práctica-clínica-ejercicios-aplicados" id="toc-estación-de-práctica-clínica-ejercicios-aplicados" class="nav-link" data-scroll-target="#estación-de-práctica-clínica-ejercicios-aplicados">5. Estación de Práctica Clínica (Ejercicios Aplicados)</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-el-convertidor-de-unidades-metabólicas-mappers" id="toc-ejercicio-1-el-convertidor-de-unidades-metabólicas-mappers" class="nav-link" data-scroll-target="#ejercicio-1-el-convertidor-de-unidades-metabólicas-mappers">Ejercicio 1: El Convertidor de Unidades Metabólicas (Mappers)</a></li>
+  <li><a href="#ejercicio-2-el-filtro-de-alerta-de-riesgo-cardiovascular-predicados" id="toc-ejercicio-2-el-filtro-de-alerta-de-riesgo-cardiovascular-predicados" class="nav-link" data-scroll-target="#ejercicio-2-el-filtro-de-alerta-de-riesgo-cardiovascular-predicados">Ejercicio 2: El Filtro de Alerta de Riesgo Cardiovascular (Predicados)</a></li>
+  <li><a href="#ejercicio-3-el-pipeline-completo-de-nhanes-en-miniatura-map-reduce" id="toc-ejercicio-3-el-pipeline-completo-de-nhanes-en-miniatura-map-reduce" class="nav-link" data-scroll-target="#ejercicio-3-el-pipeline-completo-de-nhanes-en-miniatura-map-reduce">Ejercicio 3: El Pipeline Completo de NHANES en Miniatura (Map-Reduce)</a></li>
+  </ul></li>
+  <li><a href="#soluciones-a-la-estación-de-práctica-clínica" id="toc-soluciones-a-la-estación-de-práctica-clínica" class="nav-link" data-scroll-target="#soluciones-a-la-estación-de-práctica-clínica">6. Soluciones a la Estación de Práctica Clínica</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c07.html">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>En los capítulos anteriores, consolidamos las bases de Racket: aprendimos a estructurar datos mediante listas y a crear abstracciones mediante funciones. Sin embargo, cuando nos enfrentamos a un volumen masivo de datos (como las miles de observaciones epidemiológicas en los microdatos de NHANES), el verdadero desafío no es la sintaxis, sino la estrategia de resolución de problemas.</p>
+<p>Este capítulo marca un hito en nuestro viaje hacia el motor semántico. Dejaremos atrás la tentación de microgestionar el flujo de ejecución (pensamiento imperativo) para adoptar un enfoque de diseño de protocolos de datos de alto orden.</p>
+<section id="el-cambio-de-mentalidad-de-recetar-pasos-a-diseñar-protocolos" class="level2">
+<h2 class="anchored" data-anchor-id="el-cambio-de-mentalidad-de-recetar-pasos-a-diseñar-protocolos">1. El Cambio de Mentalidad: De Recetar Pasos a Diseñar Protocolos</h2>
+<section id="rompiendo-el-hábito-iterativo" class="level3">
+<h3 class="anchored" data-anchor-id="rompiendo-el-hábito-iterativo">Rompiendo el Hábito Iterativo</h3>
+<p>En la programación tradicional o en el análisis de scripts convencionales, solemos pensar en términos de bucles iterativos (como los ciclos <code>for</code> o <code>while</code>). Ante un problema, nuestra mente entrenada nos impulsa a desglosarlo en pasos cronológicos: “toma la primera fila, evalúa si cumple la condición, guárdala en una variable temporal, pasa a la siguiente fila”. Esto es el equivalente informático a que un director médico supervise manualmente a cada enfermero mientras administra una dosis, paciente por paciente.</p>
+<p>El enfoque funcional elimina la microgestión. En lugar de recetar una secuencia de pasos sobre cómo manipular un registro individual, definimos <strong>protocolos de transformación global</strong>. Le suministramos al lenguaje un “mecanismo de ejecución” (<code>map</code>, <code>filter</code>, <code>apply</code>) y un “criterio o instrucción” (una función reactiva o lambda), delegando en el motor del lenguaje toda la mecánica del bucle.</p>
+</section>
+<section id="del-expediente-clínico-físico-al-procesamiento-en-paralelo-mapreduce" class="level3">
+<h3 class="anchored" data-anchor-id="del-expediente-clínico-físico-al-procesamiento-en-paralelo-mapreduce">Del Expediente Clínico Físico al Procesamiento en Paralelo (MapReduce)</h3>
+<p>Esta abstracción no es caprichosa. En la informática moderna y en el análisis de Big Data (como los gigantescos repositorios de secuenciación genómica o registros de salud poblacional a nivel nacional), las arquitecturas MapReduce se crearon precisamente porque el enfoque imperativo no escala.</p>
+<p>Cuando diseñas tu código dividiendo el problema estrictamente en una fase de transformación independiente (<code>map</code>) y una fase de consolidación de resultados (<code>apply</code> o un reductor), abres la puerta inmediata a la ejecución paralela. En lugar de procesar un millón de registros secuencialmente en un hilo, el motor funcional puede distribuir cien mil registros a diez núcleos diferentes en un clúster de servidores de forma nativa. Al no existir variables globales mutables ni estados compartidos entre los pasos de la lista, cada transformación es segura y aislada. Lo que empieza hoy como un script de Racket para entender abstracciones, es conceptualmente la misma arquitectura con la que Google procesa la web o con la que se analizan biobancos masivos en la nube.</p>
+<hr>
+</section>
+</section>
+<section id="los-componentes-del-laboratorio-automatizado-funciones-de-alto-orden" class="level2">
+<h2 class="anchored" data-anchor-id="los-componentes-del-laboratorio-automatizado-funciones-de-alto-orden">2. Los Componentes del Laboratorio Automatizado (Funciones de Alto Orden)</h2>
+<p>Para construir nuestro pipeline de datos metabólicos, utilizaremos tres herramientas angulares en la programación funcional. Se denominan <strong>funciones de alto orden</strong> porque no solo operan con datos comunes (números o cadenas), sino que reciben otras funciones como argumentos de entrada para modular su comportamiento.</p>
+<section id="a.-el-analizador-map" class="level3">
+<h3 class="anchored" data-anchor-id="a.-el-analizador-map">A. El Analizador (<code>map</code>)</h3>
+<p>El propósito fundamental de <code>map</code> es aplicar un procedimiento analítico o de transformación a cada uno de los elementos de una lista, de forma estrictamente homogénea y aislada. Su salida es una nueva lista que posee exactamente la misma longitud que la lista original, pero cuyos elementos han sido transformados.</p>
+<p>Imagine un brazo robótico en un laboratorio clínico que recibe una gradilla con <span class="math inline">\(n\)</span> tubos de ensayo con muestras de suero. El robot aplica reactivo a cada tubo individualmente. El resultado final es otra gradilla con <span class="math inline">\(n\)</span> tubos, pero ahora las muestras reflejan el cambio químico provocado por el reactivo.</p>
+</section>
+<section id="b.-el-tamiz-filter" class="level3">
+<h3 class="anchored" data-anchor-id="b.-el-tamiz-filter">B. El Tamiz (<code>filter</code>)</h3>
+<p>No siempre queremos procesar todos los elementos de una población. Con frecuencia, nuestro análisis epidemiológico requiere aislar subpoblaciones específicas basándonos en condiciones clínicas estrictas. Para esta tarea empleamos <code>filter</code>.</p>
+<p><code>filter</code> toma un <strong>predicado</strong> (una función que devuelve un valor booleano: <code>#t</code> o <code>#f</code>) y una lista. Evalúa cada elemento bajo ese predicado; si el resultado es verdadero, el elemento se retiene en la lista de salida; si es falso, es descartado inmediatamente.</p>
+<p>Piénselo como un tamiz molecular o un filtro biológico: la muestra fluye a través de una membrana que retiene únicamente las macromoléculas que superan cierto peso molecular, dejando pasar el resto libremente.</p>
+</section>
+<section id="c.-el-consolidador-apply" class="level3">
+<h3 class="anchored" data-anchor-id="c.-el-consolidador-apply">C. El Consolidador (<code>apply</code>)</h3>
+<p>Mientras que <code>map</code> y <code>filter</code> preservan la estructura de listas, con frecuencia el paso final de una investigación médica exige resumir esa colección de datos dispersos en un único indicador sumario o biomarcador concluyente. Aquí interviene <code>apply</code>.</p>
+<p><code>apply</code> toma una función diseñada para operar sobre múltiples argumentos sueltos (como la suma <code>+</code> o el valor máximo <code>max</code>) y le “desempaqueta” una lista completa de valores encima, reduciéndolos a un único resultado final. Es la analogía exacta de vaciar todos los contenidos individuales de una pipeta en un solo vaso de precipitados para obtener la masa molecular combinada de la muestra.</p>
+<hr>
+</section>
+</section>
+<section id="el-patrón-map-reduce-aplicado-a-datos-de-salud" class="level2">
+<h2 class="anchored" data-anchor-id="el-patrón-map-reduce-aplicado-a-datos-de-salud">3. El Patrón Map-Reduce Aplicado a Datos de Salud</h2>
+<p>Al acoplar estas herramientas, emerge un patrón de diseño computacional sumamente elegante y poderoso para resolver problemas analíticos complejos:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">apply</span> reducer</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span><span class="kw">map</span> item-function list-of-values<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Este patrón se lee de adentro hacia afuera:</p>
+<ol type="1">
+<li><p>Se toma la lista cruda (<code>list-of-values</code>).</p></li>
+<li><p>Se ejecuta un mapeo (<code>map item-function</code>) para estandarizar o extraer la variable médica de interés en cada registro.</p></li>
+<li><p>La lista resultante de valores transformados se colapsa mediante una función de reducción (<code>apply reducer</code>) para obtener la métrica epidemiológica final.</p></li>
+</ol>
+<section id="implementación-del-modelo-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="implementación-del-modelo-de-datos">Implementación del Modelo de Datos</h3>
+<p>Para ver este patrón en acción con un enfoque clínico realista, modelaremos una lista de registros médicos de NHANES adaptada. Cada paciente será representado por una sublista con la siguiente estructura analítica:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Estructura de un Registro Clínico:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">;; (id-paciente edad imc colesterol-hdl glucemia-ayunas)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Definamos nuestro set de datos de prueba en Racket:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> nhanes-data</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>p001 <span class="dv">45</span> <span class="fl">28.4</span> <span class="dv">42</span> <span class="dv">105</span><span class="op">)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p002 <span class="dv">62</span> <span class="fl">34.1</span> <span class="dv">38</span> <span class="dv">142</span><span class="op">)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p003 <span class="dv">29</span> <span class="fl">22.0</span> <span class="dv">55</span>  <span class="dv">88</span><span class="op">)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p004 <span class="dv">53</span> <span class="fl">31.5</span> <span class="dv">47</span> <span class="dv">118</span><span class="op">)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p005 <span class="dv">38</span> <span class="fl">24.6</span> <span class="dv">61</span>  <span class="dv">94</span><span class="op">)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p006 <span class="dv">71</span> <span class="fl">39.2</span> <span class="dv">31</span> <span class="dv">165</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="funciones-de-acceso-semántico" class="level3">
+<h3 class="anchored" data-anchor-id="funciones-de-acceso-semántico">Funciones de Acceso Semántico</h3>
+<p>Evitaremos el uso directo de funciones genéricas de Racket como <code>second</code>, <code>third</code> o <code>fourth</code> a lo largo de la lógica de negocio. En su lugar, crearemos funciones accesorias explícitas que doten de semántica clínica a nuestro código:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-edad paciente<span class="op">)</span> <span class="op">(</span>second paciente<span class="op">))</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-imc paciente<span class="op">)</span> <span class="op">(</span>third paciente<span class="op">))</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-hdl si-paciente<span class="op">)</span> <span class="op">(</span>fourth si-paciente<span class="op">))</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-glucemia paciente<span class="op">)</span> <span class="op">(</span>fifth paciente<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="caso-de-estudio-1-extracción-y-consolidación-básica" class="level3">
+<h3 class="anchored" data-anchor-id="caso-de-estudio-1-extracción-y-consolidación-básica">Caso de Estudio 1: Extracción y Consolidación Básica</h3>
+<p>Supongamos que nuestro protocolo de investigación nos solicita calcular el Índice de Masa Corporal (IMC) promedio de toda nuestra cohorte. Siguiendo el patrón clásico de Map-Reduce, podemos estructurarlo de la siguiente forma:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; 1. Definimos una función para sumar una lista de números de forma limpia</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>sumar-lista numeros<span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">apply</span> <span class="op">+</span> numeros<span class="op">))</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; 2. Implementamos el Pipeline Map-Reduce para el promedio de IMC</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>calcular-promedio-imc cohorte<span class="op">)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">let</span> <span class="op">([</span>lista-imcs <span class="op">(</span><span class="kw">map</span> get-imc cohorte<span class="op">)])</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">(/</span> <span class="op">(</span>sumar-lista lista-imcs<span class="op">)</span> <span class="op">(</span><span class="kw">length</span> cohorte<span class="op">))))</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejecución en el REPL:</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; &gt; (calcular-promedio-imc nhanes-data)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; 29.96666666666667</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>📊 <strong>Nota de Estructura:</strong> Note cómo <code>map</code> extrae quirúrgicamente el IMC de cada paciente transformando la lista de registros estructurados en una lista simple de valores de punto flotante. Luego, <code>apply</code> a través de <code>sumar-lista</code> colapsa esos datos en una sumatoria total.</p>
+</blockquote>
+</section>
+<section id="pipelining-avanzado-combinando-filtros-y-mapeos" class="level3">
+<h3 class="anchored" data-anchor-id="pipelining-avanzado-combinando-filtros-y-mapeos">Pipelining Avanzado: Combinando Filtros y Mapeos</h3>
+<p>En la práctica epidemiológica real, rara vez analizamos una muestra sin aplicar criterios de inclusión o exclusión previos. Suponga que ahora necesitamos identificar los niveles de glucemia en ayunas únicamente de aquellos pacientes que entran en la categoría clínica de <strong>obesidad</strong> (definida como un IMC <span class="math inline">\(\ge 30\)</span>).</p>
+<p>Para resolver esto, extendemos el patrón incorporando un eslabón intermedio: <code>filter</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Predicado Clínico: Evalúa si un paciente presenta obesidad</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>tiene-obesidad? paciente<span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(&gt;=</span> <span class="op">(</span>get-imc paciente<span class="op">)</span> <span class="fl">30.0</span><span class="op">))</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pipeline: Filtrar -&gt; Mapear -&gt; Reducir</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>glucemia-maxima-en-obesidad cohorte<span class="op">)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">apply</span> <span class="kw">max</span> </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>         <span class="op">(</span><span class="kw">map</span> get-glucemia </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span><span class="kw">filter</span> tiene-obesidad? cohorte<span class="op">))))</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejecución en el REPL:</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; &gt; (glucemia-maxima-en-obesidad nhanes-data)</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">;; 165</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Analicemos minuciosamente el flujo que siguen los datos a través de este pipeline clínico:</p>
+<ol type="1">
+<li><p><strong>Datos Originales (<code>nhanes-data</code>)</strong>: Entran 6 registros médicos.</p></li>
+<li><p><strong><code>filter tiene-obesidad?</code></strong>: La lista se reduce exclusivamente a los registros de los pacientes <code>p002</code> (IMC: 34.1), <code>p004</code> (IMC: 31.5) y <code>p006</code> (IMC: 39.2). Los pacientes normopeso o con sobrepeso son bloqueados por el tamiz.</p></li>
+<li><p><strong><code>map get-glucemia</code></strong>: Extrae los valores de glucemia correspondientes a la subpoblación filtrada: <code>'(142 118 165)</code>.</p></li>
+<li><p><strong><code>apply max</code></strong>: Evalúa esos tres números en bloque y extrae el valor biológico más crítico: <code>165</code>.</p></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="hacia-un-motor-semántico-pensando-en-reglas-y-filtros-logísticos" class="level2">
+<h2 class="anchored" data-anchor-id="hacia-un-motor-semántico-pensando-en-reglas-y-filtros-logísticos">4. Hacia un Motor Semántico: Pensando en Reglas y Filtros Logísticos</h2>
+<p>A largo plazo, nuestra meta es programar un motor declarativo basado en lógica (tipo Datalog) para interrogar bases de datos biomédicas complejas. El corazón de un motor semántico no radica en cómo se almacenan físicamente los bytes en el disco duro, sino en la capacidad de evaluar si ciertos hechos empíricos (los datos de NHANES) satisfacen un conjunto de reglas lógicas abstractas de manera combinatoria.</p>
+<p>Las herramientas de alto orden que acabamos de revisar constituyen los fundamentos lógicos de un motor de inferencia:</p>
+<ul>
+<li>Un <strong>Predicado Clínico</strong> (como <code>tiene-obesidad?</code>) es conceptualmente idéntico a una <strong>Regla Lógica</strong> en Datalog. Define una restricción o un hecho que un registro debe cumplir para formar parte del conjunto de soluciones válidas.</li>
+<li>Al anidar funciones de alto orden (<code>map</code> y <code>filter</code>), estás construyendo un motor de consultas declarativo primitivo. Le estás diciendo al sistema <em>qué</em> condiciones médicas requiere el reporte epidemiológico, abstrayendo por completo el <em>cómo</em> se filtran los arrays internamente en la memoria de la máquina.</li>
+</ul>
+<p>Dominar la composición de mappers, predicados y reducciones en Racket te dará la solidez estructural necesaria para, en capítulos posteriores, escribir un intérprete capaz de parsear reglas complejas (ej: “Encontrar pacientes con riesgo de síndrome metabólico si cumplen obesidad, bajo HDL e hiperglucemia de manera simultánea”) y ejecutarlas eficientemente sobre cualquier set de datos tabulares.</p>
+<hr>
+</section>
+<section id="estación-de-práctica-clínica-ejercicios-aplicados" class="level2">
+<h2 class="anchored" data-anchor-id="estación-de-práctica-clínica-ejercicios-aplicados">5. Estación de Práctica Clínica (Ejercicios Aplicados)</h2>
+<p>Llegó el momento de consolidar estas destrezas en tu entorno de desarrollo. Resuelve los siguientes problemas utilizando un enfoque puramente funcional (prohibido mutar variables o usar estructuras de control imperativas).</p>
+<section id="ejercicio-1-el-convertidor-de-unidades-metabólicas-mappers" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-el-convertidor-de-unidades-metabólicas-mappers">Ejercicio 1: El Convertidor de Unidades Metabólicas (Mappers)</h3>
+<p>En bioquímica analítica, los niveles de glucosa en sangre en los Estados Unidos (como en NHANES) se reportan comunmente en miligramos por decilitro (<span class="math inline">\(\text{mg/dL}\)</span>). Sin embargo, las publicaciones internacionales exigen los resultados en unidades del Sistema Internacional: milimoles por litro (<span class="math inline">\(\text{mmol/L}\)</span>). La fórmula estándar de conversión para la glucosa es:</p>
+<p><span class="math display">\[\text{mmol/L} = \frac{\text{mg/dL}}{18.016}\]</span></p>
+<p><strong>Tu misión:</strong> 1. Escribe una función llamada <code>glucemia-&gt;mmol</code> que reciba un único valor numérico en <span class="math inline">\(\text{mg/dL}\)</span> y devuelva su equivalente bioquímico en <span class="math inline">\(\text{mmol/L}\)</span>. 2. Utilizando la función previa y <code>map</code>, escribe un procedimiento llamado <code>convertir-glucemias-cohorte</code> que reciba una lista de pacientes estructurada (como <code>nhanes-data</code>) y devuelva una lista simple exclusivamente con todas las glucemias convertidas a <span class="math inline">\(\text{mmol/L}\)</span>.</p>
+</section>
+<section id="ejercicio-2-el-filtro-de-alerta-de-riesgo-cardiovascular-predicados" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-el-filtro-de-alerta-de-riesgo-cardiovascular-predicados">Ejercicio 2: El Filtro de Alerta de Riesgo Cardiovascular (Predicados)</h3>
+<p>El colesterol HDL (conocido popularmente como “colesterol bueno”) actúa como un factor protector contra eventos cardiovasculares. Clínicamente, un valor de HDL inferior a <span class="math inline">\(40\text{ mg/dL}\)</span> en hombres o inferior a <span class="math inline">\(50\text{ mg/dL}\)</span> en mujeres se considera un marcador de riesgo metabólico severo. Para simplificar nuestra cohorte general, fijaremos el umbral crítico de alerta de HDL por debajo de <span class="math inline">\(45\text{ mg/dL}\)</span> para cualquier paciente.</p>
+<p><strong>Tu misión:</strong></p>
+<ol type="1">
+<li>Diseña un predicado funcional estricto denominado <code>riesgo-hdl?</code> que devuelva <code>#t</code> si el paciente posee un HDL menor a <span class="math inline">\(45\text{ mg/dL}\)</span>, y <code>#f</code> en caso contrario.</li>
+<li>Usando <code>filter</code>, programa la función <code>obtener-pacientes-en-riesgo</code> para extraer las fichas clínicas completas de los individuos expuestos a esta vulnerabilidad cardiovascular.</li>
+</ol>
+</section>
+<section id="ejercicio-3-el-pipeline-completo-de-nhanes-en-miniatura-map-reduce" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-el-pipeline-completo-de-nhanes-en-miniatura-map-reduce">Ejercicio 3: El Pipeline Completo de NHANES en Miniatura (Map-Reduce)</h3>
+<p>Combinemos todas nuestras herramientas en un flujo epidemiológico final de alto nivel. La literatura científica indica que la inflamación sistémica y el desarreglo metabólico se potencian gravemente cuando un paciente combina una edad avanzada con problemas de peso.</p>
+<p><strong>Tu misión:</strong> Diseña una función consolidadora avanzada llamada <code>imc-maximo-en-adultos-mayores</code>. Esta función debe procesar una lista de pacientes y devolver el valor de IMC más alto encontrado <strong>únicamente</strong> entre aquellos pacientes cuya edad sea estrictamente mayor a <span class="math inline">\(50\)</span> años.</p>
+<p><em>Requisitos metodológicos:</em> Debes emplear de forma integrada el patrón funcional estudiado: tamizar la cohorte por edad utilizando <code>filter</code>, extraer los índices de masa corporal correspondientes utilizando <code>map</code>, y reducir el vector numérico final al valor crítico absoluto utilizando <code>apply</code>.</p>
+</section>
+</section>
+<section id="soluciones-a-la-estación-de-práctica-clínica" class="level2">
+<h2 class="anchored" data-anchor-id="soluciones-a-la-estación-de-práctica-clínica">6. Soluciones a la Estación de Práctica Clínica</h2>
+<p>A continuación se presentan las soluciones óptimas para los ejercicios planteados, incorporando pruebas unitarias mediante el módulo rackunit para garantizar la fidelidad de los datos analizados.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; DATOS DE BASE Y ACCESORES SEMÁNTICOS</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> nhanes-data</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>p001 <span class="dv">45</span> <span class="fl">28.4</span> <span class="dv">42</span> <span class="dv">105</span><span class="op">)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p002 <span class="dv">62</span> <span class="fl">34.1</span> <span class="dv">38</span> <span class="dv">142</span><span class="op">)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p003 <span class="dv">29</span> <span class="fl">22.0</span> <span class="dv">55</span>  <span class="dv">88</span><span class="op">)</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p004 <span class="dv">53</span> <span class="fl">31.5</span> <span class="dv">47</span> <span class="dv">118</span><span class="op">)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p005 <span class="dv">38</span> <span class="fl">24.6</span> <span class="dv">61</span>  <span class="dv">94</span><span class="op">)</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>p006 <span class="dv">71</span> <span class="fl">39.2</span> <span class="dv">31</span> <span class="dv">165</span><span class="op">)))</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-edad paciente<span class="op">)</span> <span class="op">(</span>second paciente<span class="op">))</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-imc paciente<span class="op">)</span> <span class="op">(</span>third paciente<span class="op">))</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-hdl paciente<span class="op">)</span> <span class="op">(</span>fourth paciente<span class="op">))</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-glucemia paciente<span class="op">)</span> <span class="op">(</span>fifth paciente<span class="op">))</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">;; EJERCICIO 1: Convertidor Metabólico</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">;; glucemia-&gt;mmol : Realiza la conversión bioquímica de mg/dL a mmol/L</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>glucemia-&gt;mmol glucemia<span class="op">)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">(/</span> glucemia <span class="fl">18.016</span><span class="op">))</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba unitaria para la conversión de un paciente con criterio de diabetes (126 mg/dL)</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-= <span class="op">(</span>glucemia-&gt;mmol <span class="dv">126</span><span class="op">)</span> <span class="fl">6.9</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co">;; convertir-glucemias-cohorte : Extrae y transforma las glucemias a unidades SI</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>convertir-glucemias-cohorte cohorte<span class="op">)</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">map</span> glucemia-&gt;mmol</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span><span class="kw">map</span> get-glucemia cohorte<span class="op">)))</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba del pipeline de mapeo anidado</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span><span class="kw">map</span> <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>x<span class="op">)</span> <span class="op">(</span>real-&gt;decimal-string x <span class="dv">1</span><span class="op">))</span> </span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>                   <span class="op">(</span>convertir-glucemias-cohorte nhanes-data<span class="op">))</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="st">"5.8"</span> <span class="st">"7.8"</span> <span class="st">"4.8"</span> <span class="st">"6.5"</span> <span class="st">"5.2"</span> <span class="st">"9.1"</span><span class="op">))</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="co">;; EJERCICIO 2: Alerta de Riesgo Cardiovascular</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="co">;; dislipidemia-hdl? : Predicado clínico basado en el umbral crítico (&lt; 45 mg/dL)</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>dislipidemia-hdl? registro-medico<span class="op">)</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>  <span class="op">(&lt;</span> <span class="op">(</span>get-hdl registro-medico<span class="op">)</span> <span class="dv">45</span><span class="op">))</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas unitarias de control posicional</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-true <span class="op">(</span>dislipidemia-hdl? '<span class="op">(</span><span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">42</span> <span class="dv">5</span><span class="op">)))</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-false <span class="op">(</span>dislipidemia-hdl? '<span class="op">(</span><span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">45</span> <span class="dv">5</span><span class="op">)))</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="co">;; obtener-pacientes-en-riesgo : Filtra la cohorte según vulnerabilidad metabólica</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>obtener-pacientes-en-riesgo cohorte<span class="op">)</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">filter</span> dislipidemia-hdl? cohorte<span class="op">))</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co">;; Verificación con el set de datos NHANES</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>obtener-pacientes-en-riesgo nhanes-data<span class="op">)</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>              '<span class="op">((</span>p001 <span class="dv">45</span> <span class="fl">28.4</span> <span class="dv">42</span> <span class="dv">105</span><span class="op">)</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>                <span class="op">(</span>p002 <span class="dv">62</span> <span class="fl">34.1</span> <span class="dv">38</span> <span class="dv">142</span><span class="op">)</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>                <span class="op">(</span>p006 <span class="dv">71</span> <span class="fl">39.2</span> <span class="dv">31</span> <span class="dv">165</span><span class="op">)))</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="co">;; EJERCICIO 3: Pipeline de Adultos Mayores</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="co">;; ==========================================</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="co">;; edad-50+? : Predicado de inclusión etaria</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>edad-50+? registro-medico<span class="op">)</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>  <span class="op">(&gt;</span> <span class="op">(</span>get-edad registro-medico<span class="op">)</span> <span class="dv">50</span><span class="op">))</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas unitarias de control de fronteras</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-false <span class="op">(</span>edad-50+? '<span class="op">(</span><span class="dv">1</span> <span class="dv">50</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span><span class="op">)))</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-true <span class="op">(</span>edad-50+? '<span class="op">(</span><span class="dv">1</span> <span class="dv">51</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span><span class="op">)))</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="co">;; imc-maximo-en-adultos-mayores : Pipeline funcional compuesto (Filter -&gt; Map -&gt; Reduce)</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>imc-maximo-en-adultos-mayores cohorte<span class="op">)</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">apply</span> <span class="kw">max</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>         <span class="op">(</span><span class="kw">map</span> get-imc</span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span><span class="kw">filter</span> edad-50+? cohorte<span class="op">))))</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="co">;; Verificación del indicador crítico final</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>imc-maximo-en-adultos-mayores nhanes-data<span class="op">)</span> <span class="fl">39.2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
