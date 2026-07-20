@@ -8,91 +8,70 @@ editor: visual
 
 Cuando pasas visita en el hospital y revisas la historia clínica de un paciente, tu cerebro médico realiza un proceso de escaneo visual inmediato. Si ves una estructura como esta en Racket:
 
-```racket
+``` racket
 (list 'Obesidad 'Diabetes 'Hipertensión)
-
 ```
 
 Sabes instantáneamente que es una lista de diagnósticos. Puedes ver el principio, el cuerpo y el final de un solo vistazo porque la estructura completa cabe en tu campo visual. Intuitivamente aplicas la regla de que una lista es simplemente una secuencia de elementos interconectados.
 
 Sin embargo, el motor semántico que quieres construir para consultar los datos de NHANES no tiene ojos ni intuición clínica. Cuando una función en Racket recibe esa lista, no ve el "órgano" completo; ve una celda de emparejamiento individual (`cons cell`).
 
-```
+```         
   +---+---+      +---+---+      +---+---+
   | o | -----------> | o | -----------> | o | / |
   +---+---+      +---+---+      +---+---+
     |              |              |
     V              V              V
 'Obesidad      'Diabetes      'Hipertensión
-
 ```
 
 El motor lógico procesa la información de manera estrictamente local:
 
-1. Analiza el primer nodo (`car`) y encuentra la etiqueta `'Obesidad`.
+1.  Analiza el primer nodo (`car`) y encuentra la etiqueta `'Obesidad`.
 
+2.  Analiza el enlace de continuación (`cdr`) y lo único que descubre es un puntero (una dirección de memoria) hacia otra celda.
 
-2. Analiza el enlace de continuación (`cdr`) y lo único que descubre es un puntero (una dirección de memoria) hacia otra celda.
+3.  Salta a esa segunda celda, encuentra `'Diabetes` en su contenido y otro puntero en su continuación.
 
-
-3. Salta a esa segunda celda, encuentra `'Diabetes` en su contenido y otro puntero en su continuación.
-
-
-4. Este proceso se repite en forma de cadena hasta que el puntero final apunta a `()`, es decir, el marcador de lista vacía o "ausencia de más datos".
-
-
+4.  Este proceso se repite en forma de cadena hasta que el puntero final apunta a `()`, es decir, el marcador de lista vacía o "ausencia de más datos".
 
 Si el último eslabón de la cadena no apunta a la lista vacía sino a un átomo suelto, el motor fallará porque la estructura está corrupta o no es una lista bien formada (lo que en Racket llamamos un par ordenado impropio, como `'(Obesidad . Diabetes)`).
 
 Si queremos que nuestro motor semántico sea capaz de auditar e interpretar bases de datos complejas de salud de forma automatizada, no podemos depender de que "reconozca el patrón a simple vista". Necesitamos herramientas explícitas y rigurosas para describir cómo se estructuran internamente estos datos.
 
----
+------------------------------------------------------------------------
 
 ## 2. Especificación Inductiva: El Protocolo Clínico Paso a Paso
 
 Supongamos que queremos definir formalmente qué constituye un historial de comorbilidades metabólicas para nuestro análisis de NHANES. Una aproximación ingenua sería escribir un manual con ejemplos:
 
-* `()` es un historial válido (paciente sano sin registros).
+- `()` es un historial válido (paciente sano sin registros).
 
+- Si $S_1$ es un diagnóstico, entonces `($S_1$)` es un historial válido.
 
-* Si $S_1$ es un diagnóstico, entonces `($S_1$)` es un historial válido.
+- Si $S_1$ y $S_2$ son diagnósticos, entonces `($S_1$ $S_2$)` es un historial válido.
 
-
-* Si $S_1$ y $S_2$ son diagnósticos, entonces `($S_1$ $S_2$)` es un historial válido.
-
-
-* ... y así sucesivamente.
-
-
+- ... y así sucesivamente.
 
 > **Importante:** En el desarrollo de software y en el diseño de motores lógicos, la frase *"y así sucesivamente"* es una bandera roja. Las computadoras no tienen "sentido común" para inferir el patrón infinito que un humano deduce fácilmente. Además, abre la puerta a ambigüedades: ¿el patrón implica que los diagnósticos pueden repetirse? ¿pueden anidarse unos dentro de otros?
-> 
-> 
 
 Para evitar esto, recurrimos a las **definiciones inductivas**. En lugar de listar ejemplos infinitos, definimos la estructura en términos de sí misma utilizando un protocolo cerrado de dos pasos:
 
-1. **Caso Base (Regla de Salida):** `()` es un historial válido de diagnósticos.
+1.  **Caso Base (Regla de Salida):** `()` es un historial válido de diagnósticos.
 
-
-2. **Caso Inductivo (Regla de Expansión):** Si `S` es un símbolo de diagnóstico válido (por ejemplo, `'Obesidad`) y `H` es un historial válido de diagnósticos, entonces el resultado de construir la pareja `(cons S H)` es también un historial válido de diagnósticos.
-
-
+2.  **Caso Inductivo (Regla de Expansión):** Si `S` es un símbolo de diagnóstico válido (por ejemplo, `'Obesidad`) y `H` es un historial válido de diagnósticos, entonces el resultado de construir la pareja `(cons S H)` es también un historial válido de diagnósticos.
 
 Gracias a este par de reglas, podemos justificar con total certeza matemática y lógica por qué el historial `'(Obesidad Diabetes)` pertenece al tipo de datos que buscamos:
 
-1. `()` es válido por la **Regla 1**.
+1.  `()` es válido por la **Regla 1**.
 
+2.  Por lo tanto, `(cons 'Diabetes '())` que resulta en `'(Diabetes)` es válido por la **Regla 2**.
 
-2. Por lo tanto, `(cons 'Diabetes '())` que resulta en `'(Diabetes)` es válido por la **Regla 2**.
-
-
-3. Por lo tanto, `(cons 'Obesidad '(Diabetes))` que resulta en `'(Obesidad Diabetes)` es válido por la **Regla 2**.
-
-
+3.  Por lo tanto, `(cons 'Obesidad '(Diabetes))` que resulta en `'(Obesidad Diabetes)` es válido por la **Regla 2**.
 
 Cualquier estructura de datos, por kilométrica que sea (como un registro masivo de NHANES), se puede descomponer y validar aplicando este mecanismo de capas de cebolla.
 
----
+------------------------------------------------------------------------
 
 ## 3. Forma de Backus-Naur (BNF): La Gramática de un Motor Semántico
 
@@ -100,21 +79,17 @@ Escribir estas reglas inductivas en lenguaje natural consume mucho espacio y dif
 
 Una gramática BNF se compone de tres elementos críticos:
 
-1. **Terminales:** Símbolos fijos que aparecen textualmente en los datos y no requieren mayor definición (ej. paréntesis `(`, `)`, palabras clave, o valores primitivos).
+1.  **Terminales:** Símbolos fijos que aparecen textualmente en los datos y no requieren mayor definición (ej. paréntesis `(`, `)`, palabras clave, o valores primitivos).
 
+2.  **No-Terminales:** Categorías sintácticas abstractas que actúan como variables de estructura. Convencionalmente las encerramos entre signos de menor y mayor que (`<...>`).
 
-2. **No-Terminales:** Categorías sintácticas abstractas que actúan como variables de estructura. Convencionalmente las encerramos entre signos de menor y mayor que (`<...>`).
-
-
-3. **Reglas de Producción:** Ecuaciones que definen cómo se construye un No-Terminal combinando terminales y otros No-Terminales.
-
-
+3.  **Reglas de Producción:** Ecuaciones que definen cómo se construye un No-Terminal combinando terminales y otros No-Terminales.
 
 El operador clave en BNF es `::=`, que se lee como *"se define como"*. El símbolo de barra vertical `|` se lee como *"o"* y nos permite declarar múltiples alternativas para un mismo elemento.
 
 Diseñemos una gramática BNF para las consultas lógicas que usará tu motor semántico de NHANES. Imaginemos que queremos validar "Reglas de Triage Metabólico". Una regla puede ser un diagnóstico simple, o una combinación lógica de sub-reglas usando conectores como `AND` u `OR`.
 
-```bnf
+``` bnf
 <regla-metabolica> ::= <diagnostico>
                      | ( AND <regla-metabolica> <regla-metabolica> )
                      | ( OR <regla-metabolica> <regla-metabolica> )
@@ -122,14 +97,11 @@ Diseñemos una gramática BNF para las consultas lógicas que usará tu motor se
 <diagnostico>      ::= obesidad
                      | diabetes
                      | hipertension
-
 ```
 
 > **Nota de Diseño:** Nota que los paréntesis `(`, `)` y las palabras `AND` y `OR` actúan como símbolos **terminales**. Delimitan físicamente dónde empieza y termina una operación lógica en el motor. El No-Terminal `<regla-metabolica>` aparece al lado derecho de su propia definición, volviéndola una definición inductiva pura.
-> 
-> 
 
----
+------------------------------------------------------------------------
 
 ## 4. Derivación Sintáctica: El Algoritmo de Triage
 
@@ -137,14 +109,13 @@ Para demostrar que una consulta ingresada por un usuario es válida según las e
 
 Tomemos la siguiente consulta lógica orientada a buscar pacientes de alto riesgo metabólico en NHANES:
 
-```racket
+``` racket
 (AND obesidad (OR diabetes hipertension))
-
 ```
 
 Demostremos paso a paso que esta estructura pertenece al tipo de datos `<regla-metabolica>` definido en nuestra BNF:
 
-```bnf
+``` bnf
 <regla-metabolica>
 => ( AND <regla-metabolica> <regla-metabolica> )
 => ( AND <diagnostico> <regla-metabolica> )
@@ -154,12 +125,11 @@ Demostremos paso a paso que esta estructura pertenece al tipo de datos `<regla-m
 => ( AND obesidad ( OR diabetes <regla-metabolica> ) )
 => ( AND obesidad ( OR diabetes <diagnostico> ) )
 => ( AND obesidad ( OR diabetes hipertension ) )
-
 ```
 
 El orden en el que decidas expandir los bloques no altera el resultado final. Lo fundamental es que este árbol de derivación demuestra que la consulta sigue la sintaxis exacta del sistema y, por ende, el evaluador de un motor lógico podrá procesarla sin lanzar errores sintácticos.
 
----
+------------------------------------------------------------------------
 
 ## 5. Sintaxis como un Tipo de Datos: El Expediente es el Paciente
 
@@ -169,22 +139,20 @@ Cuando estás analizando variables de NHANES en R o Racket, estás acostumbrado 
 
 Considera una estructura de árbol binario de factores de riesgo médico descrita en BNF:
 
-```bnf
+``` bnf
 <arbol-clinico> ::= <id-paciente>
                   | ( <comorbilidad> <arbol-clinico> <arbol-clinico> )
-
 ```
 
 Esta gramática define árboles jerárquicos donde las hojas finales son identificadores numéricos de pacientes y los nodos internos representan condiciones clínicas que dividen la población. Un dato válido bajo este esquema sería:
 
-```racket
+``` racket
 '(obesidad (diabetes 1042 2085) 3099)
-
 ```
 
 Para tu motor de reglas, esta estructura no es texto plano que deba analizarse con expresiones regulares complejas. Es un árbol vivo. Al definir tus tipos de datos mediante especificaciones inductivas claras (como BNF), preparas el terreno para la siguiente fase del desarrollo: **escribir funciones recursivas que sigan exactamente la misma estructura de la gramática**. Si la gramática tiene dos ramas en una producción, tu función recursiva tendrá exactamente dos casos lógicos en su estructura interna.
 
----
+------------------------------------------------------------------------
 
 ## 6. Laboratorio Práctico: Diagnósticos Co-Creados
 
@@ -200,8 +168,8 @@ Escribe la especificación BNF para `<historial-metabolico>`, asegurándote de d
 
 Para que tu futuro motor Datalog pueda filtrar subpoblaciones de NHANES, necesitas definir la sintaxis de las cláusulas de consulta. Una consulta lógica `<query>` puede ser:
 
-1. Una aserción simple de la forma `(paciente-tiene <id-paciente> <diagnostico>)`.
-2. Una conjunción de dos consultas unidas por la palabra clave `IF`.
+1.  Una aserción simple de la forma `(paciente-tiene <id-paciente> <diagnostico>)`.
+2.  Una conjunción de dos consultas unidas por la palabra clave `IF`.
 
 Escribe la gramática BNF completa para esta estructura. Utiliza los No-Terminals `<id-paciente>` y `<diagnostico>` asumiendo que representan números enteros y símbolos respectivamente.
 
@@ -209,9 +177,8 @@ Escribe la gramática BNF completa para esta estructura. Utiliza los No-Terminal
 
 Dada la gramática que diseñaste en el **Ejercicio 2**, realiza la derivación sintáctica paso a paso (tal como se mostró en la sección 4) para demostrar que la siguiente consulta es plenamente válida en tu sistema:
 
-```racket
+``` racket
 ( (paciente-tiene 5021 diabetes) IF (paciente-tiene 5021 obesidad) )
-
 ```
 
 ### Ejercicio 4: Extracción de Datos sin Bucles (Repaso de Preparación para Examen)
@@ -220,25 +187,21 @@ Dada la gramática que diseñaste en el **Ejercicio 2**, realiza la derivación 
 
 En el análisis de NHANES, recibes listas de registros donde cada entrada contiene información de un indicador metabólico estructurado de la siguiente forma:
 
-```racket
+``` racket
 ;; Estructura: (id-paciente edad imc presion-sistolica colesterol)
 '(40512 45 32.5 130 210)
-
 ```
 
 Escribe una función en Racket llamada `total-imc-exceso` que reciba dos argumentos: un valor de corte para el IMC (`baseline-imc`) y una lista con múltiples registros de pacientes con la estructura anterior. La función debe calcular la sumatoria de las diferencias absolutas entre el IMC de cada paciente y el valor de corte, únicamente para aquellos pacientes cuyo IMC sea estrictamente mayor que el corte.
 
 **Restricciones Clínicas de Código (Quiz-Ready):** No tienes permitido usar recursividad explícita, mutación de variables (`set!`), ni estructuras de bucles tradicionales. Debes resolver el problema exclusivamente combinando las funciones de orden superior `map`, `filter` y `apply`.
 
-```racket
+``` racket
 ;; Espacio para tu solución en Racket
 (define (total-imc-exceso baseline-imc lista-pacientes)
   ;; Tu código aquí
   )
-
 ```
-
-
 
 ## Soluciones del Laboratorio Práctico: Capítulo 8
 
@@ -248,7 +211,7 @@ A continuación, se presentan las soluciones validadas y depuradas para los reto
 
 Para modelar un historial clínico recursivo de visitas consecutivas utilizando una especificación inductiva en BNF (basándonos puramente en la construcción de pares/listas de Racket y evitando meter operadores de texto planos como `AND`), definimos la gramática de la siguiente manera:
 
-```bnf
+``` bnf
 <historial-metabolico> ::= ()
                           | ( <visita> . <historial-metabolico> )
 
@@ -258,40 +221,37 @@ Para modelar un historial clínico recursivo de visitas consecutivas utilizando 
 <estado-glucemico>     ::= normal
                           | prediabetes
                           | diabetes
-
 ```
 
 > **Nota:** Nota cómo representamos el historial como una estructura recursiva clásica que termina en el caso vacío `()` (Caso Base) o contiene una visita unida inductivamente mediante un par ordenado al resto de la lista. El uso del punto `.` representa formalmente la relación de celda de emparejamiento (`cons cell`) en Racket.
 
----
+------------------------------------------------------------------------
 
 ### Ejercicio 2: Gramática BNF para Consultas de Reglas Datalog
 
 La gramática formal para estructurar las consultas de filtrado lógico de un motor semántico para NHANES se define de la siguiente manera:
 
-```bnf
+``` bnf
 <query>         ::= ( paciente-tiene <id-paciente> <diagnostico> )
                   | ( <query> IF <query> )
 
 <id-paciente>   ::= <number>
 <diagnostico>   ::= <symbol>
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Ejercicio 3: Derivación Sintáctica del Triage de Datos
 
 Para demostrar y validar formalmente que la consulta ingresada por el usuario:
 
-```racket
+``` racket
 ( (paciente-tiene 5021 diabetes) IF (paciente-tiene 5021 obesidad) )
-
 ```
 
 es plenamente válida bajo nuestra gramática del **Ejercicio 2**, realizamos la derivación paso a paso partiendo de la regla raíz `<query>`:
 
-```bnf
+``` bnf
 <query>
 => ( <query> IF <query> )
 => ( ( paciente-tiene <id-paciente> <diagnostico> ) IF <query> )
@@ -300,18 +260,17 @@ es plenamente válida bajo nuestra gramática del **Ejercicio 2**, realizamos la
 => ( ( paciente-tiene 5021 diabetes ) IF ( paciente-tiene <id-paciente> <diagnostico> ) )
 => ( ( paciente-tiene 5021 diabetes ) IF ( paciente-tiene 5021 <diagnostico> ) )
 => ( ( paciente-tiene 5021 diabetes ) IF ( paciente-tiene 5021 obesidad ) )
-
 ```
 
 La derivación es exitosa. Al no quedar No-Terminales residuales y coincidir exactamente con la expresión de entrada, el motor lógico puede parsearla y procesar la consulta sin fallos de sintaxis.
 
----
+------------------------------------------------------------------------
 
 ### Ejercicio 4: Extracción de Datos sin Bucles (Análisis de NHANES)
 
 A continuación, se presenta la implementación de la función en Racket utilizando el paradigma de orden superior. Se han incorporado tus funciones selectoras para mantener la legibilidad y se optimizó el pipeline de procesamiento de datos utilizando únicamente funciones de orden superior (`filter`, `map`, `apply`):
 
-```racket
+``` racket
 #lang racket
 (require rackunit)
 
@@ -359,7 +318,6 @@ A continuación, se presenta la implementación de la función en Racket utiliza
 
 ;; Validación de acumulación total de exceso
 (check-= (total-imc-exceso 30 nhanes-data) 14.8 0.1)
-
 ```
 
-> **Consejo de Arquitectura:** Al mapear directamente la función `diferencia-imc` sobre el conjunto ya filtrado de pacientes, evitamos tener que aislar primero los IMC sueltos con un mapa intermedio. 
+> **Consejo de Arquitectura:** Al mapear directamente la función `diferencia-imc` sobre el conjunto ya filtrado de pacientes, evitamos tener que aislar primero los IMC sueltos con un mapa intermedio.

@@ -273,6 +273,12 @@ window.Quarto = {
  <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -340,8 +346,7 @@ window.Quarto = {
   +---+---+      +---+---+      +---+---+
     |              |              |
     V              V              V
-'Obesidad      'Diabetes      'Hipertensión
-</code></pre>
+'Obesidad      'Diabetes      'Hipertensión</code></pre>
 <p>El motor lógico procesa la información de manera estrictamente local:</p>
 <ol type="1">
 <li><p>Analiza el primer nodo (<code>car</code>) y encuentra la etiqueta <code>'Obesidad</code>.</p></li>
@@ -396,8 +401,7 @@ window.Quarto = {
 
 &lt;diagnostico&gt;      ::= obesidad
                      | diabetes
-                     | hipertension
-</code></pre>
+                     | hipertension</code></pre>
 <blockquote class="blockquote">
 <p><strong>Nota de Diseño:</strong> Nota que los paréntesis <code>(</code>, <code>)</code> y las palabras <code>AND</code> y <code>OR</code> actúan como símbolos <strong>terminales</strong>. Delimitan físicamente dónde empieza y termina una operación lógica en el motor. El No-Terminal <code>&lt;regla-metabolica&gt;</code> aparece al lado derecho de su propia definición, volviéndola una definición inductiva pura.</p>
 </blockquote>
@@ -417,8 +421,7 @@ window.Quarto = {
 =&gt; ( AND obesidad ( OR &lt;diagnostico&gt; &lt;regla-metabolica&gt; ) )
 =&gt; ( AND obesidad ( OR diabetes &lt;regla-metabolica&gt; ) )
 =&gt; ( AND obesidad ( OR diabetes &lt;diagnostico&gt; ) )
-=&gt; ( AND obesidad ( OR diabetes hipertension ) )
-</code></pre>
+=&gt; ( AND obesidad ( OR diabetes hipertension ) )</code></pre>
 <p>El orden en el que decidas expandir los bloques no altera el resultado final. Lo fundamental es que este árbol de derivación demuestra que la consulta sigue la sintaxis exacta del sistema y, por ende, el evaluador de un motor lógico podrá procesarla sin lanzar errores sintácticos.</p>
 <hr>
 </section>
@@ -428,8 +431,7 @@ window.Quarto = {
 <p>Cuando estás analizando variables de NHANES en R o Racket, estás acostumbrado a tratar los registros de los pacientes como tus datos de entrada (filas, columnas, listas de números). Pero para un compilador, un intérprete o el motor semántico basado en reglas que vas a escribir, <em>el programa o la consulta misma es el dato</em>.</p>
 <p>Considera una estructura de árbol binario de factores de riesgo médico descrita en BNF:</p>
 <pre class="bnf"><code>&lt;arbol-clinico&gt; ::= &lt;id-paciente&gt;
-                  | ( &lt;comorbilidad&gt; &lt;arbol-clinico&gt; &lt;arbol-clinico&gt; )
-</code></pre>
+                  | ( &lt;comorbilidad&gt; &lt;arbol-clinico&gt; &lt;arbol-clinico&gt; )</code></pre>
 <p>Esta gramática define árboles jerárquicos donde las hojas finales son identificadores numéricos de pacientes y los nodos internos representan condiciones clínicas que dividen la población. Un dato válido bajo este esquema sería:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>'<span class="op">(</span>obesidad <span class="op">(</span>diabetes <span class="dv">1042</span> <span class="dv">2085</span><span class="op">)</span> <span class="dv">3099</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Para tu motor de reglas, esta estructura no es texto plano que deba analizarse con expresiones regulares complejas. Es un árbol vivo. Al definir tus tipos de datos mediante especificaciones inductivas claras (como BNF), preparas el terreno para la siguiente fase del desarrollo: <strong>escribir funciones recursivas que sigan exactamente la misma estructura de la gramática</strong>. Si la gramática tiene dos ramas en una producción, tu función recursiva tendrá exactamente dos casos lógicos en su estructura interna.</p>
@@ -485,8 +487,7 @@ window.Quarto = {
 &lt;IMC&gt;                  ::= &lt;number&gt;
 &lt;estado-glucemico&gt;     ::= normal
                           | prediabetes
-                          | diabetes
-</code></pre>
+                          | diabetes</code></pre>
 <blockquote class="blockquote">
 <p><strong>Nota:</strong> Nota cómo representamos el historial como una estructura recursiva clásica que termina en el caso vacío <code>()</code> (Caso Base) o contiene una visita unida inductivamente mediante un par ordenado al resto de la lista. El uso del punto <code>.</code> representa formalmente la relación de celda de emparejamiento (<code>cons cell</code>) en Racket.</p>
 </blockquote>
@@ -499,8 +500,7 @@ window.Quarto = {
                   | ( &lt;query&gt; IF &lt;query&gt; )
 
 &lt;id-paciente&gt;   ::= &lt;number&gt;
-&lt;diagnostico&gt;   ::= &lt;symbol&gt;
-</code></pre>
+&lt;diagnostico&gt;   ::= &lt;symbol&gt;</code></pre>
 <hr>
 </section>
 <section id="ejercicio-3-derivación-sintáctica-del-triage-de-datos-1" class="level3">
@@ -515,8 +515,7 @@ window.Quarto = {
 =&gt; ( ( paciente-tiene 5021 diabetes ) IF &lt;query&gt; )
 =&gt; ( ( paciente-tiene 5021 diabetes ) IF ( paciente-tiene &lt;id-paciente&gt; &lt;diagnostico&gt; ) )
 =&gt; ( ( paciente-tiene 5021 diabetes ) IF ( paciente-tiene 5021 &lt;diagnostico&gt; ) )
-=&gt; ( ( paciente-tiene 5021 diabetes ) IF ( paciente-tiene 5021 obesidad ) )
-</code></pre>
+=&gt; ( ( paciente-tiene 5021 diabetes ) IF ( paciente-tiene 5021 obesidad ) )</code></pre>
 <p>La derivación es exitosa. Al no quedar No-Terminales residuales y coincidir exactamente con la expresión de entrada, el motor lógico puede parsearla y procesar la consulta sin fallos de sintaxis.</p>
 <hr>
 </section>

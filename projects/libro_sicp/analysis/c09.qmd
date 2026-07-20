@@ -1,0 +1,342 @@
+---
+title: "9. El Algoritmo Clínico de la Recursión Estructural"
+format: html
+editor: visual
+---
+
+# Capítulo 9: El Algoritmo Clínico de la Recursión Estructural
+
+## 1. El Triaje de Datos: ¿Por qué recursión en lugar de bucles?
+
+Imagina que estás de guardia en el departamento de urgencias de un gran hospital metropolitano. Te entregan una lista con los niveles de glucosa en ayunas de cincuenta pacientes. Tu misión es simple, pero crítica: identificar si **al menos uno** de ellos está en un rango de crisis hiperglucémica (por ejemplo, $> 200\text{ mg/dL}$) para activar el protocolo de alerta.
+
+Si estuviéramos programando en un entorno tradicional o imperativo (como un script rápido en Python o R tradicional), tu cerebro médico pensaría inmediatamente en un bucle iterativo:
+
+```python
+# El enfoque tradicional del "barrido" de pasillo
+def detectar_crisis(lista_glucosas, limite):
+    for glucosa in lista_glucosas:
+        if glucosa > limite:
+            return True  # ¡Alerta roja encontrada! Paramos el triaje.
+    return False  # Recorrimos toda la sala y todos están estables.
+
+```
+
+Este enfoque de "ir recorriendo camilla por camilla" es intuitivo, pero depende de variables de control y de alterar el estado del programa (ir moviendo un cursor de celda en celda).
+
+En la programación funcional, y particularmente en Racket, no tenemos bucles mutables. No hay un puntero físico que vaya saltando de índice en índice. En su lugar, utilizamos la **recursión**. El triaje recursivo no requiere que camines por el pasillo; requiere que pienses en la lista de pacientes como una estructura que se autodefine.
+
+### La conexión con un Datalog y Motor Semántico
+
+¿Por qué nos importa esto si tu meta es analizar datos de NHANES mediante consultas lógicas? Piensa en un motor semántico (como Datalog). Cuando le pides a una base de datos de reglas lógicas: *"Encuentra si algún paciente tiene un ancestro con diabetes de tipo II"*, el motor no ejecuta un bucle `for` tradicional. El motor evalúa reglas declarativas y recursivas:
+
+1. *¿Tu padre directo es diabético?* (Caso directo/base).
+2. *¿O el padre de tu padre es diabético?* (Paso recursivo).
+
+Aprender a escribir programas recursivos de forma limpia en Racket es el entrenamiento mental definitivo para diseñar las reglas de inferencia de tu futuro motor de datos médicos.
+
+---
+
+## 2. El Protocolo Médico de la Recursión Estructural
+
+### La "Guía de Práctica Clínica" en formato BNF
+
+En el ámbito clínico, un protocolo de triaje te dice exactamente qué hacer según el estado del paciente. En informática, la especificación en **BNF** (Backus-Naur Form) es nuestra guía de práctica clínica para los datos.
+
+Tomemos la definición inductiva de una lista de números (como tus mediciones de IMC en NHANES):
+
+$$\langle\text{list-of-numbers}\rangle ::= () \ \vert \ (\langle\text{number}\rangle \cdot \langle\text{list-of-numbers}\rangle)$$
+
+Este protocolo BNF nos dice una verdad absoluta: una lista de números solo puede tener dos estados anatómicos:
+
+1. **Está vacía** `()`.
+2. **Es un par** (un nodo clínico) donde el primer elemento es un número individual (`car`) y el resto es, a su vez, otra lista completa de números (`cdr`).
+
+No hay más opciones. No hay estados intermedios. Sabiendo esto, hay una regla de oro que debes tatuarte en el neocórtex:
+
+> **La Regla de Oro de la Recursión Estructural:**
+> Cuando definas un programa para procesar un tipo de datos definido inductivamente, la estructura del código debe imitar exactamente la estructura de los datos.
+
+Si tu tipo de datos tiene dos opciones en su definición BNF, tu función en Racket tendrá, por lo menos, un condicional que evalúe esas dos opciones.
+
+### Anatomía Quirúrgica de una Función Recursiva
+
+Cualquier procedimiento recursivo consta de dos fases clínicas inalterables:
+
+```
+                  ┌──────────────────────────────┐
+                  │ ¿La lista está vacía? (null?)│
+                  └──────────────┬───────────────┘
+                                 │
+                   Sí ───────────┴─────────── No
+                   ▼                           ▼
+          ┌────────────────┐          ┌──────────────────────────────────┐
+          │   CASO BASE    │          │          CASO RECURSIVO          │
+          │ Retorna valor  │          │ 1. Divide (first / rest)         │
+          │ por defecto    │          │ 2. Resuelve recursivamente       │
+          │ (ej. 0 o #f)   │          │ 3. Combina (usando +, or, cons)  │
+          └────────────────┘          └──────────────────────────────────┘
+
+```
+
+1. **El Caso Base (El criterio de alta):** Es la condición de parada. Define qué devolver cuando el problema es tan pequeño que la respuesta es evidente de inmediato. ¿Cuál es la longitud de una lista sin pacientes? Cero. ¿Hay algún paciente hipertenso en una lista vacía? Falso.
+2. **El Caso Recursivo (El tratamiento por etapas):** Cuando el problema es complejo, aplicamos un protocolo de tres pasos:
+* **Dividir:** Separamos al paciente actual (`first`) del resto de la sala de espera (`rest`).
+* **Resolver:** Mandamos el resto de la lista a que se procese con el mismo protocolo (llamada recursiva).
+* **Combinar:** Unimos el diagnóstico del paciente actual con el resultado consolidado del resto del grupo.
+
+
+
+---
+
+## 3. Disección de Funciones en Racket (Casos Clínicos de Estudio)
+
+Pasemos al bisturí de código para analizar cómo se ejecutan estos conceptos en Racket de forma limpia y transparente.
+
+### Caso de Estudio 1: `list-length` (Contar pacientes)
+
+Supongamos que queremos saber cuántos registros de pacientes cargamos desde NHANES, pero sin usar la función nativa `length`. Siguiendo nuestra guía BNF de una lista, la estructura debe ser:
+
+```racket
+(define (list-length lon)
+  (if (null? lon)
+      0                                    ; Caso base: lista vacía = 0 elementos
+      (+ 1 (list-length (rest lon)))))     ; Caso recursivo: 1 paciente actual + el largo del resto
+
+```
+
+#### El Pánico del Programador (Y cómo evitarlo)
+
+Cuando ves `(+ 1 (list-length (rest lon)))`, tu cerebro acostumbrado a los bucles puede sufrir un microinfarto cognitivo: *"¿Cómo puedo usar `list-length` si apenas la estoy definiendo?"*.
+
+No intentes seguir el hilo de la ejecución infinita en tu cabeza. Eso es "entrar en arenas movedizas cognitivas". Confía en la inducción clínica: si tu caso base funciona para `()`, y asumes que `(list-length (rest lon))` mágicamente te da el largo correcto del resto del grupo, sumar `1` garantiza que el total para la lista entera será correcto. ¡La matemática oculta detrás de la estructura de datos se encarga de la convergencia!
+
+---
+
+### Caso de Estudio 2: `any-bigger-than?` (Alerta de biomarcadores críticos)
+
+Volvamos a tu problema de análisis de datos. Tienes una lista de valores de insulina y quieres saber si alguno supera el umbral crítico $n$.
+
+* **Análisis estructural:**
+* Si la lista está vacía: la respuesta es `#f` (falso), porque no hay ningún dato clínico que evaluar.
+* Si hay datos: evaluamos si el paciente actual (`first lon`) supera el límite **O** (`or`) si algún paciente en el resto de la lista (`rest lon`) lo supera.
+
+
+
+```racket
+;; any-bigger-than? : Real [List-of Real] -> Boolean
+;; Determina si algún elemento clínico supera el umbral crítico n.
+(define (any-bigger-than? n lon)
+  (if (null? lon)
+      #f                                          ; Caso base: sin pacientes, no hay crisis
+      (or (< n (first lon))                       ; Caso recursivo: ¿El primero es crítico?
+          (any-bigger-than? n (rest lon)))))      ; ¿O lo es alguno en el resto de la lista?
+
+```
+
+> **Nota de diseño:**
+> Podrías haber usado un segundo condicional interno `(if (> (first lon) n) #t ...)`. Sin embargo, la elegancia de la programación funcional prefiere evaluar disyunciones lógicas directas con `or`. Es limpio, legible e imita directamente la lógica deductiva de un motor de búsqueda semántica.
+
+---
+
+## 4. Consultando Historias Clínicas: Manipulación de Símbolos y Filtrado Semántico
+
+Cuando limpies datos de texto o clasificaciones diagnósticas de NHANES (como códigos ICD-10 de patologías metabólicas), trabajarás con listas de símbolos. Practiquemos la recursión sobre símbolos para que adquieras destreza quirúrgica.
+
+### Caso de Estudio 3: `remove-upto` (Limpieza de ruido histórico)
+
+Imagina que quieres limpiar la secuencia de diagnósticos de un paciente crónico. Deseas eliminar todo el historial preliminar de chequeos genéricos y mantener los datos únicamente a partir de la primera mención de la palabra clave `'diabetes`.
+
+```racket
+;; remove-upto : Symbol [List-of Symbol] -> [List-of Symbol]
+;; Elimina todos los elementos previos a la primera aparición del símbolo clave.
+(define (remove-upto s los)
+  (if (null? los)
+      '()                                         ; Caso base: si la lista está vacía, no hay nada que limpiar
+      (if (eq? (first los) s)
+          los                                     ; Si lo encontramos, devolvemos este nodo completo y lo que sigue
+          (remove-upto s (rest los)))))           ; Si no, ignoramos al paciente actual y seguimos buscando en el resto
+
+```
+
+---
+
+### Caso de Estudio 4: `remove-first` (Ajustando el primer diagnóstico erróneo)
+
+A veces, la base de datos de salud tiene un registro duplicado o incorrecto, y necesitas eliminar únicamente la **primera** ocurrencia de una etiqueta de diagnóstico para evitar sesgar tu análisis de datos de NHANES.
+
+Aquí el truco cambia. No podemos simplemente tirar a la basura todo lo anterior; tenemos que ir "reconstruyendo" la lista de pacientes sanos a medida que avanzamos, utilizando el constructor de listas por excelencia: `cons`.
+
+```racket
+;; remove-first : Symbol [List-of Symbol] -> [List-of Symbol]
+;; Devuelve la lista excluyendo únicamente la primera aparición de s.
+(define (remove-first s los)
+  (if (null? los)
+      '()                                         ; Caso base: nada que eliminar
+      (if (eq? (first los) s)
+          (rest los)                              ; Si lo encontramos, lo extirpamos y devolvemos el resto intacto
+          (cons (first los)                       ; Si no, preservamos al paciente sano...
+                (remove-first s (rest los))))))   ; ...y operamos recursivamente sobre el resto
+
+```
+
+Visualiza cómo funciona `cons` aquí como una aguja de sutura: si la lista es `'(hipertension obesidad dislipidemia)` y eliminamos `'obesidad`, el flujo hace:
+
+1. ¿`hipertension` es `obesidad`? No. Preservamos `hipertension` y cosemos (`cons`) el resultado de procesar el resto.
+2. ¿`obesidad` es `obesidad`? Sí. Lo extirpamos devolviendo simplemente `'(dislipidemia)`.
+3. Resultado final cosido: `'(hipertension dislipidemia)`.
+
+---
+
+## 5. Alternativas de Alto Orden (Sin Recursión Explícita)
+
+Como analista de datos en R, sabes que rara vez escribes bucles `for` gracias a herramientas como `dplyr` o el ecosistema `purrr`. Racket ofrece el mismo poder de abstracción funcional mediante funciones de alto orden para evitar que tengas que escribir la recursión a mano cada vez.
+
+Echemos un vistazo a cómo podemos redefinir nuestros programas utilizando el motor de abstracción de Racket:
+
+```racket
+;; 1. list-length sin escribir recursión
+(define (list-length-fp lst)
+  (apply + (map (lambda (x) 1) lst)))             ; Mapeamos cada paciente a "1" y los sumamos
+
+;; 2. list-member? utilizando el operador lógico de mapas: ormap
+(define (list-member? n lon)
+  (ormap (lambda (m) (= n m)) lon))               ; Devuelve #t si la condición se cumple para alguno
+
+```
+
+### ¿Por qué molestarnos entonces con la recursión?
+
+Aunque las funciones de alto orden como `map`, `filter` y `apply` son fantásticas para flujos de datos lineales (como limpiar columnas de NHANES), tu futuro motor semántico (Datalog) requiere resolver problemas con estructuras arbóreas complejas, reglas dependientes y grafos de herencia clínica. En esas topologías, las abstracciones de alto orden estándar se quedan cortas y la **recursión estructural explícita** se convierte en tu principal herramienta diagnóstica.
+
+---
+
+## 6. Recetario de Ejercicios Prácticos (Laboratorio Metabólico)
+
+Doctor, ha llegado el momento de poner a prueba lo aprendido. He adaptado los problemas de la **Tarea 4** para que trabajes directamente sobre abstracciones semánticas aplicadas al análisis metabólico de datos de salud.
+
+### Problema 1: El Filtro de Criterio Completo (`every?`)
+
+En epidemiología, a veces necesitas validar si **todos** los participantes de una cohorte cumplen estrictamente con los criterios de inclusión (ej. consentimiento firmado, edad $>18$, etc.).
+
+* **Instrucciones:** Escribe una función recursiva estructural `(every? lob)` que tome una lista de booleanos `lob`. Retorna `#t` si todos los elementos son verdaderos, y `#f` en caso de que al menos uno falle. No utilices funciones nativas de alto orden.
+
+```racket
+;; Ejemplo de comportamiento esperado:
+;; > (every? '(#t #t #t)) => #t
+;; > (every? '(#t #f #t)) => #f
+
+```
+
+### Problema 2: El Filtro de Exclusión de Riesgo (`reject`)
+
+A menudo necesitas limpiar tu muestra de NHANES descartando a pacientes que tengan valores fuera de rango o registros nulos.
+
+* **Instrucciones:** Escribe una función recursiva estructural `(reject pred? lst)` que reciba una función predictiva (un filtro de descarte) y una lista. Retorna una lista con todos los elementos que **no** cumplan con el predicado (es decir, aquellos que fallaron el criterio clínico de exclusión).
+
+```racket
+;; Ejemplo de comportamiento esperado:
+;; (reject negative? '(12 -1 -23 5 -44)) => '(12 5)
+
+```
+
+### Problema 3: Emparejamiento de Variables Clínicas (`partner`)
+
+Imagina que tienes una lista de IDs de pacientes y una lista con sus valores de IMC medidos. Necesitas unirlos en pares lógicos para cargarlos en tu base de conocimiento Datalog.
+
+* **Instrucciones:** Escribe la función recursiva estructural `(partner lst1 lst2)`. Toma dos listas y devuelve una lista de pares ordenados (usando representación de celdas cons) correspondientes a las posiciones hermanadas. El proceso debe detenerse en cuanto cualquiera de las dos listas se quede sin pacientes (corte de seguridad clínico).
+
+```racket
+;; Ejemplo de comportamiento esperado:
+;; (partner '(pacienteA pacienteB pacienteC) '(24.5 31.2 28.7))
+;; => '((pacienteA . 24.5) (pacienteB . 31.2) (pacienteC . 28.7))
+
+```
+
+### Problema 4: Inserción al Final de la Cola (`cons-at-end`)
+
+Cuando procesamos flujos de eventos o un historial médico de forma temporal, los nuevos diagnósticos deben agregarse al final del expediente para preservar el orden cronológico.
+
+* **Instrucciones:** Escribe la función recursiva estructural `(cons-at-end v lst)` que agregue un elemento `v` al final de la lista `lst`. Piensa con cuidado cuál debe ser tu caso base para asegurar la reconstrucción de la lista.
+
+```racket
+;; Ejemplo de comportamiento esperado:
+;; (cons-at-end 'diabetes-tipo2 '(obesidad hipertension))
+;; => '(obesidad hipertension diabetes-tipo2)
+
+```
+
+### Problema 5: Localización de Eventos Clínicos (`positions-of`)
+
+Deseas analizar una secuencia cronológica de visitas médicas de NHANES e identificar exactamente en qué visitas (posiciones de índice base cero) se detectaron anomalías o se asignó un código de síntoma específico.
+
+* **Instrucciones:** Escribe la función `(positions-of s los)` que retorne una lista con los índices (0-based) de todas las ocurrencias del símbolo `s` en la lista `los`.
+* **Requisito del sistema:** Diseña esto mediante una **función interfaz** que invoque a una función auxiliar recursiva estructural que mantenga un contador acumulador para la posición actual en la fila.
+
+```racket
+;; Ejemplo de comportamiento esperado:
+;; (positions-of 'anemia '(sano anemia sano sano anemia)) => '(1 4)
+
+```
+
+---
+
+## Soluciones a los ejercicios
+
+```racket
+#lang racket
+(require rackunit)
+
+(provide every?
+         reject
+         partner
+         cons-at-end
+         positions-of)
+
+;; 1. every?
+(define (every? alob)
+  (if (null? alob)
+      #t
+      (and (first alob) (every? (rest alob)))))
+
+(check-true  (every? '(#t #t #t)))
+(check-false (every? '(#t #f #t)))
+
+;; 2. reject
+(define (reject func alox)
+  (cond [(null? alox) '()]
+        [(func (first alox)) (reject func (rest alox))]
+        [else (cons (first alox) (reject func (rest alox)))]))
+
+(check-equal? (reject negative? '(12 -1 -23 5 -44)) '(12 5))
+
+;; 3. partner
+(define (partner lst1 lst2)
+  (cond [(or (null? lst1) (null? lst2)) '()]
+        [else (cons (cons (first lst1) (first lst2))
+                    (partner (rest lst1) (rest lst2)))]))
+
+(check-equal? (partner '(pacienteA pacienteB) '(24.5 31.2))
+              '((pacienteA . 24.5) (pacienteB . 31.2)))
+
+;; 4. cons-at-end
+(define (cons-at-end v lst)
+  (if (null? lst)
+      (list v)
+      (cons (first lst) (cons-at-end v (rest lst)))))
+
+(check-equal? (cons-at-end 'diabetes-tipo2 '(obesidad hipertension))
+              '(obesidad hipertension diabetes-tipo2))
+
+;; 5. positions-of
+(define (positions-helper s alos index)
+  (cond [(null? alos) '()]
+        [(eq? s (first alos))
+         (cons index (positions-helper s (rest alos) (+ 1 index)))]
+        [else (positions-helper s (rest alos) (+ 1 index))]))
+
+(define (positions-of s los)
+  (positions-helper s los 0))
+
+(check-equal? (positions-of 'anemia '(sano anemia sano sano anemia)) '(1 4))
+```
