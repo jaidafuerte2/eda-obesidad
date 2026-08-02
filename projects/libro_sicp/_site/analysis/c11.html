@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila – SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c11.html">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">1. Construcción de abstracciones con procedimientos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 — Los Elementos Fundamentales de la Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.2 — Los Procedimientos y los Procesos que Generan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Recursión Eficiente y la Anatomía de un Minilenguaje</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introducción-de-triajes-complejos-a-motores-de-reglas" id="toc-introducción-de-triajes-complejos-a-motores-de-reglas" class="nav-link active" data-scroll-target="#introducción-de-triajes-complejos-a-motores-de-reglas">11.1 Introducción: De Triajes Complejos a Motores de Reglas</a></li>
+  <li><a href="#recursión-mutua-en-estructuras-anidadas-el-caso-map-nlist" id="toc-recursión-mutua-en-estructuras-anidadas-el-caso-map-nlist" class="nav-link" data-scroll-target="#recursión-mutua-en-estructuras-anidadas-el-caso-map-nlist">11.2 Recursión Mutua en Estructuras Anidadas: El Caso <code>map-nlist</code></a>
+  <ul class="collapse">
+  <li><a href="#la-anatomía-del-dato" id="toc-la-anatomía-del-dato" class="nav-link" data-scroll-target="#la-anatomía-del-dato">La Anatomía del Dato</a></li>
+  <li><a href="#el-problema-con-map" id="toc-el-problema-con-map" class="nav-link" data-scroll-target="#el-problema-con-map">El Problema con <code>map</code></a></li>
+  <li><a href="#la-solución-recursión-mutua" id="toc-la-solución-recursión-mutua" class="nav-link" data-scroll-target="#la-solución-recursión-mutua">La Solución: Recursión Mutua</a></li>
+  </ul></li>
+  <li><a href="#la-matriz-de-patrones-recursivos-y-derivación-de-programas-program-derivation" id="toc-la-matriz-de-patrones-recursivos-y-derivación-de-programas-program-derivation" class="nav-link" data-scroll-target="#la-matriz-de-patrones-recursivos-y-derivación-de-programas-program-derivation">11.3 La Matriz de Patrones Recursivos y Derivación de Programas (<em>Program Derivation</em>)</a>
+  <ul class="collapse">
+  <li><a href="#qué-es-la-derivación-de-programas-program-derivation" id="toc-qué-es-la-derivación-de-programas-program-derivation" class="nav-link" data-scroll-target="#qué-es-la-derivación-de-programas-program-derivation">¿Qué es la Derivación de Programas (<em>Program Derivation</em>)?</a></li>
+  <li><a href="#paso-a-paso-de-la-refactorización" id="toc-paso-a-paso-de-la-refactorización" class="nav-link" data-scroll-target="#paso-a-paso-de-la-refactorización">Paso a Paso de la Refactorización</a></li>
+  </ul></li>
+  <li><a href="#recursión-de-cola-tail-recursion-acumuladores-y-procedimientos-de-interfaz" id="toc-recursión-de-cola-tail-recursion-acumuladores-y-procedimientos-de-interfaz" class="nav-link" data-scroll-target="#recursión-de-cola-tail-recursion-acumuladores-y-procedimientos-de-interfaz">11.4 Recursión de Cola (<em>Tail Recursion</em>), Acumuladores y Procedimientos de Interfaz</a>
+  <ul class="collapse">
+  <li><a href="#el-problema-de-la-pila-el-síndrome-del-papel-acumulado" id="toc-el-problema-de-la-pila-el-síndrome-del-papel-acumulado" class="nav-link" data-scroll-target="#el-problema-de-la-pila-el-síndrome-del-papel-acumulado">El Problema de la Pila (El síndrome del papel acumulado)</a></li>
+  <li><a href="#la-solución-estilo-de-paso-de-acumulador-aps-procedimiento-de-interfaz" id="toc-la-solución-estilo-de-paso-de-acumulador-aps-procedimiento-de-interfaz" class="nav-link" data-scroll-target="#la-solución-estilo-de-paso-de-acumulador-aps-procedimiento-de-interfaz">La Solución: Estilo de Paso de Acumulador (APS) + Procedimiento de Interfaz</a></li>
+  <li><a href="#otro-ejemplo-clínicodatos-positions-of" id="toc-otro-ejemplo-clínicodatos-positions-of" class="nav-link" data-scroll-target="#otro-ejemplo-clínicodatos-positions-of">Otro Ejemplo Clínico/Datos: <code>positions-of</code></a></li>
+  </ul></li>
+  <li><a href="#bajo-el-capó-optimización-de-llamadas-de-cola-tco-y-rackettrace" id="toc-bajo-el-capó-optimización-de-llamadas-de-cola-tco-y-rackettrace" class="nav-link" data-scroll-target="#bajo-el-capó-optimización-de-llamadas-de-cola-tco-y-rackettrace">11.5 Bajo el Capó: Optimización de Llamadas de Cola (TCO) y <code>racket/trace</code></a>
+  <ul class="collapse">
+  <li><a href="#cómo-funciona-la-tco-a-nivel-de-memoria" id="toc-cómo-funciona-la-tco-a-nivel-de-memoria" class="nav-link" data-scroll-target="#cómo-funciona-la-tco-a-nivel-de-memoria">¿Cómo funciona la TCO a nivel de memoria?</a></li>
+  <li><a href="#viéndolo-en-vivo-con-rackettrace" id="toc-viéndolo-en-vivo-con-rackettrace" class="nav-link" data-scroll-target="#viéndolo-en-vivo-con-rackettrace">Viéndolo en vivo con <code>racket/trace</code></a></li>
+  </ul></li>
+  <li><a href="#construyendo-el-motor-semántico-aplicaciones-en-datalog-y-nhanes" id="toc-construyendo-el-motor-semántico-aplicaciones-en-datalog-y-nhanes" class="nav-link" data-scroll-target="#construyendo-el-motor-semántico-aplicaciones-en-datalog-y-nhanes">11.6 Construyendo el Motor Semántico: Aplicaciones en Datalog y NHANES</a></li>
+  <li><a href="#retos-de-código" id="toc-retos-de-código" class="nav-link" data-scroll-target="#retos-de-código">11.7 Retos de Código</a>
+  <ul class="collapse">
+  <li><a href="#reto-1-verificación-de-prefijos-prefix-of" id="toc-reto-1-verificación-de-prefijos-prefix-of" class="nav-link" data-scroll-target="#reto-1-verificación-de-prefijos-prefix-of">Reto 1: Verificación de Prefijos (<code>prefix-of?</code>)</a></li>
+  <li><a href="#reto-2-árboles-de-criterios-diagnósticos-includes-course-includes-rule" id="toc-reto-2-árboles-de-criterios-diagnósticos-includes-course-includes-rule" class="nav-link" data-scroll-target="#reto-2-árboles-de-criterios-diagnósticos-includes-course-includes-rule">Reto 2: Árboles de Criterios Diagnósticos (<code>includes-course?</code> / <code>includes-rule?</code>)</a></li>
+  <li><a href="#reto-3-transformador-de-expresiones-lógicas-prefix-infix" id="toc-reto-3-transformador-de-expresiones-lógicas-prefix-infix" class="nav-link" data-scroll-target="#reto-3-transformador-de-expresiones-lógicas-prefix-infix">Reto 3: Transformador de Expresiones Lógicas (<code>prefix-&gt;infix</code>)</a></li>
+  </ul></li>
+  <li><a href="#conclusión-del-capítulo" id="toc-conclusión-del-capítulo" class="nav-link" data-scroll-target="#conclusión-del-capítulo">Conclusión del Capítulo</a></li>
+  <li><a href="#ejercicios-prácticos-guiados-plantillas-de-trabajo" id="toc-ejercicios-prácticos-guiados-plantillas-de-trabajo" class="nav-link" data-scroll-target="#ejercicios-prácticos-guiados-plantillas-de-trabajo">11.8 Ejercicios Prácticos Guiados (Plantillas de Trabajo)</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-conteo-de-pacientes-con-criterio-clínico-recursión-de-cola-acumulador" id="toc-ejercicio-1-conteo-de-pacientes-con-criterio-clínico-recursión-de-cola-acumulador" class="nav-link" data-scroll-target="#ejercicio-1-conteo-de-pacientes-con-criterio-clínico-recursión-de-cola-acumulador">Ejercicio 1: Conteo de Pacientes con Criterio Clínico (Recursión de Cola + Acumulador)</a></li>
+  <li><a href="#ejercicio-2-búsqueda-de-biomarcadores-en-expedientes-anidados-recursión-mutua" id="toc-ejercicio-2-búsqueda-de-biomarcadores-en-expedientes-anidados-recursión-mutua" class="nav-link" data-scroll-target="#ejercicio-2-búsqueda-de-biomarcadores-en-expedientes-anidados-recursión-mutua">Ejercicio 2: Búsqueda de Biomarcadores en Expedientes Anidados (Recursión Mutua)</a></li>
+  <li><a href="#ejercicio-3-transformación-de-reglas-lógicas-para-datalog-prefix-infix" id="toc-ejercicio-3-transformación-de-reglas-lógicas-para-datalog-prefix-infix" class="nav-link" data-scroll-target="#ejercicio-3-transformación-de-reglas-lógicas-para-datalog-prefix-infix">Ejercicio 3: Transformación de Reglas Lógicas para Datalog (<code>prefix-&gt;infix</code>)</a></li>
+  </ul></li>
+  <li><a href="#soluciones-a-los-ejercicios-prácticos" id="toc-soluciones-a-los-ejercicios-prácticos" class="nav-link" data-scroll-target="#soluciones-a-los-ejercicios-prácticos">Soluciones a los Ejercicios Prácticos</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c11.html">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Olvídate de demostraciones matemáticas de tres páginas. Aquí vamos a tratar la recursión como un procedimiento diagnóstico: eficiente, estructurado y diseñado para que tu motor semántico no “sature la UCI” (es decir, no lance un <em>Stack Overflow</em>) cuando procese miles de registros de la encuesta NHANES.</p>
+<hr>
+<section id="introducción-de-triajes-complejos-a-motores-de-reglas" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-de-triajes-complejos-a-motores-de-reglas">11.1 Introducción: De Triajes Complejos a Motores de Reglas</h2>
+<p>En la programación imperativa tradicional (como el R básico o Python), cuando quieres procesar una lista usas un bucle <code>for</code> o <code>while</code>. Vas mutando un índice, actualizando un contador y recorriendo fila por fila.</p>
+<p>El problema surge cuando tus datos <strong>no son una tabla plana</strong>.</p>
+<p>Piensa en el expediente clínico de un paciente con síndrome metabólico. No es un vector simple; es un árbol jerárquico:</p>
+<ul>
+<li><p>Historial del paciente</p></li>
+<li><p>Exámenes de laboratorio</p></li>
+<li><p>Perfil lipídico (Colesterol, Triglicéridos)</p></li>
+<li><p>Panel metabólico (Glucosa en ayunas, HbA1c)</p></li>
+<li><p>Antecedentes familiares</p></li>
+<li><p>Hipertensión, Diabetes Tipo 2</p></li>
+</ul>
+<p>Si quieres aplicar una regla de conversión o transformar cada valor numérico en este expediente, un bucle <code>for</code> convencional se vuelve un dolor de cabeza lleno de índices anidados. En la programación funcional (y en los motores lógicos como Datalog), <strong>la recursión es el bucle nativo</strong>.</p>
+<p>Hoy aprenderemos a dominar la recursión en estructuras anidadas y, más importante aún, a escribir funciones recursivas tan optimizadas que el intérprete de Racket las ejecutará como si fueran bucles <code>while</code> ultra-rápidos a nivel de ensamblador.</p>
+<hr>
+</section>
+<section id="recursión-mutua-en-estructuras-anidadas-el-caso-map-nlist" class="level2">
+<h2 class="anchored" data-anchor-id="recursión-mutua-en-estructuras-anidadas-el-caso-map-nlist">11.2 Recursión Mutua en Estructuras Anidadas: El Caso <code>map-nlist</code></h2>
+<p>En la sesión anterior trabajamos con <code>s-lists</code> (listas de símbolos). Hoy trabajaremos con las <strong><code>n-lists</code></strong> (listas numéricas anidadas).</p>
+<section id="la-anatomía-del-dato" class="level3">
+<h3 class="anchored" data-anchor-id="la-anatomía-del-dato">La Anatomía del Dato</h3>
+<p>Imagina que recibes un lote de datos de laboratorios de NHANES donde algunos valores están agrupados por sub-paneles analíticos. Definimos formalmente una <code>n-list</code> de forma inductiva:</p>
+<pre class="text"><code>&lt;n-list&gt;     ::= () | (&lt;number-exp&gt; . &lt;n-list&gt;)
+&lt;number-exp&gt; ::= &lt;number&gt; | &lt;n-list&gt;</code></pre>
+<p>Traducido al español clínico:</p>
+<ol type="1">
+<li><p>Una <code>n-list</code> es una lista vacía <code>()</code>, o una pareja cuyo primer elemento es una “expresión numérica” (<code>number-exp</code>) y cuyo resto es otra <code>n-list</code>.</p></li>
+<li><p>Una “expresión numérica” es: <strong>o bien un número directo</strong> (ej. cifra de glucosa <code>105</code>), <strong>o bien otra <code>n-list</code> completa</strong> sub-anidada.</p></li>
+</ol>
+</section>
+<section id="el-problema-con-map" class="level3">
+<h3 class="anchored" data-anchor-id="el-problema-con-map">El Problema con <code>map</code></h3>
+<p>El <code>map</code> estándar de Racket sabe iterar sobre listas planas. Pero si le pasas <code>'(1 (4 (9 16)) 25)</code>, colapsa porque no sabe cómo “entrar” a la sub-lista <code>(4 (9 16))</code> sin tratarla como un bloque opaco.</p>
+<p>Necesitamos un <code>map-nlist</code> que aplique una función <span class="math inline">\(f\)</span> (por ejemplo, elevar al cuadrado o verificar paridad) a <strong>cada número</strong>, sin importar qué tan profundo esté escondido en la estructura, preservando intacta la forma del árbol de datos.</p>
+</section>
+<section id="la-solución-recursión-mutua" class="level3">
+<h3 class="anchored" data-anchor-id="la-solución-recursión-mutua">La Solución: Recursión Mutua</h3>
+<p>Como la definición del dato es <em>mutuamente inductiva</em> (<code>n-list</code> usa <code>number-exp</code>, y <code>number-exp</code> puede contener una <code>n-list</code>), la arquitectura limpia exige <strong>dos funciones que se llamen la una a la otra</strong>:</p>
+<ol type="1">
+<li><p><code>map-nlist</code>: Recorre la estructura del contenedor (la lista).</p></li>
+<li><p><code>map-numexp</code>: Evalúa el contenido individual (el elemento).</p></li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; map-nlist: Aplica f a cada número dentro de una n-list</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>map-nlist f nlst<span class="op">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> nlst<span class="op">)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      '<span class="op">()</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">cons</span> <span class="op">(</span>map-numexp f <span class="op">(</span>first nlst<span class="op">))</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>map-nlist  f <span class="op">(</span>rest  nlst<span class="op">)))))</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; map-numexp: Procesa una expresión numérica</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>map-numexp f numexp<span class="op">)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">number?</span> numexp<span class="op">)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>f numexp<span class="op">)</span>            <span class="co">;; Si es número, aplica la función f</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>map-nlist f numexp<span class="op">)))</span> <span class="co">;; Si es una n-list anidada, delega a map-nlist</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas de verificación</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>map-nlist add1 '<span class="op">(</span><span class="dv">1</span> <span class="dv">4</span> <span class="dv">9</span> <span class="dv">16</span> <span class="dv">25</span> <span class="dv">36</span> <span class="dv">49</span> <span class="dv">64</span><span class="op">))</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="dv">2</span> <span class="dv">5</span> <span class="dv">10</span> <span class="dv">17</span> <span class="dv">26</span> <span class="dv">37</span> <span class="dv">50</span> <span class="dv">65</span><span class="op">))</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>map-nlist <span class="kw">even?</span> '<span class="op">(</span><span class="dv">1</span> <span class="op">(</span><span class="dv">4</span> <span class="op">(</span><span class="dv">9</span> <span class="op">(</span><span class="dv">16</span> <span class="dv">25</span><span class="op">))</span> <span class="dv">36</span> <span class="dv">49</span><span class="op">)</span> <span class="dv">64</span><span class="op">))</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="dv">#f</span> <span class="op">(</span><span class="dv">#t</span> <span class="op">(</span><span class="dv">#f</span> <span class="op">(</span><span class="dv">#t</span> <span class="dv">#f</span><span class="op">))</span> <span class="dv">#t</span> <span class="dv">#f</span><span class="op">)</span> <span class="dv">#t</span><span class="op">))</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>map-nlist sqr '<span class="op">(</span><span class="dv">1</span> <span class="op">(</span><span class="dv">4</span> <span class="op">(</span><span class="dv">9</span> <span class="op">(</span><span class="dv">16</span> <span class="dv">25</span><span class="op">))</span> <span class="dv">36</span> <span class="dv">49</span><span class="op">)</span> <span class="dv">64</span><span class="op">))</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="dv">1</span> <span class="op">(</span><span class="dv">16</span> <span class="op">(</span><span class="dv">81</span> <span class="op">(</span><span class="dv">256</span> <span class="dv">625</span><span class="op">))</span> <span class="dv">1296</span> <span class="dv">2401</span><span class="op">)</span> <span class="dv">4096</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Notas de Diagnóstico:</strong> Fíjate en la división de trabajo. <code>map-nlist</code> nunca toca un número directamente; solo sabe desarmar listas con <code>first</code> y <code>rest</code>. Por su parte, <code>map-numexp</code> es el único que “ve” los números y ejecuta <code>(f numexp)</code>. Esta separación de responsabilidades hace que el código sea modular y casi imposible de romper.</p>
+</blockquote>
+<p>Probémoslo con datos de glucosa anidados:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función para clasificar glucosa alterada en ayunas (&gt; 100 mg/dL)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>glucosa-alta? val<span class="op">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(&gt;</span> val <span class="dv">100</span><span class="op">))</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>map-nlist glucosa-alta? '<span class="op">(</span><span class="dv">95</span> <span class="op">(</span><span class="dv">105</span> <span class="op">(</span><span class="dv">110</span> <span class="dv">90</span><span class="op">))</span> <span class="dv">88</span> <span class="dv">126</span><span class="op">))</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Resultado: '(#f (#t (#t #f)) #f #t)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="la-matriz-de-patrones-recursivos-y-derivación-de-programas-program-derivation" class="level2">
+<h2 class="anchored" data-anchor-id="la-matriz-de-patrones-recursivos-y-derivación-de-programas-program-derivation">11.3 La Matriz de Patrones Recursivos y Derivación de Programas (<em>Program Derivation</em>)</h2>
+<p>A estas alturas del curso, ya tenemos una “caja de herramientas” con 4 patrones principales para diseñar funciones sobre datos inductivos.</p>
+<pre class="text"><code>               [ Recursión Estructural ] (Estrategia Base)
+                          /         \
+                         /           \
+  (Si la estructura es  /             \ (Si la función requiere
+   mutuamente inductiva)               \ un argumento extra)
+                       v                 v
+            [ Recursión Mutua ]    [ Procedimiento de Interfaz ]
+                       |
+  (Si el costo de las  |
+   llamadas es alto)   v
+            [ Derivación de Programas ]</code></pre>
+<section id="qué-es-la-derivación-de-programas-program-derivation" class="level3">
+<h3 class="anchored" data-anchor-id="qué-es-la-derivación-de-programas-program-derivation">¿Qué es la Derivación de Programas (<em>Program Derivation</em>)?</h3>
+<p>La <strong>Recursión Mutua</strong> es elegante y limpia. Sin embargo, cada llamada a una función secundaria agrega un pequeño costo en tiempo de ejecución (crear una trama en la pila, pasar argumentos, saltar en memoria). Si estás evaluando un árbol de reglas lógicas con millones de nodos en NHANES, ese “ping-pong” entre <code>map-nlist</code> y <code>map-numexp</code> puede costar rendimiento.</p>
+<p>La <strong>Derivación de Programas</strong> es la técnica formal para refactorizar dos funciones mutuamente recursivas en <strong>una sola función</strong>, mediante sustitución algebraica de expresiones (lo que en C++ o Java se conoce como <em>inlining</em>).</p>
+</section>
+<section id="paso-a-paso-de-la-refactorización" class="level3">
+<h3 class="anchored" data-anchor-id="paso-a-paso-de-la-refactorización">Paso a Paso de la Refactorización</h3>
+<p>Demostremos el proceso con un ejemplo conceptual simple <code>(2n-plus-1 n)</code> antes de aplicarlo a <code>map-nlist</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span><span class="dv">2</span>n-plus-1 n<span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>add1 <span class="op">(*</span> <span class="dv">2</span> n<span class="op">)))</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; Sustitución 1: Reemplazar el nombre por una expresión lambda equivalente</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">((</span><span class="kw">lambda</span> <span class="op">(</span>n<span class="op">)</span> <span class="op">(</span>add1 <span class="op">(*</span> <span class="dv">2</span> n<span class="op">)))</span> <span class="dv">15</span><span class="op">)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; Sustitución 2: Inyectar el argumento 15 directamente en el cuerpo</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>add1 <span class="op">(*</span> <span class="dv">2</span> <span class="dv">15</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Aplicando esta misma técnica de sustitución a <code>map-nlist</code>, reemplazamos la llamada <code>(map-numexp f (first nlst))</code> por su cuerpo evaluado:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Versión refactorizada en UNA sola función tras derivación de programa:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>map-nlist f nlst<span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> nlst<span class="op">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      '<span class="op">()</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">cons</span> <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">number?</span> <span class="op">(</span>first nlst<span class="op">))</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                <span class="op">(</span>f <span class="op">(</span>first nlst<span class="op">))</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                <span class="op">(</span>map-nlist f <span class="op">(</span>first nlst<span class="op">)))</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>map-nlist f <span class="op">(</span>rest nlst<span class="op">)))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>¡Voilá! Hemos eliminado por completo la función <code>map-numexp</code>.</p>
+<blockquote class="blockquote">
+<p><strong>Regla de Oro del Copiloto:</strong> Usa la Derivación de Programas solo cuando el rendimiento sea crítico o cuando la función resultante siga siendo legible. La recursión mutua suele ser más fácil de mantener; la derivación es tu “modo de alto rendimiento”.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="recursión-de-cola-tail-recursion-acumuladores-y-procedimientos-de-interfaz" class="level2">
+<h2 class="anchored" data-anchor-id="recursión-de-cola-tail-recursion-acumuladores-y-procedimientos-de-interfaz">11.4 Recursión de Cola (<em>Tail Recursion</em>), Acumuladores y Procedimientos de Interfaz</h2>
+<p>Abran paso, porque aquí llegamos al concepto más vital para la arquitectura de lenguajes de programación: <strong>La Recursión de Cola (<em>Tail Recursion</em>)</strong>.</p>
+<section id="el-problema-de-la-pila-el-síndrome-del-papel-acumulado" class="level3">
+<h3 class="anchored" data-anchor-id="el-problema-de-la-pila-el-síndrome-del-papel-acumulado">El Problema de la Pila (El síndrome del papel acumulado)</h3>
+<p>Analicemos la función <code>factorial</code> tradicional de <code>factorial.rkt</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>factorial n<span class="op">)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">zero?</span> n<span class="op">)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>      <span class="dv">1</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      <span class="op">(*</span> n <span class="op">(</span>factorial <span class="op">(</span>sub1 n<span class="op">)))))</span> <span class="co">;; &lt;- ¡Ojo a la multiplicación pendiente!</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Si ejecutas <code>(factorial 5)</code>, Racket no puede calcular el resultado de inmediato. Tiene que hacer esto:</p>
+<pre class="text"><code>(factorial 5)
+(* 5 (factorial 4))
+(* 5 (* 4 (factorial 3)))
+(* 5 (* 4 (* 3 (factorial 2))))
+(* 5 (* 4 (* 3 (* 2 (factorial 1)))))
+(* 5 (* 4 (* 3 (* 2 (* 1 (factorial 0))))))
+(* 5 (* 4 (* 3 (* 2 (* 1 1)))))
+(* 5 (* 4 (* 3 (* 2 1))))
+...
+120</code></pre>
+<p>Observa la forma de “flecha” que se crea. Racket tiene que <strong>recordar</strong> las multiplicaciones pendientes (<code>* 5 ...</code>, <code>* 4 ...</code>) guardándolas en la memoria (la pila de llamadas o <em>call stack</em>). Si calculas el factorial de <code>100,000</code> o procesas un archivo masivo de NHANES con esta estructura, la pila se llena de operaciones pendientes hasta que el sistema colapsa por <em>Stack Overflow</em>.</p>
+</section>
+<section id="la-solución-estilo-de-paso-de-acumulador-aps-procedimiento-de-interfaz" class="level3">
+<h3 class="anchored" data-anchor-id="la-solución-estilo-de-paso-de-acumulador-aps-procedimiento-de-interfaz">La Solución: Estilo de Paso de Acumulador (APS) + Procedimiento de Interfaz</h3>
+<p>¿Cómo evita un auditor médico acumular montañas de pendientes? <strong>Lleva una libreta de notas (un acumulador) y va calculando el total sobre la marcha.</strong></p>
+<p>Comparemos la versión imperativa en Python con su equivalente funcional en Racket:</p>
+<p><strong>En Python (Bucle <code>while</code> imperativo):</strong></p>
+<pre class="text"><code>n = 6
+answer = 1
+while (n &gt; 0):
+    answer = n * answer
+    n = n - 1</code></pre>
+<p><strong>En Racket (Recursión de cola con acumulador + Procedimiento de Interfaz):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; 1. La función trabajadora (Tail Recursive con Acumulador)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>factorial-aps n answer<span class="op">)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">zero?</span> n<span class="op">)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      answer</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>factorial-aps <span class="op">(</span>sub1 n<span class="op">)</span> <span class="op">(*</span> n answer<span class="op">))))</span> <span class="co">;; &lt;- ¡Llamada de cola pura!</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; 2. El Procedimiento de Interfaz (Oculta el acumulador al usuario final)</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>factorial n<span class="op">)</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>factorial-aps n <span class="dv">1</span><span class="op">))</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>factorial <span class="dv">10</span><span class="op">)</span> <span class="dv">3628800</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Miren la diferencia radical en la secuencia de ejecución para <code>(factorial-aps 6 1)</code>:</p>
+<pre class="text"><code>(factorial-aps 6 1)
+(factorial-aps 5 6)
+(factorial-aps 4 30)
+(factorial-aps 3 120)
+(factorial-aps 2 360)
+(factorial-aps 1 720)
+(factorial-aps 0 720)
+=&gt; 720</code></pre>
+<p>¡No hay operaciones pendientes! En cada paso, la función calcula el nuevo valor de <code>answer</code> (<code>(* n answer)</code>) y se lo pasa a la siguiente llamada. Cuando llega al caso base (<code>n = 0</code>), el resultado final <strong>ya está listo</strong> en <code>answer</code>.</p>
+</section>
+<section id="otro-ejemplo-clínicodatos-positions-of" class="level3">
+<h3 class="anchored" data-anchor-id="otro-ejemplo-clínicodatos-positions-of">Otro Ejemplo Clínico/Datos: <code>positions-of</code></h3>
+<p>Imagina que quieres encontrar las posiciones exactas de un biomarcador dentro de un panel analítico. Usamos un procedimiento de interfaz <code>positions-of</code> que llama a <code>positions-of-at</code> inicializando el acumulador de posición en <code>0</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>positions-of s los<span class="op">)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>positions-of-at s los <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>positions-of-at s los position<span class="op">)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> los<span class="op">)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>      '<span class="op">()</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">eq?</span> s <span class="op">(</span>first los<span class="op">))</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span><span class="kw">cons</span> position</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">(</span>positions-of-at s <span class="op">(</span>rest los<span class="op">)</span> <span class="op">(</span>add1 position<span class="op">)))</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span>positions-of-at s <span class="op">(</span>rest los<span class="op">)</span> <span class="op">(</span>add1 position<span class="op">)))))</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>positions-of 'a '<span class="op">(</span>a b a c d a e f g a h i j k<span class="op">))</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="dv">0</span> <span class="dv">2</span> <span class="dv">5</span> <span class="dv">9</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="bajo-el-capó-optimización-de-llamadas-de-cola-tco-y-rackettrace" class="level2">
+<h2 class="anchored" data-anchor-id="bajo-el-capó-optimización-de-llamadas-de-cola-tco-y-rackettrace">11.5 Bajo el Capó: Optimización de Llamadas de Cola (TCO) y <code>racket/trace</code></h2>
+<p>Una llamada se considera una <strong>Llamada de Cola (<em>Tail Call</em>)</strong> si es la <em>última acción</em> que debe evaluar una función antes de retornar un valor.</p>
+<p>Cuando una función es <strong>recursiva de cola</strong>, el intérprete de Racket aplica una optimización brutal llamada <strong>Tail Call Optimization (TCO)</strong>.</p>
+<section id="cómo-funciona-la-tco-a-nivel-de-memoria" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-funciona-la-tco-a-nivel-de-memoria">¿Cómo funciona la TCO a nivel de memoria?</h3>
+<p>En lugar de crear un nuevo bloque de memoria (stack frame) para cada llamada recursiva, Racket <strong>reutiliza el mismo bloque de memoria existente</strong>:</p>
+<ol type="1">
+<li><p>Sobrescribe las variables actuales con los nuevos argumentos (<code>n := n - 1</code> y <code>answer := n * answer</code>).</p></li>
+<li><p>Ejecuta un salto directo (<code>goto</code>) al inicio de la función.</p></li>
+</ol>
+<p>En otras palabras: <strong>¡Racket transforma internamente tu función recursiva en un bucle <code>while</code> de bajísimo consumo de memoria!</strong></p>
+<blockquote class="blockquote">
+<p><strong>¿Por qué Python o Java no hacen esto por defecto?</strong> Idiomas como Python o Java priorizan mostrar el <em>stack trace</em> completo cuando hay un error, lo cual requiere mantener cada marco de la pila guardado. Los lenguajes funcionales como Racket o Scheme están diseñados desde el estándar para garantizar TCO obligatorio, permitiéndote procesar millones de iteraciones con espacio de memoria constante <span class="math inline">\(\mathcal{O}(1)\)</span>.</p>
+</blockquote>
+</section>
+<section id="viéndolo-en-vivo-con-rackettrace" class="level3">
+<h3 class="anchored" data-anchor-id="viéndolo-en-vivo-con-rackettrace">Viéndolo en vivo con <code>racket/trace</code></h3>
+<p>Racket nos permite “radiografiar” la pila de llamadas usando el módulo <code>racket/trace</code>.</p>
+<p>Si ejecutamos esto en la consola:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> racket/trace<span class="op">)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>trace factorial<span class="op">)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>trace factorial-aps<span class="op">)</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>factorial <span class="dv">5</span><span class="op">)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>factorial-aps <span class="dv">5</span> <span class="dv">1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Salida en la consola:</strong></p>
+<pre class="text"><code>&gt; (factorial 5)
+|(factorial 5)
+| (factorial 4)
+| |(factorial 3)
+| | (factorial 2)
+| | |(factorial 1)
+| | | (factorial 0)
+| | | 1
+| | |1
+| | 2
+| |6
+| 24
+|120
+
+&gt; (factorial-aps 5 1)
+|(factorial-aps 5 1)
+|(factorial-aps 4 5)
+|(factorial-aps 3 20)
+|(factorial-aps 2 60)
+|(factorial-aps 1 120)
+|(factorial-aps 0 120)
+|120</code></pre>
+<p>¿Ves las sangrías en <code>factorial</code>? Cada nivel representa memoria retenida en la pila. En <code>factorial-aps</code>, todas las llamadas están alineadas al mismo nivel. <strong>Cero acumulación de memoria.</strong></p>
+<hr>
+</section>
+</section>
+<section id="construyendo-el-motor-semántico-aplicaciones-en-datalog-y-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="construyendo-el-motor-semántico-aplicaciones-en-datalog-y-nhanes">11.6 Construyendo el Motor Semántico: Aplicaciones en Datalog y NHANES</h2>
+<p>¿Por qué es esto crucial para nuestra meta de crear un <strong>motor semántico en Datalog</strong> para NHANES?</p>
+<p>En Datalog, las reglas lógicas se evalúan iterando recursivamente sobre conjuntos de hechos hasta alcanzar un “punto fijo” (<em>fixed-point evaluation</em>). Por ejemplo, para inferir si un paciente está en riesgo cardiovascular basándose en reglas encadenadas:</p>
+<p><span class="math display">\[\text{RiesgoCardio}(x) \leftarrow \text{Obeso}(x) \land \text{Hipertenso}(x)\]</span></p>
+<p><span class="math display">\[\text{AtenciónPrioritaria}(x) \leftarrow \text{RiesgoCardio}(x) \land \text{GlucosaAlterada}(x)\]</span></p>
+<p>Cuando ejecutes el motor sobre 50,000 registros de NHANES, las consultas lógicas evaluarán cadenas de inferencias recursivas. Si construyes los evaluadores del motor con <strong>recursión de cola (APS)</strong>, tu motor podrá procesar bases de datos masivas en milisegundos sin despeinarse.</p>
+<hr>
+</section>
+<section id="retos-de-código" class="level2">
+<h2 class="anchored" data-anchor-id="retos-de-código">11.7 Retos de Código</h2>
+<p>Para consolidar el aprendizaje, resolveremos los patrones clave planteados en la Tarea 5 de la clase.</p>
+<section id="reto-1-verificación-de-prefijos-prefix-of" class="level3">
+<h3 class="anchored" data-anchor-id="reto-1-verificación-de-prefijos-prefix-of">Reto 1: Verificación de Prefijos (<code>prefix-of?</code>)</h3>
+<p><strong>Contexto:</strong> Necesitamos verificar si una secuencia de códigos de diagnóstico ICD-10 (o materias de prerrequisito) es el inicio exacto de la historia de un paciente.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Problema 1: prefix-of?</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">;; Determina si lst1 es el prefijo inicial de lst2.</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>prefix-of? lst1 lst2<span class="op">)</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">cond</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">[(</span><span class="kw">null?</span> lst1<span class="op">)</span> <span class="dv">#t</span><span class="op">]</span> <span class="co">;; La lista vacía es prefijo de cualquier lista</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">[(</span><span class="kw">null?</span> lst2<span class="op">)</span> <span class="dv">#f</span><span class="op">]</span> <span class="co">;; Si lst2 se acaba antes que lst1, no es prefijo</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">[(</span><span class="kw">equal?</span> <span class="op">(</span>first lst1<span class="op">)</span> <span class="op">(</span>first lst2<span class="op">))</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>prefix-of? <span class="op">(</span>rest lst1<span class="op">)</span> <span class="op">(</span>rest lst2<span class="op">))]</span> <span class="co">;; ¡Llamada de cola!</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">[</span><span class="kw">else</span> <span class="dv">#f</span><span class="op">]))</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>prefix-of? '<span class="op">(</span>E11 N18<span class="op">)</span> '<span class="op">(</span>E11 N18 I10 I25<span class="op">))</span> <span class="co">;; #t (Diabetes -&gt; Enfermedad Renal)</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>prefix-of? '<span class="op">(</span>E11 N18<span class="op">)</span> '<span class="op">(</span>E11 I10 N18<span class="op">))</span>     <span class="co">;; #f</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="reto-2-árboles-de-criterios-diagnósticos-includes-course-includes-rule" class="level3">
+<h3 class="anchored" data-anchor-id="reto-2-árboles-de-criterios-diagnósticos-includes-course-includes-rule">Reto 2: Árboles de Criterios Diagnósticos (<code>includes-course?</code> / <code>includes-rule?</code>)</h3>
+<p><strong>Contexto:</strong> Un criterio diagnóstico de síndrome metabólico viene estructurado en un árbol anidado de sub-reglas. Queremos verificar si una regla específica (ej. <code>'hipertension</code>) está dentro del árbol de criterios.</p>
+<p>Debemos usar <strong>recursión mutua</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Problema 2: includes-course? (mutuamente recursivo)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>includes-course? course requirements<span class="op">)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> requirements<span class="op">)</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="dv">#f</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">or</span> <span class="op">(</span>includes-course-ce? course <span class="op">(</span>first requirements<span class="op">))</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span>includes-course? course <span class="op">(</span>rest requirements<span class="op">)))))</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>includes-course-ce? course course-exp<span class="op">)</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">symbol?</span> course-exp<span class="op">)</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">eq?</span> course course-exp<span class="op">)</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>includes-course? course course-exp<span class="op">)))</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba con un árbol de reglas/cursos</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> arbol-criterios</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>obesidad_abdominal trigliceridos_altos<span class="op">)</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    presion_alta</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">((</span>glucosa_ayunas_alta hdl_bajo<span class="op">))))</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>includes-course? 'presion_alta arbol-criterios<span class="op">)</span> <span class="co">;; #t</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>includes-course? 'fumador arbol-criterios<span class="op">)</span>      <span class="co">;; #f</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="reto-3-transformador-de-expresiones-lógicas-prefix-infix" class="level3">
+<h3 class="anchored" data-anchor-id="reto-3-transformador-de-expresiones-lógicas-prefix-infix">Reto 3: Transformador de Expresiones Lógicas (<code>prefix-&gt;infix</code>)</h3>
+<p><strong>Contexto:</strong> En nuestro motor semántico, muchas reglas se leen mejor en notación infija <code>(Glucosa &gt; 100)</code> aunque el motor las procese internamente en notación prefija <code>(&gt; Glucosa 100)</code>. Escribe un convertidor mutuamente recursivo que transforme expresiones aritméticas/lógicas prefijas a infijas.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Problema 5: prefix-&gt;infix</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">;; &lt;prefix-exp&gt; ::= (&lt;operator&gt; &lt;number-exp&gt; &lt;number-exp&gt;)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>prefix-&gt;infix binary-exp<span class="op">)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">list</span> <span class="op">(</span>number-expr-&gt;infix <span class="op">(</span><span class="kw">cadr</span> binary-exp<span class="op">))</span>  <span class="co">;; Primer argumento</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">car</span> binary-exp<span class="op">)</span>                       <span class="co">;; Operador al centro</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>number-expr-&gt;infix <span class="op">(</span><span class="kw">caddr</span> binary-exp<span class="op">))))</span> <span class="co">;; Segundo argumento</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>number-expr-&gt;infix num-exp<span class="op">)</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">number?</span> num-exp<span class="op">)</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>      num-exp</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>prefix-&gt;infix num-exp<span class="op">)))</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>prefix-&gt;infix '<span class="op">(+</span> <span class="dv">4</span> <span class="dv">5</span><span class="op">))</span>             <span class="co">;; '(4 + 5)</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>prefix-&gt;infix '<span class="op">(+</span> <span class="op">(+</span> <span class="dv">4</span> <span class="dv">5</span><span class="op">)</span> <span class="op">(*</span> <span class="dv">7</span> <span class="dv">6</span><span class="op">)))</span> <span class="co">;; '((4 + 5) + (7 * 6))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="conclusión-del-capítulo" class="level2">
+<h2 class="anchored" data-anchor-id="conclusión-del-capítulo">Conclusión del Capítulo</h2>
+<p>En este capítulo hemos dominado la transición de la <strong>recursión pura e ineficiente</strong> a la <strong>recursión optimizada de grado industrial</strong>:</p>
+<ol type="1">
+<li><p>Aprendimos a estructurar datos anidados mediante <strong>recursión mutua</strong>.</p></li>
+<li><p>Refactorizamos funciones con <strong>derivación de programas</strong> para ganar velocidad.</p></li>
+<li><p>Entendimos la <strong>Recursión de Cola (TCO)</strong>, el uso de <strong>acumuladores</strong> y los <strong>procedimientos de interfaz</strong> para garantizar que nuestro código corra con espacio de memoria constante <span class="math inline">\(\mathcal{O}(1)\)</span>.</p></li>
+</ol>
+<p>¡Tu motor semántico de Datalog para NHANES acaba de ganar un turbo en el motor! 🚀 e trabajo:</p>
+</section>
+<section id="ejercicios-prácticos-guiados-plantillas-de-trabajo" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios-prácticos-guiados-plantillas-de-trabajo">11.8 Ejercicios Prácticos Guiados (Plantillas de Trabajo)</h2>
+<p>En esta sección tienes tres ejercicios diseñados para consolidar los patrones clave del capítulo: <strong>Recursión de Cola con Acumuladores</strong>, <strong>Recursión Mutua sobre Datos Anidados</strong> y <strong>Transformación/Derivación de Expresiones</strong>.</p>
+<p>Escribe tu código en los espacios indicados y ejecuta las pruebas de Rackunit para verificar si tus soluciones son correctas.</p>
+<hr>
+<section id="ejercicio-1-conteo-de-pacientes-con-criterio-clínico-recursión-de-cola-acumulador" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-conteo-de-pacientes-con-criterio-clínico-recursión-de-cola-acumulador">Ejercicio 1: Conteo de Pacientes con Criterio Clínico (Recursión de Cola + Acumulador)</h3>
+<p><strong>Escenario de datos:</strong></p>
+<p>Tienes una lista con cifras de Hemoglobina Glicosilada (<span class="math inline">\(\text{HbA1c}\)</span>) de una muestra de participantes de NHANES. Queremos contar cuántos pacientes superan el umbral de diabetes (<span class="math inline">\(\text{HbA1c} \ge 6.5\%\)</span>).</p>
+<p>Para asegurarnos de que la función no llene la pila de memoria si procesamos <span class="math inline">\(50,000\)</span> registros, debes diseñarla usando <strong>recursión de cola con un acumulador</strong> (<code>contar-diabeticos-aps</code>) e incluir un <strong>procedimiento de interfaz</strong> (<code>contar-diabeticos</code>) que inicialice el acumulador en <code>0</code>.</p>
+<p><strong>Tu plantilla de código:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; 1. Función trabajadora (Tail-Recursive con acumulador)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Recibe una lista de valores numéricos de HbA1c y un acumulador 'contador'</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contar-diabeticos-aps valores contador<span class="op">)</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; </span><span class="al">TODO</span><span class="co">: Implementa el caso base y las llamadas de cola con (add1 contador)</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; 2. Procedimiento de Interfaz (Interface Procedure)</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; Recibe únicamente la lista de valores e inicializa el acumulador</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contar-diabeticos valores<span class="op">)</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; </span><span class="al">TODO</span><span class="co">: Llama a contar-diabeticos-aps con el valor inicial correcto</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co">;; --- Pruebas de verificación (Descomenta para probar tu código) ---</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="co">; (check-equal? (contar-diabeticos '(5.2 6.8 5.7 7.1 6.5 5.9)) 3)</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="co">; (check-equal? (contar-diabeticos '(5.0 5.4 5.6)) 0)</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co">; (check-equal? (contar-diabeticos '()) 0)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-2-búsqueda-de-biomarcadores-en-expedientes-anidados-recursión-mutua" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-búsqueda-de-biomarcadores-en-expedientes-anidados-recursión-mutua">Ejercicio 2: Búsqueda de Biomarcadores en Expedientes Anidados (Recursión Mutua)</h3>
+<p><strong>Escenario de datos:</strong></p>
+<p>Los expedientes de NHANES no son planos. Tienes una estructura de “árbol de laboratorios” donde cada nodo puede ser un marcador individual (un símbolo como <code>'trigliceridos</code>) o una sub-lista de marcadores especializados.</p>
+<p>Queremos saber si un marcador específico está presente en la estructura del paciente.</p>
+<p><strong>Consigna:</strong> Implementa la función <code>contiene-marcador?</code> y su pareja <code>contiene-marcador-exp?</code> mediante <strong>recursión mutua</strong>.</p>
+<p><strong>Tu plantilla de código:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función A: Procesa la lista de componentes/sub-listas</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contiene-marcador? marcador expediente<span class="op">)</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; </span><span class="al">TODO</span><span class="co">: Verifica si el expediente está vacío.</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; De lo contrario, evalúa el primer elemento con contiene-marcador-exp?</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; y el resto con contiene-marcador? usando 'or'</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">#f</span><span class="op">)</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función B: Procesa una expresión individual (sea símbolo o sub-lista)</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contiene-marcador-exp? marcador <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; </span><span class="al">TODO</span><span class="co">: Si 'exp' es un símbolo, compara con eq?</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Si 'exp' es una lista, delega el trabajo a contiene-marcador?</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="dv">#f</span><span class="op">)</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">;; Estructura de prueba</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> lab-panel</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>glucosa_ayunas hba1c<span class="op">)</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>perfil_lipidico <span class="op">(</span>colesterol_total hdl ldl trigliceridos<span class="op">))</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    presion_arterial<span class="op">))</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">;; --- Pruebas de verificación (Descomenta para probar tu código) ---</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">; (check-true  (contiene-marcador? 'trigliceridos lab-panel))</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co">; (check-false (contiene-marcador? 'insulina lab-panel))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-3-transformación-de-reglas-lógicas-para-datalog-prefix-infix" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-transformación-de-reglas-lógicas-para-datalog-prefix-infix">Ejercicio 3: Transformación de Reglas Lógicas para Datalog (<code>prefix-&gt;infix</code>)</h3>
+<p><strong>Escenario de datos:</strong></p>
+<p>Un motor semántico de Datalog evaluará reglas en sintaxis de Árbol de Sintaxis Abstracta (AST) en notación prefija, como <code>(AND (&gt; glucosa 100) (&lt; hdl 40))</code>. Sin embargo, para los informes clínicos o para mostrarlos en la UI de Quarto, prefieres representarlos en formato legible (infijo): <code>((glucosa &gt; 100) AND (hdl &lt; 40))</code>.</p>
+<p><strong>Consigna:</strong> Escribe el par de funciones mutually recursive <code>regla-&gt;infija</code> y <code>expr-&gt;infija</code> que conviertan expresiones binarias prefijas a infijas.</p>
+<p><strong>Tu plantilla de código:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Convierte una regla binaria prefija: (operador arg1 arg2) -&gt; (arg1 operador arg2)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>regla-&gt;infija regla-binaria<span class="op">)</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; </span><span class="al">TODO</span><span class="co">: Usa 'list' para reestructurar la expresión prefija a infija.</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Recuerda procesar los argumentos 1 y 2 con expr-&gt;infija</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  '<span class="op">())</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; Procesa una expresión: si es número/símbolo se queda igual; si es lista, llama a regla-&gt;infija</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>expr-&gt;infija expr<span class="op">)</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; </span><span class="al">TODO</span><span class="co">: Si 'expr' es una lista, delega a regla-&gt;infija.</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Si es un átomo (símbolo o número), devuélvelo tal cual.</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  '<span class="op">())</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">;; --- Pruebas de verificación (Descomenta para probar tu código) ---</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">; (check-equal? (regla-&gt;infija '(&gt; glucosa 100)) </span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">;               '(glucosa &gt; 100))</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">; (check-equal? (regla-&gt;infija '(AND (&gt; glucosa 100) (&lt; hdl 40))) </span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">;               '((glucosa &gt; 100) AND (hdl &lt; 40)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="soluciones-a-los-ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="soluciones-a-los-ejercicios-prácticos">Soluciones a los Ejercicios Prácticos</h2>
+<p>A continuación se presentan las soluciones verificadas para los tres ejercicios de la sesión, implementadas en Racket con la suite de pruebas <code>rackunit</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">;; =============================================================================</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 1: Conteo de Pacientes (Recursión de Cola + Acumulador)</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; =============================================================================</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; 1. Función trabajadora (Tail-Recursive con acumulador)</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; Recibe una lista de valores numéricos de HbA1c y un acumulador 'contador'</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contar-diabeticos-aps valores contador<span class="op">)</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">cond</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">[(</span><span class="kw">null?</span> valores<span class="op">)</span> contador<span class="op">]</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">[(&gt;=</span> <span class="op">(</span>first valores<span class="op">)</span> <span class="fl">6.5</span><span class="op">)</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>contar-diabeticos-aps <span class="op">(</span>rest valores<span class="op">)</span> <span class="op">(+</span> <span class="dv">1</span> contador<span class="op">))]</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">[</span><span class="kw">else</span> </span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>contar-diabeticos-aps <span class="op">(</span>rest valores<span class="op">)</span> contador<span class="op">)]))</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">;; 2. Procedimiento de Interfaz (Interface Procedure)</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">;; Recibe únicamente la lista de valores e inicializa el acumulador</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contar-diabeticos valores<span class="op">)</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>contar-diabeticos-aps valores <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="co">;; --- Pruebas de verificación ---</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>contar-diabeticos '<span class="op">(</span><span class="fl">5.2</span> <span class="fl">6.8</span> <span class="fl">5.7</span> <span class="fl">7.1</span> <span class="fl">6.5</span> <span class="fl">5.9</span><span class="op">))</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>contar-diabeticos '<span class="op">(</span><span class="fl">5.0</span> <span class="fl">5.4</span> <span class="fl">5.6</span><span class="op">))</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>contar-diabeticos '<span class="op">())</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="co">;; =============================================================================</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 2: Búsqueda de Biomarcadores (Recursión Mutua)</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="co">;; =============================================================================</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función A: Procesa la lista de componentes/sub-listas</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contiene-marcador? marcador expediente<span class="op">)</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> expediente<span class="op">)</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>      <span class="dv">#f</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">or</span> <span class="op">(</span>contiene-marcador-exp? marcador <span class="op">(</span>first expediente<span class="op">))</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span>contiene-marcador? marcador <span class="op">(</span>rest expediente<span class="op">)))))</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función B: Procesa una expresión individual (sea símbolo o sub-lista)</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>contiene-marcador-exp? marcador <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">symbol?</span> <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">eq?</span> <span class="kw">exp</span> marcador<span class="op">)</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>contiene-marcador? marcador <span class="kw">exp</span><span class="op">)))</span></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a><span class="co">;; Estructura de prueba</span></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> lab-panel</span></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>glucosa_ayunas hba1c<span class="op">)</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>perfil_lipidico <span class="op">(</span>colesterol_total hdl ldl trigliceridos<span class="op">))</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>    presion_arterial<span class="op">))</span></span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a><span class="co">;; --- Pruebas de verificación ---</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-true  <span class="op">(</span>contiene-marcador? 'trigliceridos lab-panel<span class="op">))</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-false <span class="op">(</span>contiene-marcador? 'insulina lab-panel<span class="op">))</span></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a><span class="co">;; =============================================================================</span></span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 3: Transformación de Reglas (Prefija a Infija)</span></span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a><span class="co">;; =============================================================================</span></span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a><span class="co">;; Convierte una regla binaria prefija: (operador arg1 arg2) -&gt; (arg1 operador arg2)</span></span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>regla-&gt;infija regla-binaria<span class="op">)</span></span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> regla-binaria<span class="op">)</span></span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a>      '<span class="op">()</span></span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">list</span> <span class="op">(</span>expr-&gt;infija <span class="op">(</span><span class="kw">cadr</span> regla-binaria<span class="op">))</span></span>
+<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>first regla-binaria<span class="op">)</span></span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>expr-&gt;infija <span class="op">(</span><span class="kw">caddr</span> regla-binaria<span class="op">)))))</span></span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a><span class="co">;; Procesa una expresión: si es número/símbolo se queda igual; si es lista, llama a regla-&gt;infija</span></span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>expr-&gt;infija expr<span class="op">)</span></span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">list?</span> expr<span class="op">)</span></span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>regla-&gt;infija expr<span class="op">)</span></span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>      expr<span class="op">))</span></span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a><span class="co">;; --- Pruebas de verificación ---</span></span>
+<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>regla-&gt;infija '<span class="op">(&gt;</span> glucosa <span class="dv">100</span><span class="op">))</span> </span>
+<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span>glucosa <span class="op">&gt;</span> <span class="dv">100</span><span class="op">))</span></span>
+<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-77"><a href="#cb21-77" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>regla-&gt;infija '<span class="op">(</span>AND <span class="op">(&gt;</span> glucosa <span class="dv">100</span><span class="op">)</span> <span class="op">(&lt;</span> hdl <span class="dv">40</span><span class="op">)))</span> </span>
+<span id="cb21-78"><a href="#cb21-78" aria-hidden="true" tabindex="-1"></a>              '<span class="op">((</span>glucosa <span class="op">&gt;</span> <span class="dv">100</span><span class="op">)</span> AND <span class="op">(</span>hdl <span class="op">&lt;</span> <span class="dv">40</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

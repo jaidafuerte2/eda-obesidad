@@ -1,0 +1,504 @@
+---
+title: "12. Recursión Eficiente y la Anatomía de un Minilenguaje"
+format: html
+editor: visual
+---
+
+¡Hola, colega! Bienvenido a uno de los puntos de inflexión más importantes de todo nuestro trayecto. Si el curso fuera una rotación médica, hasta la sesión anterior estuvimos en la fase de **diagnóstico y uso de instrumental**: aprendimos la sintaxis de Racket, dominamos las funciones de orden superior y entendimos cómo recorrer datos de forma inductiva.
+
+A partir de hoy pasamos a la fase de **cirugía e ingeniería biomédica**: dejamos de ser meros "usuarios" de un lenguaje de programación para empezar a entender **cómo funcionan los lenguajes por dentro**. Este paso es fundamental para tu meta a largo plazo: construir un **motor semántico en Datalog** que te permita hacer consultas lógicas complejas sobre los datasets de NHANES.
+
+Ponte cómodo, sirve una taza de café y vamos a destripar el material de hoy.
+
+---
+
+## 12.1. El Triaje Algorítmico: El Problema del "Segundo Máximo"
+
+Imagina que tienes una serie temporal de mediciones de glucosa o presión arterial sistólica de un paciente en monitoreo intensivo, representada como una lista de números:
+
+```racket
+'(6 1 2 -3 9 4 -1 2 8 1 2 4)
+
+```
+
+Tu objetivo clínico es rápido y concreto: necesitas encontrar el **segundo valor más alto** (el "segundo pico" de la variable). En este caso, el valor máximo absoluto es `9` y el segundo máximo es `8`.
+
+¿Cómo resolvemos esto desde la trinchera del código?
+
+```
+ [ 2 | 3 | 8 | 6 | 6 | 75 | 38 | 3 | 2 ]
+                        │    │
+                        │    └─► Second max (38)
+                        └──────► Max (75)
+
+```
+
+### Solución 1: "Código Golf" por Ordenamiento ($O(n \log n)$)
+
+Si la eficiencia en tiempo de ejecución no fuera una preocupación inmediata, podríamos aplicar la ley del mínimo esfuerzo expresivo: ordenamos la cohorte de datos de mayor a menor y tomamos el segundo elemento.
+
+```racket
+#lang racket
+
+(define (2nd-max lon)
+  (second (sort lon >)))
+
+```
+
+> **Glosario de Campo:** `sort` en Racket es una función de orden superior que acepta la lista y una función comparadora (en este caso `>`).
+> 
+> 
+
+Esta solución requiere solo cuatro símbolos en el cuerpo. Es elegante de leer, pero quirúrgicamente ineficiente: para encontrar dos valores, ordenas *toda* la lista, lo que tiene un costo algorítmico de $\mathcal{O}(n \log n)$. Si tu dataset de NHANES tiene $100,000$ registros de participantes, estás haciendo un trabajo innecesario.
+
+### Solución 2: Filtrado por Etapas / Múltiples Pasadas ($\mathcal{O}(n)$)
+
+Otra aproximación funcional sin ordenar el dataset consiste en:
+
+1. Calcular el valor máximo global con `apply max`.
+
+
+2. Eliminar la primera aparición de dicho máximo de la lista utilizando `remove`.
+
+
+3. Calcular el máximo de la lista resultante.
+
+
+
+```racket
+(define (2nd-max lon)
+  (apply max
+         (remove (apply max lon)
+                 lon)))
+
+```
+
+Esta solución corre en tiempo lineal $\mathcal{O}(n)$, pero realiza **tres pasadas completas** sobre la lista de datos (dos búsquedas de máximo y una de eliminación). ¿Podemos hacer una sola pasada, estilo examen físico minucioso de cabeza a pies, sin regresar a mirar atrás?
+
+---
+
+## 12.2. Recursión Estructural de Alta Eficiencia (Tail Recursion)
+
+Pensemos como lo harías si estuvieras revisando expediente por expediente en papel o iterando en Python:
+
+1. Mantienes en tu mente dos variables locales: `1st-largest` y `2nd-largest`.
+
+
+2. Las inicializas con los primeros dos expedientes que tomas de la mesa.
+
+
+3. Recorres el resto de la pila uno a uno, actualizando tus anotaciones si encuentras un valor más alto.
+
+
+
+En Racket, implementamos este comportamiento mediante **recursión de cola (tail recursion)** utilizando una función de interfaz y un ayudante con acumuladores.
+
+### Versión 1: Con Ramificaciones Explícitas (`cond`)
+
+```racket
+(define (2nd-max lon)
+  ;; Interfaz: inicializa los dos mayores con los 2 primeros elementos
+  (2nd-max-tr (max (first lon) (second lon))
+              (min (first lon) (second lon))
+              (rest (rest lon))))
+
+(define (2nd-max-tr 1st-largest 2nd-largest lon)
+  (if (null? lon)
+      2nd-largest
+      (cond ((> (first lon) 1st-largest)
+             (2nd-max-tr (first lon) 1st-largest (rest lon)))
+            ((> (first lon) 2nd-largest)
+             (2nd-max-tr 1st-largest (first lon) (rest lon)))
+            (else
+             (2nd-max-tr 1st-largest 2nd-largest (rest lon))))))
+
+```
+
+Funciona en una sola pasada $\mathcal{O}(n)$ y con espacio constante $\mathcal{O}(1)$ gracias a la optimización de llamada de cola. Sin embargo, el ayudante `2nd-max-tr` es repetitivo y algo tosco.
+
+### Versión 2: Refactorización Funcional Elegante
+
+Volvamos al grito de guerra del programador funcional: *"¿Qué funciones nos pueden ayudar aquí?"*
+
+En lugar de evaluar tres ramas independientes con `cond`, podemos calcular matemáticamente el nuevo valor de `1st-largest` y `2nd-largest` en la misma llamada recursiva utilizando `max` y `min` como si fuera un torneo de tres participantes (los dos valores actuales y el nuevo elemento):
+
+```racket
+(define (2nd-max-tr 1st-largest 2nd-largest lon)
+  (if (null? lon)
+      2nd-largest
+      (2nd-max-tr
+        (max 1st-largest (first lon))
+        (max 2nd-largest (min 1st-largest (first lon)))
+        (rest lon))))
+
+```
+
+> **Anatomía de la Jugada:**
+> * El nuevo máximo absoluto será simplemente `(max 1st-largest (first lon))`.
+> 
+> 
+> * El nuevo segundo máximo será el mayor entre el antiguo `2nd-largest` y el "perdedor" de la contienda por el primer puesto: `(min 1st-largest (first lon))`.
+> 
+> 
+> 
+> 
+
+```
+  Comparación en cada paso:
+  ───────────────────────────────────────────────────────────
+  Candidato actual : (first lon)
+  Nuevo 1er Max    : max(1st-largest, candidato)
+  Nuevo 2do Max    : max(2nd-largest, min(1st-largest, candidato))
+  ───────────────────────────────────────────────────────────
+
+```
+
+Hemos intercambiado tiempo de desarrollo por un código impecable, ultra eficiente y de una sola llamada recursiva acumulativa.
+
+---
+
+## 12.3. La Gran Transición: De Usuarios a Diseñadores de Intérpretes
+
+Hasta aquí hemos usado Racket para procesar **datos clínicos** (números, listas de métricas). A partir de este momento, vamos a utilizar Racket para procesar **programas**.
+
+```
+               ┌──────────────────────────────┐
+               │    FASE 1: PROGRAMACIÓN      │
+               │   Lógica -> Datos (NHANES)   │
+               └──────────────┬───────────────┘
+                              │
+                              ▼
+               ┌──────────────────────────────┐
+               │   FASE 2: INTERPRETACIÓN     │
+               │   Programa -> Programa       │
+               └──────────────────────────────┘
+
+```
+
+Para construir un **motor semántico/Datalog**, no necesitas procesar la sintaxis compleja de un lenguaje comercial entero. Lo que necesitas es entender cómo los programas manejan la **abstracción, las reglas y la sustitución de variables**.
+
+Todo lenguaje de programación (y cualquier motor de reglas lógicas) consta de tres pilares fundamentales:
+
+1. **Primitivas:** Elementos básicos (variables, constantes).
+
+
+2. **Medios de Combinación:** Mecanismos para agrupar elementos (aplicación de funciones/reglas).
+
+
+3. **Medios de Abstracción:** Mecanismos para dar nombre y aislar partes del código (parámetros/`lambda`).
+
+
+
+---
+
+## 12.4. Un "Mini-Lenguaje" para la Inferencia Lógica
+
+Para estudiar cómo funcionan las variables y las reglas sin distraernos con la sintaxis de adorno (*syntactic sugar*), definimos una gramática inductiva mínima (en notación BNF):
+
+$$\langle exp \rangle ::= \langle varref \rangle \mid (\langle exp \rangle \ \langle exp \rangle) \mid (\text{lambda} \ (\langle var \rangle) \ \langle exp \rangle)$$
+
+En castellano directo y sin rodeos: una expresión en nuestro mini-lenguaje es únicamente una de tres cosas:
+
+1. Una **referencia a variable** (ej. `x`, `bmi`, `glucose`).
+
+
+2. Una **aplicación de función** de un argumento (ej. `(f x)`).
+
+
+3. Una **definición de función** de un parámetro mediante lambda (ej. `(lambda (x) x)`).
+
+
+
+Este núcleo mínimo (conocido históricamente como Cálculo Lambda puro) es todo lo que necesitamos para modelar la resolución de variables en cualquier motor semántico.
+
+---
+
+## 12.5. Propiedades Estáticas de Variables: Libres, Ligadas y Combinadores
+
+En informática teórica y diseño de lenguajes, distinguimos dos momentos clave:
+
+* **Propiedad Estática:** Se puede determinar inspeccionando el código fuente, sin necesidad de ejecutarlo.
+
+
+* **Propiedad Dinámica:** Solo se conoce en tiempo de ejecución (cuando el programa está corriendo).
+
+
+
+En lenguajes como C o Java, los tipos de datos son estáticos. En Racket o R, los tipos son dinámicos. Sin embargo, la **procedencia de las variables** (dónde se definen y dónde se usan) es una propiedad predominantemente **estática**.
+
+### Variables Ligadas (Bound) vs. Libres (Free)
+
+Pensemos en un protocolo clínico de evaluación de riesgo:
+
+> *"Para un paciente dado $p$, si su $BMI > 30$, clasificar como Riesgo Elevado."*
+
+Aquí, $p$ es un parámetro formal local del protocolo. Pero si mencionamos dentro del protocolo la variable $BMI\_threshold$ sin definirla en el encabezado, esa variable depende del entorno exterior (un valor global del sistema).
+
+En nuestro mini-lenguaje:
+
+* Una variable ocurre **ligada (bound)** si hace referencia a un parámetro formal introducido por un `lambda` que la envuelve.
+
+
+* Una variable ocurre **libre (free)** si se usa en el cuerpo pero no está declarada como parámetro de ningún `lambda` envolvente.
+
+
+
+Analicemos estos casos reales:
+
+#### Ejemplo 1:
+
+```racket
+(lambda (z) x)
+
+```
+
+* `z` es el parámetro.
+
+
+* `x` es una **variable libre** (aparece en el cuerpo, pero nadie la declaró como parámetro local).
+
+
+
+#### Ejemplo 2:
+
+```racket
+((lambda (x) x) y)
+
+```
+
+* En `(lambda (x) x)`, la variable `x` está **ligada** a la declaración de su función.
+
+
+* La variable `y` está **libre**.
+
+
+
+#### Ejemplo 3: Captura de Variables
+
+```racket
+(lambda (y)
+  ((lambda (x) x) y))
+
+```
+
+* Aquí `y` pasa de estar libre a estar **ligada** por el `lambda (y)` exterior.
+
+
+
+### El Concepto de Combinador
+
+Un **combinador** es una función que no contiene **ninguna variable libre**. Es decir, su comportamiento es $100\%$ autónomo y no depende de primitivas del sistema o variables globales dinámicas.
+
+El ejemplo clásico es la **Función Identidad**:
+
+```racket
+(define identity-comb
+  (lambda (x) x))
+
+```
+
+No importa en qué servidor o sistema la ejecutes, siempre devuelve su argumento intacto.
+
+Otro combinador esencial en el análisis funcional de datos es la **Composición de Funciones**:
+
+```racket
+(define (compose f g)
+  (lambda (x)
+    (f (g x))))
+
+```
+
+Ambas variables `f` y `g` están ligadas en la definición externa, y `x` en la interna. No hay cabos sueltos.
+
+> **Pregunta de Reflexión:**
+> ¿Por qué la siguiente función Racket **NO** es un combinador?
+> 
+> 
+> ```racket
+> (define sum-of-applications
+>   (lambda (f x y)
+>     (+ (f x) (f y))))
+> 
+> ```
+> 
+> 
+> *Pista:* Mira con atención la operación `+`. En Racket, `+` es un identificador de una función primitiva global. Dado que `+` no está declarado como parámetro formal en `(lambda (f x y) ...)`, ¡`+` ocurre libre en la expresión!
+> 
+> 
+
+---
+
+## 12.6. Ejercicios Prácticos
+
+Pon a prueba los conocimientos del capítulo con esta serie de ejercicios diseñados para fijar tanto la técnica funcional como la intuición semántica para Datalog.
+
+### Ejercicio 1: Acumulador Clínico de Presión Arterial (Racket)
+
+Escribe una función tail-recursive en Racket llamada `bp-range` que reciba una lista con registros de Presión Arterial Sistólica (mínimo 2 elementos) y retorne el rango (la diferencia entre el valor máximo y el valor mínimo) realizando **una sola pasada** sobre los datos.
+
+```racket
+;; Firma esperada: (bp-range lon) -> number
+;; Ejemplo:
+;; (bp-range '(120 140 115 150 130)) -> 35  (es decir, 150 - 115)
+
+```
+
+### Ejercicio 2: Clasificación Estática de Variables
+
+Para cada una de las siguientes expresiones en nuestro mini-lenguaje, identifica qué ocurrencias de variables están **libres** y cuáles están **ligadas**:
+
+1. `(lambda (a) (a b))`
+
+2. `((lambda (x) (lambda (y) (x y))) z)`
+
+3. `(lambda (glucose) (lambda (bmi) (risk-score glucose bmi)))`
+
+
+### Ejercicio 3: Modelando una Regla Datalog en Sintaxis Racket
+
+Imagina una regla semántica para clasificar el síndrome metabólico en datos de NHANES:
+
+$$\text{MetabolicRisk}(p) \iff \text{HighGlucose}(p) \land \text{HighBMI}(p)$$
+
+Si expresamos esta regla como una abstracción en nuestro mini-lenguaje:
+
+```racket
+(lambda (patient)
+  (and (high-glucose? patient)
+       (high-bmi? patient)))
+
+```
+
+Responde:
+
+1. ¿Es esta expresión un combinador en Racket puro? ¿Por qué?
+
+
+2. Para transformarla en un combinador estricto, ¿qué parámetros deberían pasarse explícitamente a la abstracción?
+
+¡Buenos días, colega! Qué gran forma de arrancar la jornada. Da gusto ver cómo le metes mano al código y a la teoría de frente.
+
+He revisado tus respuestas con lupa. En general tienes la **intuición clínica y la lógica algorítmica impecables**. Te he pulido un par de detalles en Racket para asegurar que se ejecuten perfecto sin romper el marco de *Tail Recursion* en una sola pasada, y formalicé el análisis semántico de variables para dejarlo listo en formato Quarto (`.qmd`).
+
+Aquí tienes la solución maquetada y pulida, lista para enviar a tu cuaderno `.qmd`:
+
+---
+
+## Solución a los Ejercicios Prácticos del Capítulo 12
+
+### Ejercicio 1: Acumulador Clínico de Presión Arterial (Racket)
+
+#### Objetivo
+Calcular el rango de Presión Arterial Sistólica (PAS) en una sola pasada $O(n)$, manteniendo el espacio constante $O(1)$ gracias a la recursión de cola (*tail recursion*)[cite: 2, 5].
+
+```racket
+#lang racket
+(require rackunit)
+
+;; bp-range : (listof number) -> number
+;; Recibe una lista de lecturas de PAS (mínimo 2) y devuelve el rango (Max - Min).
+;; Realiza una sola pasada sobre la lista acumulando el máximo y mínimo vistos.
+(define (bp-range lon)
+  (bp-range-tr (first lon) (first lon) (rest lon)))
+
+;; Función auxiliar con recursión de cola
+(define (bp-range-tr current-max current-min lon)
+  (if (null? lon)
+      (- current-max current-min)
+      (bp-range-tr (max current-max (first lon))
+                   (min current-min (first lon))
+                   (rest lon))))
+
+;; Tests de unidad (RackUnit)
+(check-equal? (bp-range '(120 140 115 150 130)) 35) ; 150 - 115
+(check-equal? (bp-range '(130 130)) 0)              ; Caso límite: valores iguales
+(check-equal? (bp-range '(160 110 140 180 90)) 90)  ; 180 - 90
+
+```
+---
+
+### Ejercicio 2: Clasificación Estática de Variables
+
+A continuación se presenta el análisis de variables libres (*free*) y ligadas (*bound*) según la estructura gramatical estática de nuestro mini-lenguaje:
+
+#### 1. `(lambda (a) (a b))`
+
+* **`a`**: Ocurre **ligada** (*bound*). Es el parámetro formal introducido por `(lambda (a) ...)` y referenciado en el cuerpo.
+
+
+* **`b`**: Ocurre **libre** (*free*). Se utiliza en el cuerpo pero no está declarada en ningún parámetro formal del entorno.
+
+
+
+#### 2. `((lambda (x) (lambda (y) (x y))) z)`
+
+* **`x`**: Ocurre **ligada** (*bound*). Está introducida por el primer `lambda (x)`.
+
+
+* **`y`**: Ocurre **ligada** (*bound*). Está introducida por el segundo `lambda (y)`.
+
+
+* **`z`**: Ocurre **libre** (*free*). Aparece en la posición de argumento exterior sin un lambda que la envuelva.
+
+
+
+#### 3. `(lambda (glucose) (lambda (bmi) (risk-score glucose bmi)))`
+
+* **`glucose`**: Ocurre **ligada** (*bound*). Introducida por el primer `lambda`.
+
+
+* **`bmi`**: Ocurre **ligada** (*bound*). Introducida por el segundo `lambda`.
+
+
+* **`risk-score`**: Ocurre **libre** (*free*). Es la función evaluadora que no ha sido definida como parámetro local, por lo que depende del entorno global.
+
+
+
+---
+
+### Ejercicio 3: Modelando una Regla Datalog en Sintaxis Racket
+
+Dada la regla de inferencia clínica para Síndrome Metabólico:
+
+```racket
+(lambda (patient)
+  (and (high-glucose? patient)
+       (high-bmi? patient)))
+
+```
+
+#### 1. ¿Es esta expresión un combinador en Racket puro? ¿Por qué?
+
+**No, no es un combinador**.
+
+Para que una función sea un combinador, debe ser totalmente autónoma y **no contener ninguna variable libre**. En esta expresión:
+
+* `patient` es la única variable **ligada**.
+
+
+* `and`, `high-glucose?` y `high-bmi?` ocurren **libres**. Dependen exclusivamente de identificadores predefinidos en el entorno global del sistema/Racket.
+
+
+
+#### 2. Transformación a Combinador Estricto
+
+Para transformar esta regla en un **combinador puro** (independiente del entorno global de ejecución), debemos pasar todas las funciones evaluadoras y conectores lógicos como parámetros formales explícitos:
+
+```racket
+;; Combinador puro para la regla de inferencia
+(define metabolic-risk-combinator
+  (lambda (and-fn glucose-pred bmi-pred)
+    (lambda (patient)
+      (and-fn (glucose-pred patient)
+              (bmi-pred patient)))))
+
+```
+
+> **Conexión Datalog/Motor Semántico:**
+> En un motor semántico de inferencia pura, transformar reglas en combinadores nos permite **inyectar predicados dinámicamente** según el dataset (p. ej., cambiar las tablas o límites de NHANES) sin alterar la estructura lógica de la regla de inferencia.
+> 
+> 
+
+```
+
+```

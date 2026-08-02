@@ -1,0 +1,643 @@
+---
+title: "11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila"
+format: html
+editor: visual
+---
+
+Olvídate de demostraciones matemáticas de tres páginas. Aquí vamos a tratar la recursión como un procedimiento diagnóstico: eficiente, estructurado y diseñado para que tu motor semántico no "sature la UCI" (es decir, no lance un *Stack Overflow*) cuando procese miles de registros de la encuesta NHANES.
+
+------------------------------------------------------------------------
+
+## 11.1 Introducción: De Triajes Complejos a Motores de Reglas
+
+En la programación imperativa tradicional (como el R básico o Python), cuando quieres procesar una lista usas un bucle `for` o `while`. Vas mutando un índice, actualizando un contador y recorriendo fila por fila.
+
+El problema surge cuando tus datos **no son una tabla plana**.
+
+Piensa en el expediente clínico de un paciente con síndrome metabólico. No es un vector simple; es un árbol jerárquico:
+
+- Historial del paciente
+
+- Exámenes de laboratorio
+
+- Perfil lipídico (Colesterol, Triglicéridos)
+
+- Panel metabólico (Glucosa en ayunas, HbA1c)
+
+- Antecedentes familiares
+
+- Hipertensión, Diabetes Tipo 2
+
+Si quieres aplicar una regla de conversión o transformar cada valor numérico en este expediente, un bucle `for` convencional se vuelve un dolor de cabeza lleno de índices anidados. En la programación funcional (y en los motores lógicos como Datalog), **la recursión es el bucle nativo**.
+
+Hoy aprenderemos a dominar la recursión en estructuras anidadas y, más importante aún, a escribir funciones recursivas tan optimizadas que el intérprete de Racket las ejecutará como si fueran bucles `while` ultra-rápidos a nivel de ensamblador.
+
+------------------------------------------------------------------------
+
+## 11.2 Recursión Mutua en Estructuras Anidadas: El Caso `map-nlist`
+
+En la sesión anterior trabajamos con `s-lists` (listas de símbolos). Hoy trabajaremos con las **`n-lists`** (listas numéricas anidadas).
+
+### La Anatomía del Dato
+
+Imagina que recibes un lote de datos de laboratorios de NHANES donde algunos valores están agrupados por sub-paneles analíticos. Definimos formalmente una `n-list` de forma inductiva:
+
+``` text
+<n-list>     ::= () | (<number-exp> . <n-list>)
+<number-exp> ::= <number> | <n-list>
+```
+
+Traducido al español clínico:
+
+1.  Una `n-list` es una lista vacía `()`, o una pareja cuyo primer elemento es una "expresión numérica" (`number-exp`) y cuyo resto es otra `n-list`.
+
+2.  Una "expresión numérica" es: **o bien un número directo** (ej. cifra de glucosa `105`), **o bien otra `n-list` completa** sub-anidada.
+
+### El Problema con `map`
+
+El `map` estándar de Racket sabe iterar sobre listas planas. Pero si le pasas `'(1 (4 (9 16)) 25)`, colapsa porque no sabe cómo "entrar" a la sub-lista `(4 (9 16))` sin tratarla como un bloque opaco.
+
+Necesitamos un `map-nlist` que aplique una función $f$ (por ejemplo, elevar al cuadrado o verificar paridad) a **cada número**, sin importar qué tan profundo esté escondido en la estructura, preservando intacta la forma del árbol de datos.
+
+### La Solución: Recursión Mutua
+
+Como la definición del dato es *mutuamente inductiva* (`n-list` usa `number-exp`, y `number-exp` puede contener una `n-list`), la arquitectura limpia exige **dos funciones que se llamen la una a la otra**:
+
+1.  `map-nlist`: Recorre la estructura del contenedor (la lista).
+
+2.  `map-numexp`: Evalúa el contenido individual (el elemento).
+
+```racket
+#lang racket
+(require rackunit)
+
+;; map-nlist: Aplica f a cada número dentro de una n-list
+(define (map-nlist f nlst)
+  (if (null? nlst)
+      '()
+      (cons (map-numexp f (first nlst))
+            (map-nlist  f (rest  nlst)))))
+
+;; map-numexp: Procesa una expresión numérica
+(define (map-numexp f numexp)
+  (if (number? numexp)
+      (f numexp)            ;; Si es número, aplica la función f
+      (map-nlist f numexp))) ;; Si es una n-list anidada, delega a map-nlist
+
+;; Pruebas de verificación
+(check-equal? (map-nlist add1 '(1 4 9 16 25 36 49 64))
+              '(2 5 10 17 26 37 50 65))
+
+(check-equal? (map-nlist even? '(1 (4 (9 (16 25)) 36 49) 64))
+              '(#f (#t (#f (#t #f)) #t #f) #t))
+
+(check-equal? (map-nlist sqr '(1 (4 (9 (16 25)) 36 49) 64))
+              '(1 (16 (81 (256 625)) 1296 2401) 4096))
+```
+
+> **Notas de Diagnóstico:** Fíjate en la división de trabajo. `map-nlist` nunca toca un número directamente; solo sabe desarmar listas con `first` y `rest`. Por su parte, `map-numexp` es el único que "ve" los números y ejecuta `(f numexp)`. Esta separación de responsabilidades hace que el código sea modular y casi imposible de romper.
+
+Probémoslo con datos de glucosa anidados:
+
+```racket
+;; Función para clasificar glucosa alterada en ayunas (> 100 mg/dL)
+(define (glucosa-alta? val)
+  (> val 100))
+
+(map-nlist glucosa-alta? '(95 (105 (110 90)) 88 126))
+;; Resultado: '(#f (#t (#t #f)) #f #t)
+```
+
+------------------------------------------------------------------------
+
+## 11.3 La Matriz de Patrones Recursivos y Derivación de Programas (*Program Derivation*)
+
+A estas alturas del curso, ya tenemos una "caja de herramientas" con 4 patrones principales para diseñar funciones sobre datos inductivos.
+
+``` text
+               [ Recursión Estructural ] (Estrategia Base)
+                          /         \
+                         /           \
+  (Si la estructura es  /             \ (Si la función requiere
+   mutuamente inductiva)               \ un argumento extra)
+                       v                 v
+            [ Recursión Mutua ]    [ Procedimiento de Interfaz ]
+                       |
+  (Si el costo de las  |
+   llamadas es alto)   v
+            [ Derivación de Programas ]
+```
+
+### ¿Qué es la Derivación de Programas (*Program Derivation*)?
+
+La **Recursión Mutua** es elegante y limpia. Sin embargo, cada llamada a una función secundaria agrega un pequeño costo en tiempo de ejecución (crear una trama en la pila, pasar argumentos, saltar en memoria). Si estás evaluando un árbol de reglas lógicas con millones de nodos en NHANES, ese "ping-pong" entre `map-nlist` y `map-numexp` puede costar rendimiento.
+
+La **Derivación de Programas** es la técnica formal para refactorizar dos funciones mutuamente recursivas en **una sola función**, mediante sustitución algebraica de expresiones (lo que en C++ o Java se conoce como *inlining*).
+
+### Paso a Paso de la Refactorización
+
+Demostremos el proceso con un ejemplo conceptual simple `(2n-plus-1 n)` antes de aplicarlo a `map-nlist`:
+
+```racket
+(define (2n-plus-1 n)
+  (add1 (* 2 n)))
+
+;; Sustitución 1: Reemplazar el nombre por una expresión lambda equivalente
+((lambda (n) (add1 (* 2 n))) 15)
+
+;; Sustitución 2: Inyectar el argumento 15 directamente en el cuerpo
+(add1 (* 2 15))
+```
+
+Aplicando esta misma técnica de sustitución a `map-nlist`, reemplazamos la llamada `(map-numexp f (first nlst))` por su cuerpo evaluado:
+
+```racket
+;; Versión refactorizada en UNA sola función tras derivación de programa:
+(define (map-nlist f nlst)
+  (if (null? nlst)
+      '()
+      (cons (if (number? (first nlst))
+                (f (first nlst))
+                (map-nlist f (first nlst)))
+            (map-nlist f (rest nlst)))))
+```
+
+¡Voilá! Hemos eliminado por completo la función `map-numexp`.
+
+> **Regla de Oro del Copiloto:** Usa la Derivación de Programas solo cuando el rendimiento sea crítico o cuando la función resultante siga siendo legible. La recursión mutua suele ser más fácil de mantener; la derivación es tu "modo de alto rendimiento".
+
+------------------------------------------------------------------------
+
+## 11.4 Recursión de Cola (*Tail Recursion*), Acumuladores y Procedimientos de Interfaz
+
+Abran paso, porque aquí llegamos al concepto más vital para la arquitectura de lenguajes de programación: **La Recursión de Cola (*Tail Recursion*)**.
+
+### El Problema de la Pila (El síndrome del papel acumulado)
+
+Analicemos la función `factorial` tradicional de `factorial.rkt`:
+
+```racket
+(define (factorial n)
+  (if (zero? n)
+      1
+      (* n (factorial (sub1 n))))) ;; <- ¡Ojo a la multiplicación pendiente!
+```
+
+Si ejecutas `(factorial 5)`, Racket no puede calcular el resultado de inmediato. Tiene que hacer esto:
+
+``` text
+(factorial 5)
+(* 5 (factorial 4))
+(* 5 (* 4 (factorial 3)))
+(* 5 (* 4 (* 3 (factorial 2))))
+(* 5 (* 4 (* 3 (* 2 (factorial 1)))))
+(* 5 (* 4 (* 3 (* 2 (* 1 (factorial 0))))))
+(* 5 (* 4 (* 3 (* 2 (* 1 1)))))
+(* 5 (* 4 (* 3 (* 2 1))))
+...
+120
+```
+
+Observa la forma de "flecha" que se crea. Racket tiene que **recordar** las multiplicaciones pendientes (`* 5 ...`, `* 4 ...`) guardándolas en la memoria (la pila de llamadas o *call stack*). Si calculas el factorial de `100,000` o procesas un archivo masivo de NHANES con esta estructura, la pila se llena de operaciones pendientes hasta que el sistema colapsa por *Stack Overflow*.
+
+### La Solución: Estilo de Paso de Acumulador (APS) + Procedimiento de Interfaz
+
+¿Cómo evita un auditor médico acumular montañas de pendientes? **Lleva una libreta de notas (un acumulador) y va calculando el total sobre la marcha.**
+
+Comparemos la versión imperativa en Python con su equivalente funcional en Racket:
+
+**En Python (Bucle `while` imperativo):**
+
+```text
+n = 6
+answer = 1
+while (n > 0):
+    answer = n * answer
+    n = n - 1
+```
+
+**En Racket (Recursión de cola con acumulador + Procedimiento de Interfaz):**
+
+```racket
+;; 1. La función trabajadora (Tail Recursive con Acumulador)
+(define (factorial-aps n answer)
+  (if (zero? n)
+      answer
+      (factorial-aps (sub1 n) (* n answer)))) ;; <- ¡Llamada de cola pura!
+
+;; 2. El Procedimiento de Interfaz (Oculta el acumulador al usuario final)
+(define (factorial n)
+  (factorial-aps n 1))
+
+(check-equal? (factorial 10) 3628800)
+```
+
+Miren la diferencia radical en la secuencia de ejecución para `(factorial-aps 6 1)`:
+
+``` text
+(factorial-aps 6 1)
+(factorial-aps 5 6)
+(factorial-aps 4 30)
+(factorial-aps 3 120)
+(factorial-aps 2 360)
+(factorial-aps 1 720)
+(factorial-aps 0 720)
+=> 720
+```
+
+¡No hay operaciones pendientes! En cada paso, la función calcula el nuevo valor de `answer` (`(* n answer)`) y se lo pasa a la siguiente llamada. Cuando llega al caso base (`n = 0`), el resultado final **ya está listo** en `answer`.
+
+### Otro Ejemplo Clínico/Datos: `positions-of`
+
+Imagina que quieres encontrar las posiciones exactas de un biomarcador dentro de un panel analítico. Usamos un procedimiento de interfaz `positions-of` que llama a `positions-of-at` inicializando el acumulador de posición en `0`:
+
+```racket
+(define (positions-of s los)
+  (positions-of-at s los 0))
+
+(define (positions-of-at s los position)
+  (if (null? los)
+      '()
+      (if (eq? s (first los))
+          (cons position
+                (positions-of-at s (rest los) (add1 position)))
+          (positions-of-at s (rest los) (add1 position)))))
+
+(check-equal? (positions-of 'a '(a b a c d a e f g a h i j k))
+              '(0 2 5 9))
+```
+
+------------------------------------------------------------------------
+
+## 11.5 Bajo el Capó: Optimización de Llamadas de Cola (TCO) y `racket/trace`
+
+Una llamada se considera una **Llamada de Cola (*Tail Call*)** si es la *última acción* que debe evaluar una función antes de retornar un valor.
+
+Cuando una función es **recursiva de cola**, el intérprete de Racket aplica una optimización brutal llamada **Tail Call Optimization (TCO)**.
+
+### ¿Cómo funciona la TCO a nivel de memoria?
+
+En lugar de crear un nuevo bloque de memoria (stack frame) para cada llamada recursiva, Racket **reutiliza el mismo bloque de memoria existente**:
+
+1.  Sobrescribe las variables actuales con los nuevos argumentos (`n := n - 1` y `answer := n * answer`).
+
+2.  Ejecuta un salto directo (`goto`) al inicio de la función.
+
+En otras palabras: **¡Racket transforma internamente tu función recursiva en un bucle `while` de bajísimo consumo de memoria!**
+
+> **¿Por qué Python o Java no hacen esto por defecto?** Idiomas como Python o Java priorizan mostrar el *stack trace* completo cuando hay un error, lo cual requiere mantener cada marco de la pila guardado. Los lenguajes funcionales como Racket o Scheme están diseñados desde el estándar para garantizar TCO obligatorio, permitiéndote procesar millones de iteraciones con espacio de memoria constante $\mathcal{O}(1)$.
+
+### Viéndolo en vivo con `racket/trace`
+
+Racket nos permite "radiografiar" la pila de llamadas usando el módulo `racket/trace`.
+
+Si ejecutamos esto en la consola:
+
+```racket
+#lang racket
+(require racket/trace)
+
+(trace factorial)
+(trace factorial-aps)
+
+(factorial 5)
+(factorial-aps 5 1)
+```
+
+**Salida en la consola:**
+
+``` text
+> (factorial 5)
+|(factorial 5)
+| (factorial 4)
+| |(factorial 3)
+| | (factorial 2)
+| | |(factorial 1)
+| | | (factorial 0)
+| | | 1
+| | |1
+| | 2
+| |6
+| 24
+|120
+
+> (factorial-aps 5 1)
+|(factorial-aps 5 1)
+|(factorial-aps 4 5)
+|(factorial-aps 3 20)
+|(factorial-aps 2 60)
+|(factorial-aps 1 120)
+|(factorial-aps 0 120)
+|120
+```
+
+¿Ves las sangrías en `factorial`? Cada nivel representa memoria retenida en la pila. En `factorial-aps`, todas las llamadas están alineadas al mismo nivel. **Cero acumulación de memoria.**
+
+------------------------------------------------------------------------
+
+## 11.6 Construyendo el Motor Semántico: Aplicaciones en Datalog y NHANES
+
+¿Por qué es esto crucial para nuestra meta de crear un **motor semántico en Datalog** para NHANES?
+
+En Datalog, las reglas lógicas se evalúan iterando recursivamente sobre conjuntos de hechos hasta alcanzar un "punto fijo" (*fixed-point evaluation*). Por ejemplo, para inferir si un paciente está en riesgo cardiovascular basándose en reglas encadenadas:
+
+$$\text{RiesgoCardio}(x) \leftarrow \text{Obeso}(x) \land \text{Hipertenso}(x)$$
+
+$$\text{AtenciónPrioritaria}(x) \leftarrow \text{RiesgoCardio}(x) \land \text{GlucosaAlterada}(x)$$
+
+Cuando ejecutes el motor sobre 50,000 registros de NHANES, las consultas lógicas evaluarán cadenas de inferencias recursivas. Si construyes los evaluadores del motor con **recursión de cola (APS)**, tu motor podrá procesar bases de datos masivas en milisegundos sin despeinarse.
+
+------------------------------------------------------------------------
+
+## 11.7 Retos de Código
+
+Para consolidar el aprendizaje, resolveremos los patrones clave planteados en la Tarea 5 de la clase.
+
+### Reto 1: Verificación de Prefijos (`prefix-of?`)
+
+**Contexto:** Necesitamos verificar si una secuencia de códigos de diagnóstico ICD-10 (o materias de prerrequisito) es el inicio exacto de la historia de un paciente.
+
+```racket
+;; Problema 1: prefix-of?
+;; Determina si lst1 es el prefijo inicial de lst2.
+(define (prefix-of? lst1 lst2)
+  (cond
+    [(null? lst1) #t] ;; La lista vacía es prefijo de cualquier lista
+    [(null? lst2) #f] ;; Si lst2 se acaba antes que lst1, no es prefijo
+    [(equal? (first lst1) (first lst2))
+     (prefix-of? (rest lst1) (rest lst2))] ;; ¡Llamada de cola!
+    [else #f]))
+
+;; Pruebas
+(prefix-of? '(E11 N18) '(E11 N18 I10 I25)) ;; #t (Diabetes -> Enfermedad Renal)
+(prefix-of? '(E11 N18) '(E11 I10 N18))     ;; #f
+```
+
+------------------------------------------------------------------------
+
+### Reto 2: Árboles de Criterios Diagnósticos (`includes-course?` / `includes-rule?`)
+
+**Contexto:** Un criterio diagnóstico de síndrome metabólico viene estructurado en un árbol anidado de sub-reglas. Queremos verificar si una regla específica (ej. `'hipertension`) está dentro del árbol de criterios.
+
+Debemos usar **recursión mutua**.
+
+``` racket
+;; Problema 2: includes-course? (mutuamente recursivo)
+(define (includes-course? course requirements)
+  (if (null? requirements)
+      #f
+      (or (includes-course-ce? course (first requirements))
+          (includes-course? course (rest requirements)))))
+
+(define (includes-course-ce? course course-exp)
+  (if (symbol? course-exp)
+      (eq? course course-exp)
+      (includes-course? course course-exp)))
+
+;; Prueba con un árbol de reglas/cursos
+(define arbol-criterios
+  '((obesidad_abdominal trigliceridos_altos)
+    presion_alta
+    ((glucosa_ayunas_alta hdl_bajo))))
+
+(includes-course? 'presion_alta arbol-criterios) ;; #t
+(includes-course? 'fumador arbol-criterios)      ;; #f
+```
+
+------------------------------------------------------------------------
+
+### Reto 3: Transformador de Expresiones Lógicas (`prefix->infix`)
+
+**Contexto:** En nuestro motor semántico, muchas reglas se leen mejor en notación infija `(Glucosa > 100)` aunque el motor las procese internamente en notación prefija `(> Glucosa 100)`. Escribe un convertidor mutuamente recursivo que transforme expresiones aritméticas/lógicas prefijas a infijas.
+
+```racket
+;; Problema 5: prefix->infix
+;; <prefix-exp> ::= (<operator> <number-exp> <number-exp>)
+
+(define (prefix->infix binary-exp)
+  (list (number-expr->infix (cadr binary-exp))  ;; Primer argumento
+        (car binary-exp)                       ;; Operador al centro
+        (number-expr->infix (caddr binary-exp)))) ;; Segundo argumento
+
+(define (number-expr->infix num-exp)
+  (if (number? num-exp)
+      num-exp
+      (prefix->infix num-exp)))
+
+;; Pruebas
+(prefix->infix '(+ 4 5))             ;; '(4 + 5)
+(prefix->infix '(+ (+ 4 5) (* 7 6))) ;; '((4 + 5) + (7 * 6))
+```
+
+------------------------------------------------------------------------
+
+## Conclusión del Capítulo
+
+En este capítulo hemos dominado la transición de la **recursión pura e ineficiente** a la **recursión optimizada de grado industrial**:
+
+1.  Aprendimos a estructurar datos anidados mediante **recursión mutua**.
+
+2.  Refactorizamos funciones con **derivación de programas** para ganar velocidad.
+
+3.  Entendimos la **Recursión de Cola (TCO)**, el uso de **acumuladores** y los **procedimientos de interfaz** para garantizar que nuestro código corra con espacio de memoria constante $\mathcal{O}(1)$.
+
+¡Tu motor semántico de Datalog para NHANES acaba de ganar un turbo en el motor! 🚀 e trabajo:
+
+## 11.8 Ejercicios Prácticos Guiados (Plantillas de Trabajo)
+
+En esta sección tienes tres ejercicios diseñados para consolidar los patrones clave del capítulo: **Recursión de Cola con Acumuladores**, **Recursión Mutua sobre Datos Anidados** y **Transformación/Derivación de Expresiones**.
+
+Escribe tu código en los espacios indicados y ejecuta las pruebas de Rackunit para verificar si tus soluciones son correctas.
+
+------------------------------------------------------------------------
+
+### Ejercicio 1: Conteo de Pacientes con Criterio Clínico (Recursión de Cola + Acumulador)
+
+**Escenario de datos:**
+
+Tienes una lista con cifras de Hemoglobina Glicosilada ($\text{HbA1c}$) de una muestra de participantes de NHANES. Queremos contar cuántos pacientes superan el umbral de diabetes ($\text{HbA1c} \ge 6.5\%$).
+
+Para asegurarnos de que la función no llene la pila de memoria si procesamos $50,000$ registros, debes diseñarla usando **recursión de cola con un acumulador** (`contar-diabeticos-aps`) e incluir un **procedimiento de interfaz** (`contar-diabeticos`) que inicialice el acumulador en `0`.
+
+**Tu plantilla de código:**
+
+```racket
+#lang racket
+(require rackunit)
+
+;; 1. Función trabajadora (Tail-Recursive con acumulador)
+;; Recibe una lista de valores numéricos de HbA1c y un acumulador 'contador'
+(define (contar-diabeticos-aps valores contador)
+  ;; TODO: Implementa el caso base y las llamadas de cola con (add1 contador)
+  0)
+
+;; 2. Procedimiento de Interfaz (Interface Procedure)
+;; Recibe únicamente la lista de valores e inicializa el acumulador
+(define (contar-diabeticos valores)
+  ;; TODO: Llama a contar-diabeticos-aps con el valor inicial correcto
+  0)
+
+;; --- Pruebas de verificación (Descomenta para probar tu código) ---
+; (check-equal? (contar-diabeticos '(5.2 6.8 5.7 7.1 6.5 5.9)) 3)
+; (check-equal? (contar-diabeticos '(5.0 5.4 5.6)) 0)
+; (check-equal? (contar-diabeticos '()) 0)
+```
+
+------------------------------------------------------------------------
+
+### Ejercicio 2: Búsqueda de Biomarcadores en Expedientes Anidados (Recursión Mutua)
+
+**Escenario de datos:**
+
+Los expedientes de NHANES no son planos. Tienes una estructura de "árbol de laboratorios" donde cada nodo puede ser un marcador individual (un símbolo como `'trigliceridos`) o una sub-lista de marcadores especializados.
+
+Queremos saber si un marcador específico está presente en la estructura del paciente.
+
+**Consigna:** Implementa la función `contiene-marcador?` y su pareja `contiene-marcador-exp?` mediante **recursión mutua**.
+
+**Tu plantilla de código:**
+
+```racket
+;; Función A: Procesa la lista de componentes/sub-listas
+(define (contiene-marcador? marcador expediente)
+  ;; TODO: Verifica si el expediente está vacío.
+  ;; De lo contrario, evalúa el primer elemento con contiene-marcador-exp?
+  ;; y el resto con contiene-marcador? usando 'or'
+  #f)
+
+;; Función B: Procesa una expresión individual (sea símbolo o sub-lista)
+(define (contiene-marcador-exp? marcador exp)
+  ;; TODO: Si 'exp' es un símbolo, compara con eq?
+  ;; Si 'exp' es una lista, delega el trabajo a contiene-marcador?
+  #f)
+
+;; Estructura de prueba
+(define lab-panel
+  '((glucosa_ayunas hba1c)
+    (perfil_lipidico (colesterol_total hdl ldl trigliceridos))
+    presion_arterial))
+
+;; --- Pruebas de verificación (Descomenta para probar tu código) ---
+; (check-true  (contiene-marcador? 'trigliceridos lab-panel))
+; (check-false (contiene-marcador? 'insulina lab-panel))
+```
+
+------------------------------------------------------------------------
+
+### Ejercicio 3: Transformación de Reglas Lógicas para Datalog (`prefix->infix`)
+
+**Escenario de datos:**
+
+Un motor semántico de Datalog evaluará reglas en sintaxis de Árbol de Sintaxis Abstracta (AST) en notación prefija, como `(AND (> glucosa 100) (< hdl 40))`. Sin embargo, para los informes clínicos o para mostrarlos en la UI de Quarto, prefieres representarlos en formato legible (infijo): `((glucosa > 100) AND (hdl < 40))`.
+
+**Consigna:** Escribe el par de funciones mutually recursive `regla->infija` y `expr->infija` que conviertan expresiones binarias prefijas a infijas.
+
+**Tu plantilla de código:**
+
+```racket
+;; Convierte una regla binaria prefija: (operador arg1 arg2) -> (arg1 operador arg2)
+(define (regla->infija regla-binaria)
+  ;; TODO: Usa 'list' para reestructurar la expresión prefija a infija.
+  ;; Recuerda procesar los argumentos 1 y 2 con expr->infija
+  '())
+
+;; Procesa una expresión: si es número/símbolo se queda igual; si es lista, llama a regla->infija
+(define (expr->infija expr)
+  ;; TODO: Si 'expr' es una lista, delega a regla->infija.
+  ;; Si es un átomo (símbolo o número), devuélvelo tal cual.
+  '())
+
+;; --- Pruebas de verificación (Descomenta para probar tu código) ---
+; (check-equal? (regla->infija '(> glucosa 100)) 
+;               '(glucosa > 100))
+
+; (check-equal? (regla->infija '(AND (> glucosa 100) (< hdl 40))) 
+;               '((glucosa > 100) AND (hdl < 40)))
+```
+
+------------------------------------------------------------------------
+
+## Soluciones a los Ejercicios Prácticos
+
+A continuación se presentan las soluciones verificadas para los tres ejercicios de la sesión, implementadas en Racket con la suite de pruebas `rackunit`.
+
+```racket
+
+;; =============================================================================
+;; Ejercicio 1: Conteo de Pacientes (Recursión de Cola + Acumulador)
+;; =============================================================================
+
+;; 1. Función trabajadora (Tail-Recursive con acumulador)
+;; Recibe una lista de valores numéricos de HbA1c y un acumulador 'contador'
+(define (contar-diabeticos-aps valores contador)
+  (cond
+    [(null? valores) contador]
+    [(>= (first valores) 6.5)
+     (contar-diabeticos-aps (rest valores) (+ 1 contador))]
+    [else 
+     (contar-diabeticos-aps (rest valores) contador)]))
+
+;; 2. Procedimiento de Interfaz (Interface Procedure)
+;; Recibe únicamente la lista de valores e inicializa el acumulador
+(define (contar-diabeticos valores)
+  (contar-diabeticos-aps valores 0))
+
+;; --- Pruebas de verificación ---
+(check-equal? (contar-diabeticos '(5.2 6.8 5.7 7.1 6.5 5.9)) 3)
+(check-equal? (contar-diabeticos '(5.0 5.4 5.6)) 0)
+(check-equal? (contar-diabeticos '()) 0)
+
+
+;; =============================================================================
+;; Ejercicio 2: Búsqueda de Biomarcadores (Recursión Mutua)
+;; =============================================================================
+
+;; Función A: Procesa la lista de componentes/sub-listas
+(define (contiene-marcador? marcador expediente)
+  (if (null? expediente)
+      #f
+      (or (contiene-marcador-exp? marcador (first expediente))
+          (contiene-marcador? marcador (rest expediente)))))
+
+;; Función B: Procesa una expresión individual (sea símbolo o sub-lista)
+(define (contiene-marcador-exp? marcador exp)
+  (if (symbol? exp)
+      (eq? exp marcador)
+      (contiene-marcador? marcador exp)))
+
+;; Estructura de prueba
+(define lab-panel
+  '((glucosa_ayunas hba1c)
+    (perfil_lipidico (colesterol_total hdl ldl trigliceridos))
+    presion_arterial))
+
+;; --- Pruebas de verificación ---
+(check-true  (contiene-marcador? 'trigliceridos lab-panel))
+(check-false (contiene-marcador? 'insulina lab-panel))
+
+
+;; =============================================================================
+;; Ejercicio 3: Transformación de Reglas (Prefija a Infija)
+;; =============================================================================
+
+;; Convierte una regla binaria prefija: (operador arg1 arg2) -> (arg1 operador arg2)
+(define (regla->infija regla-binaria)
+  (if (null? regla-binaria)
+      '()
+      (list (expr->infija (cadr regla-binaria))
+            (first regla-binaria)
+            (expr->infija (caddr regla-binaria)))))
+
+;; Procesa una expresión: si es número/símbolo se queda igual; si es lista, llama a regla->infija
+(define (expr->infija expr)
+  (if (list? expr)
+      (regla->infija expr)
+      expr))
+
+;; --- Pruebas de verificación ---
+(check-equal? (regla->infija '(> glucosa 100)) 
+              '(glucosa > 100))
+
+(check-equal? (regla->infija '(AND (> glucosa 100) (< hdl 40))) 
+              '((glucosa > 100) AND (hdl < 40)))
+```

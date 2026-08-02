@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>10. Patrones Recursivos Avanzados — Procedimientos Interfaz, s-lists y Recursión Mutual – SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c10.html">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">1. Construcción de abstracciones con procedimientos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 — Los Elementos Fundamentales de la Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.2 — Los Procedimientos y los Procesos que Generan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Recursión Eficiente y la Anatomía de un Minilenguaje</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#warm-up-navegación-estructural-en-listas-get-list-ref" id="toc-warm-up-navegación-estructural-en-listas-get-list-ref" class="nav-link active" data-scroll-target="#warm-up-navegación-estructural-en-listas-get-list-ref">10.1 Warm-up: Navegación Estructural en Listas (<code>get</code> / <code>list-ref</code>)</a>
+  <ul class="collapse">
+  <li><a href="#caso-clínico-indexando-cohortes-de-pacientes" id="toc-caso-clínico-indexando-cohortes-de-pacientes" class="nav-link" data-scroll-target="#caso-clínico-indexando-cohortes-de-pacientes">10.1.1 Caso clínico: Indexando cohortes de pacientes</a></li>
+  <li><a href="#especificación-inductiva-y-las-banderas-anidadas" id="toc-especificación-inductiva-y-las-banderas-anidadas" class="nav-link" data-scroll-target="#especificación-inductiva-y-las-banderas-anidadas">10.1.2 Especificación inductiva y las banderas anidadas</a></li>
+  <li><a href="#código-y-manejo-de-errores-con-rackunit" id="toc-código-y-manejo-de-errores-con-rackunit" class="nav-link" data-scroll-target="#código-y-manejo-de-errores-con-rackunit">10.1.3 Código y manejo de errores con Rackunit</a></li>
+  </ul></li>
+  <li><a href="#procedimientos-interfaz-interface-procedures" id="toc-procedimientos-interfaz-interface-procedures" class="nav-link" data-scroll-target="#procedimientos-interfaz-interface-procedures">10.2 Procedimientos Interfaz (<em>Interface Procedures</em>)</a>
+  <ul class="collapse">
+  <li><a href="#el-bache-estructural" id="toc-el-bache-estructural" class="nav-link" data-scroll-target="#el-bache-estructural">10.2.1 El “bache” estructural</a></li>
+  <li><a href="#la-solución-de-arquitectura" id="toc-la-solución-de-arquitectura" class="nav-link" data-scroll-target="#la-solución-de-arquitectura">10.2.2 La solución de arquitectura</a></li>
+  </ul></li>
+  <li><a href="#nuevas-estructuras-s-lists-y-datos-mutuamente-inductivos" id="toc-nuevas-estructuras-s-lists-y-datos-mutuamente-inductivos" class="nav-link" data-scroll-target="#nuevas-estructuras-s-lists-y-datos-mutuamente-inductivos">10.3 Nuevas Estructuras: <span class="math inline">\(s\)</span>-lists y Datos Mutuamente Inductivos</a>
+  <ul class="collapse">
+  <li><a href="#definición-de-una-s-list" id="toc-definición-de-una-s-list" class="nav-link" data-scroll-target="#definición-de-una-s-list">10.3.1 Definición de una <span class="math inline">\(s\)</span>-list</a></li>
+  </ul></li>
+  <li><a href="#el-refactor-de-la-recursión-a-ciegas-a-la-recursión-mutual" id="toc-el-refactor-de-la-recursión-a-ciegas-a-la-recursión-mutual" class="nav-link" data-scroll-target="#el-refactor-de-la-recursión-a-ciegas-a-la-recursión-mutual">10.4 El Refactor: De la Recursión “A Ciegas” a la Recursión Mutual</a>
+  <ul class="collapse">
+  <li><a href="#el-intento-monolítico-monstruo-de-ifs" id="toc-el-intento-monolítico-monstruo-de-ifs" class="nav-link" data-scroll-target="#el-intento-monolítico-monstruo-de-ifs">10.4.1 El intento “monolítico” (Monstruo de <code>if</code>s)</a></li>
+  <li><a href="#la-solución-elegante-recursión-mutual" id="toc-la-solución-elegante-recursión-mutual" class="nav-link" data-scroll-target="#la-solución-elegante-recursión-mutual">10.4.2 La solución elegante: Recursión Mutual</a></li>
+  </ul></li>
+  <li><a href="#caso-de-estudio-conteo-de-entidades-semánticas-count-occurrences" id="toc-caso-de-estudio-conteo-de-entidades-semánticas-count-occurrences" class="nav-link" data-scroll-target="#caso-de-estudio-conteo-de-entidades-semánticas-count-occurrences">10.5 Caso de Estudio: Conteo de Entidades Semánticas (<code>count-occurrences</code>)</a></li>
+  <li><a href="#ejercicios-prácticos-y-consolidación" id="toc-ejercicios-prácticos-y-consolidación" class="nav-link" data-scroll-target="#ejercicios-prácticos-y-consolidación">10.6 Ejercicios Prácticos y Consolidación</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-get-patient-var-acceso-seguro-por-posición" id="toc-ejercicio-1-get-patient-var-acceso-seguro-por-posición" class="nav-link" data-scroll-target="#ejercicio-1-get-patient-var-acceso-seguro-por-posición">Ejercicio 1: <code>get-patient-var</code> (Acceso seguro por posición)</a></li>
+  <li><a href="#ejercicio-2-index-lab-results-procedimiento-interfaz" id="toc-ejercicio-2-index-lab-results-procedimiento-interfaz" class="nav-link" data-scroll-target="#ejercicio-2-index-lab-results-procedimiento-interfaz">Ejercicio 2: <code>index-lab-results</code> (Procedimiento Interfaz)</a></li>
+  <li><a href="#ejercicio-3-replace-icd-code-recursión-mutual-en-salud" id="toc-ejercicio-3-replace-icd-code-recursión-mutual-en-salud" class="nav-link" data-scroll-target="#ejercicio-3-replace-icd-code-recursión-mutual-en-salud">Ejercicio 3: <code>replace-icd-code</code> (Recursión Mutual en Salud)</a></li>
+  <li><a href="#ejercicio-4-pensamiento-datalog-motor-semántico-evaluación-de-reglas-jerárquicas" id="toc-ejercicio-4-pensamiento-datalog-motor-semántico-evaluación-de-reglas-jerárquicas" class="nav-link" data-scroll-target="#ejercicio-4-pensamiento-datalog-motor-semántico-evaluación-de-reglas-jerárquicas">Ejercicio 4: Pensamiento Datalog / Motor Semántico (Evaluación de Reglas Jerárquicas)</a></li>
+  </ul></li>
+  <li><a href="#soluciones-a-los-ejercicios-prácticos-del-capítulo-10" id="toc-soluciones-a-los-ejercicios-prácticos-del-capítulo-10" class="nav-link" data-scroll-target="#soluciones-a-los-ejercicios-prácticos-del-capítulo-10">Soluciones a los Ejercicios Prácticos del Capítulo 10</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-acceso-seguro-por-posición-get-patient-var" id="toc-ejercicio-1-acceso-seguro-por-posición-get-patient-var" class="nav-link" data-scroll-target="#ejercicio-1-acceso-seguro-por-posición-get-patient-var">Ejercicio 1: Acceso Seguro por Posición (<code>get-patient-var</code>)</a></li>
+  <li><a href="#ejercicio-2-indexación-de-muestras-con-procedimiento-interfaz-index-lab-results" id="toc-ejercicio-2-indexación-de-muestras-con-procedimiento-interfaz-index-lab-results" class="nav-link" data-scroll-target="#ejercicio-2-indexación-de-muestras-con-procedimiento-interfaz-index-lab-results">Ejercicio 2: Indexación de Muestras con Procedimiento Interfaz (<code>index-lab-results</code>)</a></li>
+  <li><a href="#ejercicio-3-reemplazo-global-en-expedientes-anidados-replace-icd-code" id="toc-ejercicio-3-reemplazo-global-en-expedientes-anidados-replace-icd-code" class="nav-link" data-scroll-target="#ejercicio-3-reemplazo-global-en-expedientes-anidados-replace-icd-code">Ejercicio 3: Reemplazo Global en Expedientes Anidados (<code>replace-icd-code</code>)</a></li>
+  <li><a href="#ejercicio-4-análisis-arquitectónico-para-el-motor-semántico-datalog" id="toc-ejercicio-4-análisis-arquitectónico-para-el-motor-semántico-datalog" class="nav-link" data-scroll-target="#ejercicio-4-análisis-arquitectónico-para-el-motor-semántico-datalog">Ejercicio 4: Análisis Arquitectónico para el Motor Semántico / Datalog</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c10.html">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>¡Bienvenido a la sesión 10! Hasta ahora hemos usado la recursión estructural básica para recorrer listas sencillas. Pero en el mundo real —y muy especialmente al diseñar lenguajes, evaluar reglas lógicas o analizar bases de datos complejas como NHANES— los datos raramente vienen en filas ordenaditas e independientes.</p>
+<p>Hoy aprenderemos a dominar dos patrones de diseño funcional indispensables:</p>
+<ol type="1">
+<li><p><strong>Procedimientos Interfaz (<em>Interface Procedures</em>):</strong> Cómo mantener limpia la firma de una función pública cuando la recursión requiere “variables de control” o acumuladores adicionales.</p></li>
+<li><p><strong>Recursión Mutual (<em>Mutual Recursion</em>):</strong> La técnica definitiva para procesar estructuras de datos anidadas y jerárquicas (<span class="math inline">\(s\)</span>-lists) respetando al 100% la definición gramatical del dato.</p></li>
+</ol>
+<hr>
+<section id="warm-up-navegación-estructural-en-listas-get-list-ref" class="level2">
+<h2 class="anchored" data-anchor-id="warm-up-navegación-estructural-en-listas-get-list-ref">10.1 Warm-up: Navegación Estructural en Listas (<code>get</code> / <code>list-ref</code>)</h2>
+<section id="caso-clínico-indexando-cohortes-de-pacientes" class="level3">
+<h3 class="anchored" data-anchor-id="caso-clínico-indexando-cohortes-de-pacientes">10.1.1 Caso clínico: Indexando cohortes de pacientes</h3>
+<p>Imagina que tienes una lista ordenada con los identificadores de un grupo de sujetos en un estudio metabólico: <code>'(sujeto-101 sujeto-102 sujeto-103 sujeto-104)</code>. Te piden extraer la entidad ubicada en la posición <span class="math inline">\(n\)</span>.</p>
+<p>En Racket existe la función nativa <code>list-ref</code>. Pero para entender cómo opera el intérprete, vamos a implementarla desde cero bajo el nombre de <code>get</code>.</p>
+</section>
+<section id="especificación-inductiva-y-las-banderas-anidadas" class="level3">
+<h3 class="anchored" data-anchor-id="especificación-inductiva-y-las-banderas-anidadas">10.1.2 Especificación inductiva y las banderas anidadas</h3>
+<p>La notas del curso hacen una analogía gráfica fantástica con la bandera de la República Checa: <em>cada bandera checa contiene dentro de sí otra bandera checa más pequeña</em>.</p>
+<pre><code>┌───────────────────────────┐
+│ CZECH REPUBLIC            │
+│  ┌──────────────────────┐ │
+│  │ CZECH REPUBLIC       │ │
+│  │  ┌─────────────────┐ │ │
+│  │  │ CZECH REPUBLIC  │ │ │
+│  │  └─────────────────┘ │ │
+│  └──────────────────────┘ │
+└───────────────────────────┘</code></pre>
+<p>Si buscas el elemento en la posición 2 de <code>'(a b c d)</code>:</p>
+<ul>
+<li><p>Es exactamente lo mismo que buscar la posición 1 de <code>'(b c d)</code>.</p></li>
+<li><p>Que a su vez es lo mismo que buscar la posición 0 de <code>'(c d)</code>.</p></li>
+<li><p>¡Y la posición 0 de cualquier lista es simplemente su cabeza (<code>first</code>)!</p></li>
+</ul>
+<p>La especificación inductiva de una lista de símbolos es:</p>
+<p><span class="math display">\[\text{&lt;list-of-symbols&gt;} ::= () \;\mid\; (\text{&lt;symbol&gt;} \; \text{&lt;list-of-symbols&gt;})\]</span></p>
+</section>
+<section id="código-y-manejo-de-errores-con-rackunit" class="level3">
+<h3 class="anchored" data-anchor-id="código-y-manejo-de-errores-con-rackunit">10.1.3 Código y manejo de errores con Rackunit</h3>
+<p>Veamos la implementación en Racket extraída de <code>01-get.rkt</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(provide get)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Implementación de list-ref mediante recursión estructural</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(get los n)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> los)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">error</span> 'get <span class="st">"no such position"</span>)       <span class="co">; Caso base 1: Índice fuera de rango</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="kw">zero?</span> n)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>          (first los)                        <span class="co">; Caso base 2: ¡Encontramos el elemento!</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>          (get (rest los) (sub1 n)))))       <span class="co">; Paso inductivo: Reducimos la lista y el contador</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas unitarias</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>(check-equal? (get '(a b c) <span class="dv">2</span>) 'c)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>(check-equal? (get '(d c b a z) <span class="dv">1</span>) 'c)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">;; Verificación de excepciones</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>(check-exn exn:fail? (<span class="kw">lambda</span> () (get '(d c b a z) <span class="dv">5</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Atención al test de errores:</strong> Observa cómo envolvemos la llamada a <code>(get '(d c b a z) 5)</code> dentro de una función anónima <code>(lambda () ...)</code> en <code>check-exn</code>. Si no lo hiciéramos así, Racket evaluaría la función errónea <em>antes</em> de pasarle el argumento a la suite de pruebas, rompiendo la ejecución.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="procedimientos-interfaz-interface-procedures" class="level2">
+<h2 class="anchored" data-anchor-id="procedimientos-interfaz-interface-procedures">10.2 Procedimientos Interfaz (<em>Interface Procedures</em>)</h2>
+<section id="el-bache-estructural" class="level3">
+<h3 class="anchored" data-anchor-id="el-bache-estructural">10.2.1 El “bache” estructural</h3>
+<p>Supón que deseas tomar una cohorte de pacientes <code>'(jerry george elaine kramer)</code> y necesitas etiquetar a cada uno con su número de orden correlativo de ingreso: <code>'((jerry 1) (george 2) (elaine 3) (kramer 4))</code></p>
+<p>Intentemos escribir esto con recursión estructural pura:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(annotate los)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> los)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">cons</span> (<span class="kw">list</span> (first los) ???)  <span class="co">; ¿De dónde sacamos la posición actual?</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>            (annotate (rest los)))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Para saber en qué posición va <code>(first los)</code>, necesitamos un número que cambie e incremente en cada paso. Si cambiamos la firma de la función a <code>(annotate los position)</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(annotate-v0 los position)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> los)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">cons</span> (<span class="kw">list</span> (first los) position)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            (annotate-v0 (rest los) (<span class="op">+</span> position <span class="dv">1</span>)))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>¡Funciona! Pero hemos roto la interfaz del usuario. Ahora el médico o analista de datos que use tu librería está obligado a llamar a <code>(annotate-v0 '(jerry george) 1)</code> especificando manualmente el contador inicial <code>1</code>. Eso es sucio, propenso a errores y viola la encapsulación.</p>
+</section>
+<section id="la-solución-de-arquitectura" class="level3">
+<h3 class="anchored" data-anchor-id="la-solución-de-arquitectura">10.2.2 La solución de arquitectura</h3>
+<p>Utilizamos el patrón de <strong>Procedimiento Interfaz</strong>. Definimos una función pública limpia que expone la firma requerida (un solo argumento), y por dentro invoca a una función auxilar (<em>helper</em>) que lleva el acumulador:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(provide annotate)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función pública (Interface Procedure)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(annotate los)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  (annotate-with-position los <span class="dv">1</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función auxiliar privada (Servidor de trabajo)</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(annotate-with-position los position)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> los)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">cons</span> (<span class="kw">list</span> (first los) position)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            (annotate-with-position (rest los) (<span class="op">+</span> position <span class="dv">1</span>)))))</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>(check-equal? (annotate '(jerry george elaine kramer))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>              '((jerry <span class="dv">1</span>) (george <span class="dv">2</span>) (elaine <span class="dv">3</span>) (kramer <span class="dv">4</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Moraleja de diseño:</strong> Cuando la recursión estructural pura se “atore” porque necesitas rastrear un estado interno (un contador, un historial, un promedio acumulado), <strong>no alteres la interfaz pública</strong>. Crea un procedimiento interfaz que “arranque” la recursión con los valores iniciales adecuados.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="nuevas-estructuras-s-lists-y-datos-mutuamente-inductivos" class="level2">
+<h2 class="anchored" data-anchor-id="nuevas-estructuras-s-lists-y-datos-mutuamente-inductivos">10.3 Nuevas Estructuras: <span class="math inline">\(s\)</span>-lists y Datos Mutuamente Inductivos</h2>
+<section id="definición-de-una-s-list" class="level3">
+<h3 class="anchored" data-anchor-id="definición-de-una-s-list">10.3.1 Definición de una <span class="math inline">\(s\)</span>-list</h3>
+<p>En análisis de datos clínicos o en motores semánticos, la información no es lineal. Un expediente no es una lista plana; contiene diagnósticos, que a su vez contienen sub-estudios o factores de riesgo anidados.</p>
+<p>En Scheme/Racket, la estructura universal para representar árboles y expresiones anidadas es la <span class="math inline">\(s\)</span>-list (S-expression list).</p>
+<p>Gramática BNF de una <span class="math inline">\(s\)</span>-list:</p>
+<p><span class="math display">\[\text{&lt;s-list&gt;} ::= () \;\mid\; (\text{&lt;symbol-expression&gt;} \;\; \text{&lt;s-list&gt;})\]</span></p>
+<p><span class="math display">\[\text{&lt;symbol-expression&gt;} ::= \text{&lt;symbol&gt;} \;\mid\; \text{&lt;s-list&gt;}\]</span></p>
+<p>Fíjate bien en la gramática:</p>
+<ul>
+<li><p>Una <code>&lt;s-list&gt;</code> está compuesta de <code>&lt;symbol-expression&gt;</code>s.</p></li>
+<li><p>¡Y una <code>&lt;symbol-expression&gt;</code> puede ser un simple símbolo **o a su vez otra <code>&lt;s-list&gt;**</code>!</p></li>
+</ul>
+<p>Esto es una <strong>definición mutuamente inductiva</strong>: <span class="math inline">\(A\)</span> se define en términos de <span class="math inline">\(B\)</span>, y <span class="math inline">\(B\)</span> se define en términos de <span class="math inline">\(A\)</span>.</p>
+<p>Ejemplos de <span class="math inline">\(s\)</span>-lists válidas:</p>
+<ul>
+<li><p><code>'()</code></p></li>
+<li><p><code>'(obesidad hipertension)</code></p></li>
+<li><p><code>'((obesidad (bmi-35)) (diabetes (hba1c-8)))</code></p></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="el-refactor-de-la-recursión-a-ciegas-a-la-recursión-mutual" class="level2">
+<h2 class="anchored" data-anchor-id="el-refactor-de-la-recursión-a-ciegas-a-la-recursión-mutual">10.4 El Refactor: De la Recursión “A Ciegas” a la Recursión Mutual</h2>
+<p>Imagina que quieres escribir una función <code>subst</code> para hacer un “Buscar y Reemplazar” global dentro de un expediente clínico o un AST (Árbol de Sintaxis Abstracta) de un motor semántico. Queremos reemplazar el símbolo <code>old</code> por <code>new</code> en cualquier nivel de profundidad de la <span class="math inline">\(s\)</span>-list.</p>
+<section id="el-intento-monolítico-monstruo-de-ifs" class="level3">
+<h3 class="anchored" data-anchor-id="el-intento-monolítico-monstruo-de-ifs">10.4.1 El intento “monolítico” (Monstruo de <code>if</code>s)</h3>
+<p>Si intentamos resolver esto en una sola función mediante recursión estructural ordinaria (código adaptado de <code>03-subst-v1.rkt</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(subst new old slist) </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> slist)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="kw">symbol?</span> (first slist))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">if</span> (<span class="kw">eq?</span> (first slist) old)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">cons</span> new (subst new old (rest slist)))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">cons</span> (first slist) (subst new old (rest slist))))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">cons</span> (subst new old (first slist))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                (subst new old (rest slist))))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>¿Por qué este código duele a la vista?</strong></p>
+<ol type="1">
+<li><p>Repetimos la llamada <code>(subst new old (rest slist))</code> tres veces.</p></li>
+<li><p>Hay un enredo de <code>if</code>s anidados muy difícil de auditar y mantener.</p></li>
+<li><p><strong>El pecado capital:</strong> El código viola el principio de diseño funcional. La gramática tiene DOS no-terminales (<code>s-list</code> y <code>symbol-expression</code>), pero aquí intentamos resolver todo en UNA sola función.</p></li>
+</ol>
+</section>
+<section id="la-solución-elegante-recursión-mutual" class="level3">
+<h3 class="anchored" data-anchor-id="la-solución-elegante-recursión-mutual">10.4.2 La solución elegante: Recursión Mutual</h3>
+<p>Sigamos fielmente la estructura de los datos. Como la gramática tiene dos tipos de datos interconectados, escribiremos <strong>dos funciones que se llaman entre sí</strong>:</p>
+<ul>
+<li><p><code>subst</code>: procesa una <code>&lt;s-list&gt;</code>.</p></li>
+<li><p><code>subst-symbol-expr</code>: procesa una <code>&lt;symbol-expression&gt;</code>.</p></li>
+</ul>
+<p>Veamos la implementación limpia tomada de <code>04-subst-v2.rkt</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>(provide subst)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; 1. Función que procesa la &lt;s-list&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(subst new old slist)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> slist)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">cons</span> (subst-symbol-expr new old (first slist))  <span class="co">; Procesa el elemento (symbol-expr)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>            (subst new old (rest slist)))))            <span class="co">; Procesa la cola (s-list)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; 2. Función que procesa la &lt;symbol-expression&gt;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(subst-symbol-expr new old symexp) </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">symbol?</span> symexp)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="kw">eq?</span> symexp old) new symexp)                 <span class="co">; Si es símbolo: lo reemplaza o lo deja igual</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      (subst new old symexp)))                         <span class="co">; Si es s-list: ¡Llama a subst recursivamente!</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>(check-equal? (subst 'obesidad-morbida 'obesidad '(paciente101 (obesidad (grado-1))))</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>              '(paciente101 (obesidad-morbida (grado-1))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Visualización del flujo:</strong> <code>subst</code> divide la lista y le delega a <code>subst-symbol-expr</code> el trabajo de evaluar el primer elemento. Si ese elemento resulta ser otra sublista anidada, <code>subst-symbol-expr</code> le devuelve la bola a <code>subst</code>. ¡Eso es la <strong>Recursión Mutual</strong>!</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="caso-de-estudio-conteo-de-entidades-semánticas-count-occurrences" class="level2">
+<h2 class="anchored" data-anchor-id="caso-de-estudio-conteo-de-entidades-semánticas-count-occurrences">10.5 Caso de Estudio: Conteo de Entidades Semánticas (<code>count-occurrences</code>)</h2>
+<p>Supón que en un motor semántico necesita contar cuántas veces aparece cierta regla, variable o diagnóstico (<code>'diabetes</code>) dentro de un árbol de datos anidado.</p>
+<p>Aplicando recursión mutual basándonos en la gramática:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Cuenta ocurrencias en una &lt;s-list&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(count-occurrences s slist)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> slist)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="dv">0</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      (<span class="op">+</span> (count-occurrences-sym-expr s (first slist))   <span class="co">; Ocurrencias en la cabeza</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>         (count-occurrences s (rest slist)))))          <span class="co">; Ocurrencias en la cola</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">;; Cuenta ocurrencias en una &lt;symbol-expression&gt;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(count-occurrences-sym-expr s sym-expr)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">symbol?</span> sym-expr)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="kw">eq?</span> s sym-expr) <span class="dv">1</span> <span class="dv">0</span>)                         <span class="co">; Si coincide suma 1, si no 0</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      (count-occurrences s sym-expr)))                  <span class="co">; Si es sublista, recursión a count-occurrences</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>(check-equal? (count-occurrences 'diabetes </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                                '((diabetes (tipo-1)) (obesidad) (comorbilidad (diabetes))))</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>              <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicios-prácticos-y-consolidación" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios-prácticos-y-consolidación">10.6 Ejercicios Prácticos y Consolidación</h2>
+<p>A continuación se presentan los ejercicios prácticos para afianzar estos patrones.</p>
+<section id="ejercicio-1-get-patient-var-acceso-seguro-por-posición" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-get-patient-var-acceso-seguro-por-posición">Ejercicio 1: <code>get-patient-var</code> (Acceso seguro por posición)</h3>
+<p><strong>Contexto:</strong> En un vector de datos de un laboratorio clínico representado como lista <code>'((hba1c 6.5) (trigliceridos 210) (ldl 130) (bmi 32))</code>, necesitamos una función <code>(get-patient-var labs n)</code> que devuelva la <span class="math inline">\(n\)</span>-ésima prueba metabólica.</p>
+<ul>
+<li><strong>Requisito:</strong> Usa el patrón de la sección 10.1 (<code>get</code>). Lanza un error con <code>error</code> si <span class="math inline">\(n\)</span> excede la cantidad de pruebas.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Espacio para tu solución:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(get-patient-var labs n)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  'implementar)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-2-index-lab-results-procedimiento-interfaz" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-index-lab-results-procedimiento-interfaz">Ejercicio 2: <code>index-lab-results</code> (Procedimiento Interfaz)</h3>
+<p><strong>Contexto:</strong> Tienes una lista simple de valores de glucosa en ayunas <code>'(95 110 145 200)</code>. Queremos convertirlos en una lista etiquetada con su número de medición secuencial: <code>'((medicion-1 95) (medicion-2 110) (medicion-3 145) (medicion-4 200))</code>.</p>
+<ul>
+<li><strong>Requisito:</strong> Implementa <code>index-lab-results</code> utilizando el patrón de <strong>Procedimiento Interfaz</strong> con una función auxiliar <code>index-helper</code> que arranque el conteo en 1.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Espacio para tu solución:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(index-lab-results lab-values)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  'implementar)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-3-replace-icd-code-recursión-mutual-en-salud" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-replace-icd-code-recursión-mutual-en-salud">Ejercicio 3: <code>replace-icd-code</code> (Recursión Mutual en Salud)</h3>
+<p><strong>Contexto:</strong> Durante una actualización de registros médicos, el código epidemiológico <code>'e66-obesidad</code> debe reemplazarse por <code>'e669-obesidad-no-especificada</code> en todo el expediente anidado del paciente.</p>
+<ul>
+<li><strong>Requisito:</strong> Escribe las funciones mutuamente recursivas <code>(replace-icd-code new-code old-code record)</code> y <code>(replace-icd-sym-expr new-code old-code sym-expr)</code> capaces de navegar cualquier nivel de sublistas.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Espacio para tu solución:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(replace-icd-code new-code old-code record)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  'implementar)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(replace-icd-sym-expr new-code old-code sym-expr)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  'implementar)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-4-pensamiento-datalog-motor-semántico-evaluación-de-reglas-jerárquicas" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-pensamiento-datalog-motor-semántico-evaluación-de-reglas-jerárquicas">Ejercicio 4: Pensamiento Datalog / Motor Semántico (Evaluación de Reglas Jerárquicas)</h3>
+<p><strong>Contexto:</strong> Para un motor semántico sobre NHANES, representaremos una consulta lógica lógica/regla condicional como un árbol anidado de condiciones: <code>'(AND (BMI &gt; 30) (OR (HBA1C &gt; 6.5) (GLUCOSA &gt; 126)))</code></p>
+<p>Piensa y responde conceptualmente (o en pseudo-código Racket):</p>
+<ol type="1">
+<li>¿Por qué intentar evaluar o transformar esta regla usando un solo bucle plano o recursión no-mutual sería un desastre de mantenibilidad?</li>
+<li>¿Cómo encaja la gramática de una <span class="math inline">\(s\)</span>-list en la estructuración de un evaluador de reglas lógicas compuestas para identificar pacientes con Síndrome Metabólico?</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="soluciones-a-los-ejercicios-prácticos-del-capítulo-10" class="level2">
+<h2 class="anchored" data-anchor-id="soluciones-a-los-ejercicios-prácticos-del-capítulo-10">Soluciones a los Ejercicios Prácticos del Capítulo 10</h2>
+<p>A continuación se presentan las soluciones implementadas y probadas para los ejercicios de la sesión, estructuradas con código ejecutable en Racket y suites de pruebas unitarias (<code>rackunit</code>).</p>
+<section id="ejercicio-1-acceso-seguro-por-posición-get-patient-var" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-acceso-seguro-por-posición-get-patient-var">Ejercicio 1: Acceso Seguro por Posición (<code>get-patient-var</code>)</h3>
+<p>Implementación de navegación estructural directa sobre listas de resultados de laboratorio clínico.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; Acceso seguro a la n-ésima variable clínica de un paciente</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(get-patient-var labs n)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> labs)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">error</span> 'get-patient-var <span class="st">"no tal posición en el registro"</span>)    </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="kw">zero?</span> n)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>          (first labs)                                     </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>          (get-patient-var (rest labs) (sub1 n)))))</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; Datos de prueba</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> my-labs </span>'((hba1c <span class="fl">6.5</span>) </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                  (trigliceridos <span class="dv">210</span>) </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                  (ldl <span class="dv">130</span>) </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                  (bmi <span class="dv">32</span>)))</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas unitarias</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>(check-equal? (get-patient-var my-labs <span class="dv">3</span>) '(bmi <span class="dv">32</span>))</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>(check-equal? (get-patient-var my-labs <span class="dv">0</span>) '(hba1c <span class="fl">6.5</span>))</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>(check-exn exn:fail? (<span class="kw">lambda</span> () (get-patient-var my-labs <span class="dv">5</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-2-indexación-de-muestras-con-procedimiento-interfaz-index-lab-results" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-indexación-de-muestras-con-procedimiento-interfaz-index-lab-results">Ejercicio 2: Indexación de Muestras con Procedimiento Interfaz (<code>index-lab-results</code>)</h3>
+<p>Uso del patrón de <strong>Procedimiento Interfaz</strong> para mantener una API pública limpia de un solo argumento (<code>lab-values</code>), delegando el rastreo del contador de secuencia a la función auxiliar privada <code>index-helper</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función auxiliar privada (Servidor de trabajo con acumulador)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(index-helper alog n)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> alog)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">cons</span> (<span class="kw">list</span> n (first alog))</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            (index-helper (rest alog) (<span class="op">+</span> <span class="dv">1</span> n)))))</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; Procedimiento Interfaz (Función pública)</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(index-lab-results alog)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  (index-helper alog <span class="dv">1</span>))</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas unitarias</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>(check-equal? (index-helper '(<span class="dv">95</span> <span class="dv">110</span> <span class="dv">145</span> <span class="dv">200</span>) <span class="dv">1</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>              '((<span class="dv">1</span> <span class="dv">95</span>) (<span class="dv">2</span> <span class="dv">110</span>) (<span class="dv">3</span> <span class="dv">145</span>) (<span class="dv">4</span> <span class="dv">200</span>)))</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>(check-equal? (index-lab-results '(<span class="dv">95</span> <span class="dv">110</span> <span class="dv">145</span> <span class="dv">200</span>))</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>              '((<span class="dv">1</span> <span class="dv">95</span>) (<span class="dv">2</span> <span class="dv">110</span>) (<span class="dv">3</span> <span class="dv">145</span>) (<span class="dv">4</span> <span class="dv">200</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-3-reemplazo-global-en-expedientes-anidados-replace-icd-code" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-reemplazo-global-en-expedientes-anidados-replace-icd-code">Ejercicio 3: Reemplazo Global en Expedientes Anidados (<code>replace-icd-code</code>)</h3>
+<p>Implementación mediante <strong>Recursión Mutual</strong> para navegar y reemplazar códigos diagnósticos ICD a través de cualquier nivel de anidamiento en una <span class="math inline">\(s\)</span>-list.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; 1. Procesador de la &lt;s-list&gt; (Registro o sublista del paciente)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(replace-icd-code new-code old-code record)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> record)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">cons</span> (replace-icd-sym-expr new-code old-code (first record)) <span class="co">; Procesa elemento</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            (replace-icd-code new-code old-code (rest record)))))   <span class="co">; Procesa cola</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; 2. Procesador de la &lt;symbol-expression&gt; (Símbolo individual o sublista)</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(replace-icd-sym-expr new-code old-code symexp) </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">symbol?</span> symexp)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="kw">eq?</span> symexp old-code) new-code symexp)            <span class="co">; Si es símbolo: evalúa reemplazo</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      (replace-icd-code new-code old-code symexp)))         <span class="co">; Si es s-list: recursión mutual</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas unitarias</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">;; CASO 1: Lista plana de diagnósticos</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>(check-equal? </span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  (replace-icd-code 'e669-obesidad-no-especificada </span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>                    'e66-obesidad </span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>                    '(paciente-101 e66-obesidad i10-hipertension))</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  '(paciente-101 e669-obesidad-no-especificada i10-hipertension))</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">;; CASO 2: Expediente jerárquico con sublistas anidadas a multinivel</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>(check-equal? </span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  (replace-icd-code 'e669-obesidad-no-especificada </span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>                    'e66-obesidad </span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>                    '(paciente-102 </span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>                       (diagnosticos-principales e66-obesidad)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>                       (antecedentes (metabolicos e66-obesidad) (cardiacos i10-hipertension))))</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  '(paciente-102 </span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>     (diagnosticos-principales e669-obesidad-no-especificada)</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>     (antecedentes (metabolicos e669-obesidad-no-especificada) (cardiacos i10-hipertension))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-4-análisis-arquitectónico-para-el-motor-semántico-datalog" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-análisis-arquitectónico-para-el-motor-semántico-datalog">Ejercicio 4: Análisis Arquitectónico para el Motor Semántico / Datalog</h3>
+<section id="por-qué-intentar-evaluar-reglas-compuestas-mediante-un-bucle-plano-o-recursión-no-mutual-es-insostenible" class="level4">
+<h4 class="anchored" data-anchor-id="por-qué-intentar-evaluar-reglas-compuestas-mediante-un-bucle-plano-o-recursión-no-mutual-es-insostenible">1. ¿Por qué intentar evaluar reglas compuestas mediante un bucle plano o recursión no-mutual es insostenible?</h4>
+<blockquote class="blockquote">
+<p><strong>Análisis:</strong> En la práctica clínica y en el análisis de bases de datos como NHANES, los criterios diagnósticos sufren de una <strong>combinatoria de casos bordes y reglas condicionales anidadas</strong>. Por ejemplo, un criterio de <em>Hiperglicemia</em> no depende únicamente de la cifra de glucosa en ayunas o HbA1c; también se satisface si el paciente reporta uso de insulina o metformina. A su vez, la <em>Obesidad</em> puede definirse por el <span class="math inline">\(IMC \ge 30\)</span>, o por la circunferencia de cintura, o ajustarse si el paciente tiene antecedente de cirugía bariátrica. Igualmente, un paciente con perfil lipídico dentro de rangos normales pero bajo tratamiento con estatinas debe clasificarse bajo riesgo/manejo cardiovascular. Intentar modelar esta telaraña de criterios clínicos mediante un solo bloque monolítico con <code>if</code>s o <code>cond</code>s anidados genera un código frágil, duplicado e imposible de auditarlas o extender. La <strong>recursión mutual</strong> permite desacoplar la evaluación de cada conectivo lógico o criterio individual del recorrido del árbol completo.</p>
+</blockquote>
+</section>
+<section id="cómo-encaja-la-gramática-de-una-s-list-en-un-evaluador-de-reglas-lógicas-compuestas-para-el-síndrome-metabólico" class="level4">
+<h4 class="anchored" data-anchor-id="cómo-encaja-la-gramática-de-una-s-list-en-un-evaluador-de-reglas-lógicas-compuestas-para-el-síndrome-metabólico">2. ¿Cómo encaja la gramática de una <span class="math inline">\(s\)</span>-list en un evaluador de reglas lógicas compuestas para el Síndrome Metabólico?</h4>
+<blockquote class="blockquote">
+<p><strong>Análisis:</strong> La gramática inductiva de una <span class="math inline">\(s\)</span>-list es la estructura natural para representar un <strong>Árbol de Sintaxis Abstracta (AST)</strong> de reglas lógicas. Un paciente no es una entidad plana; es una jerarquía compuesta por diagnósticos, antecedentes familiares, biomarcadores de laboratorio y esquemas farmacológicos. La estructura recursiva de una <span class="math inline">\(s\)</span>-list permite definir expresiones lógicas de profundidad arbitraria como:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>'(AND (OR (BMI <span class="op">&gt;=</span> <span class="dv">30</span>) (WAIST <span class="op">&gt;</span> <span class="dv">102</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>      (OR (HBA1C <span class="op">&gt;=</span> <span class="fl">6.5</span>) (MEDS-INC 'metformina))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>      (OR (TRIGLYCERIDES <span class="op">&gt;=</span> <span class="dv">150</span>) (MEDS-INC 'estatinas)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Gracias a que una <span class="math inline">\(s\)</span>-list admite que un elemento sea a su vez otra <span class="math inline">\(s\)</span>-list, el motor semántico/Datalog puede aplicar las reglas de inferencia descendiendo de forma natural por la jerarquía. Cada nivel procesa sub-reglas modulares de forma elegante, permitiendo consultar bases complejas como NHANES sin colapsar en la gestión de estados.</p>
+</blockquote>
+<pre><code></code></pre>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

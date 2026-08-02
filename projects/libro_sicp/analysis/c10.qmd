@@ -1,0 +1,443 @@
+---
+title: "10. Patrones Recursivos Avanzados — Procedimientos Interfaz, $s$-lists y Recursión Mutual"
+format: html
+editor: visual
+---
+
+¡Bienvenido a la sesión 10! Hasta ahora hemos usado la recursión estructural básica para recorrer listas sencillas. Pero en el mundo real —y muy especialmente al diseñar lenguajes, evaluar reglas lógicas o analizar bases de datos complejas como NHANES— los datos raramente vienen en filas ordenaditas e independientes.
+
+Hoy aprenderemos a dominar dos patrones de diseño funcional indispensables:
+
+1.  **Procedimientos Interfaz (*Interface Procedures*):** Cómo mantener limpia la firma de una función pública cuando la recursión requiere "variables de control" o acumuladores adicionales.
+
+2.  **Recursión Mutual (*Mutual Recursion*):** La técnica definitiva para procesar estructuras de datos anidadas y jerárquicas ($s$-lists) respetando al 100% la definición gramatical del dato.
+
+------------------------------------------------------------------------
+
+## 10.1 Warm-up: Navegación Estructural en Listas (`get` / `list-ref`)
+
+### 10.1.1 Caso clínico: Indexando cohortes de pacientes
+
+Imagina que tienes una lista ordenada con los identificadores de un grupo de sujetos en un estudio metabólico: `'(sujeto-101 sujeto-102 sujeto-103 sujeto-104)`. Te piden extraer la entidad ubicada en la posición $n$.
+
+En Racket existe la función nativa `list-ref`. Pero para entender cómo opera el intérprete, vamos a implementarla desde cero bajo el nombre de `get`.
+
+### 10.1.2 Especificación inductiva y las banderas anidadas
+
+La notas del curso hacen una analogía gráfica fantástica con la bandera de la República Checa: *cada bandera checa contiene dentro de sí otra bandera checa más pequeña*.
+
+```         
+┌───────────────────────────┐
+│ CZECH REPUBLIC            │
+│  ┌──────────────────────┐ │
+│  │ CZECH REPUBLIC       │ │
+│  │  ┌─────────────────┐ │ │
+│  │  │ CZECH REPUBLIC  │ │ │
+│  │  └─────────────────┘ │ │
+│  └──────────────────────┘ │
+└───────────────────────────┘
+```
+
+Si buscas el elemento en la posición 2 de `'(a b c d)`:
+
+- Es exactamente lo mismo que buscar la posición 1 de `'(b c d)`.
+
+- Que a su vez es lo mismo que buscar la posición 0 de `'(c d)`.
+
+- ¡Y la posición 0 de cualquier lista es simplemente su cabeza (`first`)!
+
+La especificación inductiva de una lista de símbolos es:
+
+$$\text{<list-of-symbols>} ::= () \;\mid\; (\text{<symbol>} \; \text{<list-of-symbols>})$$
+
+### 10.1.3 Código y manejo de errores con Rackunit
+
+Veamos la implementación en Racket extraída de `01-get.rkt`:
+
+``` scheme
+#lang racket
+(require rackunit)
+(provide get)
+
+;; Implementación de list-ref mediante recursión estructural
+(define (get los n)
+  (if (null? los)
+      (error 'get "no such position")       ; Caso base 1: Índice fuera de rango
+      (if (zero? n)
+          (first los)                        ; Caso base 2: ¡Encontramos el elemento!
+          (get (rest los) (sub1 n)))))       ; Paso inductivo: Reducimos la lista y el contador
+
+;; Pruebas unitarias
+(check-equal? (get '(a b c) 2) 'c)
+(check-equal? (get '(d c b a z) 1) 'c)
+
+;; Verificación de excepciones
+(check-exn exn:fail? (lambda () (get '(d c b a z) 5)))
+```
+
+> **Atención al test de errores:** Observa cómo envolvemos la llamada a `(get '(d c b a z) 5)` dentro de una función anónima `(lambda () ...)` en `check-exn`. Si no lo hiciéramos así, Racket evaluaría la función errónea *antes* de pasarle el argumento a la suite de pruebas, rompiendo la ejecución.
+
+------------------------------------------------------------------------
+
+## 10.2 Procedimientos Interfaz (*Interface Procedures*)
+
+### 10.2.1 El "bache" estructural
+
+Supón que deseas tomar una cohorte de pacientes `'(jerry george elaine kramer)` y necesitas etiquetar a cada uno con su número de orden correlativo de ingreso: `'((jerry 1) (george 2) (elaine 3) (kramer 4))`
+
+Intentemos escribir esto con recursión estructural pura:
+
+``` scheme
+(define (annotate los)
+  (if (null? los)
+      '()
+      (cons (list (first los) ???)  ; ¿De dónde sacamos la posición actual?
+            (annotate (rest los)))))
+```
+
+Para saber en qué posición va `(first los)`, necesitamos un número que cambie e incremente en cada paso. Si cambiamos la firma de la función a `(annotate los position)`:
+
+``` scheme
+(define (annotate-v0 los position)
+  (if (null? los)
+      '()
+      (cons (list (first los) position)
+            (annotate-v0 (rest los) (+ position 1)))))
+```
+
+¡Funciona! Pero hemos roto la interfaz del usuario. Ahora el médico o analista de datos que use tu librería está obligado a llamar a `(annotate-v0 '(jerry george) 1)` especificando manualmente el contador inicial `1`. Eso es sucio, propenso a errores y viola la encapsulación.
+
+### 10.2.2 La solución de arquitectura
+
+Utilizamos el patrón de **Procedimiento Interfaz**. Definimos una función pública limpia que expone la firma requerida (un solo argumento), y por dentro invoca a una función auxilar (*helper*) que lleva el acumulador:
+
+``` scheme
+#lang racket
+(require rackunit)
+(provide annotate)
+
+;; Función pública (Interface Procedure)
+(define (annotate los)
+  (annotate-with-position los 1))
+
+;; Función auxiliar privada (Servidor de trabajo)
+(define (annotate-with-position los position)
+  (if (null? los)
+      '()
+      (cons (list (first los) position)
+            (annotate-with-position (rest los) (+ position 1)))))
+
+(check-equal? (annotate '(jerry george elaine kramer))
+              '((jerry 1) (george 2) (elaine 3) (kramer 4)))
+```
+
+> **Moraleja de diseño:** Cuando la recursión estructural pura se "atore" porque necesitas rastrear un estado interno (un contador, un historial, un promedio acumulado), **no alteres la interfaz pública**. Crea un procedimiento interfaz que "arranque" la recursión con los valores iniciales adecuados.
+
+------------------------------------------------------------------------
+
+## 10.3 Nuevas Estructuras: $s$-lists y Datos Mutuamente Inductivos
+
+### 10.3.1 Definición de una $s$-list
+
+En análisis de datos clínicos o en motores semánticos, la información no es lineal. Un expediente no es una lista plana; contiene diagnósticos, que a su vez contienen sub-estudios o factores de riesgo anidados.
+
+En Scheme/Racket, la estructura universal para representar árboles y expresiones anidadas es la $s$-list (S-expression list).
+
+Gramática BNF de una $s$-list:
+
+$$\text{<s-list>} ::= () \;\mid\; (\text{<symbol-expression>} \;\; \text{<s-list>})$$
+
+$$\text{<symbol-expression>} ::= \text{<symbol>} \;\mid\; \text{<s-list>}$$
+
+Fíjate bien en la gramática:
+
+- Una `<s-list>` está compuesta de `<symbol-expression>`s.
+
+- ¡Y una `<symbol-expression>` puede ser un simple símbolo \*\*o a su vez otra `<s-list>**`!
+
+Esto es una **definición mutuamente inductiva**: $A$ se define en términos de $B$, y $B$ se define en términos de $A$.
+
+Ejemplos de $s$-lists válidas:
+
+- `'()`
+
+- `'(obesidad hipertension)`
+
+- `'((obesidad (bmi-35)) (diabetes (hba1c-8)))`
+
+------------------------------------------------------------------------
+
+## 10.4 El Refactor: De la Recursión "A Ciegas" a la Recursión Mutual
+
+Imagina que quieres escribir una función `subst` para hacer un "Buscar y Reemplazar" global dentro de un expediente clínico o un AST (Árbol de Sintaxis Abstracta) de un motor semántico. Queremos reemplazar el símbolo `old` por `new` en cualquier nivel de profundidad de la $s$-list.
+
+### 10.4.1 El intento "monolítico" (Monstruo de `if`s)
+
+Si intentamos resolver esto en una sola función mediante recursión estructural ordinaria (código adaptado de `03-subst-v1.rkt`):
+
+``` scheme
+(define (subst new old slist) 
+  (if (null? slist)
+      '()
+      (if (symbol? (first slist))
+          (if (eq? (first slist) old)
+              (cons new (subst new old (rest slist)))
+              (cons (first slist) (subst new old (rest slist))))
+          (cons (subst new old (first slist))
+                (subst new old (rest slist))))))
+```
+
+**¿Por qué este código duele a la vista?**
+
+1.  Repetimos la llamada `(subst new old (rest slist))` tres veces.
+
+2.  Hay un enredo de `if`s anidados muy difícil de auditar y mantener.
+
+3.  **El pecado capital:** El código viola el principio de diseño funcional. La gramática tiene DOS no-terminales (`s-list` y `symbol-expression`), pero aquí intentamos resolver todo en UNA sola función.
+
+### 10.4.2 La solución elegante: Recursión Mutual
+
+Sigamos fielmente la estructura de los datos. Como la gramática tiene dos tipos de datos interconectados, escribiremos **dos funciones que se llaman entre sí**:
+
+- `subst`: procesa una `<s-list>`.
+
+- `subst-symbol-expr`: procesa una `<symbol-expression>`.
+
+Veamos la implementación limpia tomada de `04-subst-v2.rkt`:
+
+``` scheme
+#lang racket
+(require rackunit)
+(provide subst)
+
+;; 1. Función que procesa la <s-list>
+(define (subst new old slist)
+  (if (null? slist)
+      '()
+      (cons (subst-symbol-expr new old (first slist))  ; Procesa el elemento (symbol-expr)
+            (subst new old (rest slist)))))            ; Procesa la cola (s-list)
+
+;; 2. Función que procesa la <symbol-expression>
+(define (subst-symbol-expr new old symexp) 
+  (if (symbol? symexp)
+      (if (eq? symexp old) new symexp)                 ; Si es símbolo: lo reemplaza o lo deja igual
+      (subst new old symexp)))                         ; Si es s-list: ¡Llama a subst recursivamente!
+
+;; Pruebas
+(check-equal? (subst 'obesidad-morbida 'obesidad '(paciente101 (obesidad (grado-1))))
+              '(paciente101 (obesidad-morbida (grado-1))))
+```
+
+> **Visualización del flujo:** `subst` divide la lista y le delega a `subst-symbol-expr` el trabajo de evaluar el primer elemento. Si ese elemento resulta ser otra sublista anidada, `subst-symbol-expr` le devuelve la bola a `subst`. ¡Eso es la **Recursión Mutual**!
+
+------------------------------------------------------------------------
+
+## 10.5 Caso de Estudio: Conteo de Entidades Semánticas (`count-occurrences`)
+
+Supón que en un motor semántico necesita contar cuántas veces aparece cierta regla, variable o diagnóstico (`'diabetes`) dentro de un árbol de datos anidado.
+
+Aplicando recursión mutual basándonos en la gramática:
+
+``` scheme
+;; Cuenta ocurrencias en una <s-list>
+(define (count-occurrences s slist)
+  (if (null? slist)
+      0
+      (+ (count-occurrences-sym-expr s (first slist))   ; Ocurrencias en la cabeza
+         (count-occurrences s (rest slist)))))          ; Ocurrencias en la cola
+
+;; Cuenta ocurrencias en una <symbol-expression>
+(define (count-occurrences-sym-expr s sym-expr)
+  (if (symbol? sym-expr)
+      (if (eq? s sym-expr) 1 0)                         ; Si coincide suma 1, si no 0
+      (count-occurrences s sym-expr)))                  ; Si es sublista, recursión a count-occurrences
+
+;; Prueba
+(check-equal? (count-occurrences 'diabetes 
+                                '((diabetes (tipo-1)) (obesidad) (comorbilidad (diabetes))))
+              2)
+```
+
+------------------------------------------------------------------------
+
+## 10.6 Ejercicios Prácticos y Consolidación
+
+A continuación se presentan los ejercicios prácticos para afianzar estos patrones.
+
+### Ejercicio 1: `get-patient-var` (Acceso seguro por posición)
+
+**Contexto:** En un vector de datos de un laboratorio clínico representado como lista `'((hba1c 6.5) (trigliceridos 210) (ldl 130) (bmi 32))`, necesitamos una función `(get-patient-var labs n)` que devuelva la $n$-ésima prueba metabólica.
+
+- **Requisito:** Usa el patrón de la sección 10.1 (`get`). Lanza un error con `error` si $n$ excede la cantidad de pruebas.
+
+``` scheme
+;; Espacio para tu solución:
+(define (get-patient-var labs n)
+  'implementar)
+```
+
+### Ejercicio 2: `index-lab-results` (Procedimiento Interfaz)
+
+**Contexto:** Tienes una lista simple de valores de glucosa en ayunas `'(95 110 145 200)`. Queremos convertirlos en una lista etiquetada con su número de medición secuencial: `'((medicion-1 95) (medicion-2 110) (medicion-3 145) (medicion-4 200))`.
+
+- **Requisito:** Implementa `index-lab-results` utilizando el patrón de **Procedimiento Interfaz** con una función auxiliar `index-helper` que arranque el conteo en 1.
+
+``` scheme
+;; Espacio para tu solución:
+(define (index-lab-results lab-values)
+  'implementar)
+```
+
+### Ejercicio 3: `replace-icd-code` (Recursión Mutual en Salud)
+
+**Contexto:** Durante una actualización de registros médicos, el código epidemiológico `'e66-obesidad` debe reemplazarse por `'e669-obesidad-no-especificada` en todo el expediente anidado del paciente.
+
+- **Requisito:** Escribe las funciones mutuamente recursivas `(replace-icd-code new-code old-code record)` y `(replace-icd-sym-expr new-code old-code sym-expr)` capaces de navegar cualquier nivel de sublistas.
+
+``` scheme
+;; Espacio para tu solución:
+(define (replace-icd-code new-code old-code record)
+  'implementar)
+
+(define (replace-icd-sym-expr new-code old-code sym-expr)
+  'implementar)
+```
+
+### Ejercicio 4: Pensamiento Datalog / Motor Semántico (Evaluación de Reglas Jerárquicas)
+
+**Contexto:** Para un motor semántico sobre NHANES, representaremos una consulta lógica lógica/regla condicional como un árbol anidado de condiciones: `'(AND (BMI > 30) (OR (HBA1C > 6.5) (GLUCOSA > 126)))`
+
+Piensa y responde conceptualmente (o en pseudo-código Racket):
+
+1.  ¿Por qué intentar evaluar o transformar esta regla usando un solo bucle plano o recursión no-mutual sería un desastre de mantenibilidad?
+2.  ¿Cómo encaja la gramática de una $s$-list en la estructuración de un evaluador de reglas lógicas compuestas para identificar pacientes con Síndrome Metabólico?
+
+------------------------------------------------------------------------
+
+## Soluciones a los Ejercicios Prácticos del Capítulo 10
+
+A continuación se presentan las soluciones implementadas y probadas para los ejercicios de la sesión, estructuradas con código ejecutable en Racket y suites de pruebas unitarias (`rackunit`).
+
+### Ejercicio 1: Acceso Seguro por Posición (`get-patient-var`)
+
+Implementación de navegación estructural directa sobre listas de resultados de laboratorio clínico.
+
+``` scheme
+#lang racket
+(require rackunit)
+
+;; Acceso seguro a la n-ésima variable clínica de un paciente
+(define (get-patient-var labs n)
+  (if (null? labs)
+      (error 'get-patient-var "no tal posición en el registro")    
+      (if (zero? n)
+          (first labs)                                     
+          (get-patient-var (rest labs) (sub1 n)))))
+
+;; Datos de prueba
+(define my-labs '((hba1c 6.5) 
+                  (trigliceridos 210) 
+                  (ldl 130) 
+                  (bmi 32)))
+
+;; Pruebas unitarias
+(check-equal? (get-patient-var my-labs 3) '(bmi 32))
+(check-equal? (get-patient-var my-labs 0) '(hba1c 6.5))
+(check-exn exn:fail? (lambda () (get-patient-var my-labs 5)))
+```
+
+------------------------------------------------------------------------
+
+### Ejercicio 2: Indexación de Muestras con Procedimiento Interfaz (`index-lab-results`)
+
+Uso del patrón de **Procedimiento Interfaz** para mantener una API pública limpia de un solo argumento (`lab-values`), delegando el rastreo del contador de secuencia a la función auxiliar privada `index-helper`.
+
+``` scheme
+#lang racket
+(require rackunit)
+
+;; Función auxiliar privada (Servidor de trabajo con acumulador)
+(define (index-helper alog n)
+  (if (null? alog)
+      '()
+      (cons (list n (first alog))
+            (index-helper (rest alog) (+ 1 n)))))
+
+;; Procedimiento Interfaz (Función pública)
+(define (index-lab-results alog)
+  (index-helper alog 1))
+
+;; Pruebas unitarias
+(check-equal? (index-helper '(95 110 145 200) 1)
+              '((1 95) (2 110) (3 145) (4 200)))
+
+(check-equal? (index-lab-results '(95 110 145 200))
+              '((1 95) (2 110) (3 145) (4 200)))
+```
+
+------------------------------------------------------------------------
+
+### Ejercicio 3: Reemplazo Global en Expedientes Anidados (`replace-icd-code`)
+
+Implementación mediante **Recursión Mutual** para navegar y reemplazar códigos diagnósticos ICD a través de cualquier nivel de anidamiento en una $s$-list.
+
+``` scheme
+#lang racket
+(require rackunit)
+
+;; 1. Procesador de la <s-list> (Registro o sublista del paciente)
+(define (replace-icd-code new-code old-code record)
+  (if (null? record)
+      '()
+      (cons (replace-icd-sym-expr new-code old-code (first record)) ; Procesa elemento
+            (replace-icd-code new-code old-code (rest record)))))   ; Procesa cola
+
+;; 2. Procesador de la <symbol-expression> (Símbolo individual o sublista)
+(define (replace-icd-sym-expr new-code old-code symexp) 
+  (if (symbol? symexp)
+      (if (eq? symexp old-code) new-code symexp)            ; Si es símbolo: evalúa reemplazo
+      (replace-icd-code new-code old-code symexp)))         ; Si es s-list: recursión mutual
+
+;; Pruebas unitarias
+
+;; CASO 1: Lista plana de diagnósticos
+(check-equal? 
+  (replace-icd-code 'e669-obesidad-no-especificada 
+                    'e66-obesidad 
+                    '(paciente-101 e66-obesidad i10-hipertension))
+  '(paciente-101 e669-obesidad-no-especificada i10-hipertension))
+
+;; CASO 2: Expediente jerárquico con sublistas anidadas a multinivel
+(check-equal? 
+  (replace-icd-code 'e669-obesidad-no-especificada 
+                    'e66-obesidad 
+                    '(paciente-102 
+                       (diagnosticos-principales e66-obesidad)
+                       (antecedentes (metabolicos e66-obesidad) (cardiacos i10-hipertension))))
+  '(paciente-102 
+     (diagnosticos-principales e669-obesidad-no-especificada)
+     (antecedentes (metabolicos e669-obesidad-no-especificada) (cardiacos i10-hipertension))))
+```
+
+------------------------------------------------------------------------
+
+### Ejercicio 4: Análisis Arquitectónico para el Motor Semántico / Datalog
+
+#### 1. ¿Por qué intentar evaluar reglas compuestas mediante un bucle plano o recursión no-mutual es insostenible?
+
+> **Análisis:** En la práctica clínica y en el análisis de bases de datos como NHANES, los criterios diagnósticos sufren de una **combinatoria de casos bordes y reglas condicionales anidadas**. Por ejemplo, un criterio de *Hiperglicemia* no depende únicamente de la cifra de glucosa en ayunas o HbA1c; también se satisface si el paciente reporta uso de insulina o metformina. A su vez, la *Obesidad* puede definirse por el $IMC \ge 30$, o por la circunferencia de cintura, o ajustarse si el paciente tiene antecedente de cirugía bariátrica. Igualmente, un paciente con perfil lipídico dentro de rangos normales pero bajo tratamiento con estatinas debe clasificarse bajo riesgo/manejo cardiovascular. Intentar modelar esta telaraña de criterios clínicos mediante un solo bloque monolítico con `if`s o `cond`s anidados genera un código frágil, duplicado e imposible de auditarlas o extender. La **recursión mutual** permite desacoplar la evaluación de cada conectivo lógico o criterio individual del recorrido del árbol completo.
+
+#### 2. ¿Cómo encaja la gramática de una $s$-list en un evaluador de reglas lógicas compuestas para el Síndrome Metabólico?
+
+> **Análisis:** La gramática inductiva de una $s$-list es la estructura natural para representar un **Árbol de Sintaxis Abstracta (AST)** de reglas lógicas. Un paciente no es una entidad plana; es una jerarquía compuesta por diagnósticos, antecedentes familiares, biomarcadores de laboratorio y esquemas farmacológicos. La estructura recursiva de una $s$-list permite definir expresiones lógicas de profundidad arbitraria como:
+>
+> ``` scheme
+> '(AND (OR (BMI >= 30) (WAIST > 102))
+>       (OR (HBA1C >= 6.5) (MEDS-INC 'metformina))
+>       (OR (TRIGLYCERIDES >= 150) (MEDS-INC 'estatinas)))
+> ```
+>
+> Gracias a que una $s$-list admite que un elemento sea a su vez otra $s$-list, el motor semántico/Datalog puede aplicar las reglas de inferencia descendiendo de forma natural por la jerarquía. Cada nivel procesa sub-reglas modulares de forma elegante, permitiendo consultar bases complejas como NHANES sin colapsar en la gestión de estados.
+
+```         
+```
