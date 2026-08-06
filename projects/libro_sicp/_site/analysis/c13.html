@@ -478,17 +478,17 @@ window.Quarto = {
 </section>
 <section id="implementación-práctica-algoritmos-de-alcance-estático" class="level2">
 <h2 class="anchored" data-anchor-id="implementación-práctica-algoritmos-de-alcance-estático">13.4 Implementación Práctica: Algoritmos de Alcance Estático</h2>
-<p>Ahora formalizaremos la pregunta: <strong>¿Ocurre una variable <span class="math inline">\(v\)</span> de forma ligada (<em>bound</em>) o libre (<em>free</em>) dentro de una expresión <span class="math inline">\(exp\)</span>?</strong></p>
+<p>Ahora formalizaremos la pregunta: <strong>¿Ocurre una variable</strong> <span class="math inline">\(v\)</span> de forma ligada (<em>bound</em>) o libre (<em>free</em>) dentro de una expresión <span class="math inline">\(exp\)</span>?</p>
 <section id="definición-inductiva-formal" class="level3">
 <h3 class="anchored" data-anchor-id="definición-inductiva-formal">Definición Inductiva Formal</h3>
 <ol type="1">
-<li><strong><code>occurs-bound?</code> (<span class="math inline">\(v\)</span>, <span class="math inline">\(exp\)</span>):</strong>
+<li><strong><code>occurs-bound?</code> (</strong><span class="math inline">\(v\)</span>, <span class="math inline">\(exp\)</span>):
 <ul>
 <li>Si <span class="math inline">\(exp\)</span> es una referencia a variable: <strong>Falso</strong> (una variable sola nunca ocurre ligada).</li>
 <li>Si <span class="math inline">\(exp\)</span> es una aplicación <span class="math inline">\((exp_1 \; exp_2)\)</span>: <strong>Verdadero</strong> si <span class="math inline">\(v\)</span> ocurre ligada en <span class="math inline">\(exp_1\)</span> O en <span class="math inline">\(exp_2\)</span>.</li>
 <li>Si <span class="math inline">\(exp\)</span> es un <span class="math inline">\(\lambda(\text{var}) \; \text{body}\)</span>: <strong>Verdadero</strong> si <span class="math inline">\(v\)</span> ocurre ligada en <span class="math inline">\(\text{body}\)</span>, O SI <span class="math inline">\(v\)</span> ocurre libre en <span class="math inline">\(\text{body}\)</span> Y <span class="math inline">\(v\)</span> es igual al parámetro <span class="math inline">\(\text{var}\)</span>.</li>
 </ul></li>
-<li><strong><code>occurs-free?</code> (<span class="math inline">\(v\)</span>, <span class="math inline">\(exp\)</span>):</strong>
+<li><strong><code>occurs-free?</code> (</strong><span class="math inline">\(v\)</span>, <span class="math inline">\(exp\)</span>):
 <ul>
 <li>Si <span class="math inline">\(exp\)</span> es una referencia a variable: <strong>Verdadero</strong> si <span class="math inline">\(exp\)</span> es igual a <span class="math inline">\(v\)</span>.</li>
 <li>Si <span class="math inline">\(exp\)</span> es una aplicación <span class="math inline">\((exp_1 \; exp_2)\)</span>: <strong>Verdadero</strong> si <span class="math inline">\(v\)</span> ocurre libre en <span class="math inline">\(exp_1\)</span> O en <span class="math inline">\(exp_2\)</span>.</li>
@@ -571,8 +571,7 @@ window.Quarto = {
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; Devuelve el valor mínimo presente en un árbol binario numérico.</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>tree-min bin-tree<span class="op">)</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; </span><span class="al">TODO</span><span class="co">: Implementar caso base para número y caso recursivo para subárboles</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  -<span class="dv">1</span><span class="op">)</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  -<span class="dv">1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>Prueba con Rackunit:</em></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>tree-min '<span class="op">(</span><span class="dv">8</span> <span class="op">(</span><span class="dv">13</span> <span class="dv">11</span> <span class="op">(</span><span class="dv">5</span> <span class="dv">24</span> <span class="dv">6</span><span class="op">))</span> <span class="op">(</span><span class="dv">15</span> <span class="op">(</span><span class="dv">12</span> <span class="dv">10</span> <span class="dv">14</span><span class="op">)</span> <span class="dv">20</span><span class="op">)))</span> <span class="dv">5</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>

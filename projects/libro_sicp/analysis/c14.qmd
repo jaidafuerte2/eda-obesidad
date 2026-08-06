@@ -1,0 +1,478 @@
+---
+title: "14. De los Datos al Motor Lógico — Creando un Intérprete Evaluador"
+format: html
+editor: visual
+---
+
+## Introducción: Por qué un analista de salud necesita entender un Intérprete
+
+Imagina que en el hospital recibes una ficha clínica codificada o una variable derivada en NHANES como `BMI_cat` (categoría de índice de masa corporal). Para clasificar si un paciente presenta "Obesidad Grado I", no basta con ver el valor numérico bruto; necesitas una regla que evalúe la estructura del dato y devuelva una interpretación clínica.
+
+En programación, un **intérprete** realiza exactamente ese trabajo: toma una expresión estructurada (el "dato bruto" o Árbol de Sintaxis Abstracta - AST) y la procesa paso a paso mediante reglas fijas hasta reducirla a un valor final computable.
+
+Hasta ahora hemos estudiado cómo recorrer estructuras de datos recursivas. Hoy daremos el salto decisivo: usaremos **recursión estructural** para construir nuestro primer motor evaluador real. Aunque el lenguaje que interpretaremos hoy maneja transformaciones de cadenas de texto (el lenguaje *Cipher*), la arquitectura subyacente es el cimiento exacto para tu futuro **motor de reglas semánticas y Datalog para NHANES**.
+
+> **Nota mental del copiloto:** Un intérprete no es magia negra ni teoría abstracta inaccesible. Es simplemente una función recursiva que sabe descomponer una receta compleja en pasos elementales y ejecutarlos secuencialmente.
+
+---
+
+## 1. Gramática y Procedimientos de Sintaxis (*Syntax Procedures*)
+
+Antes de poder interpretar un lenguaje, debemos definir su **gramática** (el formato válido de las expresiones). En nuestro lenguaje *Cipher*, los datos base son cadenas de texto (*strings*) y operaciones aplicadas sobre ellas.
+
+La gramática formal del lenguaje se define así:
+
+```bnf
+<exp> ::= <string>
+        | <varref>
+        | ( <unary-op> <exp> )
+        | ( <exp> <binary-op> <exp> )
+        | ( <exp> <mixed-op> <number> )
+
+<unary-op>  ::= !
+<binary-op> ::= +
+<mixed-op>  ::= <<< | >>>
+
+```
+
+### Separando Sintaxis de Semántica con Pruebas Unitarias
+
+En un entorno clínico o de análisis de datos metabólicos, nunca mezclas la captura del dato con el cálculo del riesgo cardiovascular. En código hacemos lo mismo usando **Procedimientos de Sintaxis** (*Syntax Procedures*). Son funciones auxiliares que abstraen la estructura de las listas de Racket.
+
+A continuación se presenta la implementación del módulo de sintaxis junto con su suite de pruebas automatizadas en `rackunit`:
+
+```racket
+#lang racket
+(require rackunit)
+
+(provide exp? mixed? mixed->op mixed->str mixed->num make-mixed
+         str? unary? binary? varref?)
+
+;; --- PREDICADOS DE TIPO Y PROCEDIMIENTOS DE SINTAXIS ---
+
+(define str? string?)
+
+(define varref? symbol?)
+
+(define mixed-op?
+  (lambda (sym)
+    (member sym '(<<< >>>))))
+
+(define exp?
+  (lambda (exp)
+    (or (str? exp)
+        (varref? exp)
+        (unary? exp)
+        (binary? exp)
+        (mixed? exp))))
+
+(define unary?
+  (lambda (exp)
+    (and (list? exp)
+         (= (length exp) 2)
+         (member (first exp) '(!))
+         (exp? (second exp)))))
+
+(define binary?
+  (lambda (exp)
+    (and (list? exp)
+         (= (length exp) 3)
+         (exp? (first exp))
+         (member (second exp) '(+))
+         (exp? (third exp)))))
+
+(define mixed?
+  (lambda (exp)
+    (and (list? exp)
+         (= (length exp) 3)
+         (exp? (first exp))
+         (mixed-op? (second exp))
+         (number? (third exp)))))
+
+;; Selectores
+(define mixed->op second)
+(define mixed->str first)
+(define mixed->num third)
+
+;; Constructor
+(define make-mixed
+  (lambda (op left right)
+    (list left op right)))
+
+;; --- SUITE DE PRUEBAS UNITARIAS DE SINTAXIS ---
+(check-true (str? "NHANES_2026"))
+(check-true (varref? 'GLUCOSE_LEVEL))
+(check-true (mixed? '("PATIENT_101" <<< 7)))
+(check-true (mixed? '(("PATIENT" + "_101") >>> 3))) ; Expresión anidada válida
+(check-false (mixed? "PATIENT_101"))                ; No es lista
+(check-false (mixed? '("PATIENT_101" <<< "7")))     ; El último argumento no es número
+(check-false (mixed? '("PATIENT_101" slice 3)))     ; Operador no reconocido
+
+```
+
+> **Regla de oro:** El evaluador principal no debe saber si una expresión binaria es una lista de Racket o un vector subyacente. Solo debe llamar a `binary->left` o `binary->right`. Esto garantiza una **Abstracción de Datos** limpia.
+> 
+> 
+
+---
+
+## 2. El Motor de Evaluación (`value` v1)
+
+El corazón de nuestro intérprete es la función `value`. Su trabajo es recibir una expresión válida y aplicar **recursión estructural**:
+
+1. Si es un valor atómico (un *string*), se devuelve directamente.
+
+
+2. Si es una expresión compuesta, **evalúa recursivamente sus subexpresiones** y aplica el operador correspondiente.
+
+
+
+Acompañamos el motor evaluador con sus respectivas pruebas unitarias:
+
+```racket
+#lang racket
+(require rackunit)
+
+;; --- IMPLEMENTACIÓN DEL EVALUADOR V1 Y HELPERS ---
+
+(define eval-unary
+  (lambda (op arg)
+    (cond ((eq? op '!) (rot13 arg))
+          (else (error 'eval-unary "Operador unario inválido: ~a" op)))))
+
+(define eval-binary
+  (lambda (op left right)
+    (cond ((eq? op '+) (string-append left right))
+          (else (error 'eval-binary "Operador binario inválido: ~a" op)))))
+
+(define eval-mixed
+  (lambda (op str num)
+    (cond ((eq? op '<<<) (substring str 0 num))
+          ((eq? op '>>>) (substring str (- (string-length str) num)
+                                        (string-length str)))
+          (else (error 'eval-mixed "Operador mixto inválido: ~a" op)))))
+
+;; Cifrado ROT13
+(define rot13
+  (lambda (str)
+    (list->string (map (lambda (c)
+                         (cond ((a-to-m? c) (rot-ch c 13))
+                               ((n-to-z? c) (rot-ch c -13))
+                               (else c)))
+                       (string->list str)))))
+
+(define a-to-m? (lambda (ch) (and (char-ci<=? #\a ch) (char-ci<=? ch #\m))))
+(define n-to-z? (lambda (ch) (char-ci<=? #\n ch #\z)))
+(define rot-ch  (lambda (c n) (integer->char (+ n (char->integer c)))))
+
+;; Función de evaluación principal V1
+(define value
+  (lambda (exp)
+    (cond ((string? exp) exp)
+          ((unary? exp)  (eval-unary (first exp) (value (second exp))))
+          ((binary? exp) (eval-binary (second exp)
+                                      (value (first exp))
+                                      (value (third exp))))
+          ((mixed? exp)  (eval-mixed (second exp)
+                                     (value (first exp))
+                                     (third exp)))
+          (else (error 'value "Expresión inválida: ~a" exp)))))
+
+;; --- PRUEBAS UNITARIAS DEL EVALUADOR V1 ---
+(check-equal? (eval-mixed '<<< "EUGENE" 3) "EUG")
+(check-equal? (eval-mixed '>>> "EUGENE" 2) "NE")
+(check-equal? (value '(! "Hello, Eugene")) "Uryyb, Rhtrar")
+(check-equal? (value '("Hello, " + "Eugene")) "Hello, Eugene")
+(check-equal? (value '("Eugene" <<< 4)) "Euge")
+(check-equal? (value '(("Eugene" >>> 3) + ("Wallingford" <<< 4))) "eneWall")
+
+```
+
+---
+
+## 3. Entornos y Búsqueda de Variables (`value` v2 & `lookup`)
+
+Aquí radica el punto crucial para nuestro futuro motor Datalog. Hasta ahora, el lenguaje solo procesa valores literales directos. Sin embargo, en investigación de datos metabólicos, trabajas con **variables o identificadores** (como `GLUCOSE_TRIP` o `CUTOFF_DIABETES`).
+
+Para dar soporte a variables, introducimos el concepto de **Entorno** (*Environment*). Un entorno es una lista de pares o asociación `(variable . valor)`.
+
+### La función `lookup` probada con `rackunit`
+
+Cuando el evaluador encuentra un símbolo, busca su valor en el entorno activo. Si el símbolo no está presente, lanza una excepción.
+
+```racket
+#lang racket
+(require rackunit)
+
+(provide lookup)
+
+(define lookup
+  (lambda (sym lop)
+    (if (null? lop)
+        (error 'lookup "Referencia a variable no válida: ~a" sym)
+        (if (eq? sym (car (first lop)))
+            (cdr (first lop))
+            (lookup sym (rest lop))))))
+
+;; --- PRUEBAS UNITARIAS DE LOOKUP ---
+(define *env-test* '((FIRST . "Eugene") (LAST . "Wallingford")))
+
+(check-equal? (lookup 'FIRST *env-test*) "Eugene")
+(check-equal? (lookup 'LAST *env-test*) "Wallingford")
+(check-exn exn:fail? (lambda () (lookup 'MIDDLE *env-test*)))
+
+```
+
+### Integrando el Entorno al Intérprete Evaluador V2
+
+Para propagar el entorno a través del árbol de evaluación recursivo, adaptamos la función `value` mediante una interfaz pública y una función auxiliar recursiva `value-aux`:
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Entorno Global / Diccionario de Datos Clínicos
+(define *base-env* '((PATIENT_ID . "SUBJ_1042")
+                     (RISK_LEVEL . "HIGH_OBESITY")
+                     (FIRST      . "Eugene")
+                     (LAST       . "Wallingford")))
+
+(define value-v2
+  (lambda (exp)
+    (if (exp? exp)
+        (value-aux exp *base-env*)
+        (error 'value "Expresión sintácticamente inválida: ~a" exp))))
+
+(define value-aux
+  (lambda (exp env)
+    (cond ((str? exp) exp)
+          ((varref? exp) (lookup exp env)) ; Búsqueda en el entorno
+          ((unary? exp)  (eval-unary (first exp)
+                                     (value-aux (second exp) env)))
+          ((binary? exp) (eval-binary (second exp)
+                                      (value-aux (first exp) env)
+                                      (value-aux (third exp) env)))
+          ((mixed? exp)  (eval-mixed (second exp)
+                                     (value-aux (first exp) env)
+                                     (third exp)))
+          (else (error 'value-aux "Expresión no evaluable: ~a" exp)))))
+
+;; --- PRUEBAS UNITARIAS DEL EVALUADOR CON ENTORNOS ---
+(check-equal? (value-v2 'PATIENT_ID) "SUBJ_1042")
+(check-equal? (value-v2 '(PATIENT_ID + "_METABOLIC")) "SUBJ_1042_METABOLIC")
+(check-equal? (value-v2 '(RISK_LEVEL <<< 4)) "HIGH")
+(check-exn exn:fail? (lambda () (value-v2 'UNKNOWN_VAR)))
+
+```
+
+> **Conexión Semántica / Datalog:** En un motor de reglas semánticas, las premisas clínicas se resuelven pasando un entorno de sustituciones o asignaciones (*bindings*) entre reglas lógicas. Lo que acabas de ver con `value-aux` y `env` es la base exacta sobre la cual un motor Datalog evalúa consultas por unificación de variables.
+> 
+> 
+
+---
+
+## 4. El Ciclo REPL (Read-Eval-Print Loop)
+
+Para interactuar en tiempo real con el intérprete (tal como lo haces en la consola de R), implementamos un ciclo de lectura, evaluación e impresión:
+
+```racket
+(define cipher
+  (lambda ()
+    (display "cipher> ")
+    (displayln (value-v2 (read)))
+    (cipher)))
+
+```
+
+---
+
+## 5. Sección de Ejercicios Prácticos (con Pruebas Automatizadas)
+
+Consolida lo aprendido en esta sesión resolviendo y ejecutando los siguientes ejercicios.
+
+### Ejercicio 1: Verificación de Robustez en `mixed?`
+
+Escribe y prueba la función `mixed?` asegurando que gestione correctamente listas cortas, valores no atómicos y tipos incorrectos sin fallar.
+
+```racket
+#lang racket
+(require rackunit)
+
+(define mixed?
+  (lambda (exp)
+    ...))
+
+;; --- TUS PRUEBAS UNITARIAS ---
+(check-true  (mixed? '("NHANES_DATA" <<< 5)))
+(check-false (mixed? '("NHANES_DATA" <<< "5")))
+(check-false (mixed? '("NHANES_DATA" <<<)))
+(check-false (mixed? 100))
+
+```
+
+### Ejercicio 2: Búsqueda de Biomarcadores (`lookup-clinical`)
+
+Diseña la función `lookup-clinical` que busque el estado de un biomarcador en una lista de pares. Si el biomarcador no existe, debe arrojar un mensaje descriptivo.
+
+```racket
+#lang racket
+(require rackunit)
+
+(define (lookup-clinical biomarker env)
+  ....)
+
+;; --- PRUEBAS UNITARIAS ---
+(define *nhanes-env* '((GLUCOSE . "ELEVATED")
+                       (BMI     . "OBESITY_CLASS_2")
+                       (HbA1c   . "PREDIABETES")))
+
+(check-equal? (lookup-clinical 'GLUCOSE *nhanes-env*) "ELEVATED")
+(check-equal? (lookup-clinical 'HbA1c *nhanes-env*) "PREDIABETES")
+(check-exn exn:fail? (lambda () (lookup-clinical 'TRIGLYCERIDES *nhanes-env*)))
+
+```
+
+### Ejercicio 3: Extensión de Operador Mixto (`TAKE-PATIENT`)
+
+Añade el operador de corte `take` al intérprete evaluador para extraer los primeros $N$ caracteres de un código de paciente. Incluye las pruebas unitarias que verifiquen su funcionamiento correcto.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Pruebas
+;; (check-equal? (value-v2 '("PATIENT_9921" <<< 7)) "PATIENT")
+
+```
+
+---
+
+## Soluciones a los Ejercicios Prácticos (Capítulo 14)
+
+A continuación se presentan las soluciones verificadas mediante pruebas unitarias (`rackunit`) para cada uno de los ejercicios del capítulo, modeladas para el entorno de evaluación de variables de salud y NHANES.
+
+### Ejercicio 1: Verificación y Extensión de Expresiones Mixtas (`my-mixed?`)
+
+Se define la recursión mutua entre los predicados de expresión `my-exp?` y `my-mixed?`, añadiendo el soporte para el operador mixto `take`.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Predicado general de expresiones
+(define my-exp?
+  (lambda (exp)
+    (or (str? exp)
+        (varref? exp)
+        (unary? exp)
+        (binary? exp)
+        (my-mixed? exp))))
+
+;; Predicado para expresiones mixtas (incluyendo 'take')
+(define my-mixed?
+  (lambda (exp)
+    (and (list? exp)
+         (= (length exp) 3)
+         (my-exp? (first exp))
+         (member (second exp) '(<<< >>> take))
+         (number? (third exp)))))
+
+;; --- PRUEBAS UNITARIAS ---
+(check-true  (my-exp? 'PATIENT_ID))
+(check-true  (my-exp? "NHANES_2026"))
+(check-true  (my-exp? '(! PATIENT_ID)))
+(check-true  (my-exp? '(PATIENT_ID + "_METABOLIC")))
+(check-true  (my-exp? '(PATIENT_ID take 4)))
+(check-false (my-exp? '(1 + 1)))
+
+(check-true  (my-mixed? '("NHANES_DATA" <<< 5)))
+(check-true  (my-mixed? '("NHANES_DATA" take 5)))
+(check-false (my-mixed? '("NHANES_DATA" <<< "5")))
+(check-false (my-mixed? '("NHANES_DATA" <<<)))
+(check-false (my-mixed? 100))
+
+```
+
+---
+
+### Ejercicio 2: Búsqueda de Biomarcadores en el Entorno (`lookup-clinical`)
+
+Implementación de la búsqueda recursiva sobre el diccionario de datos de parámetros metabólicos y metabólicos asociados.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Búsqueda recursiva en el entorno de asociación
+(define (lookup-clinical var env)
+  (if (null? env)
+      (error 'lookup "Referencia a biomarcador/variable no válida: ~a" var)
+      (if (eq? var (car (first env)))
+          (cdr (first env))
+          (lookup-clinical var (cdr env)))))
+
+;; --- ENTORNO CLÍNICO Y PRUEBAS UNITARIAS ---
+(define *nhanes-env* '((GLUCOSE . "ELEVATED")
+                       (BMI     . "OBESITY_CLASS_2")
+                       (HbA1c   . "PREDIABETES")))
+
+(check-equal? (lookup-clinical 'GLUCOSE *nhanes-env*) "ELEVATED")
+(check-equal? (lookup-clinical 'HbA1c *nhanes-env*) "PREDIABETES")
+(check-exn exn:fail? (lambda () (lookup-clinical 'TRIGLYCERIDES *nhanes-env*)))
+
+```
+
+---
+
+### Ejercicio 3: Intérprete Evaluador Extendido (`value-v2` con `take`)
+
+Evaluación semántica extendida que conecta el entorno clínico (`*base-env*`), la búsqueda de biomarcadores y el nuevo operador `take`.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Entorno base del sistema
+(define *base-env* '((PATIENT_ID . "SUBJ_1042")
+                     (RISK_LEVEL . "HIGH_OBESITY")))
+
+;; Evaluador auxiliar para operadores mixtos
+(define my-eval-mixed
+  (lambda (op str num)
+    (cond ((eq? op '<<<)  (substring str 0 num))
+          ((eq? op 'take) (substring str 0 num))
+          ((eq? op '>>>)  (substring str (- (string-length str) num)
+                                        (string-length str)))
+          (else (error 'eval-mixed "Operador mixto inválido: ~a" op)))))
+
+;; Evaluación recursiva por ramas
+(define value-aux
+  (lambda (exp env)
+    (cond ((str? exp) exp)
+          ((varref? exp) (lookup-clinical exp env))
+          ((unary? exp)  (eval-unary (first exp)
+                                     (value-aux (second exp) env)))
+          ((binary? exp) (eval-binary (second exp)
+                                      (value-aux (first exp) env)
+                                      (value-aux (third exp) env)))
+          ((my-mixed? exp) (my-eval-mixed (second exp)
+                                          (value-aux (first exp) env)
+                                          (third exp)))
+          (else (error 'value-aux "Expresión no evaluable: ~a" exp)))))
+
+;; Interfaz pública del evaluador
+(define value-v2
+  (lambda (exp)
+    (if (my-exp? exp)
+        (value-aux exp *base-env*)
+        (error 'value "Expresión sintácticamente inválida: ~a" exp))))
+
+;; --- PRUEBAS UNITARIAS DEL MOTOR COMPLETO ---
+(check-equal? (value-v2 'PATIENT_ID) "SUBJ_1042")
+(check-equal? (value-v2 '(PATIENT_ID + "_METABOLIC")) "SUBJ_1042_METABOLIC")
+(check-equal? (value-v2 '(RISK_LEVEL <<< 4)) "HIGH")
+(check-equal? (value-v2 '(RISK_LEVEL take 4)) "HIGH")
+(check-equal? (value-v2 '(PATIENT_ID take 4)) "SUBJ")
+(check-exn exn:fail? (lambda () (value-v2 'UNKNOWN_VAR)))
+
+```

@@ -8,7 +8,7 @@ El código fuente de un programa no es solo texto: es una estructura de datos je
 
 En esta sesión aplicaremos **recursión estructural** para construir nuestro primer analizador estático: un programa que inspecciona el texto de otros programas para determinar cómo se vinculan sus variables.
 
----
+------------------------------------------------------------------------
 
 ## 13.1 El Compilador como Auditor Clínico
 
@@ -16,25 +16,19 @@ Imagina que estás revisando un protocolo médico computarizado para calcular el
 
 En programación, existen dos momentos para evaluar propiedades:
 
-1. **Propiedades Dinámicas:** Ocurren durante la ejecución (en tiempo de ejecución). Ejemplo: "El valor final de la glucosa en ayunas es 126 mg/dL".
+1.  **Propiedades Dinámicas:** Ocurren durante la ejecución (en tiempo de ejecución). Ejemplo: "El valor final de la glucosa en ayunas es 126 mg/dL".
 
+2.  **Propiedades Estáticas:** Se verifican analizando el código sin ejecutarlo. Ejemplo: "¿Se declaró la variable `edad` antes de usarla en la fórmula?".
 
-2. **Propiedades Estáticas:** Se verifican analizando el código sin ejecutarlo. Ejemplo: "¿Se declaró la variable `edad` antes de usarla en la fórmula?".
+> **Insight de Copiloto:** El análisis estático permite a compiladores, linters, verificadores de tipos e IDEs extraer características clave del código antes de correr una sola línea. En el desarrollo de un motor lógicamente orientado a datos (como Datalog), el análisis estático es la fase donde validamos si las variables de una regla lógica están correctamente ligadas a un predicado o si han quedado "volando" libremente.
 
-
-
-> **Insight de Copiloto:**
-> El análisis estático permite a compiladores, linters, verificadores de tipos e IDEs extraer características clave del código antes de correr una sola línea. En el desarrollo de un motor lógicamente orientado a datos (como Datalog), el análisis estático es la fase donde validamos si las variables de una regla lógica están correctamente ligadas a un predicado o si han quedado "volando" libremente.
-> 
-> 
-
----
+------------------------------------------------------------------------
 
 ## 13.2 Variables Libres y Ligadas: La Analogía del Paciente
 
 Para entender el alcance de una variable, consideremos la siguiente función en Racket que calcula la suma de cuadrados:
 
-```racket
+``` racket
 (define sum-of-squares
   (lambda (x y)
     (+ (* x x) (* y y))))
@@ -42,35 +36,32 @@ Para entender el alcance de una variable, consideremos la siguiente función en 
 
 A primera vista, podrías pensar que todas las variables en este bloque son parámetros locales. Sin embargo, analicemos el rol de cada identificador:
 
-* **`x` e `y` son variables ligadas (*bound variables*):** Se encuentran dentro del alcance (*scope*) del `lambda` que las declaró como parámetros explícitos.
-* **`+` y `*` son variables libres (*free variables*):** ¡No fueron declaradas como parámetros dentro de esta función! Ocurren de forma libre dentro del cuerpo y dependen de un entorno externo o global para tener significado.
+- **`x` e `y` son variables ligadas (*bound variables*):** Se encuentran dentro del alcance (*scope*) del `lambda` que las declaró como parámetros explícitos.
+- **`+` y `*` son variables libres (*free variables*):** ¡No fueron declaradas como parámetros dentro de esta función! Ocurren de forma libre dentro del cuerpo y dependen de un entorno externo o global para tener significado.
 
 ### La Prueba del Algodón: Captura de Variables
 
 Para comprobar que `+` es una variable libre dentro del cuerpo de la función, podemos "encerrarla" en un `lambda` superior que la capture:
 
-```racket
+``` racket
 (define capture+
   (lambda (+)
     (lambda (x y)
       (+ (* x x) (* y y)))))
-
 ```
 
 Si pasamos la función división `/` como el argumento `+` a `capture+`, obtenemos una nueva función donde el símbolo `+` ahora ejecuta una división:
 
-```racket
+``` racket
 (define new-function (capture+ /))
 
 (new-function 3 4) 
 ;; Resultado: (/ (* 3 3) (* 4 4)) -> 9/16 en lugar de 25
-
 ```
 
-> **Analogía Clínica:**
-> Imagina una indicación en un expediente: `Administrar (dosis * peso) de FármacoX`. La variable `dosis` es un parámetro ligado a la receta médica local. Pero `FármacoX` es una variable libre: se asume definida en la **farmacopea global del hospital**. Si el hospital cambia la definición global de `FármacoX`, el comportamiento de la orden médica cambia por completo.
+> **Analogía Clínica:** Imagina una indicación en un expediente: `Administrar (dosis * peso) de FármacoX`. La variable `dosis` es un parámetro ligado a la receta médica local. Pero `FármacoX` es una variable libre: se asume definida en la **farmacopea global del hospital**. Si el hospital cambia la definición global de `FármacoX`, el comportamiento de la orden médica cambia por completo.
 
----
+------------------------------------------------------------------------
 
 ## 13.3 Desacoplando Sintaxis de Implementación: *Syntax Procedures*
 
@@ -78,14 +69,13 @@ Para manipular un lenguaje de programación con Racket, necesitamos definir una 
 
 $$\langle\text{exp}\rangle ::= \langle\text{varref}\rangle \;\mid\; (\text{lambda } (\langle\text{var}\rangle) \;\langle\text{exp}\rangle) \;\mid\; (\langle\text{exp}\rangle \;\langle\text{exp}\rangle)$$
 
-
 Este lenguaje consta de tres variantes:
 
-1. **Referencias a variables (`varref`):** Identificadores simples como `x` o `glucosa`.
+1.  **Referencias a variables (`varref`):** Identificadores simples como `x` o `glucosa`.
 
-2. **Abstracciones (`lambda`):** Definición de funciones con un solo parámetro.
+2.  **Abstracciones (`lambda`):** Definición de funciones con un solo parámetro.
 
-3. **Aplicaciones (`app`):** Aplicación de una función a una expresión argumento.
+3.  **Aplicaciones (`app`):** Aplicación de una función a una expresión argumento.
 
 ### El Patrón de Diseño *Syntax Procedures*
 
@@ -93,15 +83,15 @@ Podríamos inspeccionar las expresiones usando las funciones nativas de listas d
 
 El patrón **Syntax Procedures** nos abstrae del tipo de datos subyacente creando tres tipos de funciones:
 
-1. **Predicados de Tipo:** Indican si una expresión es una referencia a variable, un `lambda` o una aplicación.
+1.  **Predicados de Tipo:** Indican si una expresión es una referencia a variable, un `lambda` o una aplicación.
 
-2. **Accesores (*Accessors*):** Extraen componentes sin necesidad de usar `car` o `cdr` explícitos.
+2.  **Accesores (*Accessors*):** Extraen componentes sin necesidad de usar `car` o `cdr` explícitos.
 
-3. **Constructores:** Crean expresiones del lenguaje.
+3.  **Constructores:** Crean expresiones del lenguaje.
 
 Veamos la implementación contenida en `syntax-procs.rkt`:
 
-```racket
+``` racket
 #lang racket
 (provide exp?
          varref?   make-varref
@@ -146,35 +136,32 @@ Veamos la implementación contenida en `syntax-procs.rkt`:
 
 (define (make-app fn arg)
   (list fn arg))
-
 ```
 
-> **Insight de Copiloto:**
-> Trabajar con *Syntax Procedures* es equivalente a definir un **Modelo de Datos Clínicos (HL7/FHIR)**. En lugar de parsear un texto plano buscando la coma en la posición 42, utilizas métodos como `getPacienteId()` o `getResultado()`. Si en el futuro cambiamos la representación interna de listas Racket a estructuras de datos tipo *structs* u objetos, ¡nuestro motor de reglas no cambiará en lo absoluto!
+> **Insight de Copiloto:** Trabajar con *Syntax Procedures* es equivalente a definir un **Modelo de Datos Clínicos (HL7/FHIR)**. En lugar de parsear un texto plano buscando la coma en la posición 42, utilizas métodos como `getPacienteId()` o `getResultado()`. Si en el futuro cambiamos la representación interna de listas Racket a estructuras de datos tipo *structs* u objetos, ¡nuestro motor de reglas no cambiará en lo absoluto!
 
----
+------------------------------------------------------------------------
 
 ## 13.4 Implementación Práctica: Algoritmos de Alcance Estático
 
-Ahora formalizaremos la pregunta: **¿Ocurre una variable $v$ de forma ligada (*bound*) o libre (*free*) dentro de una expresión $exp$?**
+Ahora formalizaremos la pregunta: **¿Ocurre una variable** $v$ de forma ligada (*bound*) o libre (*free*) dentro de una expresión $exp$?
 
 ### Definición Inductiva Formal
 
-1. **`occurs-bound?` ($v$, $exp$):**
-   * Si $exp$ es una referencia a variable: **Falso** (una variable sola nunca ocurre ligada).
-   * Si $exp$ es una aplicación $(exp_1 \; exp_2)$: **Verdadero** si $v$ ocurre ligada en $exp_1$ O en $exp_2$.
-   * Si $exp$ es un $\lambda(\text{var}) \; \text{body}$: **Verdadero** si $v$ ocurre ligada en $\text{body}$, O SI $v$ ocurre libre en $\text{body}$ Y $v$ es igual al parámetro $\text{var}$.
-
-2. **`occurs-free?` ($v$, $exp$):**
-   * Si $exp$ es una referencia a variable: **Verdadero** si $exp$ es igual a $v$.
-   * Si $exp$ es una aplicación $(exp_1 \; exp_2)$: **Verdadero** si $v$ ocurre libre en $exp_1$ O en $exp_2$.
-   * Si $exp$ es un $\lambda(\text{var}) \; \text{body}$: **Verdadero** si $v$ es **diferente** de $\text{var}$ Y $v$ ocurre libre en $\text{body}$.
+1.  **`occurs-bound?` (**$v$, $exp$):
+    - Si $exp$ es una referencia a variable: **Falso** (una variable sola nunca ocurre ligada).
+    - Si $exp$ es una aplicación $(exp_1 \; exp_2)$: **Verdadero** si $v$ ocurre ligada en $exp_1$ O en $exp_2$.
+    - Si $exp$ es un $\lambda(\text{var}) \; \text{body}$: **Verdadero** si $v$ ocurre ligada en $\text{body}$, O SI $v$ ocurre libre en $\text{body}$ Y $v$ es igual al parámetro $\text{var}$.
+2.  **`occurs-free?` (**$v$, $exp$):
+    - Si $exp$ es una referencia a variable: **Verdadero** si $exp$ es igual a $v$.
+    - Si $exp$ es una aplicación $(exp_1 \; exp_2)$: **Verdadero** si $v$ ocurre libre en $exp_1$ O en $exp_2$.
+    - Si $exp$ es un $\lambda(\text{var}) \; \text{body}$: **Verdadero** si $v$ es **diferente** de $\text{var}$ Y $v$ ocurre libre en $\text{body}$.
 
 ### Código Racket (`occurs-procs.rkt`)
 
 Gracias a la recursión estructural y las funciones de sintaxis, traducir estas reglas formales a Racket es directo:
 
-```racket
+``` racket
 #lang racket
 (require "syntax-procs.rkt")
 (provide occurs-bound? occurs-free?)
@@ -195,53 +182,40 @@ Gracias a la recursión estructural y las funciones de sintaxis, traducir estas 
         ((lambda? exp) (and (not (eq? s (lambda->param exp)))
                             (occurs-free? s (lambda->body exp))))
         (else (error 'occurs-free? "Expresión inválida ~a" exp))))
-
 ```
 
 Pruebas simples para verificar el comportamiento:
 
-```racket
+``` racket
 (occurs-free? 'a 'a)                         ; => #t (es libre en una referencia simple)
 (occurs-free? 'b '(lambda (b) (a b)))        ; => #f (b está ligada por el lambda)
 (occurs-bound? 'b '(lambda (b) (a b)))       ; => #t (b ocurre ligada)[cite: 3]
 (occurs-bound? 'a '(lambda (b) (a b)))       ; => #f (a ocurre libre dentro del lambda)
-
 ```
 
-> **Pregunta de Reflexión:**
-> ¿Son `occurs-free?` y `occurs-bound?` funciones inversas?
-> **Respuesta:** No. Si una variable $c$ no aparece en absoluto dentro de la expresión $exp$ (por ejemplo `'c` en `'(lambda (b) (a b))`), tanto `(occurs-free? 'c exp)` como `(occurs-bound? 'c exp)` retornarán `#f`. De igual manera, una variable puede ocurrir libre Y ligada al mismo tiempo en distintas partes de una expresión compleja (ej. `((lambda (x) x) x)`).
-> 
-> 
+> **Pregunta de Reflexión:** ¿Son `occurs-free?` y `occurs-bound?` funciones inversas? **Respuesta:** No. Si una variable $c$ no aparece en absoluto dentro de la expresión $exp$ (por ejemplo `'c` en `'(lambda (b) (a b))`), tanto `(occurs-free? 'c exp)` como `(occurs-bound? 'c exp)` retornarán `#f`. De igual manera, una variable puede ocurrir libre Y ligada al mismo tiempo en distintas partes de una expresión compleja (ej. `((lambda (x) x) x)`).
 
----
+------------------------------------------------------------------------
 
 ## 13.5 Conexión con Motores Lógicos y Datalog
 
 En motores semánticos y sistemas basados en reglas como Datalog, el concepto de **variables libres y ligadas** es el núcleo de la unificación:
 
-1. **Unificación y Reglas Lógicas:** Cuando escribimos una regla semántica para identificar pacientes con síndrome metabólico en NHANES:
+1.  **Unificación y Reglas Lógicas:** Cuando escribimos una regla semántica para identificar pacientes con síndrome metabólico en NHANES:
 
 $$\text{SindromeMetabolico}(P) \leftarrow \text{GlucosaAyunas}(P, G), G > 100, \text{IMC}(P, I), I \ge 30$$
 
-
-
 La variable $P$ (Paciente) debe estar correctamente **ligada** a las tablas de hechos. Si introducimos una variable libre sin ligar en la regla, la consulta intentará evaluar un dominio infinito o no determinado.
 
+2.  **Evaluación Perezosa y Variables Libres no Evaluadas:** En Racket, una expresión con variables libres no ligadas genera un error al ejecutarse. Sin embargo, si la variable está atrapada en una rama de código que nunca se evalúa (debido a la evaluación de cortocircuito o dentro de una abstracción `lambda`), el programa no fallará:
 
-2. **Evaluación Perezosa y Variables Libres no Evaluadas:**
-En Racket, una expresión con variables libres no ligadas genera un error al ejecutarse. Sin embargo, si la variable está atrapada en una rama de código que nunca se evalúa (debido a la evaluación de cortocircuito o dentro de una abstracción `lambda`), el programa no fallará:
-
-
-
-```racket
+``` racket
 (if (zero? 0) 1 variable-no-definida) ; => Retorna 1 sin evaluar el símbolo indeterminado
-
 ```
 
----
+------------------------------------------------------------------------
 
-## 13.6 Ejercicios Prácticos 
+## 13.6 Ejercicios Prácticos
 
 A continuación, consolidaremos lo aprendido resolviendo la serie de ejercicios de la sesión. Estos ejercicios mezclan la manipulación de estructuras recursivas con nuestro motor analizador de código.
 
@@ -249,7 +223,7 @@ A continuación, consolidaremos lo aprendido resolviendo la serie de ejercicios 
 
 Crea el archivo `homework06.rkt` y asegúrate de requerir los módulos necesarios:
 
-```racket
+``` racket
 #lang racket
 (require "syntax-procs.rkt")
 (require "occurs-procs.rkt")
@@ -259,19 +233,19 @@ Crea el archivo `homework06.rkt` y asegúrate de requerir los módulos necesario
          count-operators
          count-lambdas
          declared-vars)
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Problema 1: Árboles de Riesgo Biomédico (`tree-min`)
+
 Un árbol binario numérico representa una jerarquía de decisiones sobre niveles de riesgo de pacientes. Su gramática es:
 
 $$\langle\text{binary-tree}\rangle ::= \langle\text{number}\rangle \;\mid\; (\langle\text{number}\rangle \;\langle\text{binary-tree}\rangle \;\langle\text{binary-tree}\rangle)$$
 
 Escribe una función recursiva estructural `(tree-min bin-tree)` que devuelva la puntuación mínima registrada en el árbol.
 
-```racket
+``` racket
 ;; Problema 1: tree-min
 ;; Firma: tree-min : (or/c number? list?) -> number?
 ;; Devuelve el valor mínimo presente en un árbol binario numérico.
@@ -279,40 +253,36 @@ Escribe una función recursiva estructural `(tree-min bin-tree)` que devuelva la
   ;; TODO: Implementar caso base para número y caso recursivo para subárboles
   -1)
 
-
 ```
 
 *Prueba con Rackunit:*
 
-```racket
+``` racket
 (check-equal? (tree-min '(8 (13 11 (5 24 6)) (15 (12 10 14) 20))) 5)
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Problema 2: Búsqueda de Marcadores Sintomáticos (`tree-contains?`)
 
 Escribe la función `(tree-contains? n bin-tree)` que retorne `#t` si el valor o código de diagnóstico `n` existe dentro del árbol binario.
 
-```racket
+``` racket
 ;; Problema 2: tree-contains?
 ;; Firma: tree-contains? : number? (or/c number? list?) -> boolean?
 ;; Retorna #t si n se encuentra en el árbol binario.
 (define (tree-contains? n bin-tree)
   ;; TODO: Implementar verificación recursiva
   #f)
-
 ```
 
 *Prueba con Rackunit:*
 
-```racket
+``` racket
 (check-true (tree-contains? 8 '(7 (12 8 6) (4 3 9))))
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Problema 3: Contador de Operadores Epidemiológicos (`count-operators`)
 
@@ -324,7 +294,7 @@ $$\langle\text{number-exp}\rangle ::= \langle\text{number}\rangle \;\mid\; \lang
 
 Escribe las funciones **mutuamente recursivas** `count-operators` y `count-operators-ne` para contar cuántos operadores aritméticos o lógicos contiene una fórmula de cálculo epidemiológico.
 
-```racket
+``` racket
 ;; Problema 3: count-operators y count-operators-ne
 ;; Firma: count-operators : list? -> integer?
 ;; Firma: count-operators-ne : (or/c number? list?) -> integer?
@@ -336,23 +306,21 @@ Escribe las funciones **mutuamente recursivas** `count-operators` y `count-opera
 (define (count-operators-ne numexp)
   ;; TODO: Si es número retorna 0; si es expresión prefija llama a count-operators
   -1)
-
 ```
 
 *Prueba con Rackunit:*
 
-```racket
+``` racket
 (check-equal? (count-operators '(* (+ 4 5) (+ 7 6))) 3)
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Problema 4: Auditoría de Reglas y Abstracciones (`count-lambdas`)
 
 Utilizando los *Syntax Procedures* de nuestro *Little Language*, implementa `(count-lambdas exp)` para contar la cantidad de funciones/reglas `lambda` declaradas dentro de un programa o cuerpo de consulta.
 
-```racket
+``` racket
 ;; Problema 4: count-lambdas
 ;; Firma: count-lambdas : exp? -> integer?
 ;; Cuenta la cantidad de expresiones lambda en una expresión del Little Language.
@@ -363,43 +331,40 @@ Utilizando los *Syntax Procedures* de nuestro *Little Language*, implementa `(co
 
 *Prueba con Rackunit:*
 
-```racket
+``` racket
 (check-equal? (count-lambdas '(f (lambda (x) x))) 1)[cite: 7]
 (check-equal? (count-lambdas '(lambda (x) (lambda (z) z))) 2)
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Problema 5: Extracción de Parámetros Clínicos (`declared-vars`)
 
 Escribe la función `(declared-vars exp)` que devuelva una lista con los nombres de todos los parámetros/variables declarados formalmente en los bloques `lambda` de una expresión (se permiten duplicados).
 
-```racket
+``` racket
 ;; Problema 5: declared-vars
 ;; Firma: declared-vars : exp? -> (listof symbol?)
 ;; Extrae una lista de todos los parámetros declarados en los lambdas de la expresión.
 (define (declared-vars exp)
   ;; TODO: Extraer variables usando syntax-procs y combinar listas con append/cons
   '())
-
 ```
 
 *Prueba con Rackunit:*
 
-```racket
+``` racket
 (check-equal? (declared-vars '(lambda (y) (x y))) '(y))
 (check-equal? (declared-vars '((lambda (x) (lambda (z) z)) (lambda (x) y))) '(x z x))
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Archivo de Pruebas Unificadas (`homework06-tests.rkt`)
 
 Para garantizar la calidad de software de nuestro paquete, ejecutamos la suite completa con Rackunit:
 
-```racket
+``` racket
 #lang racket
 (require rackunit)
 (require "homework06.rkt")
@@ -423,13 +388,14 @@ Para garantizar la calidad de software de nuestro paquete, ejecutamos la suite c
 (check-equal? (declared-vars '(lambda (y) (x y))) '(y))
 (check-equal? (declared-vars '((lambda (x) (lambda (z) z)) (lambda (x) y))) '(x z x))
 ```
----
+
+------------------------------------------------------------------------
 
 ## 13.7 Soluciones a los Ejercicios Prácticos
 
 A continuación se presentan las soluciones validadas para la suite de pruebas de la guía de ejercicios.
 
-```racket
+``` racket
 #lang racket
 (require rackunit)
 (require "syntax-procs.rkt")
@@ -523,15 +489,15 @@ A continuación se presentan las soluciones validadas para la suite de pruebas d
 (check-equal? (declared-vars '(lambda (y) (x y))) '(y))
 (check-equal? (declared-vars '((lambda (x) (lambda (z) z))
                                (lambda (x) y))) '(x z x))
-
 ```
----
+
+------------------------------------------------------------------------
 
 ## Resumen del Capítulo
 
-* El **análisis estático** nos permite examinar las propiedades de un programa (como el alcance de sus variables) leyendo su estructura textual antes de su ejecución.
-* El patrón **Syntax Procedures** desacopla la lógica semántica de las estructuras de datos nativas (listas, pares), haciendo el código mantenible y adaptable.
-* La **recursión estructural** sobre la gramática inductiva de un lenguaje nos permite construir analizadores, contadores y compiladores complejos de forma directa.
-* Entender la diferencia entre variables **libres** y **ligadas** es fundamental para construir interpretes lógicos y evaluar consultas semánticas correctamente.
+- El **análisis estático** nos permite examinar las propiedades de un programa (como el alcance de sus variables) leyendo su estructura textual antes de su ejecución.
+- El patrón **Syntax Procedures** desacopla la lógica semántica de las estructuras de datos nativas (listas, pares), haciendo el código mantenible y adaptable.
+- La **recursión estructural** sobre la gramática inductiva de un lenguaje nos permite construir analizadores, contadores y compiladores complejos de forma directa.
+- Entender la diferencia entre variables **libres** y **ligadas** es fundamental para construir interpretes lógicos y evaluar consultas semánticas correctamente.
 
-```
+\`\`\`
