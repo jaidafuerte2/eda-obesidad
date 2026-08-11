@@ -1,0 +1,465 @@
+---
+title: "15. Repaso de Programación Recursiva y Análisis Sintáctico"
+format: html
+editor: visual
+---
+
+## 1. Visión General y Hoja de Ruta
+
+Si la programación orientada a objetos es como administrar un hospital (con departamentos, jerarquías e interacciones entre módulos) y la programación imperativa es como seguir una guía de práctica clínica paso a paso, la **programación funcional recursiva** es el análisis histopatológico: desarmamos el problema capa por capa hasta llegar a la célula primaria (el caso base).
+
+En las últimas semanas hemos construido una caja de herramientas para procesar estructuras de datos definidas inductivamente. En este capítulo de revisión hacemos una pausa táctica. Antes de dar el salto hacia la **abstracción sintáctica** y la construcción de un futuro **motor semántico / Datalog** para explorar los microdatos de NHANES, necesitamos asegurar que estos cimientos funcionen con la precisión de una sutura vascular.
+
+> **Regla de Oro en Diagnóstico y Código:**
+> En recursión, nunca entres a un bucle sin un criterio claro de parada. Así como no administras un fármaco sin definir el punto de suspensión, no procesas una estructura de datos recursiva sin validar primero tu caso base. Evita la *recurrencia infinita*.
+
+---
+
+## 2. Las 4 Herramientas Fundamentales de la Recursión
+
+Cuando nos enfrentamos a estructuras inductivas, tenemos un método principal y tres "asistentes de especialista" para cuando la estructura se complica:
+
+```
+                  ┌────────────────────────┐
+                  │ Recursión Estructural  │
+                  │   (Método Principal)   │
+                  └───────────┬────────────┘
+                              │
+       ┌──────────────────────┼──────────────────────┐
+       ▼                      ▼                      ▼
+┌──────────────┐     ┌──────────────────┐  ┌──────────────────┐
+│ Procedimiento│     │    Recursión     │  │  Derivación de   │
+│   Interfaz   │     │      Mutua       │  │    Programas     │
+└──────────────┘     └──────────────────┘  └──────────────────┘
+ (Estado extra)       (Tipos cruzados)      (Optimizador)
+
+```
+
+### 2.1. Recursión Estructural (El algoritmo principal)
+
+Es el equivalente a realizar una exploración física céfalo-caudal. Si el dato está compuesto por partes más pequeñas de sí mismo, la función debe **copiar exactamente la anatomía del dato**.
+
+* **Caso base:** El paciente sin más antecedentes (un número, una lista vacía `'()`, o una variable).
+* **Caso recursivo:** Reducir el problema al subproblema anatómico (ejemplo: procesar el subárbol izquierdo y el subárbol derecho).
+
+### 2.2. Procedimiento Interfaz (*Interface Procedure*)
+
+A veces una función recursiva necesita un "registro de estado" adicional para trabajar (por ejemplo, llevar la cuenta del índice actual en una lista o un acumulador de dosis).
+
+En lugar de obligar al usuario final a enviar un parámetro inicial arbitrario (como `0`), creamos una **función interfaz** pública que invoca a la función recursiva real (la "función de trabajo") inicializando el acumulador.
+
+### 2.3. Recursión Mutua
+
+Ocurre cuando el dominio de datos incluye dos o más estructuras que se definen en términos de la otra.
+
+* **Ejemplo clínico:** Un *Expediente Clínico* contiene una lista de *Diagnósticos*. Pero un *Diagnóstico* puede contener un *Tratamiento*, y un *Tratamiento* puede requerir la revisión de un *Expediente Clínico* secundario.
+* **En código:** La función `A` llama a la función `B`, y la función `B` llama a la función `A`.
+
+### 2.4. Derivación de Programas
+
+Es la técnica de optimización donde fusionamos funciones mutuamente recursivas en una sola para reducir llamadas en la pila de ejecución (*stack*) y mejorar el desempeño operacional, manteniendo la legibilidad del sistema.
+
+---
+
+## 3. Análisis del Mini-Lenguaje y Abstracción Sintáctica
+
+Para crear un motor semántico (Datalog) que consulte relaciones en NHANES (por ejemplo: `es_obeso(X) :- bmi(X, V), V >= 30`), no procesamos texto crudo directamente. Primero definimos una **gramática** y usamos **procedimientos sintácticos** para manipularla.
+
+Nuestro mini-lenguaje de laboratorio posee la siguiente gramática en notación Backus-Naur (BNF):
+
+```bnf
+<exp> ::= <varref> 
+        | (lambda (<var>) <exp>) 
+        | (<exp> <exp>)
+
+```
+
+### La capa de abstracción: *Syntax Procedures*
+
+En lugar de ensuciar nuestro código con `car`, `cadr`, `caddr`, creamos un contrato de interfaz (*Data Abstraction*):
+
+* **Predicados de tipo (`varref?`, `lambda?`, `app?`):** Identificar si la expresión es una variable, una regla/función o una consulta/aplicación.
+* **Accesores (`lambda->param`, `lambda->body`, `app->proc`, `app->arg`):** Extraer componentes específicos del registro sin importar la estructura interna.
+* **Constructores (`make-varref`, `make-lambda`, `make-app`):** Sintetizar nuevos nodos o reglas de inferencia.
+
+```scheme
+;; Muestra de syntax-procs.rkt
+#lang racket
+(provide exp? varref? lambda? app? 
+         lambda->param lambda->body 
+         app->proc app->arg 
+         make-lambda make-app)
+
+(define varref? symbol?)
+
+(define (lambda? exp)
+  (and (list? exp)
+       (= (length exp) 3)
+       (eq? (first exp) 'lambda)
+       (list? (second exp))
+       (= 1 (length (second exp)))
+       (symbol? (first (second exp)))))
+
+(define lambda->param caadr)
+(define lambda->body  third)
+
+(define (app? exp)
+  (and (list? exp)
+       (= (length exp) 2)))
+
+(define app->proc first)
+(define app->arg  second)
+
+```
+
+> **Por qué importa para un motor semántico:**
+> Si mañana decides cambiar la representación interna de tus reglas semánticas de listas de Racket a un grafo vectorial, **solo cambias los syntax-procs**. Todo tu motor de inferencia superior seguirá funcionando sin tocar una sola línea.
+
+---
+
+## 4. Desglose de Tareas y Patrones de Resolución 
+
+Repasemos algunos bloques de código enfocándonos en la estructura del patrón recursivo.
+
+### 4.1. Análisis en Árboles Binarios: `tree-min` y `tree-contains?`
+
+La estructura gramatical del árbol es:
+
+```bnf
+<binary-tree> ::= <number> 
+                | (<number> <binary-tree> <binary-tree>)
+
+```
+
+Imagina que este árbol representa un diagrama de flujo de Triage de un paciente.
+
+```scheme
+;; Determina el valor mínimo en el árbol de decisión
+(define tree-min
+  (lambda (bin-tree)
+    (if (number? bin-tree)
+        bin-tree
+        (min (first bin-tree)
+             (tree-min (second bin-tree))
+             (tree-min (third bin-tree))))))
+
+;; Verifica si una constante (ej. un valor de glucosa) existe en el árbol
+(define tree-contains?
+  (lambda (n bin-tree)
+    (if (number? bin-tree)
+        (= n bin-tree)
+        (or (= n (first bin-tree))
+            (tree-contains? n (second bin-tree))
+            (tree-contains? n (third bin-tree))))))
+
+```
+
+### 4.2. Recursión Mutua: `count-operators`
+
+Dado el lenguaje sintáctico en notación prefija:
+
+```bnf
+<prefix-exp> ::= (<operator> <number-exp> <number-exp>)
+<number-exp> ::= <number> 
+               | <prefix-exp>
+
+```
+
+Requerimos dos funciones que se llaman alternadamente:
+
+```scheme
+(define (count-operators binary-exp)
+  (+ 1
+     (count-operators-ne (second binary-exp))
+     (count-operators-ne (third binary-exp))))
+
+(define (count-operators-ne numexp)
+  (if (number? numexp)
+      0
+      (count-operators numexp)))
+
+```
+
+### 4.3. Procesamiento sobre el Mini-Lenguaje: `count-lambdas` y `declared-vars`
+
+Para operationalizar un programa o una regla lógica, navegamos según sus variantes sintácticas:
+
+```scheme
+;; Contar cuántas abstracciones (lambda) existen
+(define count-lambdas
+  (lambda (exp)
+    (cond ((varref? exp) 0)
+          ((lambda? exp) 
+           (add1 (count-lambdas (lambda->body exp))))
+          ((app? exp) 
+           (+ (count-lambdas (app->proc exp))
+              (count-lambdas (app->arg exp))))
+          (else (error 'count-lambdas "Expresión inválida ~a" exp)))))
+
+;; Mapear todas las variables declaradas (parámetros formales)
+(define declared-vars
+  (lambda (exp)
+    (cond ((varref? exp) '())
+          ((lambda? exp)
+           (cons (lambda->param exp)
+                 (declared-vars (lambda->body exp))))
+          ((app? exp)
+           (append (declared-vars (app->proc exp))
+                   (declared-vars (app->arg exp))))
+          (else (error 'declared-vars "Expresión inválida ~a" exp)))))
+
+```
+
+### 4.4. Practicando para el Quiz: `apply-by-position` y `contains-varref?`
+
+Uso de procedimiento interfaz en `apply-by-position`:
+
+```scheme
+;; Función pública
+(define (apply-by-position f lon)
+  (apply-counted f lon 0))
+
+;; Función auxiliar con parámetro de estado (pos)
+(define (apply-counted f lon pos)
+  (if (null? lon)
+      '()
+      (cons (f (first lon) pos)
+            (apply-counted f (rest lon) (add1 pos)))))
+
+```
+
+Navegando una búsqueda sintáctica básica (`contains-varref?`):
+
+```scheme
+(define (contains-varref? v exp)
+  (cond ((varref? exp) (equal? v exp))
+        ((lambda? exp) (contains-varref? v (lambda->body exp)))
+        (else ; app
+         (or (contains-varref? v (app->proc exp))
+             (contains-varref? v (app->arg exp))))))
+
+```
+
+---
+
+## 5. Variables Libres vs. Ligadas (Free & Bound Variables)
+
+Este es un punto neurálgico para cuando programemos las **reglas de inferencia Datalog**.
+
+* **Variable Ligada (*Bound Variable*):** Es un parámetro formal declarado en el ámbito (*scope*) de un `lambda`. Es como una **variable local** dentro de un protocolo clínico (ejemplo: `paciente_id` dentro del procedimiento de hemodiálisis).
+* **Variable Libre (*Free Variable*):** Es una referencia a una variable que **no fue declarada** en el bloque actual. Funciona como una **constante/configuración global** del sistema (ejemplo: el umbral institucional para definir *Hipertensión Estadio 1 = 130 mmHg*).
+
+### Implementación en Racket (`occurs-procs.rkt`)
+
+```scheme
+;; ¿La variable s ocurre LIBRE en la expresión exp?
+(define (occurs-free? s exp)
+  (cond ((varref? exp) (eq? s exp))
+        ((app? exp)    (or (occurs-free? s (app->proc exp))
+                           (occurs-free? s (app->arg  exp))))
+        ((lambda? exp) (and (not (eq? s (lambda->param exp)))
+                            (occurs-free? s (lambda->body exp))))
+        (else (error 'occurs-free? "Expresión inválida ~a" exp))))
+
+;; ¿La variable s ocurre LIGADA en la expresión exp?
+(define (occurs-bound? s exp)
+  (cond ((varref? exp) #f)
+        ((app? exp)    (or (occurs-bound? s (app->proc exp))
+                           (occurs-bound? s (app->arg  exp))))
+        ((lambda? exp) (or (occurs-bound? s (lambda->body exp))
+                           (and (eq? s (lambda->param exp))
+                                (occurs-free? s (lambda->body exp)))))
+        (else (error 'occurs-bound? "Expresión inválida ~a" exp))))
+
+```
+
+---
+
+## 6. Ejercicios Prácticos: Consolidación y Caso NHANES
+
+Resuelve los siguientes tres desafíos prácticos completando las plantillas de código y ejecutando las pruebas con `rackunit`.
+
+### Ejercicio 1: Filtro Recursivo de Biomarcadores (Racket)
+
+Escribe la función recursiva `filtrar-valores-anormales` que reciba una lista de mediciones de Hemoglobina Glicosilada (HbA1c) y devuelva únicamente aquellos valores que están en rango de diabetes ($\ge 6.5\%$).
+
+```scheme
+#lang racket
+(require rackunit)
+
+;; PLANTILLA
+(define (filtrar-valores-anormales hba1c-list)
+  (cond ((null? hba1c-list) ...)
+        ((>= (first hba1c-list) 6.5)
+         (cons ... (... (rest hba1c-list))))
+        (else 
+         (... (rest hba1c-list)))))
+
+;; PRUEBAS
+(check-equal? (filtrar-valores-anormales '()) '())
+(check-equal? (filtrar-valores-anormales '(5.2 5.7 5.4)) '())
+(check-equal? (filtrar-valores-anormales '(5.2 5.7 6.8 7.1 5.4 8.0)) '(6.8 7.1 8.0))
+(check-equal? (filtrar-valores-anormales '(6.5 7.0)) '(6.5 7.0))
+
+```
+
+---
+
+### Ejercicio 2: Árbol de Riesgo Cardiovascular (Racket)
+
+Dado un árbol binario que representa un mapa de decisión con valores de Presión Arterial Sistólica (PAS), completa la función `tree-count-high-risk` para contar cuántos nodos en todo el árbol contienen una PAS descontrolada (estrictamente mayor a $140 \text{ mmHg}$).
+
+```bnf
+<pas-tree> ::= <number> 
+             | (<number> <pas-tree> <pas-tree>)
+
+```
+
+```scheme
+#lang racket
+(require rackunit)
+
+;; PLANTILLA
+(define (tree-count-high-risk bin-tree)
+  (if (number? bin-tree)
+      (if (> bin-tree 140) ... ...)
+      (+ (if (> (first bin-tree) 140) 1 0)
+         (... (second bin-tree))
+         (... (third bin-tree)))))
+
+;; PRUEBAS
+(check-equal? (tree-count-high-risk 120) 0)
+(check-equal? (tree-count-high-risk 150) 1)
+;; Árbol con raíz 130 y subárboles con valores 145, 120, 160, 110
+(define arbol-pas '(130 (145 120 160) (110 135 150)))
+(check-equal? (tree-count-high-risk arbol-pas) 3)
+
+```
+
+---
+
+### Ejercicio 3: Abstracción Sintáctica para Reglas de Inferencia (Motor Semántico / Datalog)
+
+Dada la siguiente gramática simplificada para definir expresiones lógicas dentro de nuestro motor semántico:
+
+```bnf
+<rule-exp> ::= (<operator> <rule-exp> <rule-exp>)
+             | (<rel-op> <var> <number>)
+
+```
+
+Donde `<operator>` puede ser `'AND` u `'OR`, y `<rel-op>` puede ser `'>`, `'<`, o `'=`.
+
+Ejemplo de regla lógica para identificar riesgo metabólico:
+`'(AND (> bmi 30) (OR (> glucose 100) (> trig 150)))`
+
+Completa las funciones de la capa de abstracción sintáctica (*syntax procedures*):
+
+```scheme
+#lang racket
+(require rackunit)
+
+;; PLANTILLA: Predicado de cláusula AND
+(define (and-clause? exp)
+  (and (list? exp)
+       (not (null? exp))
+       (eq? ... ...)))
+
+;; PLANTILLA: Accesor de condiciones internas de un AND
+(define (and->conditions exp)
+  ...)
+
+;; PRUEBAS
+(check-true (and-clause? '(AND (> bmi 30) (> glucose 100))))
+(check-false (and-clause? '(OR (> bmi 30) (> glucose 100))))
+(check-false (and-clause? '(> bmi 30)))
+
+(check-equal? (and->conditions '(AND (> bmi 30) (> glucose 100))) 
+              '((> bmi 30) (> glucose 100)))
+
+```
+
+¡Buenas tardes, colega! Qué gusto ver tus respuestas en el escritorio. Vamos a revisar tus soluciones con la misma rigurosidad con la que se audita una prueba de laboratorio clínico, y dejaremos todo en un formato Quarto (`.qmd`) impecable para tu libro técnico.
+
+---
+
+## Solucionario Completo de Ejercicios Prácticos
+
+A continuación se presentan las implementaciones resueltas junto con su suite de pruebas automatizadas con `rackunit`.
+
+### Ejercicio 1: Filtro Recursivo de Biomarcadores (HbA1c)
+
+```scheme
+#lang racket
+(require rackunit)
+
+;; IMPLEMENTACIÓN
+(define (filtrar-valores-anormales hba1c-list)
+  (cond ((null? hba1c-list) '())
+        ((>= (first hba1c-list) 6.5)
+         (cons (first hba1c-list) 
+               (filtrar-valores-anormales (rest hba1c-list))))
+        (else 
+         (filtrar-valores-anormales (rest hba1c-list)))))
+
+;; SUITE DE PRUEBAS
+(check-equal? (filtrar-valores-anormales '()) '())
+(check-equal? (filtrar-valores-anormales '(5.2 5.7 5.4)) '())
+(check-equal? (filtrar-valores-anormales '(5.2 5.7 6.8 7.1 5.4 8.0)) '(6.8 7.1 8.0))
+(check-equal? (filtrar-valores-anormales '(6.5 7.0)) '(6.5 7.0))
+
+```
+
+---
+
+### Ejercicio 2: Contador de Presión Arterial Sistólica en Árbol Binario
+
+```scheme
+#lang racket
+(require rackunit)
+
+;; IMPLEMENTACIÓN
+(define (tree-count-high-risk bin-tree)
+  (if (number? bin-tree)
+      (if (> bin-tree 140) 1 0)
+      (+ (if (> (first bin-tree) 140) 1 0)
+         (tree-count-high-risk (second bin-tree))
+         (tree-count-high-risk (third bin-tree)))))
+
+;; SUITE DE PRUEBAS
+(check-equal? (tree-count-high-risk 120) 0)
+(check-equal? (tree-count-high-risk 150) 1)
+
+;; Árbol de prueba: Raíz (130) con subárboles (145 120 160) e (110 135 150)
+(define arbol-pas '(130 (145 120 160) (110 135 150)))
+(check-equal? (tree-count-high-risk arbol-pas) 3)
+
+```
+
+---
+
+### Ejercicio 3: Capa de Abstracción Sintáctica para el Motor Semántico
+
+```scheme
+#lang racket
+(require rackunit)
+
+;; Predicado: Verifica si la expresión es una cláusula 'AND
+(define (and-clause? exp)
+  (and (list? exp)
+       (not (null? exp))
+       (eq? (first exp) 'AND)))
+
+;; Accesor: Extrae las condiciones secundarias de la cláusula 'AND
+(define (and->conditions exp)
+  (rest exp))
+
+;; SUITE DE PRUEBAS
+(check-true (and-clause? '(AND (> bmi 30) (> glucose 100))))
+(check-false (and-clause? '(OR (> bmi 30) (> glucose 100))))
+(check-false (and-clause? '(> bmi 30)))
+
+(check-equal? (and->conditions '(AND (> bmi 30) (> glucose 100))) 
+              '((> bmi 30) (> glucose 100)))
+
+```

@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15. Repaso de Programación Recursiva y Análisis Sintáctico – SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c15.html">15. Repaso de Programación Recursiva y Análisis Sintáctico</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">1. Construcción de abstracciones con procedimientos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 — Los Elementos Fundamentales de la Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.2 — Los Procedimientos y los Procesos que Generan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Recursión Eficiente y la Anatomía de un Minilenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Análisis Estático de Variables: El alcance de un Expediente Clínico</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. De los Datos al Motor Lógico — Creando un Intérprete Evaluador</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">15. Repaso de Programación Recursiva y Análisis Sintáctico</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#visión-general-y-hoja-de-ruta" id="toc-visión-general-y-hoja-de-ruta" class="nav-link active" data-scroll-target="#visión-general-y-hoja-de-ruta">1. Visión General y Hoja de Ruta</a></li>
+  <li><a href="#las-4-herramientas-fundamentales-de-la-recursión" id="toc-las-4-herramientas-fundamentales-de-la-recursión" class="nav-link" data-scroll-target="#las-4-herramientas-fundamentales-de-la-recursión">2. Las 4 Herramientas Fundamentales de la Recursión</a>
+  <ul class="collapse">
+  <li><a href="#recursión-estructural-el-algoritmo-principal" id="toc-recursión-estructural-el-algoritmo-principal" class="nav-link" data-scroll-target="#recursión-estructural-el-algoritmo-principal">2.1. Recursión Estructural (El algoritmo principal)</a></li>
+  <li><a href="#procedimiento-interfaz-interface-procedure" id="toc-procedimiento-interfaz-interface-procedure" class="nav-link" data-scroll-target="#procedimiento-interfaz-interface-procedure">2.2. Procedimiento Interfaz (<em>Interface Procedure</em>)</a></li>
+  <li><a href="#recursión-mutua" id="toc-recursión-mutua" class="nav-link" data-scroll-target="#recursión-mutua">2.3. Recursión Mutua</a></li>
+  <li><a href="#derivación-de-programas" id="toc-derivación-de-programas" class="nav-link" data-scroll-target="#derivación-de-programas">2.4. Derivación de Programas</a></li>
+  </ul></li>
+  <li><a href="#análisis-del-mini-lenguaje-y-abstracción-sintáctica" id="toc-análisis-del-mini-lenguaje-y-abstracción-sintáctica" class="nav-link" data-scroll-target="#análisis-del-mini-lenguaje-y-abstracción-sintáctica">3. Análisis del Mini-Lenguaje y Abstracción Sintáctica</a>
+  <ul class="collapse">
+  <li><a href="#la-capa-de-abstracción-syntax-procedures" id="toc-la-capa-de-abstracción-syntax-procedures" class="nav-link" data-scroll-target="#la-capa-de-abstracción-syntax-procedures">La capa de abstracción: <em>Syntax Procedures</em></a></li>
+  </ul></li>
+  <li><a href="#desglose-de-tareas-y-patrones-de-resolución" id="toc-desglose-de-tareas-y-patrones-de-resolución" class="nav-link" data-scroll-target="#desglose-de-tareas-y-patrones-de-resolución">4. Desglose de Tareas y Patrones de Resolución</a>
+  <ul class="collapse">
+  <li><a href="#análisis-en-árboles-binarios-tree-min-y-tree-contains" id="toc-análisis-en-árboles-binarios-tree-min-y-tree-contains" class="nav-link" data-scroll-target="#análisis-en-árboles-binarios-tree-min-y-tree-contains">4.1. Análisis en Árboles Binarios: <code>tree-min</code> y <code>tree-contains?</code></a></li>
+  <li><a href="#recursión-mutua-count-operators" id="toc-recursión-mutua-count-operators" class="nav-link" data-scroll-target="#recursión-mutua-count-operators">4.2. Recursión Mutua: <code>count-operators</code></a></li>
+  <li><a href="#procesamiento-sobre-el-mini-lenguaje-count-lambdas-y-declared-vars" id="toc-procesamiento-sobre-el-mini-lenguaje-count-lambdas-y-declared-vars" class="nav-link" data-scroll-target="#procesamiento-sobre-el-mini-lenguaje-count-lambdas-y-declared-vars">4.3. Procesamiento sobre el Mini-Lenguaje: <code>count-lambdas</code> y <code>declared-vars</code></a></li>
+  <li><a href="#practicando-para-el-quiz-apply-by-position-y-contains-varref" id="toc-practicando-para-el-quiz-apply-by-position-y-contains-varref" class="nav-link" data-scroll-target="#practicando-para-el-quiz-apply-by-position-y-contains-varref">4.4. Practicando para el Quiz: <code>apply-by-position</code> y <code>contains-varref?</code></a></li>
+  </ul></li>
+  <li><a href="#variables-libres-vs.-ligadas-free-bound-variables" id="toc-variables-libres-vs.-ligadas-free-bound-variables" class="nav-link" data-scroll-target="#variables-libres-vs.-ligadas-free-bound-variables">5. Variables Libres vs.&nbsp;Ligadas (Free &amp; Bound Variables)</a>
+  <ul class="collapse">
+  <li><a href="#implementación-en-racket-occurs-procs.rkt" id="toc-implementación-en-racket-occurs-procs.rkt" class="nav-link" data-scroll-target="#implementación-en-racket-occurs-procs.rkt">Implementación en Racket (<code>occurs-procs.rkt</code>)</a></li>
+  </ul></li>
+  <li><a href="#ejercicios-prácticos-consolidación-y-caso-nhanes" id="toc-ejercicios-prácticos-consolidación-y-caso-nhanes" class="nav-link" data-scroll-target="#ejercicios-prácticos-consolidación-y-caso-nhanes">6. Ejercicios Prácticos: Consolidación y Caso NHANES</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-filtro-recursivo-de-biomarcadores-racket" id="toc-ejercicio-1-filtro-recursivo-de-biomarcadores-racket" class="nav-link" data-scroll-target="#ejercicio-1-filtro-recursivo-de-biomarcadores-racket">Ejercicio 1: Filtro Recursivo de Biomarcadores (Racket)</a></li>
+  <li><a href="#ejercicio-2-árbol-de-riesgo-cardiovascular-racket" id="toc-ejercicio-2-árbol-de-riesgo-cardiovascular-racket" class="nav-link" data-scroll-target="#ejercicio-2-árbol-de-riesgo-cardiovascular-racket">Ejercicio 2: Árbol de Riesgo Cardiovascular (Racket)</a></li>
+  <li><a href="#ejercicio-3-abstracción-sintáctica-para-reglas-de-inferencia-motor-semántico-datalog" id="toc-ejercicio-3-abstracción-sintáctica-para-reglas-de-inferencia-motor-semántico-datalog" class="nav-link" data-scroll-target="#ejercicio-3-abstracción-sintáctica-para-reglas-de-inferencia-motor-semántico-datalog">Ejercicio 3: Abstracción Sintáctica para Reglas de Inferencia (Motor Semántico / Datalog)</a></li>
+  </ul></li>
+  <li><a href="#solucionario-completo-de-ejercicios-prácticos" id="toc-solucionario-completo-de-ejercicios-prácticos" class="nav-link" data-scroll-target="#solucionario-completo-de-ejercicios-prácticos">Solucionario Completo de Ejercicios Prácticos</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-filtro-recursivo-de-biomarcadores-hba1c" id="toc-ejercicio-1-filtro-recursivo-de-biomarcadores-hba1c" class="nav-link" data-scroll-target="#ejercicio-1-filtro-recursivo-de-biomarcadores-hba1c">Ejercicio 1: Filtro Recursivo de Biomarcadores (HbA1c)</a></li>
+  <li><a href="#ejercicio-2-contador-de-presión-arterial-sistólica-en-árbol-binario" id="toc-ejercicio-2-contador-de-presión-arterial-sistólica-en-árbol-binario" class="nav-link" data-scroll-target="#ejercicio-2-contador-de-presión-arterial-sistólica-en-árbol-binario">Ejercicio 2: Contador de Presión Arterial Sistólica en Árbol Binario</a></li>
+  <li><a href="#ejercicio-3-capa-de-abstracción-sintáctica-para-el-motor-semántico" id="toc-ejercicio-3-capa-de-abstracción-sintáctica-para-el-motor-semántico" class="nav-link" data-scroll-target="#ejercicio-3-capa-de-abstracción-sintáctica-para-el-motor-semántico">Ejercicio 3: Capa de Abstracción Sintáctica para el Motor Semántico</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c15.html">15. Repaso de Programación Recursiva y Análisis Sintáctico</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">15. Repaso de Programación Recursiva y Análisis Sintáctico</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="visión-general-y-hoja-de-ruta" class="level2">
+<h2 class="anchored" data-anchor-id="visión-general-y-hoja-de-ruta">1. Visión General y Hoja de Ruta</h2>
+<p>Si la programación orientada a objetos es como administrar un hospital (con departamentos, jerarquías e interacciones entre módulos) y la programación imperativa es como seguir una guía de práctica clínica paso a paso, la <strong>programación funcional recursiva</strong> es el análisis histopatológico: desarmamos el problema capa por capa hasta llegar a la célula primaria (el caso base).</p>
+<p>En las últimas semanas hemos construido una caja de herramientas para procesar estructuras de datos definidas inductivamente. En este capítulo de revisión hacemos una pausa táctica. Antes de dar el salto hacia la <strong>abstracción sintáctica</strong> y la construcción de un futuro <strong>motor semántico / Datalog</strong> para explorar los microdatos de NHANES, necesitamos asegurar que estos cimientos funcionen con la precisión de una sutura vascular.</p>
+<blockquote class="blockquote">
+<p><strong>Regla de Oro en Diagnóstico y Código:</strong> En recursión, nunca entres a un bucle sin un criterio claro de parada. Así como no administras un fármaco sin definir el punto de suspensión, no procesas una estructura de datos recursiva sin validar primero tu caso base. Evita la <em>recurrencia infinita</em>.</p>
+</blockquote>
+<hr>
+</section>
+<section id="las-4-herramientas-fundamentales-de-la-recursión" class="level2">
+<h2 class="anchored" data-anchor-id="las-4-herramientas-fundamentales-de-la-recursión">2. Las 4 Herramientas Fundamentales de la Recursión</h2>
+<p>Cuando nos enfrentamos a estructuras inductivas, tenemos un método principal y tres “asistentes de especialista” para cuando la estructura se complica:</p>
+<pre><code>                  ┌────────────────────────┐
+                  │ Recursión Estructural  │
+                  │   (Método Principal)   │
+                  └───────────┬────────────┘
+                              │
+       ┌──────────────────────┼──────────────────────┐
+       ▼                      ▼                      ▼
+┌──────────────┐     ┌──────────────────┐  ┌──────────────────┐
+│ Procedimiento│     │    Recursión     │  │  Derivación de   │
+│   Interfaz   │     │      Mutua       │  │    Programas     │
+└──────────────┘     └──────────────────┘  └──────────────────┘
+ (Estado extra)       (Tipos cruzados)      (Optimizador)
+</code></pre>
+<section id="recursión-estructural-el-algoritmo-principal" class="level3">
+<h3 class="anchored" data-anchor-id="recursión-estructural-el-algoritmo-principal">2.1. Recursión Estructural (El algoritmo principal)</h3>
+<p>Es el equivalente a realizar una exploración física céfalo-caudal. Si el dato está compuesto por partes más pequeñas de sí mismo, la función debe <strong>copiar exactamente la anatomía del dato</strong>.</p>
+<ul>
+<li><strong>Caso base:</strong> El paciente sin más antecedentes (un número, una lista vacía <code>'()</code>, o una variable).</li>
+<li><strong>Caso recursivo:</strong> Reducir el problema al subproblema anatómico (ejemplo: procesar el subárbol izquierdo y el subárbol derecho).</li>
+</ul>
+</section>
+<section id="procedimiento-interfaz-interface-procedure" class="level3">
+<h3 class="anchored" data-anchor-id="procedimiento-interfaz-interface-procedure">2.2. Procedimiento Interfaz (<em>Interface Procedure</em>)</h3>
+<p>A veces una función recursiva necesita un “registro de estado” adicional para trabajar (por ejemplo, llevar la cuenta del índice actual en una lista o un acumulador de dosis).</p>
+<p>En lugar de obligar al usuario final a enviar un parámetro inicial arbitrario (como <code>0</code>), creamos una <strong>función interfaz</strong> pública que invoca a la función recursiva real (la “función de trabajo”) inicializando el acumulador.</p>
+</section>
+<section id="recursión-mutua" class="level3">
+<h3 class="anchored" data-anchor-id="recursión-mutua">2.3. Recursión Mutua</h3>
+<p>Ocurre cuando el dominio de datos incluye dos o más estructuras que se definen en términos de la otra.</p>
+<ul>
+<li><strong>Ejemplo clínico:</strong> Un <em>Expediente Clínico</em> contiene una lista de <em>Diagnósticos</em>. Pero un <em>Diagnóstico</em> puede contener un <em>Tratamiento</em>, y un <em>Tratamiento</em> puede requerir la revisión de un <em>Expediente Clínico</em> secundario.</li>
+<li><strong>En código:</strong> La función <code>A</code> llama a la función <code>B</code>, y la función <code>B</code> llama a la función <code>A</code>.</li>
+</ul>
+</section>
+<section id="derivación-de-programas" class="level3">
+<h3 class="anchored" data-anchor-id="derivación-de-programas">2.4. Derivación de Programas</h3>
+<p>Es la técnica de optimización donde fusionamos funciones mutuamente recursivas en una sola para reducir llamadas en la pila de ejecución (<em>stack</em>) y mejorar el desempeño operacional, manteniendo la legibilidad del sistema.</p>
+<hr>
+</section>
+</section>
+<section id="análisis-del-mini-lenguaje-y-abstracción-sintáctica" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-del-mini-lenguaje-y-abstracción-sintáctica">3. Análisis del Mini-Lenguaje y Abstracción Sintáctica</h2>
+<p>Para crear un motor semántico (Datalog) que consulte relaciones en NHANES (por ejemplo: <code>es_obeso(X) :- bmi(X, V), V &gt;= 30</code>), no procesamos texto crudo directamente. Primero definimos una <strong>gramática</strong> y usamos <strong>procedimientos sintácticos</strong> para manipularla.</p>
+<p>Nuestro mini-lenguaje de laboratorio posee la siguiente gramática en notación Backus-Naur (BNF):</p>
+<pre class="bnf"><code>&lt;exp&gt; ::= &lt;varref&gt; 
+        | (lambda (&lt;var&gt;) &lt;exp&gt;) 
+        | (&lt;exp&gt; &lt;exp&gt;)
+</code></pre>
+<section id="la-capa-de-abstracción-syntax-procedures" class="level3">
+<h3 class="anchored" data-anchor-id="la-capa-de-abstracción-syntax-procedures">La capa de abstracción: <em>Syntax Procedures</em></h3>
+<p>En lugar de ensuciar nuestro código con <code>car</code>, <code>cadr</code>, <code>caddr</code>, creamos un contrato de interfaz (<em>Data Abstraction</em>):</p>
+<ul>
+<li><strong>Predicados de tipo (<code>varref?</code>, <code>lambda?</code>, <code>app?</code>):</strong> Identificar si la expresión es una variable, una regla/función o una consulta/aplicación.</li>
+<li><strong>Accesores (<code>lambda-&gt;param</code>, <code>lambda-&gt;body</code>, <code>app-&gt;proc</code>, <code>app-&gt;arg</code>):</strong> Extraer componentes específicos del registro sin importar la estructura interna.</li>
+<li><strong>Constructores (<code>make-varref</code>, <code>make-lambda</code>, <code>make-app</code>):</strong> Sintetizar nuevos nodos o reglas de inferencia.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Muestra de syntax-procs.rkt</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(provide exp? varref? lambda? app? </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         lambda-&gt;param lambda-&gt;body </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         app-&gt;proc app-&gt;arg </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         make-lambda make-app)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> varref? </span><span class="kw">symbol?</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(lambda? <span class="kw">exp</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">and</span> (<span class="kw">list?</span> <span class="kw">exp</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>       (<span class="op">=</span> (<span class="kw">length</span> <span class="kw">exp</span>) <span class="dv">3</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">eq?</span> (first <span class="kw">exp</span>) 'lambda)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">list?</span> (second <span class="kw">exp</span>))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>       (<span class="op">=</span> <span class="dv">1</span> (<span class="kw">length</span> (second <span class="kw">exp</span>)))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">symbol?</span> (first (second <span class="kw">exp</span>)))))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> lambda-&gt;param </span><span class="kw">caadr</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> lambda-&gt;body  </span>third)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(app? <span class="kw">exp</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">and</span> (<span class="kw">list?</span> <span class="kw">exp</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>       (<span class="op">=</span> (<span class="kw">length</span> <span class="kw">exp</span>) <span class="dv">2</span>)))</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> app-&gt;proc </span>first)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> app-&gt;arg  </span>second)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Por qué importa para un motor semántico:</strong> Si mañana decides cambiar la representación interna de tus reglas semánticas de listas de Racket a un grafo vectorial, <strong>solo cambias los syntax-procs</strong>. Todo tu motor de inferencia superior seguirá funcionando sin tocar una sola línea.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="desglose-de-tareas-y-patrones-de-resolución" class="level2">
+<h2 class="anchored" data-anchor-id="desglose-de-tareas-y-patrones-de-resolución">4. Desglose de Tareas y Patrones de Resolución</h2>
+<p>Repasemos algunos bloques de código enfocándonos en la estructura del patrón recursivo.</p>
+<section id="análisis-en-árboles-binarios-tree-min-y-tree-contains" class="level3">
+<h3 class="anchored" data-anchor-id="análisis-en-árboles-binarios-tree-min-y-tree-contains">4.1. Análisis en Árboles Binarios: <code>tree-min</code> y <code>tree-contains?</code></h3>
+<p>La estructura gramatical del árbol es:</p>
+<pre class="bnf"><code>&lt;binary-tree&gt; ::= &lt;number&gt; 
+                | (&lt;number&gt; &lt;binary-tree&gt; &lt;binary-tree&gt;)
+</code></pre>
+<p>Imagina que este árbol representa un diagrama de flujo de Triage de un paciente.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Determina el valor mínimo en el árbol de decisión</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> tree-min</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">lambda</span> (bin-tree)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">if</span> (<span class="kw">number?</span> bin-tree)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        bin-tree</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">min</span> (first bin-tree)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>             (tree-min (second bin-tree))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>             (tree-min (third bin-tree))))))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; Verifica si una constante (ej. un valor de glucosa) existe en el árbol</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> tree-contains?</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">lambda</span> (n bin-tree)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">if</span> (<span class="kw">number?</span> bin-tree)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        (<span class="op">=</span> n bin-tree)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">or</span> (<span class="op">=</span> n (first bin-tree))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>            (tree-contains? n (second bin-tree))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            (tree-contains? n (third bin-tree))))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="recursión-mutua-count-operators" class="level3">
+<h3 class="anchored" data-anchor-id="recursión-mutua-count-operators">4.2. Recursión Mutua: <code>count-operators</code></h3>
+<p>Dado el lenguaje sintáctico en notación prefija:</p>
+<pre class="bnf"><code>&lt;prefix-exp&gt; ::= (&lt;operator&gt; &lt;number-exp&gt; &lt;number-exp&gt;)
+&lt;number-exp&gt; ::= &lt;number&gt; 
+               | &lt;prefix-exp&gt;
+</code></pre>
+<p>Requerimos dos funciones que se llaman alternadamente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(count-operators binary-exp)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  (<span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>     (count-operators-ne (second binary-exp))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>     (count-operators-ne (third binary-exp))))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(count-operators-ne numexp)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">number?</span> numexp)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="dv">0</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      (count-operators numexp)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="procesamiento-sobre-el-mini-lenguaje-count-lambdas-y-declared-vars" class="level3">
+<h3 class="anchored" data-anchor-id="procesamiento-sobre-el-mini-lenguaje-count-lambdas-y-declared-vars">4.3. Procesamiento sobre el Mini-Lenguaje: <code>count-lambdas</code> y <code>declared-vars</code></h3>
+<p>Para operationalizar un programa o una regla lógica, navegamos según sus variantes sintácticas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Contar cuántas abstracciones (lambda) existen</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> count-lambdas</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">lambda</span> (<span class="kw">exp</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">cond</span> ((varref? <span class="kw">exp</span>) <span class="dv">0</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>          ((lambda? <span class="kw">exp</span>) </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>           (add1 (count-lambdas (lambda-&gt;body <span class="kw">exp</span>))))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>          ((app? <span class="kw">exp</span>) </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>           (<span class="op">+</span> (count-lambdas (app-&gt;proc <span class="kw">exp</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>              (count-lambdas (app-&gt;arg <span class="kw">exp</span>))))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">else</span> (<span class="kw">error</span> 'count-lambdas <span class="st">"Expresión inválida ~a"</span> <span class="kw">exp</span>)))))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; Mapear todas las variables declaradas (parámetros formales)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> declared-vars</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">lambda</span> (<span class="kw">exp</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">cond</span> ((varref? <span class="kw">exp</span>) '())</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>          ((lambda? <span class="kw">exp</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>           (<span class="kw">cons</span> (lambda-&gt;param <span class="kw">exp</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>                 (declared-vars (lambda-&gt;body <span class="kw">exp</span>))))</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>          ((app? <span class="kw">exp</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>           (<span class="kw">append</span> (declared-vars (app-&gt;proc <span class="kw">exp</span>))</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                   (declared-vars (app-&gt;arg <span class="kw">exp</span>))))</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">else</span> (<span class="kw">error</span> 'declared-vars <span class="st">"Expresión inválida ~a"</span> <span class="kw">exp</span>)))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="practicando-para-el-quiz-apply-by-position-y-contains-varref" class="level3">
+<h3 class="anchored" data-anchor-id="practicando-para-el-quiz-apply-by-position-y-contains-varref">4.4. Practicando para el Quiz: <code>apply-by-position</code> y <code>contains-varref?</code></h3>
+<p>Uso de procedimiento interfaz en <code>apply-by-position</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función pública</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(apply-by-position f lon)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  (apply-counted f lon <span class="dv">0</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Función auxiliar con parámetro de estado (pos)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(apply-counted f lon pos)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">null?</span> lon)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      '()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">cons</span> (f (first lon) pos)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            (apply-counted f (rest lon) (add1 pos)))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Navegando una búsqueda sintáctica básica (<code>contains-varref?</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(contains-varref? v <span class="kw">exp</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">cond</span> ((varref? <span class="kw">exp</span>) (<span class="kw">equal?</span> v <span class="kw">exp</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        ((lambda? <span class="kw">exp</span>) (contains-varref? v (lambda-&gt;body <span class="kw">exp</span>)))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">else</span> <span class="co">; app</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">or</span> (contains-varref? v (app-&gt;proc <span class="kw">exp</span>))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>             (contains-varref? v (app-&gt;arg <span class="kw">exp</span>))))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="variables-libres-vs.-ligadas-free-bound-variables" class="level2">
+<h2 class="anchored" data-anchor-id="variables-libres-vs.-ligadas-free-bound-variables">5. Variables Libres vs.&nbsp;Ligadas (Free &amp; Bound Variables)</h2>
+<p>Este es un punto neurálgico para cuando programemos las <strong>reglas de inferencia Datalog</strong>.</p>
+<ul>
+<li><strong>Variable Ligada (<em>Bound Variable</em>):</strong> Es un parámetro formal declarado en el ámbito (<em>scope</em>) de un <code>lambda</code>. Es como una <strong>variable local</strong> dentro de un protocolo clínico (ejemplo: <code>paciente_id</code> dentro del procedimiento de hemodiálisis).</li>
+<li><strong>Variable Libre (<em>Free Variable</em>):</strong> Es una referencia a una variable que <strong>no fue declarada</strong> en el bloque actual. Funciona como una <strong>constante/configuración global</strong> del sistema (ejemplo: el umbral institucional para definir <em>Hipertensión Estadio 1 = 130 mmHg</em>).</li>
+</ul>
+<section id="implementación-en-racket-occurs-procs.rkt" class="level3">
+<h3 class="anchored" data-anchor-id="implementación-en-racket-occurs-procs.rkt">Implementación en Racket (<code>occurs-procs.rkt</code>)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; ¿La variable s ocurre LIBRE en la expresión exp?</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(occurs-free? s <span class="kw">exp</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">cond</span> ((varref? <span class="kw">exp</span>) (<span class="kw">eq?</span> s <span class="kw">exp</span>))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        ((app? <span class="kw">exp</span>)    (<span class="kw">or</span> (occurs-free? s (app-&gt;proc <span class="kw">exp</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                           (occurs-free? s (app-&gt;arg  <span class="kw">exp</span>))))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        ((lambda? <span class="kw">exp</span>) (<span class="kw">and</span> (<span class="kw">not</span> (<span class="kw">eq?</span> s (lambda-&gt;param <span class="kw">exp</span>)))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                            (occurs-free? s (lambda-&gt;body <span class="kw">exp</span>))))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">else</span> (<span class="kw">error</span> 'occurs-free? <span class="st">"Expresión inválida ~a"</span> <span class="kw">exp</span>))))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; ¿La variable s ocurre LIGADA en la expresión exp?</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(occurs-bound? s <span class="kw">exp</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">cond</span> ((varref? <span class="kw">exp</span>) <span class="dv">#f</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        ((app? <span class="kw">exp</span>)    (<span class="kw">or</span> (occurs-bound? s (app-&gt;proc <span class="kw">exp</span>))</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                           (occurs-bound? s (app-&gt;arg  <span class="kw">exp</span>))))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        ((lambda? <span class="kw">exp</span>) (<span class="kw">or</span> (occurs-bound? s (lambda-&gt;body <span class="kw">exp</span>))</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                           (<span class="kw">and</span> (<span class="kw">eq?</span> s (lambda-&gt;param <span class="kw">exp</span>))</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                                (occurs-free? s (lambda-&gt;body <span class="kw">exp</span>)))))</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">else</span> (<span class="kw">error</span> 'occurs-bound? <span class="st">"Expresión inválida ~a"</span> <span class="kw">exp</span>))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="ejercicios-prácticos-consolidación-y-caso-nhanes" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios-prácticos-consolidación-y-caso-nhanes">6. Ejercicios Prácticos: Consolidación y Caso NHANES</h2>
+<p>Resuelve los siguientes tres desafíos prácticos completando las plantillas de código y ejecutando las pruebas con <code>rackunit</code>.</p>
+<section id="ejercicio-1-filtro-recursivo-de-biomarcadores-racket" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-filtro-recursivo-de-biomarcadores-racket">Ejercicio 1: Filtro Recursivo de Biomarcadores (Racket)</h3>
+<p>Escribe la función recursiva <code>filtrar-valores-anormales</code> que reciba una lista de mediciones de Hemoglobina Glicosilada (HbA1c) y devuelva únicamente aquellos valores que están en rango de diabetes (<span class="math inline">\(\ge 6.5\%\)</span>).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; PLANTILLA</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(filtrar-valores-anormales hba1c-list)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">cond</span> ((<span class="kw">null?</span> hba1c-list) <span class="op">...</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        ((<span class="op">&gt;=</span> (first hba1c-list) <span class="fl">6.5</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">cons</span> <span class="op">...</span> (<span class="op">...</span> (rest hba1c-list))))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">else</span> </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>         (<span class="op">...</span> (rest hba1c-list)))))</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; PRUEBAS</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '()) '())</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '(<span class="fl">5.2</span> <span class="fl">5.7</span> <span class="fl">5.4</span>)) '())</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '(<span class="fl">5.2</span> <span class="fl">5.7</span> <span class="fl">6.8</span> <span class="fl">7.1</span> <span class="fl">5.4</span> <span class="fl">8.0</span>)) '(<span class="fl">6.8</span> <span class="fl">7.1</span> <span class="fl">8.0</span>))</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '(<span class="fl">6.5</span> <span class="fl">7.0</span>)) '(<span class="fl">6.5</span> <span class="fl">7.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-2-árbol-de-riesgo-cardiovascular-racket" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-árbol-de-riesgo-cardiovascular-racket">Ejercicio 2: Árbol de Riesgo Cardiovascular (Racket)</h3>
+<p>Dado un árbol binario que representa un mapa de decisión con valores de Presión Arterial Sistólica (PAS), completa la función <code>tree-count-high-risk</code> para contar cuántos nodos en todo el árbol contienen una PAS descontrolada (estrictamente mayor a <span class="math inline">\(140 \text{ mmHg}\)</span>).</p>
+<pre class="bnf"><code>&lt;pas-tree&gt; ::= &lt;number&gt; 
+             | (&lt;number&gt; &lt;pas-tree&gt; &lt;pas-tree&gt;)
+</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; PLANTILLA</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(tree-count-high-risk bin-tree)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">number?</span> bin-tree)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="op">&gt;</span> bin-tree <span class="dv">140</span>) <span class="op">...</span> <span class="op">...</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      (<span class="op">+</span> (<span class="kw">if</span> (<span class="op">&gt;</span> (first bin-tree) <span class="dv">140</span>) <span class="dv">1</span> <span class="dv">0</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>         (<span class="op">...</span> (second bin-tree))</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>         (<span class="op">...</span> (third bin-tree)))))</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; PRUEBAS</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>(check-equal? (tree-count-high-risk <span class="dv">120</span>) <span class="dv">0</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>(check-equal? (tree-count-high-risk <span class="dv">150</span>) <span class="dv">1</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">;; Árbol con raíz 130 y subárboles con valores 145, 120, 160, 110</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> arbol-pas </span>'(<span class="dv">130</span> (<span class="dv">145</span> <span class="dv">120</span> <span class="dv">160</span>) (<span class="dv">110</span> <span class="dv">135</span> <span class="dv">150</span>)))</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>(check-equal? (tree-count-high-risk arbol-pas) <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-3-abstracción-sintáctica-para-reglas-de-inferencia-motor-semántico-datalog" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-abstracción-sintáctica-para-reglas-de-inferencia-motor-semántico-datalog">Ejercicio 3: Abstracción Sintáctica para Reglas de Inferencia (Motor Semántico / Datalog)</h3>
+<p>Dada la siguiente gramática simplificada para definir expresiones lógicas dentro de nuestro motor semántico:</p>
+<pre class="bnf"><code>&lt;rule-exp&gt; ::= (&lt;operator&gt; &lt;rule-exp&gt; &lt;rule-exp&gt;)
+             | (&lt;rel-op&gt; &lt;var&gt; &lt;number&gt;)
+</code></pre>
+<p>Donde <code>&lt;operator&gt;</code> puede ser <code>'AND</code> u <code>'OR</code>, y <code>&lt;rel-op&gt;</code> puede ser <code>'&gt;</code>, <code>'&lt;</code>, o <code>'=</code>.</p>
+<p>Ejemplo de regla lógica para identificar riesgo metabólico: <code>'(AND (&gt; bmi 30) (OR (&gt; glucose 100) (&gt; trig 150)))</code></p>
+<p>Completa las funciones de la capa de abstracción sintáctica (<em>syntax procedures</em>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; PLANTILLA: Predicado de cláusula AND</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(and-clause? <span class="kw">exp</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">and</span> (<span class="kw">list?</span> <span class="kw">exp</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">not</span> (<span class="kw">null?</span> <span class="kw">exp</span>))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">eq?</span> <span class="op">...</span> <span class="op">...</span>)))</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; PLANTILLA: Accesor de condiciones internas de un AND</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(and-&gt;conditions <span class="kw">exp</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">;; PRUEBAS</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>(check-true (and-clause? '(AND (<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>))))</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>(check-false (and-clause? '(OR (<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>))))</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>(check-false (and-clause? '(<span class="op">&gt;</span> bmi <span class="dv">30</span>)))</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>(check-equal? (and-&gt;conditions '(AND (<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>))) </span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>              '((<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>¡Buenas tardes, colega! Qué gusto ver tus respuestas en el escritorio. Vamos a revisar tus soluciones con la misma rigurosidad con la que se audita una prueba de laboratorio clínico, y dejaremos todo en un formato Quarto (<code>.qmd</code>) impecable para tu libro técnico.</p>
+<hr>
+</section>
+</section>
+<section id="solucionario-completo-de-ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="solucionario-completo-de-ejercicios-prácticos">Solucionario Completo de Ejercicios Prácticos</h2>
+<p>A continuación se presentan las implementaciones resueltas junto con su suite de pruebas automatizadas con <code>rackunit</code>.</p>
+<section id="ejercicio-1-filtro-recursivo-de-biomarcadores-hba1c" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-filtro-recursivo-de-biomarcadores-hba1c">Ejercicio 1: Filtro Recursivo de Biomarcadores (HbA1c)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; IMPLEMENTACIÓN</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(filtrar-valores-anormales hba1c-list)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">cond</span> ((<span class="kw">null?</span> hba1c-list) '())</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        ((<span class="op">&gt;=</span> (first hba1c-list) <span class="fl">6.5</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>         (<span class="kw">cons</span> (first hba1c-list) </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>               (filtrar-valores-anormales (rest hba1c-list))))</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">else</span> </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>         (filtrar-valores-anormales (rest hba1c-list)))))</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">;; SUITE DE PRUEBAS</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '()) '())</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '(<span class="fl">5.2</span> <span class="fl">5.7</span> <span class="fl">5.4</span>)) '())</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '(<span class="fl">5.2</span> <span class="fl">5.7</span> <span class="fl">6.8</span> <span class="fl">7.1</span> <span class="fl">5.4</span> <span class="fl">8.0</span>)) '(<span class="fl">6.8</span> <span class="fl">7.1</span> <span class="fl">8.0</span>))</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>(check-equal? (filtrar-valores-anormales '(<span class="fl">6.5</span> <span class="fl">7.0</span>)) '(<span class="fl">6.5</span> <span class="fl">7.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-2-contador-de-presión-arterial-sistólica-en-árbol-binario" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-contador-de-presión-arterial-sistólica-en-árbol-binario">Ejercicio 2: Contador de Presión Arterial Sistólica en Árbol Binario</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; IMPLEMENTACIÓN</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(tree-count-high-risk bin-tree)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">number?</span> bin-tree)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">if</span> (<span class="op">&gt;</span> bin-tree <span class="dv">140</span>) <span class="dv">1</span> <span class="dv">0</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      (<span class="op">+</span> (<span class="kw">if</span> (<span class="op">&gt;</span> (first bin-tree) <span class="dv">140</span>) <span class="dv">1</span> <span class="dv">0</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>         (tree-count-high-risk (second bin-tree))</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>         (tree-count-high-risk (third bin-tree)))))</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; SUITE DE PRUEBAS</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>(check-equal? (tree-count-high-risk <span class="dv">120</span>) <span class="dv">0</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>(check-equal? (tree-count-high-risk <span class="dv">150</span>) <span class="dv">1</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co">;; Árbol de prueba: Raíz (130) con subárboles (145 120 160) e (110 135 150)</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> arbol-pas </span>'(<span class="dv">130</span> (<span class="dv">145</span> <span class="dv">120</span> <span class="dv">160</span>) (<span class="dv">110</span> <span class="dv">135</span> <span class="dv">150</span>)))</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>(check-equal? (tree-count-high-risk arbol-pas) <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-3-capa-de-abstracción-sintáctica-para-el-motor-semántico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-capa-de-abstracción-sintáctica-para-el-motor-semántico">Ejercicio 3: Capa de Abstracción Sintáctica para el Motor Semántico</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode scheme code-with-copy"><code class="sourceCode scheme"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>#lang racket</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>(require rackunit)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; Predicado: Verifica si la expresión es una cláusula 'AND</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(and-clause? <span class="kw">exp</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">and</span> (<span class="kw">list?</span> <span class="kw">exp</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">not</span> (<span class="kw">null?</span> <span class="kw">exp</span>))</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">eq?</span> (first <span class="kw">exp</span>) 'AND)))</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; Accesor: Extrae las condiciones secundarias de la cláusula 'AND</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>(<span class="ex">define</span><span class="fu"> </span>(and-&gt;conditions <span class="kw">exp</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  (rest <span class="kw">exp</span>))</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">;; SUITE DE PRUEBAS</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>(check-true (and-clause? '(AND (<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>))))</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>(check-false (and-clause? '(OR (<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>))))</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>(check-false (and-clause? '(<span class="op">&gt;</span> bmi <span class="dv">30</span>)))</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>(check-equal? (and-&gt;conditions '(AND (<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>))) </span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>              '((<span class="op">&gt;</span> bmi <span class="dv">30</span>) (<span class="op">&gt;</span> glucose <span class="dv">100</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
