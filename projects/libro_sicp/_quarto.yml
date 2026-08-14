@@ -46,6 +46,7 @@ website:
         - analysis/c13.qmd
         - analysis/c14.qmd
         - analysis/c15.qmd
+        - analysis/c16.qmd
       #- section: "PARTE II — APRENDER A PENSAR BAYESIANAMENTE"
         #href: analysis/m02.qmd
         #contents: 

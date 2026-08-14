@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>16. Abstracción Sintáctica y Variables Locales – SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c16.html">16. Abstracción Sintáctica y Variables Locales</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">1. Construcción de abstracciones con procedimientos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.1 — Los Elementos Fundamentales de la Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1.2 — Los Procedimientos y los Procesos que Generan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Recursión Eficiente y la Anatomía de un Minilenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Análisis Estático de Variables: El alcance de un Expediente Clínico</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. De los Datos al Motor Lógico — Creando un Intérprete Evaluador</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. Repaso de Programación Recursiva y Análisis Sintáctico</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c16.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">16. Abstracción Sintáctica y Variables Locales</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#el-dilema-de-la-duplicación-de-procesos-o-por-qué-no-enviar-la-misma-muestra-dos-veces-al-laboratorio" id="toc-el-dilema-de-la-duplicación-de-procesos-o-por-qué-no-enviar-la-misma-muestra-dos-veces-al-laboratorio" class="nav-link active" data-scroll-target="#el-dilema-de-la-duplicación-de-procesos-o-por-qué-no-enviar-la-misma-muestra-dos-veces-al-laboratorio">El Dilema de la Duplicación de Procesos (O por qué no enviar la misma muestra dos veces al laboratorio)</a></li>
+  <li><a href="#resistencia-funcional-vs.-hábitos-procedimentales" id="toc-resistencia-funcional-vs.-hábitos-procedimentales" class="nav-link" data-scroll-target="#resistencia-funcional-vs.-hábitos-procedimentales">Resistencia Funcional vs.&nbsp;Hábitos Procedimentales</a></li>
+  <li><a href="#abstracción-sintáctica-azúcar-para-humanos-músculo-para-el-intérprete" id="toc-abstracción-sintáctica-azúcar-para-humanos-músculo-para-el-intérprete" class="nav-link" data-scroll-target="#abstracción-sintáctica-azúcar-para-humanos-músculo-para-el-intérprete">Abstracción Sintáctica: Azúcar Para Humanos, Músculo Para el Intérprete</a></li>
+  <li><a href="#derivación-de-programas-reemplazando-let-con-lambda" id="toc-derivación-de-programas-reemplazando-let-con-lambda" class="nav-link" data-scroll-target="#derivación-de-programas-reemplazando-let-con-lambda">Derivación de Programas: Reemplazando <code>let</code> con <code>lambda</code></a></li>
+  <li><a href="#formato-y-gramática-de-let-en-racket" id="toc-formato-y-gramática-de-let-en-racket" class="nav-link" data-scroll-target="#formato-y-gramática-de-let-en-racket">Formato y Gramática de <code>let</code> en Racket</a>
+  <ul class="collapse">
+  <li><a href="#gramática-ebnf-de-let" id="toc-gramática-ebnf-de-let" class="nav-link" data-scroll-target="#gramática-ebnf-de-let">Gramática EBNF de <code>let</code></a></li>
+  <li><a href="#ejemplo-práctico-de-sintaxis" id="toc-ejemplo-práctico-de-sintaxis" class="nav-link" data-scroll-target="#ejemplo-práctico-de-sintaxis">Ejemplo Práctico de Sintaxis</a></li>
+  <li><a href="#la-versión-elegante-de-lookup" id="toc-la-versión-elegante-de-lookup" class="nav-link" data-scroll-target="#la-versión-elegante-de-lookup">La versión elegante de <code>lookup</code></a></li>
+  <li><a href="#trampa-de-ámbito-scope-y-sombreado-shadowing" id="toc-trampa-de-ámbito-scope-y-sombreado-shadowing" class="nav-link" data-scroll-target="#trampa-de-ámbito-scope-y-sombreado-shadowing">Trampa de Ámbito (<em>Scope</em>) y Sombreado (<em>Shadowing</em>)</a></li>
+  </ul></li>
+  <li><a href="#sección-de-ejercicios-prácticos-biomedicina-racket" id="toc-sección-de-ejercicios-prácticos-biomedicina-racket" class="nav-link" data-scroll-target="#sección-de-ejercicios-prácticos-biomedicina-racket">Sección de Ejercicios Prácticos (Biomedicina + Racket)</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-optimización-de-evaluación-metabólica-caché-con-let" id="toc-ejercicio-1-optimización-de-evaluación-metabólica-caché-con-let" class="nav-link" data-scroll-target="#ejercicio-1-optimización-de-evaluación-metabólica-caché-con-let">Ejercicio 1: Optimización de Evaluación Metabólica (Caché con <code>let</code>)</a></li>
+  <li><a href="#ejercicio-2-desazucarador-manual-let-rightarrow-lambda" id="toc-ejercicio-2-desazucarador-manual-let-rightarrow-lambda" class="nav-link" data-scroll-target="#ejercicio-2-desazucarador-manual-let-rightarrow-lambda">Ejercicio 2: Desazucarador Manual (<code>let</code> <span class="math inline">\(\rightarrow\)</span> <code>lambda</code>)</a></li>
+  <li><a href="#ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes" id="toc-ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes" class="nav-link" data-scroll-target="#ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes">Ejercicio 3: Motor de Reglas Datalog para Criterios NHANES</a></li>
+  </ul></li>
+  <li><a href="#preguntas-teóricas-importantes" id="toc-preguntas-teóricas-importantes" class="nav-link" data-scroll-target="#preguntas-teóricas-importantes">Preguntas Teóricas Importantes</a></li>
+  <li><a href="#soluciones-a-los-ejercicios-prácticos" id="toc-soluciones-a-los-ejercicios-prácticos" class="nav-link" data-scroll-target="#soluciones-a-los-ejercicios-prácticos">Soluciones a los Ejercicios Prácticos</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-optimización-de-evaluación-metabólica-evaluar-resistencia-insulina" id="toc-ejercicio-1-optimización-de-evaluación-metabólica-evaluar-resistencia-insulina" class="nav-link" data-scroll-target="#ejercicio-1-optimización-de-evaluación-metabólica-evaluar-resistencia-insulina">Ejercicio 1: Optimización de Evaluación Metabólica (<code>evaluar-resistencia-insulina</code>)</a></li>
+  <li><a href="#ejercicio-2-desazucarador-manual-let-rightarrow-lambda-1" id="toc-ejercicio-2-desazucarador-manual-let-rightarrow-lambda-1" class="nav-link" data-scroll-target="#ejercicio-2-desazucarador-manual-let-rightarrow-lambda-1">Ejercicio 2: Desazucarador Manual (<code>let</code> <span class="math inline">\(\rightarrow\)</span> <code>lambda</code>)</a></li>
+  <li><a href="#ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes-filtrar-nhanes" id="toc-ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes-filtrar-nhanes" class="nav-link" data-scroll-target="#ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes-filtrar-nhanes">Ejercicio 3: Motor de Reglas Datalog para Criterios NHANES (<code>filtrar-nhanes</code>)</a></li>
+  </ul></li>
+  <li><a href="#cuestionario-teórico." id="toc-cuestionario-teórico." class="nav-link" data-scroll-target="#cuestionario-teórico.">Cuestionario Teórico.</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01-1.html">1. Construcción de abstracciones con procedimientos</a></li><li class="breadcrumb-item"><a href="../analysis/c16.html">16. Abstracción Sintáctica y Variables Locales</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">16. Abstracción Sintáctica y Variables Locales</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="el-dilema-de-la-duplicación-de-procesos-o-por-qué-no-enviar-la-misma-muestra-dos-veces-al-laboratorio" class="level2">
+<h2 class="anchored" data-anchor-id="el-dilema-de-la-duplicación-de-procesos-o-por-qué-no-enviar-la-misma-muestra-dos-veces-al-laboratorio">El Dilema de la Duplicación de Procesos (O por qué no enviar la misma muestra dos veces al laboratorio)</h2>
+<p>Imagina la siguiente escena en la rutina de tu hospital: llega un paciente a urgencias con sospecha de crisis hiperglucémica. Para decidir el tratamiento, necesitas saber si la hemoglobina glicosilada (<span class="math inline">\(\text{HbA1c}\)</span>) está por encima del <span class="math inline">\(8.5\%\)</span>.</p>
+<p>Llamas al laboratorio central y pides la muestra. El laboratorio procesa el tubo, consume reactivos, tarda 15 minutos y te devuelve el registro del paciente con su valor. Tú verificas si el registro existe: si existe, <strong>vuelves a llamar al laboratorio</strong> solicitando exactamente el mismo tubo de ensayo para extraer el número del reporte; si no existe, lanzas una alerta de paciente no encontrado.</p>
+<p>¿Suena absurdo y un desperdicio masivo de recursos, verdad? Pues exactamente eso es lo que estábamos haciendo en nuestro código de Racket cuando implementamos funciones de búsqueda sin variables locales.</p>
+<p>En Racket, la función primitiva <code>assoc</code> busca un símbolo dentro de una lista de pares (una tabla de asociación o lista de alist). Si lo encuentra, devuelve el primer par completo <code>(llave . valor)</code>; si no lo encuentra, devuelve <code>#f</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">assoc</span> 'c '<span class="op">((</span>a . <span class="dv">11</span><span class="op">)</span> <span class="op">(</span>b . <span class="dv">24</span><span class="op">)</span> <span class="op">(</span>c . <span class="dv">3</span><span class="op">)))</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>'<span class="op">(</span>c . <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">assoc</span> 'd '<span class="op">((</span>a . <span class="dv">11</span><span class="op">)</span> <span class="op">(</span>b . <span class="dv">24</span><span class="op">)</span> <span class="op">(</span>c . <span class="dv">3</span><span class="op">)))</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dv">#f</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Esta naturaleza “de doble filo” (retornar el par si tiene éxito o falso si falla) hace que <code>assoc</code> sea ideal para escribir una función como <code>lookup</code>, la cual busca una variable en un entorno de ejecución. En nuestras sesiones anteriores escribíamos esto:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> lookup</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>var env<span class="op">)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">assoc</span> var env<span class="op">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">cdr</span> <span class="op">(</span><span class="kw">assoc</span> var env<span class="op">))</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">error</span> 'lookup <span class="st">"referencia a variable inválida ~a"</span> var<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Analicemos la ineficiencia clínica de este código: cuando la variable sí existe en el entorno <code>env</code>, evaluamos <code>(assoc var env)</code> en la condición del <code>if</code>. Si retorna una pareja válida (que <code>if</code> interpreta como un valor verdadero), inmediatamente pasamos a la rama positiva y ejecutamos <code>(cdr (assoc var env))</code>. <strong>¡Estamos buscando la misma variable en la misma lista dos veces consecutivas!</strong></p>
+<blockquote class="blockquote">
+<p><strong>Nota de arquitectura:</strong> En análisis de datos masivos (como cruzar tablas de <span class="math inline">\(10,000\)</span> participantes de NHANES con cientos de variables metabólicas), recalcular o procesar la misma búsqueda en memoria destruye el rendimiento. Necesitamos una forma de hacer la consulta <strong>una sola vez</strong> y guardar la referencia temporalmente.</p>
+</blockquote>
+<hr>
+</section>
+<section id="resistencia-funcional-vs.-hábitos-procedimentales" class="level2">
+<h2 class="anchored" data-anchor-id="resistencia-funcional-vs.-hábitos-procedimentales">Resistencia Funcional vs.&nbsp;Hábitos Procedimentales</h2>
+<p>Probablemente te estés preguntando: <em>“¿Por qué tardamos semanas en ver variables locales si en R, Python, C++ o Java es lo primero que nos enseñan?”</em>.</p>
+<p>La razón no es por sadismo pedagógico. En la programación imperativa y procedimental tradicional, usamos variables locales principalmente para <strong>secuenciar una computación</strong>:</p>
+<ol type="1">
+<li><em>Paso 1:</em> Extraer variable <span class="math inline">\(A\)</span> y guardarla en <code>temp1</code>.</li>
+<li><em>Paso 2:</em> Multiplicar <code>temp1</code> por <span class="math inline">\(B\)</span> y guardarlo en <code>temp2</code>.</li>
+<li><em>Paso 3:</em> Retornar <code>temp2</code> con un <code>return</code>.</li>
+</ol>
+<p>Esa mentalidad tienta al programador a escribir código dependiente del estado mutable y de pasos cronológicos rígidos. El paradigma funcional nos obliga a pensar en términos de <strong>composición de funciones</strong> y <strong>flujo de transformación de datos</strong>.</p>
+<p>Sin embargo, como analistas de datos y clínicos sabemos que las variables locales no solo sirven para secuenciar. Existen tres razones legítimas para usarlas:</p>
+<ol type="1">
+<li><p><strong>Claridad y Legibilidad:</strong> Darle un nombre semántico a un resultado intermedio.</p></li>
+<li><p><strong>Caché/Reuso:</strong> Calcular una operación costosa <strong>una sola vez</strong> y reusar el resultado múltiples veces sin duplicar trabajo.</p></li>
+<li><p><strong>Puntos de Enlace (<em>Bindings</em>):</strong> Crear un ámbito (<em>scope</em>) delimitado donde ciertos nombres tienen significado.</p></li>
+</ol>
+<hr>
+</section>
+<section id="abstracción-sintáctica-azúcar-para-humanos-músculo-para-el-intérprete" class="level2">
+<h2 class="anchored" data-anchor-id="abstracción-sintáctica-azúcar-para-humanos-músculo-para-el-intérprete">Abstracción Sintáctica: Azúcar Para Humanos, Músculo Para el Intérprete</h2>
+<p>En el diseño de lenguajes de programación existe un concepto fundamental: la <strong>Abstracción Sintáctica</strong>, popularmente conocida como <em>Syntactic Sugar</em> (Azúcar Sintáctica).</p>
+<p>El “azúcar sintáctico” son construcciones del lenguaje que <strong>no agregan poder de cómputo real</strong> al motor del lenguaje, pero le hacen la vida infinitamente más dulce y fácil al programador humano.</p>
+<p>Pensemos en analogías cotidianas de otros lenguajes:</p>
+<ul>
+<li><p>En R/Java/Python, no necesitamos el operador <code>x += 5</code> porque podemos escribir <code>x = x + 5</code>.</p></li>
+<li><p>En C/C++, no necesitamos <code>x++</code> porque podemos escribir <code>x = x + 1</code>.</p></li>
+<li><p>En Racket, no necesitamos la estructura condicional <code>cond</code> porque podríamos anidar múltiples bloques <code>if</code>.</p></li>
+</ul>
+<pre><code>                     ┌───────────────────────────┐
+                     │     Código con Sugar      │
+                     │  (fácil para el humano)   │
+                     └─────────────┬─────────────┘
+                                   │
+                                   │ Desazucaramiento
+                                   │ (Desugaring)
+                                   ▼
+                     ┌───────────────────────────┐
+                     │      Código Núcleo        │
+                     │  (fácil para el motor)    │
+                     └───────────────────────────┘
+</code></pre>
+<p>Desde el punto de vista del usuario, el azúcar sintáctico permite expresar intenciones en el lenguaje del dominio (por ejemplo, definir reglas de negocio médicas o filtros de salud).</p>
+<p>Desde la perspectiva del creador de interpretes (lo que tú estás haciendo para un motor Datalog), <strong>el azúcar es irrelevante para el núcleo del motor</strong>. Un intérprete profesional lo primero que hace en la etapa de pre-procesamiento es “desazucarar” (<em>desugar</em>) el código, traduciendo todas las construcciones complejas a un conjunto diminuto y elegante de primitivas básicas.</p>
+<hr>
+</section>
+<section id="derivación-de-programas-reemplazando-let-con-lambda" class="level2">
+<h2 class="anchored" data-anchor-id="derivación-de-programas-reemplazando-let-con-lambda">Derivación de Programas: Reemplazando <code>let</code> con <code>lambda</code></h2>
+<p>Aquí es donde viene la revelación de la ingeniería de lenguajes de programación: <strong>las variables locales no requieren nueva maquinaria bajo el capó</strong>. Si tu lenguaje ya soporta funciones (<code>lambda</code>), ¡ya tienes todo lo necesario para implementar variables locales!</p>
+<p>Pensemos en el problema de <code>lookup</code>. Queremos evaluar <code>(assoc var env)</code> una sola vez y asignarle el nombre <code>match</code>.</p>
+<p>Podríamos definir una función auxiliar que reciba un parámetro llamado <code>match</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> get-value</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>match<span class="op">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">if</span> match</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">cdr</span> match<span class="op">)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">error</span> 'lookup <span class="st">"referencia a variable inválida"</span><span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Y luego llamarla pasándole el resultado del laboratorio:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>get-value <span class="op">(</span><span class="kw">assoc</span> var env<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Al invocar la función, el argumento formal <code>match</code> se <strong>liga</strong> al valor devuelto por <code>(assoc var env)</code>. ¡Hemos cached el valor y le hemos puesto un nombre!</p>
+<p>Pero podemos ir un paso más allá usando <strong>derivación de programas</strong> (el arte de refactorizar y comprimir expresiones sin cambiar su comportamiento). En lugar de crear una función independiente llamada <code>get-value</code> con <code>define</code>, creamos una <strong>función anónima inline</strong> y la invocamos inmediatamente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> lookup</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>var env<span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">((</span><span class="kw">lambda</span> <span class="op">(</span>match<span class="op">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span><span class="kw">if</span> match</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">cdr</span> match<span class="op">)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">error</span> 'lookup <span class="st">"referencia a variable inválida ~a"</span> var<span class="op">)))</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span><span class="kw">assoc</span> var env<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Detente un segundo a admirar esta belleza arquitectónica:</p>
+<ol type="1">
+<li><p><code>(lambda (match) ...)</code> crea una función que espera un argumento llamado <code>match</code>.</p></li>
+<li><p>Pasamos <code>(assoc var env)</code> como el argumento de esa función.</p></li>
+<li><p>Dentro del cuerpo de la función, el nombre <code>match</code> está vinculado (<em>bound</em>) al resultado de evaluar <code>(assoc var env)</code>.</p></li>
+</ol>
+<p>¡Hemos creado una variable local sin usar ninguna palabra clave especial para variables locales!</p>
+<blockquote class="blockquote">
+<p><strong>Conexión con tu Motor Datalog/Semántico:</strong> En una consulta semántica tipo Datalog sobre NHANES, cuando declaras una regla como: <code>riesgo_metabolico(?paciente) :- obeso(?paciente), hba1c_alta(?paciente).</code> El motor semántico realiza una unificación donde la variable lógica <code>?paciente</code> se liga temporalmente a un ID específico (ejemplo: <code>ID_9384</code>). Este mecanismo de sustitución y ámbito delimitado (<em>binding scope</em>) es idéntico al comportamiento de los parámetros formales en una expresión <code>lambda</code>.</p>
+</blockquote>
+<hr>
+</section>
+<section id="formato-y-gramática-de-let-en-racket" class="level2">
+<h2 class="anchored" data-anchor-id="formato-y-gramática-de-let-en-racket">Formato y Gramática de <code>let</code> en Racket</h2>
+<p>Aunque usar <code>lambda</code> directamente funciona a la perfección, escribir lambdas anónimas invocadas al instante resulta visualmente recargado. Para endulzar nuestra sintaxis, Racket nos provee la forma especial <code>let</code>.</p>
+<section id="gramática-ebnf-de-let" class="level3">
+<h3 class="anchored" data-anchor-id="gramática-ebnf-de-let">Gramática EBNF de <code>let</code></h3>
+<p>La gramática formal para una expresión <code>let</code> es la siguiente:</p>
+<p><span class="math display">\[\begin{array}{lcl} \langle \text{let-expression} \rangle &amp; ::= &amp; \texttt{(let } \langle \text{binding-list} \rangle \;\; \langle \text{body} \rangle\texttt{)} \\ \langle \text{binding-list} \rangle &amp; ::= &amp; \texttt{()} \;\mid\; \texttt{(} \langle \text{binding} \rangle \;\cdot\; \langle \text{binding-list} \rangle \texttt{)} \\ \langle \text{binding} \rangle &amp; ::= &amp; \texttt{(} \langle \text{var} \rangle \;\; \langle \text{exp} \rangle \texttt{)} \\ \langle \text{body} \rangle &amp; ::= &amp; \langle \text{exp} \rangle \end{array}\]</span></p>
+</section>
+<section id="ejemplo-práctico-de-sintaxis" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplo-práctico-de-sintaxis">Ejemplo Práctico de Sintaxis</h3>
+<p>En Racket, un <code>let</code> toma dos componentes principales:</p>
+<ol type="1">
+<li>Una <strong>lista de asignaciones</strong> (cada una entre paréntesis <code>(variable expresión)</code>).</li>
+<li>El <strong>cuerpo</strong> de la expresión donde esas variables están disponibles.</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Un solo binding local:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">let</span> <span class="op">((</span>x <span class="dv">3</span><span class="op">))</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(+</span> x <span class="op">(*</span> x <span class="dv">10</span><span class="op">)))</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; Retorna 33 (evalúa x=3, luego 3 + 30)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Múltiples bindings locales simultáneos:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">let</span> <span class="op">((</span>x <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>y <span class="dv">5</span><span class="op">))</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">(+</span> y <span class="op">(*</span> x <span class="dv">10</span><span class="op">)))</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; Retorna 35 (evalúa x=3 e y=5, luego 5 + 30)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="la-versión-elegante-de-lookup" class="level3">
+<h3 class="anchored" data-anchor-id="la-versión-elegante-de-lookup">La versión elegante de <code>lookup</code></h3>
+<p>Ahora que conocemos <code>let</code>, podemos reescribir nuestra función <code>lookup</code> clínica de forma limpia, directa y libre de redundancias:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> lookup</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>var env<span class="op">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>match <span class="op">(</span><span class="kw">assoc</span> var env<span class="op">)))</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">if</span> match</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span><span class="kw">cdr</span> match<span class="op">)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span><span class="kw">error</span> 'lookup <span class="st">"referencia a variable inválida ~a"</span> var<span class="op">)))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cuando Racket ejecuta este <code>let</code>, internamente lo transforma (<em>desugaring</em>) a la versión con <code>lambda</code> que derivamos previamente. Para el motor del lenguaje, ambas representan exactamente el mismo árbol de sintaxis abstracta (AST).</p>
+</section>
+<section id="trampa-de-ámbito-scope-y-sombreado-shadowing" class="level3">
+<h3 class="anchored" data-anchor-id="trampa-de-ámbito-scope-y-sombreado-shadowing">Trampa de Ámbito (<em>Scope</em>) y Sombreado (<em>Shadowing</em>)</h3>
+<p>¿Qué crees que retorna el siguiente bloque de código?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> x </span><span class="dv">5</span><span class="op">)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">(+</span> <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>x <span class="dv">3</span><span class="op">))</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     <span class="op">(+</span> x <span class="op">(*</span> x <span class="dv">10</span><span class="op">)))</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>   x<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Hagamos la trazabilidad como si evaluáramos un ensayo clínico:</p>
+<ol type="1">
+<li><p>A nivel global, <code>x</code> vale <span class="math inline">\(5\)</span>.</p></li>
+<li><p>En la expresión interna <code>(let ((x 3)) ...)</code>, la variable local <code>x</code> <strong>sombra</strong> (<em>shadows</em>) a la variable global <code>x</code>. Dentro del ámbito del <code>let</code>, <code>x</code> vale <span class="math inline">\(3\)</span>.</p></li>
+<li><p>El <code>let</code> evalúa <code>(+ 3 (* 3 10))</code> <span class="math inline">\(\rightarrow\)</span> <code>(+ 3 30)</code> <span class="math inline">\(\rightarrow\)</span> <span class="math inline">\(33\)</span>.</p></li>
+<li><p>Al salir del <code>let</code>, volvemos al ámbito global donde la variable local <code>x</code> destruyó su existencia. Por ende, el <code>x</code> exterior sigue siendo <span class="math inline">\(5\)</span>.</p></li>
+<li><p>La suma final es <code>(+ 33 5)</code> <span class="math inline">\(\rightarrow\)</span> <strong><span class="math inline">\(38\)</span></strong>.</p></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="sección-de-ejercicios-prácticos-biomedicina-racket" class="level2">
+<h2 class="anchored" data-anchor-id="sección-de-ejercicios-prácticos-biomedicina-racket">Sección de Ejercicios Prácticos (Biomedicina + Racket)</h2>
+<p>Para consolidar el conocimiento y preparar la mente para la construcción de tu motor semántico en datos de NHANES, resuelve los siguientes ejercicios.</p>
+<section id="ejercicio-1-optimización-de-evaluación-metabólica-caché-con-let" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-optimización-de-evaluación-metabólica-caché-con-let">Ejercicio 1: Optimización de Evaluación Metabólica (Caché con <code>let</code>)</h3>
+<p>En el estudio de síndrome metabólico, el índice HOMA-IR (Evaluación del Modelo Homeostático de Resistencia a la Insulina) se calcula mediante la fórmula:</p>
+<p><span class="math display">\[\text{HOMA-IR} = \frac{\text{Insulina }(\mu\text{U/mL}) \times \text{Glucosa }(\text{mg/dL})}{405}\]</span></p>
+<p>Dada una lista de registros médicos donde cada participante se representa como un alist:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> paciente-101 </span>'<span class="op">((</span>id . <span class="dv">101</span><span class="op">)</span> <span class="op">(</span>glucosa . <span class="dv">115</span><span class="op">)</span> <span class="op">(</span>insulina . <span class="dv">18</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Escribe la función <code>(evaluar-resistencia-insulina pac-alist)</code> que:</p>
+<ol type="1">
+<li>Extraiga la glucosa y la insulina usando <code>assoc</code> y <code>let</code> de manera que <strong>no se repita</strong> ninguna búsqueda <code>assoc</code>.</li>
+<li>Calcule el HOMA-IR.</li>
+<li>Devuelva <code>#t</code> si el HOMA-IR es <span class="math inline">\(\ge 2.5\)</span> (indicativo de resistencia a la insulina) o <code>#f</code> en caso contrario. Si el registro no tiene insulina o glucosa, debe lanzar un error con <code>error</code>.</li>
+</ol>
+</section>
+<section id="ejercicio-2-desazucarador-manual-let-rightarrow-lambda" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-desazucarador-manual-let-rightarrow-lambda">Ejercicio 2: Desazucarador Manual (<code>let</code> <span class="math inline">\(\rightarrow\)</span> <code>lambda</code>)</h3>
+<p>Toma la siguiente expresión de Racket que utiliza múltiples bindings locales con <code>let</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">let</span> <span class="op">((</span>imc <span class="fl">32.5</span><span class="op">)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>hba1c <span class="fl">6.8</span><span class="op">))</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">and</span> <span class="op">(&gt;</span> imc <span class="dv">30</span><span class="op">)</span> <span class="op">(&gt;</span> hba1c <span class="fl">6.5</span><span class="op">))</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>      'diabetes-con-obesidad</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      'riesgo-moderado<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Tu tarea:</strong> Convierte manualmente esa expresión a su forma semántica equivalente utilizando exclusivamente funciones anónimas <code>lambda</code> e invocación directa (sin usar la palabra reservada <code>let</code>).</p>
+</section>
+<section id="ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes">Ejercicio 3: Motor de Reglas Datalog para Criterios NHANES</h3>
+<p>Para tu futuro motor semántico, necesitas una función de filtrado basada en sustitución de entorno.</p>
+<p>Escribe una función <code>(filtrar-nhanes criterio sujeto-env)</code> donde:</p>
+<ul>
+<li><code>criterio</code> es un símbolo (ej. <code>'obesidad</code>, <code>'prediabetes</code>).</li>
+<li><code>sujeto-env</code> es una lista de asociación con los biomarcadores del participante.</li>
+</ul>
+<p>Utiliza un <code>let</code> local para extraer de forma eficiente una tabla de reglas de decisión predefinida dentro de la función y retornar un diagnóstico.</p>
+<section id="código-base-sugerido-para-iniciar" class="level4">
+<h4 class="anchored" data-anchor-id="código-base-sugerido-para-iniciar">Código base sugerido para iniciar:</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> sujeto-nhanes-8392</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>id . <span class="dv">8392</span><span class="op">)</span> <span class="op">(</span>edad . <span class="dv">54</span><span class="op">)</span> <span class="op">(</span>imc . <span class="fl">31.4</span><span class="op">)</span> <span class="op">(</span>hba1c . <span class="fl">5.9</span><span class="op">)))</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; Implementa la función utilizando let para almacenar </span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; temporalmente las extracciones de biomarcadores</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+</section>
+<section id="preguntas-teóricas-importantes" class="level2">
+<h2 class="anchored" data-anchor-id="preguntas-teóricas-importantes">Preguntas Teóricas Importantes</h2>
+<blockquote class="blockquote">
+<p><strong>a. ¿Qué significa decir que una función es estructuralmente recursiva?</strong></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>b. Vimos cómo podemos usar derivación de programas para fusionar una función auxiliar de regreso en la función que la llama. ¿Por qué no querríamos usar derivación de programas para fusionar procedimientos de sintaxis (<em>syntax procedures</em>) de vuelta en una función que los usa?</strong></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>c.&nbsp;¿De qué manera un compilador/intérprete puede generar código más eficiente para una función recursiva de cola (<em>tail recursive</em>)?</strong></p>
+</blockquote>
+<hr>
+</section>
+<section id="soluciones-a-los-ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="soluciones-a-los-ejercicios-prácticos">Soluciones a los Ejercicios Prácticos</h2>
+<section id="ejercicio-1-optimización-de-evaluación-metabólica-evaluar-resistencia-insulina" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-optimización-de-evaluación-metabólica-evaluar-resistencia-insulina">Ejercicio 1: Optimización de Evaluación Metabólica (<code>evaluar-resistencia-insulina</code>)</h3>
+<p>En esta solución evaluamos los biomarcadores una sola vez mediante <code>let</code>. Si ambas búsquedas devuelven un par válido, calculamos el índice HOMA-IR extrayendo sus valores con <code>cdr</code>. Si falta alguna medición, el programa lanza un error descriptivo.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>evaluar-resistencia-insulina pac-alist<span class="op">)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>glucosa <span class="op">(</span><span class="kw">assoc</span> 'glucosa pac-alist<span class="op">))</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>insulina <span class="op">(</span><span class="kw">assoc</span> 'insulina pac-alist<span class="op">)))</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">and</span> glucosa insulina<span class="op">)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">(&gt;=</span> <span class="op">(/</span> <span class="op">(*</span> <span class="op">(</span><span class="kw">cdr</span> glucosa<span class="op">)</span> <span class="op">(</span><span class="kw">cdr</span> insulina<span class="op">))</span> <span class="dv">405</span><span class="op">)</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="fl">2.5</span><span class="op">)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">error</span> 'evaluar-resistencia-insulina</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>               <span class="st">"datos incompletos en el registro"</span><span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="pruebas-de-validación-con-rackunit" class="level4">
+<h4 class="anchored" data-anchor-id="pruebas-de-validación-con-rackunit">Pruebas de Validación (con <code>rackunit</code>)</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> paciente-sano</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>id . <span class="dv">101</span><span class="op">)</span> <span class="op">(</span>glucosa . <span class="dv">85</span><span class="op">)</span> <span class="op">(</span>insulina . <span class="dv">6</span><span class="op">)))</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; HOMA-IR = (85 * 6) / 405 = 510 / 405 = 1.25 (&lt; 2.5) -&gt; #f</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> paciente-resistencia</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>id . <span class="dv">102</span><span class="op">)</span> <span class="op">(</span>glucosa . <span class="dv">115</span><span class="op">)</span> <span class="op">(</span>insulina . <span class="dv">18</span><span class="op">)))</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; HOMA-IR = (115 * 18) / 405 = 2070 / 405 = 5.11 (&gt;= 2.5) -&gt; #t</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> paciente-incompleto</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>id . <span class="dv">103</span><span class="op">)</span> <span class="op">(</span>glucosa . <span class="dv">90</span><span class="op">)))</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejecución de Pruebas Automáticas:</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-false <span class="op">(</span>evaluar-resistencia-insulina paciente-sano<span class="op">))</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-true  <span class="op">(</span>evaluar-resistencia-insulina paciente-resistencia<span class="op">))</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-exn   exn:fail? <span class="op">(</span><span class="kw">lambda</span> <span class="op">()</span> <span class="op">(</span>evaluar-resistencia-insulina paciente-incompleto<span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="ejercicio-2-desazucarador-manual-let-rightarrow-lambda-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-desazucarador-manual-let-rightarrow-lambda-1">Ejercicio 2: Desazucarador Manual (<code>let</code> <span class="math inline">\(\rightarrow\)</span> <code>lambda</code>)</h3>
+<p>Demostración del proceso de desazucaramiento (<em>desugaring</em>) convirtiendo la sintaxis dulce de <code>let</code> a su forma canónica básica de una función anónima <code>lambda</code> invocada inmediatamente.</p>
+<section id="código-original-con-let" class="level4">
+<h4 class="anchored" data-anchor-id="código-original-con-let">Código Original con <code>let</code></h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">let</span> <span class="op">((</span>imc <span class="fl">32.5</span><span class="op">)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>hba1c <span class="fl">6.8</span><span class="op">))</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">and</span> <span class="op">(&gt;</span> imc <span class="dv">30</span><span class="op">)</span> <span class="op">(&gt;</span> hba1c <span class="fl">6.5</span><span class="op">))</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>      'diabetes-con-obesidad</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>      'riesgo-moderado<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="solución-desazucarada-lambda" class="level4">
+<h4 class="anchored" data-anchor-id="solución-desazucarada-lambda">Solución “Desazucarada” (<code>lambda</code>)</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="op">((</span><span class="kw">lambda</span> <span class="op">(</span>imc hba1c<span class="op">)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">and</span> <span class="op">(&gt;</span> imc <span class="dv">30</span><span class="op">)</span> <span class="op">(&gt;</span> hba1c <span class="fl">6.5</span><span class="op">))</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>       'diabetes-con-obesidad</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>       'riesgo-moderado<span class="op">))</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a> <span class="fl">32.5</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a> <span class="fl">6.8</span><span class="op">)</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; Evalúa correctamente a: 'diabetes-con-obesidad</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes-filtrar-nhanes" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-motor-de-reglas-datalog-para-criterios-nhanes-filtrar-nhanes">Ejercicio 3: Motor de Reglas Datalog para Criterios NHANES (<code>filtrar-nhanes</code>)</h3>
+<p>Estructuración de un evaluador de reglas mediante <code>cond</code>. Para garantizar la solidez de nuestro motor ante datos faltantes de NHANES, aseguramos la existencia de las parejas de asociación antes de acceder a su contenido con <code>cdr</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>filtrar-nhanes criterio sujeto-env<span class="op">)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>imc <span class="op">(</span><span class="kw">assoc</span> 'imc sujeto-env<span class="op">))</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>hba1c <span class="op">(</span><span class="kw">assoc</span> 'hba1c sujeto-env<span class="op">)))</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">cond</span> <span class="op">[(</span><span class="kw">eq?</span> criterio 'obesidad<span class="op">)</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">and</span> imc <span class="op">(&gt;=</span> <span class="op">(</span><span class="kw">cdr</span> imc<span class="op">)</span> <span class="dv">30</span><span class="op">))]</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>          <span class="op">[(</span><span class="kw">eq?</span> criterio 'diabetes<span class="op">)</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">and</span> hba1c <span class="op">(&gt;=</span> <span class="op">(</span><span class="kw">cdr</span> hba1c<span class="op">)</span> <span class="fl">6.5</span><span class="op">))]</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>          <span class="op">[(</span><span class="kw">eq?</span> criterio 'prediabetes<span class="op">)</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">and</span> hba1c </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                <span class="op">(&gt;=</span> <span class="op">(</span><span class="kw">cdr</span> hba1c<span class="op">)</span> <span class="fl">5.7</span><span class="op">)</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                <span class="op">(&lt;</span> <span class="op">(</span><span class="kw">cdr</span> hba1c<span class="op">)</span> <span class="fl">6.5</span><span class="op">))]</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>          <span class="op">[</span><span class="kw">else</span> <span class="op">(</span><span class="kw">error</span> 'filtrar-nhanes <span class="st">"criterio no reconocido ~a"</span> criterio<span class="op">)])))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="pruebas-de-validación-con-rackunit-1" class="level4">
+<h4 class="anchored" data-anchor-id="pruebas-de-validación-con-rackunit-1">Pruebas de Validación (con <code>rackunit</code>)</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> sujeto-a</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>id . <span class="dv">8392</span><span class="op">)</span> <span class="op">(</span>edad . <span class="dv">54</span><span class="op">)</span> <span class="op">(</span>imc . <span class="fl">31.4</span><span class="op">)</span> <span class="op">(</span>hba1c . <span class="fl">5.9</span><span class="op">)))</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> sujeto-b</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>id . <span class="dv">9104</span><span class="op">)</span> <span class="op">(</span>edad . <span class="dv">42</span><span class="op">)</span> <span class="op">(</span>imc . <span class="fl">24.1</span><span class="op">)</span> <span class="op">(</span>hba1c . <span class="fl">6.7</span><span class="op">)))</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejecución de Pruebas Automáticas:</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-true  <span class="op">(</span>filtrar-nhanes 'obesidad sujeto-a<span class="op">))</span>    <span class="co">;; IMC 31.4 &gt;= 30.0</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-true  <span class="op">(</span>filtrar-nhanes 'prediabetes sujeto-a<span class="op">))</span> <span class="co">;; HbA1c 5.9 en [5.7, 6.5)</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-false <span class="op">(</span>filtrar-nhanes 'diabetes sujeto-a<span class="op">))</span>   <span class="co">;; HbA1c 5.9 &lt; 6.5</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-false <span class="op">(</span>filtrar-nhanes 'obesidad sujeto-b<span class="op">))</span>    <span class="co">;; IMC 24.1 &lt; 30.0</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-true  <span class="op">(</span>filtrar-nhanes 'diabetes sujeto-b<span class="op">))</span>   <span class="co">;; HbA1c 6.7 &gt;= 6.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+</section>
+<section id="cuestionario-teórico." class="level2">
+<h2 class="anchored" data-anchor-id="cuestionario-teórico.">Cuestionario Teórico.</h2>
+<blockquote class="blockquote">
+<p><strong>Pregunta a:</strong> ¿Qué significa decir que una función es estructuralmente recursiva?</p>
+<p><strong>Respuesta:</strong> Significa que la estructura del código recursivo sigue y refleja directamente la definición gramatical o inductiva del tipo de dato que procesa. Por ejemplo, en listas tiene un caso base para la lista vacía <code>()</code> y un paso recursivo para el <code>cons</code> (<code>car</code> y <code>cdr</code>).</p>
+</blockquote>
+<hr>
+<blockquote class="blockquote">
+<p><strong>Pregunta b:</strong> Vimos cómo podemos usar derivación de programas para fusionar una función auxiliar de regreso en la función que la llama. ¿Por qué no querríamos usar derivación de programas para fusionar procedimientos de sintaxis (<em>syntax procedures</em>) de vuelta en una función que los usa?</p>
+<p><strong>Respuesta:</strong> Porque los procedimientos de sintaxis (como <code>lambda-&gt;param</code> o <code>app-&gt;proc</code>) proveen una <strong>capa de abstracción de datos</strong>. Si los eliminamos para exponer <code>car</code> o <code>cdr</code>, acoplamos el código a la representación concreta del Árbol de Sintaxis Abstracta (AST). Esto destruye la modularidad y obliga a reescribir todo el intérprete si cambia la representación interna del lenguaje.</p>
+</blockquote>
+<hr>
+<blockquote class="blockquote">
+<p><strong>Pregunta c:</strong> ¿De qué manera un compilador/intérprete puede generar código más eficiente para una función recursiva de cola (<em>tail recursive</em>)?</p>
+<p><strong>Respuesta:</strong> En la recursión de cola, la llamada recursiva es el último paso de ejecución antes de retornar. El compilador reutiliza el mismo marco de pila (<em>stack frame</em>) reemplazando los parámetros mediante una instrucción de salto (<em>jump</em>), transformando la recursión en un bucle de memoria constante <span class="math inline">\(O(1)\)</span> sin riesgo de un desbordamiento de pila (<em>stack overflow</em>).</p>
+</blockquote>
+<hr>
+<blockquote class="blockquote">
+<p><strong>Pregunta d:</strong> Para un <span class="math inline">\(x\)</span> y un <span class="math inline">\(exp\)</span> dados, la expresión <code>(occurs-free? x exp)</code> no siempre es igual a <code>(not (occurs-bound? x exp))</code>. Proporciona expresiones que ilustren por qué.</p>
+<p><strong>Respuesta:</strong> Una variable puede no ocurrir en la expresión, o bien ocurrir en ambas condiciones (libre y ligada) a la vez:</p>
+<ol type="1">
+<li><strong>No ocurre libre ni ligada:</strong> En la expresión <code>'y</code>, la variable <code>'x</code> no aparece.</li>
+</ol>
+<ul>
+<li><code>(occurs-free? 'x 'y)</code> evalúa a <code>#f</code>.</li>
+<li><code>(occurs-bound? 'x 'y)</code> evalúa a <code>#f</code>.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Ocurre libre y ligada simultáneamente:</strong> En la expresión <code>'(x (lambda (x) x))</code>, el primer <code>'x</code> está en posición libre, mientras que el segundo está ligado por el <code>lambda</code>.</li>
+</ol>
+<ul>
+<li><code>(occurs-free? 'x '(x (lambda (x) x)))</code> evalúa a <code>#t</code>.</li>
+<li><code>(occurs-bound? 'x '(x (lambda (x) x)))</code> evalúa a <code>#t</code>.</li>
+</ul>
+</blockquote>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
