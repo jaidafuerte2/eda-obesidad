@@ -1,15 +1,30 @@
 ---
-title: "SICP Accesible - Aprendiendo a Crear Lenguajes y Paradigmas de Programación sin Matemáticas Avanzadas"
+title: "Semántica en Acción - Paradigmas de Programación, Ejemplos Médicos y Construcción de un Pequeño Motor Semántico"
 format: html
 editor: visual
 ---
 
-![](files/images/portada.jpg){fig-alt="Portada de la práctica del borrador del análisis de la tabla obesity latin" width="35%"}
+![](files/images/portada1.jpe){fig-alt="Portada de la práctica del borrador del análisis de la tabla obesity latin" width="35%"}
 
-## Bienvenido
+# Bienvenidos a *Semántica en Acción*
 
-Este es el sitio web del libro "SICP Accesible", Este libro te enseñará programación de paradigmas de programación en scheme.
+Programar no consiste solamente en aprender un lenguaje. También consiste en aprender a **pensar con programas**.
 
-En este libro enconstrarás un manual muy práctico de habilidades para entender paradigmas de programación en un contexto relacionado con la medicina y la administración de la salud usando algunos ejemplos de estas áreas.
+*Semántica en Acción* es un recorrido por distintos **paradigmas de programación**, desde ideas fundamentales hasta la construcción de un pequeño motor semántico capaz de trabajar con reglas y conocimiento expresado mediante **Datalog**.
+
+A lo largo del camino utilizaremos ejemplos sencillos, experimentos y algunos problemas inspirados en el ámbito médico, no para convertir la programación en medicina, sino para mostrar cómo las ideas computacionales pueden ayudarnos a representar, transformar y razonar sobre información del mundo real.
+
+El libro nace inspirado en el curso **CS3540 – Programming Paradigms** de Eugene Wallingford, pero busca recorrer ese territorio con una perspectiva propia: más práctica, gradual y experimental.
+
+No necesitas saberlo todo antes de comenzar.
+
+La intención es que cada capítulo nos permita descubrir una idea, implementarla, jugar con ella y, finalmente, preguntarnos:
+
+> **¿Qué significa realmente que un programa tenga significado?**
+
+Ese es el camino que nos llevará desde los primeros paradigmas de programación hasta nuestro pequeño motor semántico.
+
+**Bienvenido. Comencemos a programar… y a descubrir la semántica en acción.**
+
 
 Este sitio web es y siempre será gratuito, bajo la licencia CC [BY-NC-ND 3.0](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) .

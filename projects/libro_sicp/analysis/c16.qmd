@@ -14,18 +14,17 @@ Llamas al laboratorio central y pides la muestra. El laboratorio procesa el tubo
 
 En Racket, la función primitiva `assoc` busca un símbolo dentro de una lista de pares (una tabla de asociación o lista de alist). Si lo encuentra, devuelve el primer par completo `(llave . valor)`; si no lo encuentra, devuelve `#f`:
 
-```racket
+``` racket
 > (assoc 'c '((a . 11) (b . 24) (c . 3)))
 '(c . 3)
 
 > (assoc 'd '((a . 11) (b . 24) (c . 3)))
 #f
-
 ```
 
 Esta naturaleza "de doble filo" (retornar el par si tiene éxito o falso si falla) hace que `assoc` sea ideal para escribir una función como `lookup`, la cual busca una variable en un entorno de ejecución. En nuestras sesiones anteriores escribíamos esto:
 
-```racket
+``` racket
 #lang racket
 
 (define lookup
@@ -33,14 +32,13 @@ Esta naturaleza "de doble filo" (retornar el par si tiene éxito o falso si fall
     (if (assoc var env)
         (cdr (assoc var env))
         (error 'lookup "referencia a variable inválida ~a" var))))
-
 ```
 
 Analicemos la ineficiencia clínica de este código: cuando la variable sí existe en el entorno `env`, evaluamos `(assoc var env)` en la condición del `if`. Si retorna una pareja válida (que `if` interpreta como un valor verdadero), inmediatamente pasamos a la rama positiva y ejecutamos `(cdr (assoc var env))`. **¡Estamos buscando la misma variable en la misma lista dos veces consecutivas!**
 
 > **Nota de arquitectura:** En análisis de datos masivos (como cruzar tablas de $10,000$ participantes de NHANES con cientos de variables metabólicas), recalcular o procesar la misma búsqueda en memoria destruye el rendimiento. Necesitamos una forma de hacer la consulta **una sola vez** y guardar la referencia temporalmente.
 
----
+------------------------------------------------------------------------
 
 ## Resistencia Funcional vs. Hábitos Procedimentales
 
@@ -48,25 +46,21 @@ Probablemente te estés preguntando: *"¿Por qué tardamos semanas en ver variab
 
 La razón no es por sadismo pedagógico. En la programación imperativa y procedimental tradicional, usamos variables locales principalmente para **secuenciar una computación**:
 
-1. *Paso 1:* Extraer variable $A$ y guardarla en `temp1`.
-2. *Paso 2:* Multiplicar `temp1` por $B$ y guardarlo en `temp2`.
-3. *Paso 3:* Retornar `temp2` con un `return`.
+1.  *Paso 1:* Extraer variable $A$ y guardarla en `temp1`.
+2.  *Paso 2:* Multiplicar `temp1` por $B$ y guardarlo en `temp2`.
+3.  *Paso 3:* Retornar `temp2` con un `return`.
 
 Esa mentalidad tienta al programador a escribir código dependiente del estado mutable y de pasos cronológicos rígidos. El paradigma funcional nos obliga a pensar en términos de **composición de funciones** y **flujo de transformación de datos**.
 
 Sin embargo, como analistas de datos y clínicos sabemos que las variables locales no solo sirven para secuenciar. Existen tres razones legítimas para usarlas:
 
-1. **Claridad y Legibilidad:** Darle un nombre semántico a un resultado intermedio.
+1.  **Claridad y Legibilidad:** Darle un nombre semántico a un resultado intermedio.
 
+2.  **Caché/Reuso:** Calcular una operación costosa **una sola vez** y reusar el resultado múltiples veces sin duplicar trabajo.
 
-2. **Caché/Reuso:** Calcular una operación costosa **una sola vez** y reusar el resultado múltiples veces sin duplicar trabajo.
+3.  **Puntos de Enlace (*Bindings*):** Crear un ámbito (*scope*) delimitado donde ciertos nombres tienen significado.
 
-
-3. **Puntos de Enlace (*Bindings*):** Crear un ámbito (*scope*) delimitado donde ciertos nombres tienen significado.
-
-
-
----
+------------------------------------------------------------------------
 
 ## Abstracción Sintáctica: Azúcar Para Humanos, Músculo Para el Intérprete
 
@@ -76,17 +70,13 @@ El "azúcar sintáctico" son construcciones del lenguaje que **no agregan poder 
 
 Pensemos en analogías cotidianas de otros lenguajes:
 
-* En R/Java/Python, no necesitamos el operador `x += 5` porque podemos escribir `x = x + 5`.
+- En R/Java/Python, no necesitamos el operador `x += 5` porque podemos escribir `x = x + 5`.
 
+- En C/C++, no necesitamos `x++` porque podemos escribir `x = x + 1`.
 
-* En C/C++, no necesitamos `x++` porque podemos escribir `x = x + 1`.
+- En Racket, no necesitamos la estructura condicional `cond` porque podríamos anidar múltiples bloques `if`.
 
-
-* En Racket, no necesitamos la estructura condicional `cond` porque podríamos anidar múltiples bloques `if`.
-
-
-
-```
+```         
                      ┌───────────────────────────┐
                      │     Código con Sugar      │
                      │  (fácil para el humano)   │
@@ -99,14 +89,13 @@ Pensemos en analogías cotidianas de otros lenguajes:
                      │      Código Núcleo        │
                      │  (fácil para el motor)    │
                      └───────────────────────────┘
-
 ```
 
 Desde el punto de vista del usuario, el azúcar sintáctico permite expresar intenciones en el lenguaje del dominio (por ejemplo, definir reglas de negocio médicas o filtros de salud).
 
 Desde la perspectiva del creador de interpretes (lo que tú estás haciendo para un motor Datalog), **el azúcar es irrelevante para el núcleo del motor**. Un intérprete profesional lo primero que hace en la etapa de pre-procesamiento es "desazucarar" (*desugar*) el código, traduciendo todas las construcciones complejas a un conjunto diminuto y elegante de primitivas básicas.
 
----
+------------------------------------------------------------------------
 
 ## Derivación de Programas: Reemplazando `let` con `lambda`
 
@@ -116,27 +105,25 @@ Pensemos en el problema de `lookup`. Queremos evaluar `(assoc var env)` una sola
 
 Podríamos definir una función auxiliar que reciba un parámetro llamado `match`:
 
-```racket
+``` racket
 (define get-value
   (lambda (match)
     (if match
         (cdr match)
         (error 'lookup "referencia a variable inválida"))))
-
 ```
 
 Y luego llamarla pasándole el resultado del laboratorio:
 
-```racket
+``` racket
 (get-value (assoc var env))
-
 ```
 
 Al invocar la función, el argumento formal `match` se **liga** al valor devuelto por `(assoc var env)`. ¡Hemos cached el valor y le hemos puesto un nombre!
 
 Pero podemos ir un paso más allá usando **derivación de programas** (el arte de refactorizar y comprimir expresiones sin cambiar su comportamiento). En lugar de crear una función independiente llamada `get-value` con `define`, creamos una **función anónima inline** y la invocamos inmediatamente:
 
-```racket
+``` racket
 (define lookup
   (lambda (var env)
     ((lambda (match)
@@ -144,29 +131,21 @@ Pero podemos ir un paso más allá usando **derivación de programas** (el arte 
            (cdr match)
            (error 'lookup "referencia a variable inválida ~a" var)))
      (assoc var env))))
-
 ```
 
 Detente un segundo a admirar esta belleza arquitectónica:
 
-1. `(lambda (match) ...)` crea una función que espera un argumento llamado `match`.
+1.  `(lambda (match) ...)` crea una función que espera un argumento llamado `match`.
 
+2.  Pasamos `(assoc var env)` como el argumento de esa función.
 
-2. Pasamos `(assoc var env)` como el argumento de esa función.
-
-
-3. Dentro del cuerpo de la función, el nombre `match` está vinculado (*bound*) al resultado de evaluar `(assoc var env)`.
-
-
+3.  Dentro del cuerpo de la función, el nombre `match` está vinculado (*bound*) al resultado de evaluar `(assoc var env)`.
 
 ¡Hemos creado una variable local sin usar ninguna palabra clave especial para variables locales!
 
-> **Conexión con tu Motor Datalog/Semántico:**
-> En una consulta semántica tipo Datalog sobre NHANES, cuando declaras una regla como:
-> `riesgo_metabolico(?paciente) :- obeso(?paciente), hba1c_alta(?paciente).`
-> El motor semántico realiza una unificación donde la variable lógica `?paciente` se liga temporalmente a un ID específico (ejemplo: `ID_9384`). Este mecanismo de sustitución y ámbito delimitado (*binding scope*) es idéntico al comportamiento de los parámetros formales en una expresión `lambda`.
+> **Conexión con tu Motor Datalog/Semántico:** En una consulta semántica tipo Datalog sobre NHANES, cuando declaras una regla como: `riesgo_metabolico(?paciente) :- obeso(?paciente), hba1c_alta(?paciente).` El motor semántico realiza una unificación donde la variable lógica `?paciente` se liga temporalmente a un ID específico (ejemplo: `ID_9384`). Este mecanismo de sustitución y ámbito delimitado (*binding scope*) es idéntico al comportamiento de los parámetros formales en una expresión `lambda`.
 
----
+------------------------------------------------------------------------
 
 ## Formato y Gramática de `let` en Racket
 
@@ -182,10 +161,10 @@ $$\begin{array}{lcl} \langle \text{let-expression} \rangle & ::= & \texttt{(let 
 
 En Racket, un `let` toma dos componentes principales:
 
-1. Una **lista de asignaciones** (cada una entre paréntesis `(variable expresión)`).
-2. El **cuerpo** de la expresión donde esas variables están disponibles.
+1.  Una **lista de asignaciones** (cada una entre paréntesis `(variable expresión)`).
+2.  El **cuerpo** de la expresión donde esas variables están disponibles.
 
-```racket
+``` racket
 ;; Un solo binding local:
 (let ((x 3))
   (+ x (* x 10)))
@@ -196,21 +175,19 @@ En Racket, un `let` toma dos componentes principales:
       (y 5))
   (+ y (* x 10)))
 ;; Retorna 35 (evalúa x=3 e y=5, luego 5 + 30)
-
 ```
 
 ### La versión elegante de `lookup`
 
 Ahora que conocemos `let`, podemos reescribir nuestra función `lookup` clínica de forma limpia, directa y libre de redundancias:
 
-```racket
+``` racket
 (define lookup
   (lambda (var env)
     (let ((match (assoc var env)))
       (if match
           (cdr match)
           (error 'lookup "referencia a variable inválida ~a" var)))))
-
 ```
 
 Cuando Racket ejecuta este `let`, internamente lo transforma (*desugaring*) a la versión con `lambda` que derivamos previamente. Para el motor del lenguaje, ambas representan exactamente el mismo árbol de sintaxis abstracta (AST).
@@ -219,34 +196,27 @@ Cuando Racket ejecuta este `let`, internamente lo transforma (*desugaring*) a la
 
 ¿Qué crees que retorna el siguiente bloque de código?
 
-```racket
+``` racket
 (define x 5)
 
 (+ (let ((x 3))
      (+ x (* x 10)))
    x)
-
 ```
 
 Hagamos la trazabilidad como si evaluáramos un ensayo clínico:
 
-1. A nivel global, `x` vale $5$.
+1.  A nivel global, `x` vale $5$.
 
+2.  En la expresión interna `(let ((x 3)) ...)`, la variable local `x` **sombra** (*shadows*) a la variable global `x`. Dentro del ámbito del `let`, `x` vale $3$.
 
-2. En la expresión interna `(let ((x 3)) ...)`, la variable local `x` **sombra** (*shadows*) a la variable global `x`. Dentro del ámbito del `let`, `x` vale $3$.
+3.  El `let` evalúa `(+ 3 (* 3 10))` $\rightarrow$ `(+ 3 30)` $\rightarrow$ $33$.
 
+4.  Al salir del `let`, volvemos al ámbito global donde la variable local `x` destruyó su existencia. Por ende, el `x` exterior sigue siendo $5$.
 
-3. El `let` evalúa `(+ 3 (* 3 10))` $\rightarrow$ `(+ 3 30)` $\rightarrow$ $33$.
+5.  La suma final es `(+ 33 5)` $\rightarrow$ $38$.
 
-
-4. Al salir del `let`, volvemos al ámbito global donde la variable local `x` destruyó su existencia. Por ende, el `x` exterior sigue siendo $5$.
-
-
-5. La suma final es `(+ 33 5)` $\rightarrow$ **$38$**.
-
-
-
----
+------------------------------------------------------------------------
 
 ## Sección de Ejercicios Prácticos (Biomedicina + Racket)
 
@@ -260,28 +230,26 @@ $$\text{HOMA-IR} = \frac{\text{Insulina }(\mu\text{U/mL}) \times \text{Glucosa }
 
 Dada una lista de registros médicos donde cada participante se representa como un alist:
 
-```racket
+``` racket
 (define paciente-101 '((id . 101) (glucosa . 115) (insulina . 18)))
-
 ```
 
 Escribe la función `(evaluar-resistencia-insulina pac-alist)` que:
 
-1. Extraiga la glucosa y la insulina usando `assoc` y `let` de manera que **no se repita** ninguna búsqueda `assoc`.
-2. Calcule el HOMA-IR.
-3. Devuelva `#t` si el HOMA-IR es $\ge 2.5$ (indicativo de resistencia a la insulina) o `#f` en caso contrario. Si el registro no tiene insulina o glucosa, debe lanzar un error con `error`.
+1.  Extraiga la glucosa y la insulina usando `assoc` y `let` de manera que **no se repita** ninguna búsqueda `assoc`.
+2.  Calcule el HOMA-IR.
+3.  Devuelva `#t` si el HOMA-IR es $\ge 2.5$ (indicativo de resistencia a la insulina) o `#f` en caso contrario. Si el registro no tiene insulina o glucosa, debe lanzar un error con `error`.
 
 ### Ejercicio 2: Desazucarador Manual (`let` $\rightarrow$ `lambda`)
 
 Toma la siguiente expresión de Racket que utiliza múltiples bindings locales con `let`:
 
-```racket
+``` racket
 (let ((imc 32.5)
       (hba1c 6.8))
   (if (and (> imc 30) (> hba1c 6.5))
       'diabetes-con-obesidad
       'riesgo-moderado))
-
 ```
 
 **Tu tarea:** Convierte manualmente esa expresión a su forma semántica equivalente utilizando exclusivamente funciones anónimas `lambda` e invocación directa (sin usar la palabra reservada `let`).
@@ -292,25 +260,24 @@ Para tu futuro motor semántico, necesitas una función de filtrado basada en su
 
 Escribe una función `(filtrar-nhanes criterio sujeto-env)` donde:
 
-* `criterio` es un símbolo (ej. `'obesidad`, `'prediabetes`).
-* `sujeto-env` es una lista de asociación con los biomarcadores del participante.
+- `criterio` es un símbolo (ej. `'obesidad`, `'prediabetes`).
+- `sujeto-env` es una lista de asociación con los biomarcadores del participante.
 
 Utiliza un `let` local para extraer de forma eficiente una tabla de reglas de decisión predefinida dentro de la función y retornar un diagnóstico.
 
 #### Código base sugerido para iniciar:
 
-```racket
+``` racket
 (define sujeto-nhanes-8392
   '((id . 8392) (edad . 54) (imc . 31.4) (hba1c . 5.9)))
 
 ;; Implementa la función utilizando let para almacenar 
 ;; temporalmente las extracciones de biomarcadores
-
 ```
 
----
+------------------------------------------------------------------------
 
-##  Preguntas Teóricas Importantes
+## Preguntas Teóricas Importantes
 
 > **a. ¿Qué significa decir que una función es estructuralmente recursiva?**
 
@@ -318,15 +285,15 @@ Utiliza un `let` local para extraer de forma eficiente una tabla de reglas de de
 
 > **c. ¿De qué manera un compilador/intérprete puede generar código más eficiente para una función recursiva de cola (*tail recursive*)?**
 
----
+------------------------------------------------------------------------
 
-## Soluciones a los Ejercicios Prácticos 
+## Soluciones a los Ejercicios Prácticos
 
 ### Ejercicio 1: Optimización de Evaluación Metabólica (`evaluar-resistencia-insulina`)
 
 En esta solución evaluamos los biomarcadores una sola vez mediante `let`. Si ambas búsquedas devuelven un par válido, calculamos el índice HOMA-IR extrayendo sus valores con `cdr`. Si falta alguna medición, el programa lanza un error descriptivo.
 
-```racket
+``` racket
 #lang racket
 (require rackunit)
 
@@ -338,12 +305,11 @@ En esta solución evaluamos los biomarcadores una sola vez mediante `let`. Si am
             2.5)
         (error 'evaluar-resistencia-insulina
                "datos incompletos en el registro"))))
-
 ```
 
 #### Pruebas de Validación (con `rackunit`)
 
-```racket
+``` racket
 (define paciente-sano
   '((id . 101) (glucosa . 85) (insulina . 6))) 
 ;; HOMA-IR = (85 * 6) / 405 = 510 / 405 = 1.25 (< 2.5) -> #f
@@ -359,10 +325,9 @@ En esta solución evaluamos los biomarcadores una sola vez mediante `let`. Si am
 (check-false (evaluar-resistencia-insulina paciente-sano))
 (check-true  (evaluar-resistencia-insulina paciente-resistencia))
 (check-exn   exn:fail? (lambda () (evaluar-resistencia-insulina paciente-incompleto)))
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Ejercicio 2: Desazucarador Manual (`let` $\rightarrow$ `lambda`)
 
@@ -370,18 +335,17 @@ Demostración del proceso de desazucaramiento (*desugaring*) convirtiendo la sin
 
 #### Código Original con `let`
 
-```racket
+``` racket
 (let ((imc 32.5)
       (hba1c 6.8))
   (if (and (> imc 30) (> hba1c 6.5))
       'diabetes-con-obesidad
       'riesgo-moderado))
-
 ```
 
 #### Solución "Desazucarada" (`lambda`)
 
-```racket
+``` racket
 ((lambda (imc hba1c)
    (if (and (> imc 30) (> hba1c 6.5))
        'diabetes-con-obesidad
@@ -389,16 +353,15 @@ Demostración del proceso de desazucaramiento (*desugaring*) convirtiendo la sin
  32.5 
  6.8)
 ;; Evalúa correctamente a: 'diabetes-con-obesidad
-
 ```
 
----
+------------------------------------------------------------------------
 
 ### Ejercicio 3: Motor de Reglas Datalog para Criterios NHANES (`filtrar-nhanes`)
 
 Estructuración de un evaluador de reglas mediante `cond`. Para garantizar la solidez de nuestro motor ante datos faltantes de NHANES, aseguramos la existencia de las parejas de asociación antes de acceder a su contenido con `cdr`.
 
-```racket
+``` racket
 #lang racket
 (require rackunit)
 
@@ -414,12 +377,11 @@ Estructuración de un evaluador de reglas mediante `cond`. Para garantizar la so
                 (>= (cdr hba1c) 5.7)
                 (< (cdr hba1c) 6.5))]
           [else (error 'filtrar-nhanes "criterio no reconocido ~a" criterio)])))
-
 ```
 
 #### Pruebas de Validación (con `rackunit`)
 
-```racket
+``` racket
 (define sujeto-a
   '((id . 8392) (edad . 54) (imc . 31.4) (hba1c . 5.9)))
 
@@ -433,61 +395,40 @@ Estructuración de un evaluador de reglas mediante `cond`. Para garantizar la so
 
 (check-false (filtrar-nhanes 'obesidad sujeto-b))    ;; IMC 24.1 < 30.0
 (check-true  (filtrar-nhanes 'diabetes sujeto-b))   ;; HbA1c 6.7 >= 6.5
-
 ```
 
----
+------------------------------------------------------------------------
 
 ## Cuestionario Teórico.
 
 > **Pregunta a:** ¿Qué significa decir que una función es estructuralmente recursiva?
-> 
-> 
+>
 > **Respuesta:** Significa que la estructura del código recursivo sigue y refleja directamente la definición gramatical o inductiva del tipo de dato que procesa. Por ejemplo, en listas tiene un caso base para la lista vacía `()` y un paso recursivo para el `cons` (`car` y `cdr`).
-> 
-> 
 
----
+------------------------------------------------------------------------
 
 > **Pregunta b:** Vimos cómo podemos usar derivación de programas para fusionar una función auxiliar de regreso en la función que la llama. ¿Por qué no querríamos usar derivación de programas para fusionar procedimientos de sintaxis (*syntax procedures*) de vuelta en una función que los usa?
-> 
-> 
+>
 > **Respuesta:** Porque los procedimientos de sintaxis (como `lambda->param` o `app->proc`) proveen una **capa de abstracción de datos**. Si los eliminamos para exponer `car` o `cdr`, acoplamos el código a la representación concreta del Árbol de Sintaxis Abstracta (AST). Esto destruye la modularidad y obliga a reescribir todo el intérprete si cambia la representación interna del lenguaje.
-> 
-> 
 
----
+------------------------------------------------------------------------
 
 > **Pregunta c:** ¿De qué manera un compilador/intérprete puede generar código más eficiente para una función recursiva de cola (*tail recursive*)?
-> 
-> 
+>
 > **Respuesta:** En la recursión de cola, la llamada recursiva es el último paso de ejecución antes de retornar. El compilador reutiliza el mismo marco de pila (*stack frame*) reemplazando los parámetros mediante una instrucción de salto (*jump*), transformando la recursión en un bucle de memoria constante $O(1)$ sin riesgo de un desbordamiento de pila (*stack overflow*).
-> 
-> 
 
----
+------------------------------------------------------------------------
 
 > **Pregunta d:** Para un $x$ y un $exp$ dados, la expresión `(occurs-free? x exp)` no siempre es igual a `(not (occurs-bound? x exp))`. Proporciona expresiones que ilustren por qué.
-> 
-> 
+>
 > **Respuesta:** Una variable puede no ocurrir en la expresión, o bien ocurrir en ambas condiciones (libre y ligada) a la vez:
-> 
-> 
-> 1. **No ocurre libre ni ligada:** En la expresión `'y`, la variable `'x` no aparece.
-> * `(occurs-free? 'x 'y)` evalúa a `#f`.
-> * `(occurs-bound? 'x 'y)` evalúa a `#f`.
-> 
-> 
-> 2. **Ocurre libre y ligada simultáneamente:** En la expresión `'(x (lambda (x) x))`, el primer `'x` está en posición libre, mientras que el segundo está ligado por el `lambda`.
-> 
-> 
-> * `(occurs-free? 'x '(x (lambda (x) x)))` evalúa a `#t`.
-> * `(occurs-bound? 'x '(x (lambda (x) x)))` evalúa a `#t`.
-> 
-> 
-> 
-> 
-> 
-> 
-
-
+>
+> 1.  **No ocurre libre ni ligada:** En la expresión `'y`, la variable `'x` no aparece.
+>
+> - `(occurs-free? 'x 'y)` evalúa a `#f`.
+> - `(occurs-bound? 'x 'y)` evalúa a `#f`.
+>
+> 2.  **Ocurre libre y ligada simultáneamente:** En la expresión `'(x (lambda (x) x))`, el primer `'x` está en posición libre, mientras que el segundo está ligado por el `lambda`.
+>
+> - `(occurs-free? 'x '(x (lambda (x) x)))` evalúa a `#t`.
+> - `(occurs-bound? 'x '(x (lambda (x) x)))` evalúa a `#t`.
