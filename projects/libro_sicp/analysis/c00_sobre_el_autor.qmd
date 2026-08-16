@@ -1,0 +1,91 @@
+---
+title: "Sobre el autor"
+format: html
+editor: visual
+---
+
+![](../files/images/mi-foto.jpg){fig-alt="Portada de la práctica del borrador del análisis de la tabla obesity latin" width="20%"}
+
+Soy médico, especialista en Administración de Instituciones de Salud y Máster en Administración de Empresas (MBA). A lo largo de mi trayectoria profesional he trabajado tanto en la atención directa de pacientes como en la gestión de servicios de salud. Estas experiencias me permiten comprender que es importante tomar decisiones informadas y de utilizar adecuadamente la información disponible en contextos de incertidumbre.
+
+En el ámbito clínico, una parte importante de mi trabajo está relacionada con la atención de personas con sobrepeso y obesidad. Esta experiencia despertó mi interés por la medicina basada en evidencia, la evaluación crítica de la información y el uso de datos para comprender mejor los problemas de salud que enfrentan los pacientes y las organizaciones.
+
+En el ámbito administrativo participo activamente en iniciativas de educación y gestión sanitaria a través de la Corporación Médica COVSA, organización que impulsa proyectos de divulgación y transformación digital en salud. Entre ellos se encuentra [**Obesidad en Línea**](https://obesidadenlinea.rf.gd/), un libro abierto desarrollado con Pollen/Racket, además de diversos recursos educativos dirigidos a pacientes y profesionales.
+
+Durante los últimos años he ampliado progresivamente mi interés hacia el análisis de datos, la programación y el pensamiento computacional. Este recorrido me ha llevado desde el análisis de información en salud y la inferencia bayesiana hasta la exploración de los paradigmas de programación, la programación funcional y la construcción de sistemas capaces de representar y manipular conocimiento.
+
+## Proyectos
+
+### Salud, educación y divulgación
+
+[**Obesidad en Línea**](https://obesidadenlinea.rf.gd/)
+
+Proyecto de educación y divulgación sobre obesidad y salud dirigido a pacientes y profesionales. Se trata de un libro abierto desarrollado con herramientas web y Pollen/Racket, que representa uno de mis primeros proyectos de integración entre medicina, educación y tecnología.
+
+### Análisis de datos y pensamiento bayesiano
+
+[**Business analytics bayesiano**](https://bayes-blog.netlify.app/)
+
+Blog profesional dedicado a explorar el análisis de datos y el pensamiento bayesiano aplicados a problemas reales de negocio.
+
+El proyecto utiliza **R y rstanarm** para construir modelos bayesianos y comunicar sus resultados de manera práctica e intuitiva. Los ejemplos se desarrollan a partir de datasets empresariales como **Superstore**, **Telco Customer Churn** y **Marketing Campaign**, abordando problemas relacionados con ventas, rentabilidad, marketing, clientes y toma de decisiones.
+
+El blog forma parte de un proceso continuo de aprendizaje y construcción de un portafolio profesional en Business Analytics Bayesiano.
+
+[**Decisiones bajo incertidumbre — Business Analytics Bayesiano con R**](https://bayesparadecisiones.netlify.app/)
+Libro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos y accesibles.
+
+El libro constituye un desarrollo más amplio de estas ideas y busca mostrar cómo el razonamiento probabilístico puede convertirse en una herramienta práctica para analizar problemas y tomar decisiones cuando la información es incompleta.
+
+### Programación y semántica
+
+[**Semántica en Acción**](https://semantica-en-accion.netlify.app/)
+
+Este libro representa una nueva etapa de mi recorrido de aprendizaje. Inspirado inicialmente por el estudio de los paradigmas de programación, explora diferentes formas de pensar y construir programas, utilizando ejemplos prácticos y algunos problemas relacionados con el ámbito médico.
+
+El recorrido culmina con la construcción progresiva de un pequeño motor semántico basado en Datalog, como una forma de explorar cómo los programas pueden representar conocimiento, aplicar reglas y producir conclusiones.
+
+El proyecto toma como punto de partida conceptual el estudio de los paradigmas de programación, pero desarrolla un recorrido propio, incorporando ejemplos, experimentos y herramientas que forman parte de mi proceso personal de aprendizaje.
+
+### Salud digital y transformación tecnológica
+
+A lo largo de mi experiencia profesional también he participado en el diseño y desarrollo de sitios web orientados a instituciones y servicios de salud, combinando conocimientos de gestión, experiencia del paciente y herramientas digitales.
+
+Entre estos proyectos se encuentran plataformas para la promoción de servicios médicos, captación de pacientes y gestión clínica utilizando WordPress y sistemas especializados para la administración de consultas médicas.
+
+## Intereses actuales
+
+* Ciencia de datos aplicada a la salud.
+* Business Analytics.
+* Inferencia bayesiana.
+* Toma de decisiones bajo incertidumbre.
+* Programación y paradigmas de programación.
+* Programación funcional y pensamiento computacional.
+* Representación del conocimiento y semántica.
+* Inteligencia artificial aplicada a problemas reales.
+* Programación para profesionales de la salud.
+* Transformación digital en organizaciones sanitarias.
+
+Estos proyectos forman parte de un proceso de aprendizaje continuo. Mi intención no es presentar la tecnología como un conjunto de herramientas aisladas, sino explorar cómo podemos utilizarlas para **pensar mejor, representar problemas, analizar información y construir soluciones**.
+
+En ese recorrido, la programación deja de ser solamente una herramienta para escribir código y se convierte también en una forma de pensar, experimentar y comprender cómo construimos significado a partir de datos, reglas y conocimiento.
+
+## Proyectos y enlaces
+
+Si deseas explorar algunos de los proyectos mencionados en esta página, puedes visitar:
+
+[**Obesidad en Línea**](https://obesidadenlinea.rf.gd/)
+
+[**Business analytics bayesiano**](https://bayes-blog.netlify.app/)
+
+[**Decisiones bajo incertidumbre — Business Analytics Bayesiano con R**](https://bayesparadecisiones.netlify.app/)
+
+[**Semántica en Acción**](https://semantica-en-accion.netlify.app/)
+
+[**GitHub**](https://github.com/jaidafuerte2)
+
+[**LinkedIn**](https://www.linkedin.com/in/jaimedavidvillafuerte/)
+
+También comparto reflexiones y avances sobre análisis de datos, salud, programación y tecnología a través de mis redes profesionales.
+
+**David Villafuerte MD, MBA**

@@ -1901,5 +1901,164 @@
       "Inicio",
       "Semántica en Acción - Paradigmas de Programación, Ejemplos Médicos y Construcción de un Pequeño Motor Semántico"
     ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html#proyectos",
+    "href": "analysis/c00_sobre_el_autor.html#proyectos",
+    "title": "Sobre el autor",
+    "section": "Proyectos",
+    "text": "Proyectos\n\nSalud, educación y divulgación\nObesidad en Línea\nProyecto de educación y divulgación sobre obesidad y salud dirigido a pacientes y profesionales. Se trata de un libro abierto desarrollado con herramientas web y Pollen/Racket, que representa uno de mis primeros proyectos de integración entre medicina, educación y tecnología.\n\n\nAnálisis de datos y pensamiento bayesiano\nBusiness analytics bayesiano\nBlog profesional dedicado a explorar el análisis de datos y el pensamiento bayesiano aplicados a problemas reales de negocio.\nEl proyecto utiliza R y rstanarm para construir modelos bayesianos y comunicar sus resultados de manera práctica e intuitiva. Los ejemplos se desarrollan a partir de datasets empresariales como Superstore, Telco Customer Churn y Marketing Campaign, abordando problemas relacionados con ventas, rentabilidad, marketing, clientes y toma de decisiones.\nEl blog forma parte de un proceso continuo de aprendizaje y construcción de un portafolio profesional en Business Analytics Bayesiano.\nDecisiones bajo incertidumbre — Business Analytics Bayesiano con R Libro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos y accesibles.\nEl libro constituye un desarrollo más amplio de estas ideas y busca mostrar cómo el razonamiento probabilístico puede convertirse en una herramienta práctica para analizar problemas y tomar decisiones cuando la información es incompleta.\n\n\nProgramación y semántica\nSemántica en Acción\nEste libro representa una nueva etapa de mi recorrido de aprendizaje. Inspirado inicialmente por el estudio de los paradigmas de programación, explora diferentes formas de pensar y construir programas, utilizando ejemplos prácticos y algunos problemas relacionados con el ámbito médico.\nEl recorrido culmina con la construcción progresiva de un pequeño motor semántico basado en Datalog, como una forma de explorar cómo los programas pueden representar conocimiento, aplicar reglas y producir conclusiones.\nEl proyecto toma como punto de partida conceptual el estudio de los paradigmas de programación, pero desarrolla un recorrido propio, incorporando ejemplos, experimentos y herramientas que forman parte de mi proceso personal de aprendizaje.\n\n\nSalud digital y transformación tecnológica\nA lo largo de mi experiencia profesional también he participado en el diseño y desarrollo de sitios web orientados a instituciones y servicios de salud, combinando conocimientos de gestión, experiencia del paciente y herramientas digitales.\nEntre estos proyectos se encuentran plataformas para la promoción de servicios médicos, captación de pacientes y gestión clínica utilizando WordPress y sistemas especializados para la administración de consultas médicas.",
+    "crumbs": [
+      "Inicio",
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html#intereses-actuales",
+    "href": "analysis/c00_sobre_el_autor.html#intereses-actuales",
+    "title": "Sobre el autor",
+    "section": "Intereses actuales",
+    "text": "Intereses actuales\n\nCiencia de datos aplicada a la salud.\nBusiness Analytics.\nInferencia bayesiana.\nToma de decisiones bajo incertidumbre.\nProgramación y paradigmas de programación.\nProgramación funcional y pensamiento computacional.\nRepresentación del conocimiento y semántica.\nInteligencia artificial aplicada a problemas reales.\nProgramación para profesionales de la salud.\nTransformación digital en organizaciones sanitarias.\n\nEstos proyectos forman parte de un proceso de aprendizaje continuo. Mi intención no es presentar la tecnología como un conjunto de herramientas aisladas, sino explorar cómo podemos utilizarlas para pensar mejor, representar problemas, analizar información y construir soluciones.\nEn ese recorrido, la programación deja de ser solamente una herramienta para escribir código y se convierte también en una forma de pensar, experimentar y comprender cómo construimos significado a partir de datos, reglas y conocimiento.",
+    "crumbs": [
+      "Inicio",
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html#proyectos-y-enlaces",
+    "href": "analysis/c00_sobre_el_autor.html#proyectos-y-enlaces",
+    "title": "Sobre el autor",
+    "section": "Proyectos y enlaces",
+    "text": "Proyectos y enlaces\nSi deseas explorar algunos de los proyectos mencionados en esta página, puedes visitar:\nObesidad en Línea\nBusiness analytics bayesiano\nDecisiones bajo incertidumbre — Business Analytics Bayesiano con R\nSemántica en Acción\nGitHub\nLinkedIn\nTambién comparto reflexiones y avances sobre análisis de datos, salud, programación y tecnología a través de mis redes profesionales.\nDavid Villafuerte MD, MBA",
+    "crumbs": [
+      "Inicio",
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_sobre_el_autor.html",
+    "href": "analysis/c00_sobre_el_autor.html",
+    "title": "Sobre el autor",
+    "section": "",
+    "text": "Soy médico, especialista en Administración de Instituciones de Salud y Máster en Administración de Empresas (MBA). A lo largo de mi trayectoria profesional he trabajado tanto en la atención directa de pacientes como en la gestión de servicios de salud. Estas experiencias me permiten comprender que es importante tomar decisiones informadas y de utilizar adecuadamente la información disponible en contextos de incertidumbre.\nEn el ámbito clínico, una parte importante de mi trabajo está relacionada con la atención de personas con sobrepeso y obesidad. Esta experiencia despertó mi interés por la medicina basada en evidencia, la evaluación crítica de la información y el uso de datos para comprender mejor los problemas de salud que enfrentan los pacientes y las organizaciones.\nEn el ámbito administrativo participo activamente en iniciativas de educación y gestión sanitaria a través de la Corporación Médica COVSA, organización que impulsa proyectos de divulgación y transformación digital en salud. Entre ellos se encuentra Obesidad en Línea, un libro abierto desarrollado con Pollen/Racket, además de diversos recursos educativos dirigidos a pacientes y profesionales.\nDurante los últimos años he ampliado progresivamente mi interés hacia el análisis de datos, la programación y el pensamiento computacional. Este recorrido me ha llevado desde el análisis de información en salud y la inferencia bayesiana hasta la exploración de los paradigmas de programación, la programación funcional y la construcción de sistemas capaces de representar y manipular conocimiento.",
+    "crumbs": [
+      "Inicio",
+      "Sobre el autor"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html",
+    "href": "analysis/c00_proyectos.html",
+    "title": "Proyectos",
+    "section": "",
+    "text": "A lo largo de mi trayectoria profesional he participado en proyectos relacionados con salud, educación, análisis de datos y tecnología. Esta página reúne algunos de los proyectos más representativos en los que trabajo actualmente y que reflejan la intersección entre estas áreas."
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#análisis-de-datos-y-pensamiento-bayesiano",
+    "href": "analysis/c00_proyectos.html#análisis-de-datos-y-pensamiento-bayesiano",
+    "title": "Proyectos",
+    "section": "Análisis de datos y pensamiento bayesiano",
+    "text": "Análisis de datos y pensamiento bayesiano\n\nBayes para Obesidad\nSitio web: https://bayesparaobesidad.netlify.app/\nProyecto de aprendizaje y divulgación centrado en el análisis de datos relacionados con obesidad utilizando herramientas de ciencia de datos, programación en R e inferencia bayesiana. El objetivo es explorar cómo los modelos probabilísticos pueden ayudar a comprender mejor fenómenos complejos relacionados con la salud.\n\n\nDecisiones Bajo Incertidumbre\nSitio web: https://bayesparadecisiones.netlify.app/\nLibro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos desarrollados en R. El proyecto está orientado a profesionales interesados en utilizar herramientas cuantitativas para razonar en contextos donde la información es incompleta.\n\n\nBusiness Analytics Bayesiano\nSitio web: https://bayes-blog.netlify.app/\nBlog dedicado al desarrollo práctico del análisis bayesiano aplicado a problemas de negocio. Los proyectos utilizan R y rstanarm para analizar situaciones relacionadas con ventas, marketing y comportamiento de clientes.\nEl blog trabaja con conjuntos de datos como Superstore, Telco Customer Churn y Marketing Campaign, utilizando modelos probabilísticos para explorar preguntas de negocio y comunicar los resultados de manera comprensible. El objetivo es mostrar cómo el pensamiento bayesiano puede convertirse en una herramienta práctica para tomar decisiones bajo incertidumbre."
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#programación-lenguajes-y-semántica",
+    "href": "analysis/c00_proyectos.html#programación-lenguajes-y-semántica",
+    "title": "Proyectos",
+    "section": "Programación, lenguajes y semántica",
+    "text": "Programación, lenguajes y semántica\n\nSemántica en acción\nSitio web: https://semantica-en-accion.netlify.app/\nLibro de aprendizaje sobre paradigmas de programación, inspirado en el curso CS3540 Programming Language Paradigms de Eugene Wallingford y adaptado con ejemplos y problemas relacionados con el contexto de las ciencias de la salud.\nEl proyecto explora conceptos de programación, interpretación y semántica de lenguajes de programación de manera progresiva. Como parte de su desarrollo se construye un pequeño motor semántico sobre un lenguaje Datalog, utilizando estos conceptos como puente entre la programación y el razonamiento sobre datos."
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#educación-y-divulgación-en-salud",
+    "href": "analysis/c00_proyectos.html#educación-y-divulgación-en-salud",
+    "title": "Proyectos",
+    "section": "Educación y divulgación en salud",
+    "text": "Educación y divulgación en salud\n\nObesidad en Línea\nSitio web: https://obesidadenlinea.rf.gd/\nLibro abierto desarrollado con Pollen y Racket que aborda temas relacionados con obesidad, nutrición, metabolismo y medicina basada en evidencia. El proyecto busca acercar información científica a pacientes y profesionales de una forma accesible.\n\n\nCorporación Médica COVSA\nBlog: https://corporacioncovsa.blogspot.com/\nOrganización orientada al desarrollo de proyectos educativos y de salud digital. A través de esta iniciativa se han impulsado actividades de divulgación, presencia digital para profesionales de la salud y herramientas tecnológicas para mejorar la comunicación con pacientes.\nSitio web:"
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#salud-digital-y-desarrollo-web",
+    "href": "analysis/c00_proyectos.html#salud-digital-y-desarrollo-web",
+    "title": "Proyectos",
+    "section": "Salud digital y desarrollo web",
+    "text": "Salud digital y desarrollo web\n\nMás Pacientes\nSitio web: https://maspacientes.kesug.com/\nProyecto orientado a ayudar a médicos y profesionales de la salud a desarrollar su presencia digital mediante sitios web, estrategias de contenido y sistemas de gestión de pacientes basados en WordPress.\n\n\nRegeneris Plasma\nSitio web: https://regenerisplasma.kesug.com/\nSitio web desarrollado para la promoción de servicios relacionados con medicina regenerativa y terapias biológicas.\n\n\nVital Suero\nSitio web: https://vitalsuero.kesug.com/\nProyecto de presencia digital orientado a servicios de sueroterapia y bienestar, desarrollado utilizando herramientas modernas de gestión de contenidos."
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#tecnologías-y-herramientas",
+    "href": "analysis/c00_proyectos.html#tecnologías-y-herramientas",
+    "title": "Proyectos",
+    "section": "Tecnologías y herramientas",
+    "text": "Tecnologías y herramientas\nEntre las herramientas que utilizo con mayor frecuencia se encuentran:\n\nR y RStudio\nQuarto\nGit y GitHub\nPython\nHTML y CSS\nBootstrap\nWordPress\nSQL\nPollen y Racket\nrstanarm\nInteligencia Artificial aplicada a productividad, programación y análisis de datos"
+  },
+  {
+    "objectID": "analysis/c00_proyectos.html#en-desarrollo",
+    "href": "analysis/c00_proyectos.html#en-desarrollo",
+    "title": "Proyectos",
+    "section": "En desarrollo",
+    "text": "En desarrollo\nActualmente continúo explorando la intersección entre salud, análisis de datos, programación e inteligencia artificial. Mi objetivo es construir herramientas y recursos educativos que permitan comprender problemas complejos, experimentar con nuevas formas de programación y utilizar los datos como apoyo para tomar mejores decisiones en contextos de incertidumbre."
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html",
+    "href": "analysis/c00_prefacio.html",
+    "title": "Prefacio",
+    "section": "",
+    "text": "Aprender a programar suele comenzar con una pregunta aparentemente sencilla: ¿cómo escribimos instrucciones para que una computadora haga algo?\nPero, a medida que avanzamos, aparece una pregunta mucho más interesante:\n¿cómo podemos expresar una idea de manera que una máquina pueda interpretarla, transformarla y razonar sobre ella?\nEste libro nace de esa segunda pregunta.\nSu punto de partida es el estudio de los paradigmas de programación. En lugar de aprender un lenguaje particular como una colección de instrucciones, la propuesta es explorar diferentes maneras de pensar sobre los programas: cómo representamos información, cómo describimos procesos, cómo construimos abstracciones y cómo podemos dar significado a las expresiones que escribimos.\nEl recorrido está inspirado en buena medida en el enfoque pedagógico del curso CS3540 – Programming Language Paradigms, desarrollado por Eugene Wallingford. Sin embargo, el material ha sido adaptado, reorganizado y ampliado para construir un recorrido propio, incorporando ejemplos y problemas relacionados con un área particularmente cercana a mi experiencia: las ciencias de la salud.\nPor esta razón, a lo largo del libro aparecerán variables y conceptos que pueden resultar familiares para quienes trabajan con datos médicos: índice de masa corporal, diabetes, hipertensión, glucosa, hemoglobina glicosilada, resistencia a la insulina, HOMA-IR, síndrome metabólico y otras variables relacionadas con obesidad y enfermedades crónicas.\nEstos ejemplos no pretenden convertir el libro en un tratado de medicina ni en un manual de análisis clínico. Su función es otra: proporcionar un contexto suficientemente rico para preguntarnos cómo una computadora puede representar hechos, expresar relaciones y manipular conocimiento.\nY esto nos lleva progresivamente hacia el objetivo final del proyecto.",
+    "crumbs": [
+      "Inicio",
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html#de-los-paradigmas-a-la-semántica",
+    "href": "analysis/c00_prefacio.html#de-los-paradigmas-a-la-semántica",
+    "title": "Prefacio",
+    "section": "De los paradigmas a la semántica",
+    "text": "De los paradigmas a la semántica\nUna de las ideas que atraviesa el libro es que un programa no es solamente una secuencia de instrucciones.\nUn programa tiene una estructura y, sobre todo, tiene un significado.\nPodemos escribir una expresión, analizar su sintaxis y construir estructuras que representen aquello que hemos escrito. Pero eventualmente surge una pregunta fundamental:\n\n¿Qué significa realmente esta expresión?\n\nResponderla nos lleva desde la programación hacia la semántica de los lenguajes.\nA lo largo de los capítulos iremos construyendo las piezas necesarias para comenzar a responder esta pregunta. Exploraremos diferentes paradigmas, trabajaremos con funciones y estructuras de datos, construiremos pequeños intérpretes y examinaremos cómo una representación puede transformarse en otra hasta llegar a producir un resultado con significado.\nLa intención no es construir un lenguaje de programación industrial. Tampoco pretende ser una implementación completa de Prolog o Datalog.\nLa meta es deliberadamente más pequeña.\nConstruir algo que podamos entender.",
+    "crumbs": [
+      "Inicio",
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html#racket-como-laboratorio",
+    "href": "analysis/c00_prefacio.html#racket-como-laboratorio",
+    "title": "Prefacio",
+    "section": "Racket como laboratorio",
+    "text": "Racket como laboratorio\nTodo el recorrido práctico del libro se desarrolla utilizando Racket, un lenguaje especialmente apropiado para experimentar con ideas relacionadas con lenguajes de programación, intérpretes y semántica.\nUna de las ventajas de este enfoque es su sencillez. Para seguir los ejemplos y ejecutar los programas del libro no necesitamos construir un entorno complejo ni instalar una colección de herramientas adicionales.\nSolamente necesitamos Racket estándar.\nEsto permite que el lector concentre su atención en las ideas que estamos estudiando y no en la configuración del entorno de desarrollo.\nRacket funcionará aquí como nuestro pequeño laboratorio.\nEn lugar de limitarnos a hablar sobre funciones, estructuras, intérpretes o lenguajes, podremos escribirlos, ejecutarlos, modificarlos y observar directamente qué ocurre.",
+    "crumbs": [
+      "Inicio",
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html#un-pequeño-lenguaje-para-razonar",
+    "href": "analysis/c00_prefacio.html#un-pequeño-lenguaje-para-razonar",
+    "title": "Prefacio",
+    "section": "Un pequeño lenguaje para razonar",
+    "text": "Un pequeño lenguaje para razonar\nEn la parte final del recorrido aparece una idea especialmente interesante: los lenguajes basados en hechos y reglas.\nPodemos representar algo tan sencillo como:\n\nuna persona tiene cierto valor de glucosa;\nuna persona presenta hipertensión;\nuna persona tiene un determinado índice de masa corporal;\nciertas condiciones están relacionadas mediante una regla.\n\nA partir de estos hechos podemos comenzar a formular preguntas.\nSi conocemos determinados hechos y tenemos determinadas reglas, ¿podemos obtener una nueva conclusión?\nEse cambio de perspectiva es importante.\nYa no estamos simplemente calculando un resultado mediante una serie de instrucciones. Estamos describiendo conocimiento y permitiendo que un sistema determine qué consecuencias pueden derivarse de ese conocimiento.\nPor eso, hacia el final del libro construiremos un pequeño lenguaje inspirado en Datalog/Prolog y, sobre él, un pequeño motor semántico capaz de interpretar hechos y reglas.\nEl motor será pequeño. El lenguaje será pequeño. Y precisamente por eso podremos observar con claridad cómo funcionan sus componentes.",
+    "crumbs": [
+      "Inicio",
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html#aprender-construyendo",
+    "href": "analysis/c00_prefacio.html#aprender-construyendo",
+    "title": "Prefacio",
+    "section": "Aprender construyendo",
+    "text": "Aprender construyendo\nEste libro está pensado para ser recorrido de manera progresiva.\nNo es necesario comenzar sabiendo construir intérpretes, motores semánticos o lenguajes lógicos. De hecho, buena parte del propósito del libro consiste en descubrir que estas ideas pueden construirse a partir de piezas mucho más sencillas.\nCada concepto nuevo intenta apoyarse en los anteriores.\nPrimero aprendemos a pensar en términos de paradigmas. Después examinamos cómo se representan los programas y cómo pueden interpretarse. Poco a poco aparecen conceptos de mayor nivel de abstracción hasta llegar a la construcción de nuestro pequeño sistema semántico.\nLos ejemplos médicos cumplen además una segunda función: recordar que los lenguajes de programación no existen aislados de los problemas que queremos resolver.\nPodemos estudiar una función utilizando una variable llamada x, pero también podemos estudiar la misma idea utilizando glucose, BMI, HbA1c o HOMA_IR.\nLa programación sigue siendo la misma.\nLo que cambia es el mundo que estamos intentando representar.",
+    "crumbs": [
+      "Inicio",
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "analysis/c00_prefacio.html#una-invitación",
+    "href": "analysis/c00_prefacio.html#una-invitación",
+    "title": "Prefacio",
+    "section": "Una invitación",
+    "text": "Una invitación\nEste libro no pretende ofrecer la última palabra sobre paradigmas de programación, lenguajes o semántica.\nEs, más bien, una invitación a experimentar.\nA mirar un programa no solamente como algo que produce una salida, sino como una representación de ideas.\nA preguntarnos qué significa una expresión.\nA construir pequeños lenguajes en lugar de utilizarlos únicamente.\nY, finalmente, a descubrir que detrás de conceptos que inicialmente parecen abstractos —paradigmas, interpretación, semántica, reglas y derivación— existen mecanismos que podemos construir, ejecutar y comprender utilizando únicamente Racket y nuestra curiosidad.\nEl objetivo final no es solamente terminar con un pequeño motor semántico funcionando.\nEl verdadero objetivo es llegar a comprender por qué funciona.\nY quizá, al terminar el recorrido, podamos volver a la pregunta inicial con una perspectiva diferente.\nProgramar no consiste únicamente en decirle a una computadora qué hacer.\nTambién consiste en encontrar formas precisas de representar lo que pensamos.",
+    "crumbs": [
+      "Inicio",
+      "Prefacio"
+    ]
   }
 ]

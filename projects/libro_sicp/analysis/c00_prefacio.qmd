@@ -1,0 +1,122 @@
+---
+title: "Prefacio"
+format: html
+editor: visual
+---
+
+Aprender a programar suele comenzar con una pregunta aparentemente sencilla: ¿cómo escribimos instrucciones para que una computadora haga algo?
+
+Pero, a medida que avanzamos, aparece una pregunta mucho más interesante:
+
+**¿cómo podemos expresar una idea de manera que una máquina pueda interpretarla, transformarla y razonar sobre ella?**
+
+Este libro nace de esa segunda pregunta.
+
+Su punto de partida es el estudio de los **paradigmas de programación**. En lugar de aprender un lenguaje particular como una colección de instrucciones, la propuesta es explorar diferentes maneras de pensar sobre los programas: cómo representamos información, cómo describimos procesos, cómo construimos abstracciones y cómo podemos dar significado a las expresiones que escribimos.
+
+El recorrido está inspirado en buena medida en el enfoque pedagógico del curso **CS3540 – Programming Language Paradigms**, desarrollado por Eugene Wallingford. Sin embargo, el material ha sido adaptado, reorganizado y ampliado para construir un recorrido propio, incorporando ejemplos y problemas relacionados con un área particularmente cercana a mi experiencia: **las ciencias de la salud**.
+
+Por esta razón, a lo largo del libro aparecerán variables y conceptos que pueden resultar familiares para quienes trabajan con datos médicos: índice de masa corporal, diabetes, hipertensión, glucosa, hemoglobina glicosilada, resistencia a la insulina, HOMA-IR, síndrome metabólico y otras variables relacionadas con obesidad y enfermedades crónicas.
+
+Estos ejemplos no pretenden convertir el libro en un tratado de medicina ni en un manual de análisis clínico. Su función es otra: proporcionar un contexto suficientemente rico para preguntarnos cómo una computadora puede **representar hechos, expresar relaciones y manipular conocimiento**.
+
+Y esto nos lleva progresivamente hacia el objetivo final del proyecto.
+
+## De los paradigmas a la semántica
+
+Una de las ideas que atraviesa el libro es que un programa no es solamente una secuencia de instrucciones.
+
+Un programa tiene una **estructura** y, sobre todo, tiene un **significado**.
+
+Podemos escribir una expresión, analizar su sintaxis y construir estructuras que representen aquello que hemos escrito. Pero eventualmente surge una pregunta fundamental:
+
+> ¿Qué significa realmente esta expresión?
+
+Responderla nos lleva desde la programación hacia la **semántica de los lenguajes**.
+
+A lo largo de los capítulos iremos construyendo las piezas necesarias para comenzar a responder esta pregunta. Exploraremos diferentes paradigmas, trabajaremos con funciones y estructuras de datos, construiremos pequeños intérpretes y examinaremos cómo una representación puede transformarse en otra hasta llegar a producir un resultado con significado.
+
+La intención no es construir un lenguaje de programación industrial. Tampoco pretende ser una implementación completa de Prolog o Datalog.
+
+La meta es deliberadamente más pequeña.
+
+**Construir algo que podamos entender.**
+
+## Racket como laboratorio
+
+Todo el recorrido práctico del libro se desarrolla utilizando **Racket**, un lenguaje especialmente apropiado para experimentar con ideas relacionadas con lenguajes de programación, intérpretes y semántica.
+
+Una de las ventajas de este enfoque es su sencillez. Para seguir los ejemplos y ejecutar los programas del libro no necesitamos construir un entorno complejo ni instalar una colección de herramientas adicionales.
+
+**Solamente necesitamos Racket estándar.**
+
+Esto permite que el lector concentre su atención en las ideas que estamos estudiando y no en la configuración del entorno de desarrollo.
+
+Racket funcionará aquí como nuestro pequeño laboratorio.
+
+En lugar de limitarnos a hablar sobre funciones, estructuras, intérpretes o lenguajes, podremos escribirlos, ejecutarlos, modificarlos y observar directamente qué ocurre.
+
+## Un pequeño lenguaje para razonar
+
+En la parte final del recorrido aparece una idea especialmente interesante: los lenguajes basados en hechos y reglas.
+
+Podemos representar algo tan sencillo como:
+
+* una persona tiene cierto valor de glucosa;
+* una persona presenta hipertensión;
+* una persona tiene un determinado índice de masa corporal;
+* ciertas condiciones están relacionadas mediante una regla.
+
+A partir de estos hechos podemos comenzar a formular preguntas.
+
+Si conocemos determinados hechos y tenemos determinadas reglas, ¿podemos obtener una nueva conclusión?
+
+Ese cambio de perspectiva es importante.
+
+Ya no estamos simplemente calculando un resultado mediante una serie de instrucciones. Estamos describiendo **conocimiento** y permitiendo que un sistema determine qué consecuencias pueden derivarse de ese conocimiento.
+
+Por eso, hacia el final del libro construiremos un pequeño lenguaje inspirado en **Datalog/Prolog** y, sobre él, un pequeño **motor semántico** capaz de interpretar hechos y reglas.
+
+El motor será pequeño. El lenguaje será pequeño. Y precisamente por eso podremos observar con claridad cómo funcionan sus componentes.
+
+## Aprender construyendo
+
+Este libro está pensado para ser recorrido de manera progresiva.
+
+No es necesario comenzar sabiendo construir intérpretes, motores semánticos o lenguajes lógicos. De hecho, buena parte del propósito del libro consiste en descubrir que estas ideas pueden construirse a partir de piezas mucho más sencillas.
+
+Cada concepto nuevo intenta apoyarse en los anteriores.
+
+Primero aprendemos a pensar en términos de paradigmas. Después examinamos cómo se representan los programas y cómo pueden interpretarse. Poco a poco aparecen conceptos de mayor nivel de abstracción hasta llegar a la construcción de nuestro pequeño sistema semántico.
+
+Los ejemplos médicos cumplen además una segunda función: recordar que los lenguajes de programación no existen aislados de los problemas que queremos resolver.
+
+Podemos estudiar una función utilizando una variable llamada `x`, pero también podemos estudiar la misma idea utilizando `glucose`, `BMI`, `HbA1c` o `HOMA_IR`.
+
+La programación sigue siendo la misma.
+
+Lo que cambia es el **mundo que estamos intentando representar**.
+
+## Una invitación
+
+Este libro no pretende ofrecer la última palabra sobre paradigmas de programación, lenguajes o semántica.
+
+Es, más bien, una invitación a experimentar.
+
+A mirar un programa no solamente como algo que produce una salida, sino como una representación de ideas.
+
+A preguntarnos qué significa una expresión.
+
+A construir pequeños lenguajes en lugar de utilizarlos únicamente.
+
+Y, finalmente, a descubrir que detrás de conceptos que inicialmente parecen abstractos —paradigmas, interpretación, semántica, reglas y derivación— existen mecanismos que podemos construir, ejecutar y comprender utilizando únicamente Racket y nuestra curiosidad.
+
+El objetivo final no es solamente terminar con un pequeño motor semántico funcionando.
+
+El verdadero objetivo es llegar a comprender **por qué funciona**.
+
+Y quizá, al terminar el recorrido, podamos volver a la pregunta inicial con una perspectiva diferente.
+
+Programar no consiste únicamente en decirle a una computadora qué hacer.
+
+También consiste en encontrar formas precisas de **representar lo que pensamos**.

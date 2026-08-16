@@ -23,6 +23,8 @@ website:
     style: "docked"
     contents: 
       - index.qmd
+      - analysis/c00_prefacio.qmd
+      - analysis/c00_sobre_el_autor.qmd
       # Nota: los comentarios van después de la almohadilla o numeral 
       #- analysis/c00_prefacio.qmd
       #- analysis/c00_sobre_el_autor.qmd
