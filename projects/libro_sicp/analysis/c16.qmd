@@ -1,5 +1,5 @@
 ---
-title: "16. Abstracción Sintáctica y Variables Locales"
+title: "16. Abstracción Sintáctica"
 format: html
 editor: visual
 ---

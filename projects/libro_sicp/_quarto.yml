@@ -53,6 +53,8 @@ website:
         #href: analysis/m03.qmd
         contents:
         - analysis/c16.qmd
+        - analysis/c17.qmd
+        - analysis/c18.qmd
       #- section: "PARTE IV — ABSTRACCIÓN DE DATOS."
         #href: analysis/m04.qmd
         #contents: 

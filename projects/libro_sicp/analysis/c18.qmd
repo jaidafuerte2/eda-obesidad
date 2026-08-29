@@ -1,0 +1,544 @@
+---
+title: "18. Referencias de Variables, Alcance (Scope) y Direcciones Léxicas"
+format: html
+editor: visual
+---
+
+## 1. Introducción y Reorganización del Compilador
+
+Hasta este punto en nuestro recorrido por los paradigmas de programación, hemos descubierto que muchas de las construcciones que utilizamos a diario en el código no son elementos fundamentales del lenguaje, sino **abstracciones sintácticas** ("azúcar sintáctica") diseñadas para hacerle la vida más amable al programador.
+
+En la sesión anterior desarmamos las expresiones `let` para demostrar que no son más que invocaciones implícitas de funciones `lambda`. Para procesar esta transformación de manera sistemática, introdujimos la idea de un **preprocesador**.
+
+```
+[ Programa Fuente en Lenguaje Completo ]
+                   │
+                   ▼
+            ( Preprocesador )
+                   │
+                   ▼
+  [ Programa Fuente en Lenguaje Núcleo ]
+                   │
+                   ▼
+              ( Compilador )
+                   │
+                   ▼
+       [ Programa en Lenguaje Máquina ]
+
+```
+
+> **Analogía Clínica:** Piensa en el preprocesador como el servicio de Triage Administrativo en Urgencias. El paciente (tu código) llega expresando sus síntomas en lenguaje natural o con terminología heterogénea ("me duele la boca del estómago"). El triage traduce esa descripción a una nomenclatura estandarizada CIE-11 / SNOMED CT antes de que el médico especialista (el compilador/intérprete) tome decisiones. El especialista no necesita aprender cada dialecto del paciente; solo opera sobre el núcleo estandarizado.
+
+A través de este proceso de "desazucarado", hemos descubierto que el núcleo esencial de un lenguaje es sorprendentemente pequeño:
+
+* Formas condicionales avanzadas $\rightarrow$ condicionales primitivos.
+
+
+* Funciones con múltiples argumentos $\rightarrow$ funciones unarias encadenadas (currificación).
+
+
+* Operadores lógicos complejos $\rightarrow$ expresiones `if` anidadas.
+
+
+* Variables y funciones locales $\rightarrow$ expresiones `lambda`.
+
+
+
+Hoy daremos un paso más radical y contraintuitivo: **demostraremos que los propios nombres de las variables son azúcar sintáctica**.
+
+---
+
+## 2. El Límite de las Funciones Locales con `let`
+
+Como aprendimos anteriormente, al definir funciones locales mediante expresiones `let`, aprovechamos que en Racket los nombres de las funciones son ciudadanos de primera clase (*first-class values*).
+
+Por ejemplo, para invertir pares de datos biomédicos (transformar `(altura . peso)` a `(peso . altura)`), podemos declarar una función auxiliar local `swap`:
+
+```racket
+#lang racket
+
+(define (invert list-of-pairs)
+  (let ((swap (lambda (pair)
+                (list (cdr pair) (car pair)))))
+    (map swap list-of-pairs)))
+
+```
+
+Esto funciona impecablemente porque `swap` se aplica sobre cada elemento de manera independiente. Sin embargo, analicemos el siguiente problema de análisis de datos: necesitamos encontrar la posición (índice base 0) de un marcador metabólico o paciente en una lista.
+
+Si intentamos estructurar `list-index` con un acumulador de conteo utilizando `let`, nos topamos con un muro:
+
+```racket
+;; Intento de función local recursiva con `let`
+(define (list-index target los)
+  (let ((list-index-counted 
+          (lambda (los count)
+            (if (null? los)
+                -1
+                (if (eq? target (first los))
+                    count
+                    ;; ¡ERROR! list-index-counted NO está en alcance aquí
+                    (list-index-counted (rest los) (add1 count)))))))
+    (list-index-counted los 0)))
+
+```
+
+> **¿Por qué falla este código?**
+> La región de evaluación de las variables declaradas en un `let` es únicamente el **cuerpo** del `let`, no la sección donde se definen los valores iniciales de las variables. Por tanto, la llamada recursiva a `list-index-counted` dentro de la `lambda` intenta referenciar un nombre que aún no existe en su alcance léxico.
+> 
+> 
+
+Para solucionar esto de forma limpia sin recurrir a funciones auxiliares globales, más adelante necesitaremos construcciones especiales para recursión local como `letrec`.
+
+---
+
+## 3. Alcance Estático, Estructura en Bloques y Enmascaramiento (Shadowing)
+
+### Conceptos Clave
+
+* **Región (Region) / Alcance (Scope):** Es el fragmento del texto del programa donde la declaración de una variable es visible y válida. Si este alcance se puede determinar analizando el código en tiempo de compilación (sin ejecutarlo), decimos que el lenguaje tiene **alcance estático o léxico** (*lexical scoping*).
+
+
+* **Estructura en Bloques (Block Structure):** Ocurre cuando los entornos de declaración pueden anidarse unos dentro de otros.
+
+
+* **Agujero en el Alcance (Hole in scope) y Enmascaramiento (Shadowing):** Ocurre cuando una variable declarada en un bloque interno utiliza el mismo nombre que una variable de un bloque externo. La declaración interna "eclipsa" o enmascara a la externa, creando un "agujero" en la región de la variable externa donde esta no puede ser accedida.
+
+
+
+> **Analogía Médica:** Imagina un Protocolo General de Tratamiento para Hipertensión en la planta de Medicina Interna de un hospital (`prescripcion = Enalapril 10mg`). Sin embargo, en la Unidad de Cuidados Intensivos (un bloque anidado), existe un Protocolo Específico de UCI que define localmente `prescripcion = Nitroglicerina IV`. Mientras el médico trabaje dentro del bloque de la UCI, la variable `prescripcion` evaluará a Nitroglicerina; la norma general de la planta queda *eclipsada* (shadowed). Al salir de la UCI y regresar a la planta general, la variable vuelve a evaluar a Enalapril.
+
+### Comparación de Bloques: Racket vs. C/Java
+
+Analicemos cómo funciona el enmascaramiento de variables a través de diferentes lenguajes utilizando los ejemplos de nuestro repositorio.
+
+#### En Racket (`ScopeDemo.rkt` y ejercicio inicial)
+
+:
+
+```racket
+#lang racket
+
+(define (ex)
+  (let ((x 3) (y 4))                           ;; Bloque 0: x=3, y=4
+    (+ (let ((z 5)                             ;; Bloque 1
+             (x (* 3 y)))                      ;; x usa x del Bloque 0 (3) -> x = 9
+         (+ (* x y) z))                        ;; (* 9 4) + 5 = 41
+
+       (let ((x 6)                             ;; Bloque 2: x=6 (eclipsa x=3)
+             (w (- x y)))                      ;; w usa x del Bloque 0 (3) -> w = 3 - 4 = -1
+         (+ (* x w) y)))))                     ;; (* 6 -1) + 4 = -2 -> Total: 41 + (-2) = 39
+
+(ex) ;; Evalúa a 51 en la versión con valores de constantes
+
+```
+
+Evaluemos el bloque imperativo equivalente en C / Java:
+
+#### En C (`ScopeDemo.c`)
+
+:
+
+```c
+#include <stdio.h>
+
+int main() {
+    // Bloque 1
+    int x = 4;
+    int y = 0;
+
+    {
+        // Bloque 2 (Anidado)
+        int x = 3;         // Eclipsa al 'x' del Bloque 1
+        int z = x + 1;     // z = 3 + 1 = 4
+        printf("x = %d     z = %d\n", x, z); // Imprime: x = 3     z = 4
+    }
+
+    y = x + 1;             // Usa el 'x' del Bloque 1 (4) -> y = 5
+    printf("x = %d     y = %d\n", x, y);     // Imprime: x = 4     y = 5
+}
+
+```
+
+Nótese cómo en el Bloque 2, el entero `x = 3` oculta completamente al `x = 4` del Bloque 1. Sin embargo, la variable `y` declarada en el Bloque 1 sigue siendo accesible dentro del Bloque 2 porque no fue redescrita.
+
+---
+
+## 4. Direcciones Léxicas (Lexical Addressing)
+
+Si analizamos detenidamente los bloques anteriores, observaremos algo fascinante: **los nombres de las variables son arbitrarios**. Si cambiamos el nombre de `x` por `glucosa_basal` o `edad`, el comportamiento del programa es exactamente el mismo, siempre que mantengamos las relaciones de alcance.
+
+Lo esencial para el motor de ejecución no es el nombre, sino **dónde** se declaró la variable y **a qué distancia de profundidad de bloques** nos encontramos de dicha declaración. De aquí nace el concepto de **Dirección Léxica**.
+
+### Estructura de una Dirección Léxica
+
+Representamos una dirección léxica mediante la tupla:
+
+$$\text{(variable : profundidad posición)}$$
+
+O formalmente en sintaxis de notación de dirección: `(v : d p)`.
+
+* **`v` (Variable):** El nombre original de la variable (conservado únicamente para depuración o lectura humana).
+
+
+* **`d` (Profundidad / Depth):** Un contador basado en cero ($0, 1, 2, \dots$) que indica **cuántos límites de bloques (o `lambda`s)** debemos cruzar hacia afuera para encontrar la declaración de la variable.
+
+
+* **`p` (Posición / Position):** Un contador basado en cero ($0, 1, 2, \dots$) que indica el lugar que ocupa la variable en la lista de parámetros o declaraciones de dicho bloque.
+
+
+
+> **Conexión Datalog / Motor Semántico NHANES:**
+> Cuando diseñes un motor semántico para procesar reglas lógicas sobre NHANES (por ejemplo: `diabetico(P) :- glucosa(P, G), G > 126`), el evaluador no debe gastar ciclos comparando cadenas de texto (`"P"`, `"G"`) repetidamente. Los motores de reglas optimizados convierten las reglas a **Índices de De Bruijn** o direcciones léxicas. De este modo, el motor resuelve las unificaciones mediante saltos directos en memoria (índices de arreglos), incrementando la velocidad de consulta sobre millones de registros biomédicos.
+
+### Ejercicio Guiado Paso a Paso
+
+Analicemos la siguiente expresión con expresiones `lambda` anidadas:
+
+```racket
+(lambda (x y)            ;; Bloque 0: Parámetros en pos 0: x, pos 1: y
+  ((lambda (n)           ;; Bloque 1: Parámetro en pos 0: n
+     (x (n y)))          ;; Ocurrencias de variables
+   x))                   ;; Ocurrencia de x fuera del Bloque 1
+
+```
+
+Determinemos las direcciones léxicas de cada referencia de variable:
+
+1. **Línea 4 - Referencia `x` en `(x (n y))`:**
+* Estamos dentro del Bloque 1.
+
+
+* La declaración de `x` está en el Bloque 0.
+
+
+* Debemos cruzar **1** frontera de bloque (`lambda (n)`), por lo que la profundidad es $d = 1$.
+
+
+* En el Bloque 0, `x` es el primer parámetro (posición $p = 0$).
+
+
+* **Dirección Léxica:** `(x : 1 0)`.
+
+
+
+
+2. **Línea 4 - Referencia `n` en `(n y)`:**
+* Estamos dentro del Bloque 1.
+
+
+* La declaración de `n` está en el mismo Bloque 1.
+
+
+* Cruzamos **0** fronteras de bloque ($d = 0$).
+
+
+* `n` es el primer parámetro del Bloque 1 ($p = 0$).
+
+
+* **Dirección Léxica:** `(n : 0 0)`.
+
+
+
+
+3. **Línea 4 - Referencia `y` en `(n y)`:**
+* Declarada en Bloque 0, referenciada en Bloque 1 $\rightarrow$ profundidad $d = 1$.
+
+
+* En el Bloque 0, `y` es el segundo parámetro (posición $p = 1$).
+
+
+* **Dirección Léxica:** `(y : 1 1)`.
+
+
+
+
+4. **Línea 5 - Referencia `x` en `x` (argumento de la aplicación):**
+* Esta ocurrencia está en el Bloque 0 (fuera de `lambda (n)`).
+
+
+* Su declaración está en su mismo bloque $\rightarrow$ profundidad $d = 0$.
+
+
+* Posición de `x` en Bloque 0 $\rightarrow p = 0$.
+
+
+* **Dirección Léxica:** `(x : 0 0)`.
+
+
+
+
+
+Sustituyendo los nombres por sus direcciones léxicas, la expresión queda anotada de la siguiente forma:
+
+```racket
+(lambda (x y)
+  ((lambda (n)
+     ((x : 1 0) ((n : 0 0) (y : 1 1))))
+   (x : 0 0)))
+
+```
+
+---
+
+## 5. Eliminación Total de Nombres (De-Bruijn Indices en Acción)
+
+Si las direcciones léxicas ya identifican de forma unívoca a qué declaración pertenece cada variable, ¿qué pasa si eliminamos los nombres de los parámetros y de las referencias por completo?
+
+Reemplazamos la lista de parámetros por un simple número que represente la **aridad** (cantidad de argumentos requeridos por el bloque):
+
+```racket
+;; Expresión puramente léxica (sin nombres de variables)
+(lambda 2
+  ((lambda 1
+     ((: 1 0) ((: 0 0) (: 1 1))))
+   (: 0 0)))
+
+```
+
+¡El código sigue siendo 100% computable y mantiene exactamente la misma semántica!
+
+### Moraleja de Ingeniería de Software
+
+Los nombres de variables existen **exclusivamente para los seres humanos**. Escribe variables con nombres altamente descriptivos (p. ej., `paciente_id`, `nivel_insulina`) sabiendo que el intérprete o compilador los descartará al construir la representación interna.
+
+---
+
+## 6. Ejercicios Prácticos y Aplicados
+
+### Bloque A: Cálculo Mecánico de Direcciones Léxicas
+
+Encuentra la dirección léxica `(v : d p)` para cada ocurrencia de variable en las siguientes expresiones:
+
+#### Problema A1
+
+:
+
+```racket
+(lambda (f g)
+  (lambda (x)
+    (f (g x))))
+
+```
+
+#### Problema A2
+
+:
+
+```racket
+(lambda (x)
+  (lambda (y)
+    ((lambda (x)
+       (x y))
+     x)))
+
+```
+
+---
+
+### Bloque B: Reconstrucción Inversa
+
+A partir de las siguientes expresiones representadas en forma léxica sin nombres, escribe una expresión equivalente en Racket utilizando nombres de variables legibles:
+
+#### Problema B1
+
+:
+
+```racket
+(lambda 1
+  (lambda 1
+    (: 1 0)))
+
+```
+
+#### Problema B2
+
+:
+
+```racket
+(lambda 3
+  ((: 0 1)
+   ((lambda 2
+      ((: 0 0) (: 1 0) (: 0 1)))
+    (: 0 2))))
+
+```
+
+---
+
+### Bloque C: Escenario de Datos de Salud (NHANES)
+
+Imagina que estás construyendo la sintaxis abstracta para las reglas de tu motor Datalog sobre NHANES. Quieres verificar si las variables de un predicado están correctamente vinculadas (*bound*) o si son variables libres (*free*), calculando sus alcances dentro de reglas de filtrado anidadas.
+
+Considere la siguiente estructura en Racket que simula el filtrado de una cohorte metabólica:
+
+```racket
+#lang racket
+
+;; Definición del pipeline de filtrado de NHANES
+(define nhanes-filter-pipeline
+  (lambda (dataset min-edad)                  ;; Bloque 0: dataset (0,0), min-edad (0,1)
+    (lambda (paciente)                       ;; Bloque 1: paciente (1,0)
+      (let ((edad (car paciente))            ;; Para resolver ejercicios prácticos:
+            (glucosa (cdr paciente)))        ;; convierte los let a lambdas internamente
+        (and (>= edad min-edad)
+             (> glucosa 126))))))
+
+```
+
+
+
+
+
+---
+
+## Solución a los Ejercicios del Capítulo 18
+
+### Ejercicio 1: Cálculo de Direcciones Léxicas
+
+#### Problema A1
+**Código original:**
+```racket
+(lambda (f g)
+  (lambda (x)
+    (f (g x))))
+
+```
+
+**Forma léxica:**
+
+```racket
+(lambda 2
+  (lambda 1
+    ((: 1 0) ((: 1 1) (: 0 0)))))
+
+```
+
+#### Problema A2
+
+**Código original:**
+
+```racket
+(lambda (x)
+  (lambda (y)
+    ((lambda (x)
+       (x y))
+     x)))
+
+```
+
+**Forma léxica:**
+
+```racket
+(lambda 1
+  (lambda 1
+    ((lambda 1
+       ((: 0 0) (: 1 0)))
+     (: 1 0))))
+
+```
+
+---
+
+### Ejercicio 2: Traducción Inversa a Código con Nombres Legibles
+
+#### Problema B1
+
+**Forma léxica:**
+
+```racket
+(lambda 1
+  (lambda 1
+    (: 1 0)))
+
+```
+
+**Traducción en Racket:**
+
+```racket
+(lambda (a)
+  (lambda (b)
+    a))
+
+```
+
+#### Problema B2
+
+**Forma léxica:**
+
+```racket
+(lambda 3
+  ((: 0 1)
+   ((lambda 2
+      ((: 0 0) (: 1 0) (: 0 1)))
+    (: 0 2))))
+
+```
+
+**Traducción en Racket:**
+
+```racket
+(lambda (a b c)
+  (b
+   ((lambda (x y)
+      (x a y))
+    c)))
+
+```
+
+> **Explicación del desglose de direcciones para B2:**
+> 1. `(: 0 1)` en el bloque principal $\rightarrow$ posición 1 de `(a b c)` $\rightarrow$ **`b`**.
+> 2. `(: 0 2)` argumento de la aplicación $\rightarrow$ posición 2 de `(a b c)` $\rightarrow$ **`c`**.
+> 3. Dentro de `(lambda 2 ...)` (parámetros `x y`):
+> * `(: 0 0)` $\rightarrow$ profundidad 0, pos 0 $\rightarrow$ **`x`**.
+> * `(: 1 0)` $\rightarrow$ profundidad 1 (salta a `lambda 3`), pos 0 $\rightarrow$ **`a`**.
+> * `(: 0 1)` $\rightarrow$ profundidad 0, pos 1 $\rightarrow$ **`y`**.
+> 
+> 
+> 
+> 
+
+---
+
+### Ejercicio 3: Análisis Léxico en Pipeline de Datos NHANES
+
+**Expresión Desazucarada:**
+
+```racket
+(define nhanes-filter-pipeline-x
+  (lambda (dataset min-edad)                  ;; Bloque 0: dataset (pos 0), min-edad (pos 1)
+    (lambda (paciente)                        ;; Bloque 1: paciente (pos 0)
+      ((lambda (edad glucosa)                 ;; Bloque 2: edad (pos 0), glucosa (pos 1)
+         (and (>= edad min-edad)
+              (> glucosa 126)))
+       (car paciente)                         ;; Evaluado en Bloque 1
+       (cdr paciente)))))                     ;; Evaluado en Bloque 1
+
+```
+
+**Direcciones Léxicas en el Cuerpo Evaluador:**
+
+* **`edad`** $\rightarrow$ `(edad : 0 0)`
+* *Profundidad:* $0$ (declarada en el `lambda` inmediatamente superior, Bloque 2).
+* *Posición:* $0$ (primer parámetro).
+
+
+* **`glucosa`** $\rightarrow$ `(glucosa : 0 1)`
+* *Profundidad:* $0$ (declarada en el Bloque 2).
+* *Posición:* $1$ (segundo parámetro).
+
+
+* **`min-edad`** $\rightarrow$ `(min-edad : 2 1)`
+* *Profundidad:* $2$ (debemos cruzar el Bloque 2 y el Bloque 1 hasta llegar al Bloque 0).
+* *Posición:* $1$ (es el segundo parámetro en `(dataset min-edad)`).
+
+
+* **`paciente`** (en los argumentos de entrada `(car paciente)` / `(cdr paciente)`):
+* Dirección: `(paciente : 0 0)` dentro del contexto del Bloque 1.
+* *Nota:* Si se evaluase dentro del Bloque 2, su dirección sería `(paciente : 1 0)`.
+
+
+
+```
+
+```

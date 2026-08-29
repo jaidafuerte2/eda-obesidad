@@ -1,0 +1,479 @@
+---
+title: "17. Abstracción Sintáctica y Variables Locales"
+format: html
+editor: visual
+---
+
+## Introducción: Azúcar sintáctico en la clínica
+
+En la práctica médica diaria, a menudo usamos "azúcar sintáctico" sintácticamente conveniente sin darnos cuenta. Por ejemplo, cuando escribes en una ficha clínica *"Paciente de 54 años con HTA, DM2 y Síndrome Metabólico"*, estás usando un término compacto ("Síndrome Metabólico") que engloba un conjunto de reglas explícitas: circunferencia de cintura elevada, triglicéridos altos, HDL bajo, presión arterial elevada y glucosa en ayunas alterada.
+
+Para el personal de salud, esa "etiqueta corta" es una abstracción que ahorra espacio y facilita la comunicación. Sin embargo, el cuerpo humano no reacciona a la palabra "Síndrome Metabólico"; el cuerpo responde a nivel molecular, célula por célula, a los mecanismos fisiopatológicos subyacentes.
+
+En los lenguajes de programación ocurre exactamente lo mismo. Las variables locales creadas con `let` son como las etiquetas cortas en medicina. Para un programador o analista de datos escribir `let` es intuitivo y limpio. Pero para el motor del lenguaje (el intérprete o compilador), la estructura interna esencial no requiere de `let`: se reduce a la aplicación de funciones anónimas (`lambda`).
+
+> **Nota para el motor semántico / Datalog:**
+> Entender el concepto de **Abstracción Sintáctica** (*Syntactic Abstraction*) y **Desazucarado** (*Desugaring*) es vital si deseas construir un motor de reglas para NHANES. Si mantienes el lenguaje núcleo (*core*) lo más pequeño y riguroso posible, escribir reglas de inferencia sobre tus datos de glucosa e insulina será enormemente más fácil, ya que no tendrás que duplicar la lógica para cada adorno sintáctico que le agregues al lenguaje.
+> 
+> 
+
+---
+
+## El "Misterio" de `let`: Cuando la declaración local engaña
+
+Para comprender cómo funciona `let`, analicemos un dilema clásico que suele confundir a quienes vienen de otros lenguajes. Supongamos que estamos procesando un registro de datos de NHANES donde calculamos ciertos parámetros de un paciente a partir de una variable inicial $x = 13$.
+
+Observa este bloque en Racket:
+
+```racket
+(let ((x 13)
+      (y (+ 6 x))
+      (z x))
+  (- (+ x z) y))
+
+```
+
+Si vienes de lenguajes secuenciales (o si interpretas este código pensando que $x=13$ se declara "primero"), podrías asumir que al calcular $y = 6 + x$ Racket usará el valor $x = 13$ recién definido. Pero si intentas ejecutar este código, el intérprete te dará un error señalando que $x$ en `(+ 6 x)` es una variable libre no ligada (a menos que exista un $x$ previo fuera del `let`).
+
+¿Por qué ocurre esto?
+
+En Racket, las ligaduras (*bindings*) dentro de un mismo `let` no ocurren secuencialmente; se evalúan todas **en paralelo** en el ámbito (*scope*) externo al `let`. Para que $y$ y $z$ puedan "ver" a la variable $x$ definida localmente, debemos anidar explícitamente los ámbitos:
+
+```racket
+(let ((x 13))
+  (let ((y (+ 6 x))
+        (z x))
+    (- (+ x z) y)))
+
+```
+
+En este segundo caso, el bloque interno está dentro de la región donde $x=13$ ya es visible, permitiendo calcular $y = 6 + 13 = 19$ y $z = 13$, arrojando el resultado $(- (+ 13\ 13)\ 19) = 7$.
+
+---
+
+## La Revelación: `let` es solo una `lambda` disfrazada
+
+Para entender exactamente por qué `let` se comporta así sin aprender de memoria reglas arbitrarias, debemos recurrir a la **Semántica Traslacional** (*Translational Semantics*).
+
+Una expresión `let` es en realidad una forma elegante y "azucarada" de invocar inmediatamente una función `lambda`.
+
+La gramática formal (en Notación BNF) para un `let` de una sola ligadura es:
+
+```bnf
+<let-expression> ::= (let (<var> <exp>) <body>)
+
+```
+
+O en su versión multi-variable:
+
+```racket
+(let ((var_1 exp_1)
+      (var_2 exp_2)
+      ...
+      (var_n exp_n))
+  body)
+
+```
+
+Su **traducción exacta** al lenguaje núcleo es la siguiente aplicación de `lambda`:
+
+```racket
+((lambda (var_1 var_2 ... var_n)
+   body)
+ exp_1 exp_2 ... exp_n)
+
+```
+
+Si traducimos nuestro ejercicio anterior con esta regla de equivalencia, el "misterio" desaparece:
+
+```racket
+;; Ejercicio traducido a su forma lambda pura
+((lambda (x y z)
+   (- (+ x z) y))
+ 13
+ (+ 6 x)   ; <-- ¡Observa aquí! Este (+ 6 x) está FUERA de la lambda,
+ x)        ;     por eso no puede usar el parámetro x de la lambda.
+
+```
+
+¡Ahora es evidente! Los argumentos de una función se evalúan *antes* de entrar al cuerpo de la función. Por lo tanto, `(+ 6 x)` no puede usar la $x$ que se define como parámetro de la `lambda`. Esta demostración ilustra el poder de la abstracción sintáctica: **al traducir un concepto nuevo a primitivas que ya entendemos, su comportamiento queda perfectamente determinado**.
+
+---
+
+## Construyendo el Pre-procesador: De Lenguaje Completo a Lenguaje Núcleo
+
+En las ciencias de la computación —al igual que en el diseño de un motor sintáctico/semántico— tenemos dos opciones cuando queremos agregar una nueva funcionalidad:
+
+1. Modificar todas las herramientas existentes (`occurs-free?`, `occurs-bound?`, evaluadores, comprobadores de tipos, etc.) para que aprendan a procesar la nueva sintaxis.
+
+
+2. Escribir un **Pre-procesador** que tome el lenguaje completo (*full language*) con todo su azúcar sintáctico y lo reduzca al lenguaje núcleo (*core language*) antes de pasárselo a las herramientas.
+
+
+
+```
++---------------------------+                +---------------------------+                +-------------------------+
+|    Programa Fuente en     |  preprocessor  |    Programa Fuente en     |    compiler    |  Programa en Lenguaje   |
+|  *Lenguaje Completo*      | -------------> |      *Lenguaje Núcleo*    | -------------> |        de Máquina       |
++---------------------------+                +---------------------------+                +-------------------------+
+
+```
+
+### Paso 1: Extendiendo la Gramática y Procedimientos Sintácticos
+
+Supongamos que trabajamos con nuestro minilenguaje funcional que incluye referencias a variables, abstracciones `lambda`, aplicaciones y ahora la abstracción `let`:
+
+$$\text{Expresiones } \langle exp \rangle ::= \text{varref} \mid (\text{lambda } (\langle var \rangle) \ \langle exp \rangle) \mid (\langle exp \rangle \ \langle exp \rangle) \mid (\text{let } (\langle var \rangle \ \langle exp \rangle) \ \langle exp \rangle)$$
+
+Escribimos las funciones selectoras y constructoras para el `let`:
+
+```racket
+#lang racket
+(require "syntax-procs.rkt")
+
+;; Selectoras para let de una sola variable
+(define (let? exp)
+  (and (list? exp)
+       (= (length exp) 3)
+       (eq? 'let (first exp))
+       (binding? (second exp))
+       (exp? (third exp))))
+
+(define (binding? exp)
+  (and (list? exp)
+       (= (length exp) 2)
+       (varref? (first exp))
+       (exp? (second exp))))
+
+(define (let->var let-exp)
+  (first (second let-exp)))
+
+(define (let->val let-exp)
+  (second (second let-exp)))
+
+(define let->body third)
+
+(define (make-let var val body)
+  (list 'let (list var val) body))
+
+```
+
+### Paso 2: La Transformación Básica (`let->app`)
+
+Para una expresión de un solo nivel, la traducción es inmediata:
+
+```racket
+;; Traductor de nivel único
+(define (let->app let-exp)
+  (let ((var  (let->var  let-exp))
+        (val  (let->val  let-exp))
+        (body (let->body let-exp)))
+    (make-app (make-lambda var body)
+              val)))
+
+```
+
+### Paso 3: El Pre-procesador Recursivo  (`preprocess`)
+
+En aplicaciones reales de análisis de datos o en expresiones anidadas, un `let` puede contener otros `let` dentro del valor o dentro del cuerpo. Necesitamos recorrer todo el árbol sintáctico y "desazucarar" cada rincón:
+
+```racket
+(define (preprocess exp)
+  (cond
+    ; --- Abstracción sintáctica: desazucaramos let ---
+    ((let? exp) 
+     (let ((var  (let->var  exp))
+           (val  (let->val  exp))
+           (body (let->body exp)))
+       (make-app (make-lambda var (preprocess body))
+                 (preprocess val))))
+    
+    ; --- Características Núcleo (Core) ---
+    ((varref? exp) (make-varref exp))
+    
+    ((lambda? exp)
+     (make-lambda (lambda->param exp)
+                  (preprocess (lambda->body exp))))
+    
+    ((app? exp)
+     (make-app (preprocess (app->proc exp))
+               (preprocess (app->arg  exp))))
+    
+    (else (error 'preprocess "Expresión no válida: ~a" exp))))
+
+```
+
+### La Ventaja Táctica
+
+Imagina que deseas comprobar si la variable `'a` ocurre libre o ligada en una expresión compleja con variables locales. Nuestras funciones analíticas de la Session 12 (`occurs-free?` y `occurs-bound?`) **no tienen idea** de qué es un `let`.
+
+Sin embargo, en lugar de modificar `occurs-free?` y `occurs-bound?`, simplemente pasamos el código por el pre-procesador:
+
+```racket
+(define nested-let '(let (a x)
+                      (let (c (lambda (d) a))
+                        (c a))))
+
+;; Pre-procesamos la expresión para convertirla al lenguaje Core puro:
+(define core-exp (preprocess nested-let))
+
+;; ¡Las herramientas primitivas funcionan sin cambiarles una sola línea de código!
+(occurs-free? 'a core-exp)  ; Devuelve #t (x es una referencia libre externa)
+(occurs-bound? 'd core-exp) ; Devuelve #t
+
+```
+
+---
+
+## El Cuadro Completo: Abstracción Sintáctica en la Práctica
+
+Este patrón de diseño no es exclusivo de Racket ni de los Lisp; es omnipresente en la ingeniería de lenguajes de programación:
+
+* **List Comprehensions en Python:**
+
+
+Cuando escribes en Python una transformación sobre una cohorte de NHANES:
+```python
+pacientes_alto_riesgo = [p.id for p in pacientes if p.bmi > 30]
+
+```
+
+
+Python traduce internamente esa línea a un bucle tradicional con acumulador e `if` condicional. Es puramente azúcar sintáctico para que el analista escriba código más declarativo y legible.
+
+
+* **Funciones Locales:**
+
+
+En Racket, cuando declaras una función local dentro de un bloque `let`, estás asignando una abstracción `lambda` a una variable local. Las funciones son valores de primera clase, por lo que las funciones locales no requieren mecanismos especiales en el compilador.
+
+
+* **Operadores Lógicos (`and`, `or`):**
+
+
+Un condicional `(and A B)` no necesita una instrucción primitiva especial en la CPU. Se desazucara simplemente en un condicional `if`:
+```racket
+(if A B #f)
+
+```
+
+
+
+---
+
+## Ejercicios Prácticos y Aplicados a Salud
+
+### Bloque A: Fundamentos en Racket y Ámbitos de Variables
+
+#### Ejercicio 1: Extracción de variables en `let` múltiples
+
+Escribe una función `(let->vars let-exp)` que reciba una expresión `let` con múltiples ligaduras de la forma `(let ((v1 e1) (v2 e2) ...) body)` y retorne únicamente la lista con los nombres de las variables.
+*Pista:* Recuerda que puedes usar `map` y `second` sobre la lista de ligaduras.
+
+```racket
+;; Entrada:
+;; (let->vars '(let ((age 45) (bmi 31.2) (glucose 110)) (list age bmi glucose)))
+;; Salida esperada:
+;; '(age bmi glucose)
+
+```
+
+#### Ejercicio 2: Desazucarado manual a `lambda`
+
+Dado el siguiente bloque de cálculo de perfil lipídico en un paciente:
+
+```racket
+(let ((tc 240)
+      (hdl 40)
+      (trig 200))
+  (let ((ldl (- tc hdl (/ trig 5))))
+    (if (> ldl 130) 'elevado 'normal)))
+
+```
+
+Escribe a mano (o mediante una función) la traducción equivalente utilizando **únicamente** aplicaciones de funciones anónimas `lambda`.
+
+---
+
+### Bloque B: Aplicación al Dominio de Datos (NHANES & Motor Semántico)
+
+#### Ejercicio 3: Desazucarando Reglas Clinico-Epidemiológicas (Motor Datalog)
+
+En tu motor de reglas semánticas para la cohorte NHANES, quieres permitir que los epidemiólogos escriban macros sintácticas simplificadas para definir criterios de exclusión de pacientes.
+
+Supón que el usuario escribe la siguiente regla sintáctica para marcar un riesgo metabólico:
+
+```racket
+(regla-riesgo ((paciente p)
+               (bmi-limite 30)
+               (glucosa-limite 100))
+  (and (> (obtener-bmi p) bmi-limite)
+       (> (obtener-glucosa p) glucosa-limite)))
+
+```
+
+1. Diseña la función `(desazucarar-regla exp)` que convierta esa macro `regla-riesgo` en una aplicación de `lambda` pura que tu motor de inferencia básico pueda evaluar sin entender qué es `regla-riesgo`.
+
+
+2. ¿Por qué es estructuralmente más eficiente transformar estas macros a código primitivo antes de que el motor semántico consulte la base de datos de NHANES, en lugar de enseñarle al motor cómo evaluar `regla-riesgo` directamente?
+
+---
+
+## Soluciones a los Ejercicios del Capítulo 17: Variables Locales como Abstracción Sintáctica
+
+### Ejercicio 1: Extracción de Variables Locales (`let->vars`)
+
+#### Requerimiento
+Implementar la función `(let->vars let-exp)` que dada una expresión `let` válida retorne únicamente la lista con los nombres de las variables declaradas.
+
+#### Código y Pruebas
+```racket
+#lang racket
+(require rackunit)
+
+(define let1 '(let ((age 45) 
+                    (bmi 31.2)
+                    (glucose 110)) 
+                (list age bmi glucose)))
+
+(define (let->vars alet)
+  (let ((alob (second alet)))
+    (map first alob)))
+
+;; --- Prueba de Unidad ---
+(check-equal? (let->vars let1)
+              '(age bmi glucose))
+
+```
+
+> **Nota de Diseño:** Al extraer la lista de ligaduras con `second`, cada elemento individual es un par `(variable valor)`. Aplicar `(map first ...)` mapea directamente la proyección sobre la primera posición, aislando los identificadores de manera limpia y declarativa.
+
+---
+
+### Ejercicio 2: Desazucarado Manual de Perfil Lipídico
+
+#### Requerimiento
+
+Traducir el cálculo del perfil lipídico con `let` anidados a su forma equivalente utilizando únicamente aplicaciones de expresiones `lambda` puras.
+
+#### Código y Pruebas
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Verificación mediante evaluación directa de la lambda traducida:
+(check-equal? ((lambda (tc hdl trig)
+                 ((lambda (ldl)
+                    (if (> ldl 130) 'elevado 'normal))
+                  (- tc hdl (/ trig 5))))
+               240 40 200)
+              'elevado)
+
+```
+
+> **Análisis Clinico-Sintáctico:**
+> 1. La `lambda` externa recibe los valores basales del paciente: $\text{TC} = 240$, $\text{HDL} = 40$, $\text{Triglicéridos} = 200$.
+> 2. La `lambda` interna calcula la fórmula de Friedewald ($\text{LDL} = \text{TC} - \text{HDL} - \frac{\text{Trig}}{5} = 240 - 40 - 40 = 160$).
+> 3. Como $\text{LDL} = 160 > 130$, se evalúa la rama verdadera retornando `'elevado`. Esta demostración prueba que no requerimos la instrucción `let` en el intérprete para ejecutar evaluaciones de ámbitos locales anidados.
+> 
+> 
+
+---
+
+### Ejercicio 3: Transformación de Macros de Reglas (`desazucarar-regla`)
+
+#### Requerimiento
+
+Construir el pre-procesador `desazucarar-regla` que tome expresiones sintácticas de alto nivel `regla-riesgo` diseñadas para la cohorte NHANES y las traduzca a primitivas del lenguaje núcleo (`lambda`).
+
+#### Código del Pre-procesador
+
+```racket
+#lang racket
+(require rackunit)
+
+;; -----------------------------------------------------------------------------
+;; 1. Procedimientos Sintácticos Seleccionadores
+;; -----------------------------------------------------------------------------
+
+(define (let->vars let-exp)
+  (map first (second let-exp)))
+
+(define (let->vals let-exp)
+  (map second (second let-exp)))
+
+(define let->body third)
+
+;; -----------------------------------------------------------------------------
+;; 2. Función Transformadora (Desazucarador)
+;; -----------------------------------------------------------------------------
+
+(define (desazucarar-regla let-exp)
+  (let ((vars (let->vars let-exp))
+        (vals (let->vals let-exp))
+        (body (let->body let-exp)))
+    (cons (list 'lambda vars body)
+          vals)))
+
+```
+
+#### Pruebas de Unidad Automáticas (Suite Completa)
+
+```racket
+;; -----------------------------------------------------------------------------
+;; Pruebas de Validación
+;; -----------------------------------------------------------------------------
+
+;; Caso 1: Regla epidemiológica tri-variable (paciente, bmi, glucosa)
+(define regla-nhanes-1
+  '(regla-riesgo ((paciente p)
+                  (bmi-limite 30)
+                  (glucosa-limite 100))
+     (and (> (obtener-bmi paciente) bmi-limite)
+          (> (obtener-glucosa paciente) glucosa-limite))))
+
+(check-equal? (let->vars regla-nhanes-1)
+              '(paciente bmi-limite glucosa-limite))
+
+(check-equal? (let->vals regla-nhanes-1) 
+              '(p 30 100))
+
+(check-equal? (desazucarar-regla regla-nhanes-1)
+              '((lambda (paciente bmi-limite glucosa-limite)
+                  (and (> (obtener-bmi paciente) bmi-limite)
+                       (> (obtener-glucosa paciente) glucosa-limite)))
+                p 30 100))
+
+;; Caso 2: Filtro bi-variable por punto de corte de edad
+(define regla-nhanes-2
+  '(regla-riesgo ((edad e)
+                  (corte-edad 65))
+     (>= edad corte-edad)))
+
+(define resultado-esperado-2
+  '((lambda (edad corte-edad)
+      (>= edad corte-edad))
+    e 65))
+
+(check-equal? (desazucarar-regla regla-nhanes-2)
+              resultado-esperado-2)
+
+;; Caso 3: Evaluación uni-variable para hemoglobina glicosilada (HbA1c)
+(define regla-nhanes-3
+  '(regla-riesgo ((hba1c val))
+     (> hba1c 6.5)))
+
+(define resultado-esperado-3
+  '((lambda (hba1c)
+      (> hba1c 6.5))
+    val))
+
+(check-equal? (desazucarar-regla regla-nhanes-3)
+              resultado-esperado-3)
+
+```
+
+> **Por qué esto es vital para un Motor Datalog/Semántico:**
+> Al separar la **sintaxis de entrada** (orientada al usuario/epidemiólogo) del **lenguaje de ejecución interno**, mantienes el núcleo de tu motor semántico extremadamente simple. El motor de inferencia únicamente necesita saber evaluar aplicaciones de funciones `lambda` y emparejamiento de patrones básico. Cualquier nueva regla clínica que inventes en el futuro solo requerirá un desazucarador previo, evitando modificar el motor de inferencia principal.
+
