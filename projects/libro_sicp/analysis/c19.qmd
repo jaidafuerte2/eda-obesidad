@@ -1,0 +1,395 @@
+---
+title: "19. Automatizando la Dirección Léxica (De Nombres a Coordenadas de Servidor)"
+format: html
+editor: visual
+---
+
+## 1. Introducción: De Nombres Complejos a Coordenadas de Expediente
+
+Imagina que estás gestionando un hospital multi-centro para un estudio de cohorte sobre obesidad y síndrome metabólico. Cuando un médico anota en una hoja flotante el término `"glucosa"`, esa palabra por sí sola es ambigua. ¿Se refiere a la `glucosa` tomada en la admisión en urgencias, a la `glucosa` del perfil en ayunas del laboratorio central, o a la `glucosa` registrada en el módulo de seguimiento de NHANES?
+
+Para resolver qué dato exacto se está consultando, el sistema de información del hospital no busca el texto `"glucosa"` en toda la base de datos cada vez que ejecuta un cálculo. Eso sería ridículamente lento. En su lugar, el sistema traduce esa referencia textual a una **coordenada física fija**: *"sube 2 pisos (profundidad) y abre el cajón 0 (posición)"*.
+
+En las sesiones anteriores descubrimos que las variables en un programa son pura **azúcar sintáctica** para los humanos. Para el motor de ejecución (o para tu futuro **motor semántico / Datalog**), mantener los nombres de las variables durante la ejecución es una carga innecesaria. En esta sesión dejaremos de calcular direcciones léxicas "a ojo" y construiremos un procesador en Racket que toma código fuente y reemplaza automáticamente cada variable por sus coordenadas léxicas precisas: `(variable : profundidad posición)`.
+
+> **Reflexión para tu motor Datalog:**
+> En un motor de inferencia lógica basado en reglas (como Datalog), el unificador no quiere comparar cadenas de texto como `"SEMB-2024-paciente"`. Lo que hace es compilar las reglas sustituyendo los nombres de variables por índices estáticos de pila o registros de tupla. Lo que aprenderemos hoy a nivel de AST (Árbol de Sintaxis Abstracta) es la base para indexar y resolver reglas lógicas de manera ultraeficiente.
+
+---
+
+## 2. Calentamiento: Anatomía de la Dirección Léxica en Bloques Anidados
+
+Antes de escribir el código del autómata, aseguremos la intuición. Analicemos la estructura de un bloque de código observándolo **de adentro hacia afuera** (desde la perspectiva de la variable cuando se usa):
+
+```scheme
+(lambda (f)
+  ((lambda (h)
+     (lambda (n)
+       ((f (h h)) n)))
+   (lambda (h)
+     (lambda (n)
+       ((f (h h)) n)))))
+
+```
+
+Este fragmento contiene 5 expresiones `lambda` (es decir, 5 bloques o ámbitos de variables localizadas). Si nos paramos en la instrucción `((f (h h)) n)` del primer bloque interno:
+
+1. `n` fue declarada en el bloque actual (`(lambda (n) ...)`). Profundidad = `0`. Posición en la lista de parámetros = `0` (es la primera). Coordenada: `(n : 0 0)`.
+
+
+2. `h` fue declarada 1 nivel más arriba (`(lambda (h) ...)`). Profundidad = `1`. Posición = `0`. Coordenada: `(h : 1 0)`.
+
+
+3. `f` fue declarada 2 niveles más arriba (`(lambda (f) ...)`). Profundidad = `2`. Posición = `0`. Coordenada: `(f : 2 0)`.
+
+
+
+El código anotado queda así:
+
+```scheme
+(lambda (f)
+  ((lambda (h)
+     (lambda (n)
+       (((f : 2 0) ((h : 1 0) (h : 1 0))) (n : 0 0))))
+   (lambda (h)
+     (lambda (n)
+       (((f : 2 0) ((h : 1 0) (h : 1 0))) (n : 0 0))))))
+
+```
+
+Si borramos los nombres de los parámetros y solo dejamos la estructura y las coordenadas, el motor de ejecución sigue sabiendo perfectamente a qué dato acceder.
+
+---
+
+## 3. Arquitectura del Algoritmo: Un Procesador Léxico mediante Recursión Estructural
+
+Para construir nuestra función `lexical-address`, primero definamos la gramática del lenguaje que procesaremos (expresada en BNF):
+
+```
+<exp> ::= <varref>
+        | (lambda (<var>*) <exp>)   ; Funciones con 0 o más parámetros
+        | (<exp> <exp>*)            ; Aplicaciones con 0 o más argumentos
+        | (if <exp> <exp> <exp>)    ; Expresión condicional clásica
+
+```
+
+### El manejo de las variables libres (Top-Level)
+
+En Racket usamos funciones primitivas como `cons`, `eq?`, `+` o variables globales de NHANES como `bmi` o `hba1c`. Estas variables no están declaradas dentro de ningún `lambda` local; son **variables libres**.
+
+Para no romper el cálculo de direcciones, asumiremos que todas las variables libres de la expresión están "atrapadas" en un gran ámbito global o *Top-Level*.
+
+### Las herramientas de nuestro laboratorio
+
+Para construir el transformador, nos apoyaremos en los módulos provistos en el curso:
+
+* `syntax-procs.rkt`: Capa de abstracción sintáctica (`lambda?`, `lambda->params`, `make-app`, etc.).
+
+
+* `list-index.rkt`: Contiene `(list-index target los)`, que devuelve la posición base-0 de un elemento en una lista (o `-1` si no existe).
+
+
+* `free-vars.rkt`: Calcula el conjunto de variables libres en una expresión.
+
+
+
+> **Regla de oro de diseño:**
+> Nunca hagas *pattern matching* ni destructuración de listas a mano con `car` y `cdr` sobre las expresiones. Usa siempre los constructores y selectores de `syntax-procs.rkt`. Si la gramática del lenguaje cambia mañana, solo cambias la capa sintáctica y tu motor sigue intacto.
+> 
+> 
+
+---
+
+## 4. Construcción Paso a Paso del Algoritmo `lexical-address`
+
+¿Cómo sabe la función en qué profundidad está una variable? Necesitamos un **acumulador de contexto** (un entorno o *environment* `env`).
+
+El entorno `env` será una **lista de listas de símbolos**, donde cada sublista representa los parámetros de un marco/bloque, desde el más interno hasta el más externo:
+`'((variables-bloque-actual) (variables-bloque-padre) ... (variables-top-level))`
+
+### Algoritmo de búsqueda de coordenadas
+
+Dada una variable `v` y un entorno `env`:
+
+1. Buscamos si `v` está en el primer marco de `env` usando `(list-index v (first env))`.
+
+
+2. Si está (índice $\ge 0$), la profundidad es `0` y la posición es ese índice.
+
+
+3. Si no está, avanzamos al siguiente marco de `env`, sumando `1` a la profundidad.
+4. Si recorremos todo el entorno y no está, significa que es una variable libre que se asignará al entorno *Top-Level*.
+
+---
+
+## 5. Implementación Completa y Ejecutable en Racket
+
+A continuación se presenta la implementación completa. Puedes copiar este código en un archivo `.rkt` en la misma carpeta donde tengas las dependencias del curso.
+
+```scheme
+#lang racket
+
+(require "syntax-procs.rkt")
+(require "free-vars.rkt")
+(require "list-index.rkt")
+
+(provide lexical-address)
+
+;; =============================================================================
+;; Funciones Auxiliares de Búsqueda de Entorno
+;; =============================================================================
+
+;; find-variable-address : Symbol x ListOf(ListOf(Symbol)) x Natural -> List
+;; Busca un símbolo en una lista de marcos de variables.
+;; Retorna '(variable : profundidad posición)
+(define (find-variable-address var env depth)
+  (if (null? env)
+      (error 'find-variable-address "Variable no encontrada en el entorno: ~a" var)
+      (let ([pos (list-index var (first env))])
+        (if (>= pos 0)
+            (list (string->symbol (format "~a:" var)) depth pos)
+            (find-variable-address var (rest env) (add1 depth))))))
+
+;; =============================================================================
+;; Función Principal y Helper Recursivo
+;; =============================================================================
+
+;; lexical-address-helper : Exp x ListOf(ListOf(Symbol)) -> Exp
+;; Recorre el AST sustituyendo cada varref por su dirección léxica.
+(define (lexical-address-helper exp env)
+  (cond
+    ;; 1. Caso Base: Referencia a Variable
+    [(varref? exp)
+     (find-variable-address exp env 0)]
+
+    ;; 2. Expresión Lambda: Agregamos sus parámetros al frente del entorno
+    [(lambda? exp)
+     (make-lambda
+      (lambda->params exp)
+      (lexical-address-helper (lambda->body exp)
+                             (cons (lambda->params exp) env)))]
+
+    ;; 3. Expresión IF: Procesamos las 3 sub-expresiones con el mismo entorno
+    [(if? exp)
+     (make-if (lexical-address-helper (if->test exp) env)
+              (lexical-address-helper (if->then exp) env)
+              (lexical-address-helper (if->else exp) env))]
+
+    ;; 4. Aplicación de Función: Procesamos operador y argumentos
+    [(app? exp)
+     (make-app (lexical-address-helper (app->proc exp) env)
+               (map (lambda (arg) 
+                      (lexical-address-helper arg env))
+                    (app->args exp)))]
+
+    [else
+     (error 'lexical-address "Expresión inválida: ~a" exp)]))
+
+;; lexical-address : Exp -> Exp
+;; Función pública principal. Envuelve las variables libres de nivel superior
+;; como el marco más externo del entorno.
+(define (lexical-address exp)
+  (let ([top-level-vars (free-vars exp)])
+    (lexical-address-helper exp (list top-level-vars))))
+
+;; =============================================================================
+;; Pruebas / Ejemplos de Uso
+;; =============================================================================
+
+;; Ejemplo 1: Consulta simple tipo pipeline de salud
+;; (lambda (pacientes) (if (eq? pacientes null) 0 (procesar pacientes)))
+(module+ main
+  (define demo-exp
+    '(lambda (seq-pacientes)
+       (if (null? seq-pacientes)
+           0
+           (calcular-riesgo-metabolico seq-pacientes))))
+
+  (displayln "--- Expresión Original ---")
+  (pretty-print demo-exp)
+  (displayln "\n--- Con Direcciones Léxicas ---")
+  (pretty-print (lexical-address demo-exp)))
+
+```
+
+---
+
+## 6. Ejercicios Prácticos y Casos de Aplicación Clínica/Datos
+
+Para afianzar el conocimiento, resuelve los siguientes ejercicios combinando Racket y lógica de negocios de salud:
+
+### Ejercicio 1: El Pipeline de Filtrado de NHANES
+
+Considera la siguiente expresión que simula un cálculo de Índice de Masa Corporal (IMC) y clasificación de riesgo metabólico en un dataset:
+
+```scheme
+'(lambda (paciente)
+   ((lambda (peso talla)
+      ((lambda (imc)
+         (if (> imc 30)
+             (cons 'RiesgoAlto paciente)
+             (cons 'RiesgoBajo paciente)))
+       (/ peso (* talla talla))))
+    (get-peso paciente)
+    (get-talla paciente)))
+
+```
+
+1. Calcula manual u operacionalmente en papel las direcciones léxicas para las referencias de variables: `paciente`, `peso`, `talla`, e `imc`.
+2. Corre la expresión en la función `(lexical-address ...)` implementada y verifica tus resultados.
+
+---
+
+### Ejercicio 2: El Auditor de Ámbitos Clinicos (Detección de Variables No Declaradas)
+
+En investigación médica, usar una variable que no ha sido explícitamente parametrizada ni cargada en el *Top-Level* puede distorsionar un modelo estadístico.
+
+* **Reto:** Modifica la función `find-variable-address` para que, en lugar de fallar con un error técnico cuando una variable no existe en el entorno, devuelva un marcador especial de advertencia: `'(VARIABLE-NO-DECLARADA : var)`.
+* **Prueba:** Pásale a `lexical-address` la expresión `'(lambda (edad) (+ edad presion-arterial))` asegurándote de que `presion-arterial` no se incluya en el marco del *Top-Level*.
+
+---
+
+### Ejercicio 3: Hacia el Motor Datalog: Indexación de Reglas Semánticas
+
+Supón que en tu futuro motor semántico una regla de inferencia lógica para Hipertensión Diagnosticada se expresa así:
+
+```scheme
+'(regla-hipertension (lambda (sistolica diastolica)
+                      (if (or (> sistolica 140) (> diastolica 90))
+                          'Diagnosticado
+                          'Normal)))
+
+```
+
+1. Muestra cómo quedaría la transformación estructural si reemplazamos las variables `sistolica` y `diastolica` por sus posiciones numéricas puras.
+2. Explica brevemente por qué representar las reglas como vectores de índices estáticos acelera la evaluación de reglas lógicas cuando procesas 100,000 registros de NHANES en un ciclo de unificación.
+
+
+## Soluciones a los Ejercicios Prácticos: Sesión 19
+
+En este anexo se presentan las soluciones validadas y corregidas para los ejercicios de automatización de direcciones léxicas.
+
+---
+
+### Ejercicio 1: Pipeline de Salud NHANES y Verificación de Coordenadas
+
+#### Código del Algoritmo
+```scheme
+#lang racket
+
+(require rackunit)
+(require "lexical-address.rkt")
+(require "free-vars.rkt")
+
+(define calculo-imc
+  '(lambda (paciente)
+     ((lambda (peso talla)
+        ((lambda (imc)
+           (if (> imc limite-obesidad)
+               (cons riesgo-alto paciente)
+               (cons riesgo-bajo paciente)))
+         (/ peso (* talla talla))))
+      (get-peso paciente)
+      (get-talla paciente))))
+
+;; Verificación de Variables Libres (Entorno Global/Top-Level)
+(check-equal? 
+ (free-vars calculo-imc)
+ '(> limite-obesidad riesgo-alto cons riesgo-bajo / * get-peso get-talla))
+
+```
+
+#### Verificación de Direcciones Léxicas
+
+Al ejecutar `(lexical-address calculo-imc)`, la estructura con coordenadas léxicas precisas queda así:
+
+```scheme
+(check-equal?
+ (lexical-address calculo-imc)
+ '(lambda (paciente)
+    ((lambda (peso talla)
+       ((lambda (imc)
+          (if ((>: 3 0) (imc: 0 0) (limite-obesidad: 3 1))
+              ((cons: 3 3) (riesgo-alto: 3 2) (paciente: 2 0))
+              ((cons: 3 3) (riesgo-bajo: 3 4) (paciente: 2 0))))
+        ((/: 2 5) (peso: 0 0) ((*: 2 6) (talla: 0 1) (talla: 0 1)))))
+     ((get-peso: 1 7) (paciente: 0 0))
+     ((get-talla: 1 8) (paciente: 0 0)))))
+
+```
+
+---
+
+### Ejercicio 2: El Auditor de Ámbitos (Detección de Variables No Declaradas)
+
+#### Implementación del Modificador de Búsqueda
+
+```scheme
+(define (find-variable-address2 var env depth)
+  (if (null? env)
+      (list 'VARIABLE-NO-DECLARADA: (string->symbol (format "~a" var))) 
+      (let ([pos (list-index var (first env))])
+        (if (>= pos 0)
+            (list (string->symbol (format "~a:" var)) depth pos)
+            (find-variable-address2 var (rest env) (add1 depth))))))
+
+```
+
+#### Pruebas Unitarias con `rackunit`
+
+```scheme
+(define env-prueba '((peso talla) (paciente imc) (eq? cons)))
+
+;; Pruebas de variables existentes en distintas profundidades
+(check-equal?
+ (find-variable-address2 'talla env-prueba 0)
+ '(talla: 0 1)
+ "Debe encontrar 'talla' en el bloque local (profundidad 0, posición 1)")
+
+(check-equal?
+ (find-variable-address2 'paciente env-prueba 0)
+ '(paciente: 1 0)
+ "Debe encontrar 'paciente' subiendo un nivel (profundidad 1, posición 0)")
+
+(check-equal?
+ (find-variable-address2 'cons env-prueba 0)
+ '(cons: 2 1)
+ "Debe encontrar 'cons' en el entorno global (profundidad 2, posición 1)")
+
+;; Prueba de detección de variable ausente/no declarada
+(check-equal? 
+ (find-variable-address2 'presion-arterial env-prueba 0)
+ '(VARIABLE-NO-DECLARADA: presion-arterial)
+ "Debe retornar la etiqueta de advertencia si la variable no existe en el entorno")
+
+```
+
+> **Nota de Arquitectura:**
+> Como la función estándar `lexical-address` utiliza `free-vars` para capturar cualquier símbolo externo e insertarlo automáticamente en el entorno global, las variables no declaradas localmente se asignan al marco *Top-Level*. Para aislar variables verdaderamente no declaradas, la búsqueda con `find-variable-address2` debe ejecutarse sobre un entorno delimitado sin captura global previa.
+
+---
+
+### Ejercicio 3: Representación Léxica para Motores Datalog y Reglas Semánticas
+
+#### 1. Transformación Estructural con Posiciones Numéricas
+
+Al eliminar la capa de nombres de variables y utilizar coordenadas léxicas directas `(: profundidad posición)`, la regla lógica para la evaluación de hipertensión queda reescrita como:
+
+```scheme
+'(regla-hipertension 
+  (lambda 2  ;; Indica aridad (2 parámetros: sistolica, diastolica)
+    (if (or (> (: 0 0) 140)
+            (> (: 0 1) 90))
+        'Diagnosticado
+        'Normal)))
+
+```
+
+### 2. Justificación Técnica de Rendimiento
+
+En una base de datos epidemiológica pesada (como **NHANES**), ejecutar la resolución de reglas mediante comparación de cadenas (`string=?` o `eq?`) para variables como `'sistolica` sobre $100{,}000$ registros introduce una sobrecarga considerable en la tabla de símbolos.
+
+Al compilar las reglas hacia **índices estáticos** `(: 0 0)`:
+
+1. **Acceso directo en $O(1)$:** El motor de inferencia/unificación accede directamente al desplazamiento en el vector del registro sin realizar búsquedas en tablas de símbolos.
+2. **Optimización de Memoria:** Se elimina el mantenimiento de entornos dinámicos en tiempo de ejecución, permitiendo que las reglas lógicas se evalúen como un ciclo de instrucciones de máquina ultrarrápido.
