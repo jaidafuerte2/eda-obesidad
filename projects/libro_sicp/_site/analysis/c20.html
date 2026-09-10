@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>20. Cálculo de Direcciones Léxicas y Optimización del Entorno – Semántica en Acción.</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Semántica en Acción.</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_sobre_el_autor.html"> 
+<span class="menu-text">Sobre el autor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_proyectos.html"> 
+<span class="menu-text">Proyectos</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">20. Cálculo de Direcciones Léxicas y Optimización del Entorno</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semántica en Acción - Paradigmas de Programación, Ejemplos Médicos y Construcción de un Pequeño Motor Semántico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sobre el autor</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — INTRODUCCIÓN A RACKET Y LA PROGRAMACIÓN FUNCIONAL.</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — ESPECIFICACIONES INDUCTIVAS Y PROGRAMAS RECURSIVOS.</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Recursión Eficiente y la Anatomía de un Minilenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Análisis Estático de Variables: El alcance de un Expediente Clínico</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. De los Datos al Motor Lógico — Creando un Intérprete Evaluador</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. Repaso de Programación Recursiva y Análisis Sintáctico</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE III — ABSTRACCIÓN SINTÁCTICA.</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">16. Abstracción Sintáctica</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17. Abstracción Sintáctica y Variables Locales</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">18. Referencias de Variables, Alcance (Scope) y Direcciones Léxicas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19. Automatizando la Dirección Léxica (De Nombres a Coordenadas de Servidor)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#de-la-clínica-al-código-diagnóstico-por-descomposición" id="toc-de-la-clínica-al-código-diagnóstico-por-descomposición" class="nav-link active" data-scroll-target="#de-la-clínica-al-código-diagnóstico-por-descomposición">20.1 De la Clínica al Código: Diagnóstico por Descomposición</a></li>
+  <li><a href="#direccionamiento-léxico-de-nombres-a-historiales-clínicos-relativos" id="toc-direccionamiento-léxico-de-nombres-a-historiales-clínicos-relativos" class="nav-link" data-scroll-target="#direccionamiento-léxico-de-nombres-a-historiales-clínicos-relativos">20.2 Direccionamiento Léxico: De Nombres a Historiales Clínicos Relativos</a>
+  <ul class="collapse">
+  <li><a href="#ejemplo-clínico-de-anidamiento" id="toc-ejemplo-clínico-de-anidamiento" class="nav-link" data-scroll-target="#ejemplo-clínico-de-anidamiento">Ejemplo Clínico de Anidamiento:</a></li>
+  </ul></li>
+  <li><a href="#construcción-del-algoritmo-un-acumulador-de-ámbitos" id="toc-construcción-del-algoritmo-un-acumulador-de-ámbitos" class="nav-link" data-scroll-target="#construcción-del-algoritmo-un-acumulador-de-ámbitos">20.3 Construcción del Algoritmo: Un Acumulador de Ámbitos</a>
+  <ul class="collapse">
+  <li><a href="#el-asistente-recursivo-lexical-address-helper" id="toc-el-asistente-recursivo-lexical-address-helper" class="nav-link" data-scroll-target="#el-asistente-recursivo-lexical-address-helper">El Asistente Recursivo: <code>lexical-address-helper</code></a></li>
+  </ul></li>
+  <li><a href="#la-pieza-faltante-buscando-la-coordenada-con-make-lex-addr" id="toc-la-pieza-faltante-buscando-la-coordenada-con-make-lex-addr" class="nav-link" data-scroll-target="#la-pieza-faltante-buscando-la-coordenada-con-make-lex-addr">20.4 La Pieza Faltante: Buscando la Coordenada con <code>make-lex-addr</code></a></li>
+  <li><a href="#currying-en-la-práctica-mapeo-de-evaluaciones-clínicas" id="toc-currying-en-la-práctica-mapeo-de-evaluaciones-clínicas" class="nav-link" data-scroll-target="#currying-en-la-práctica-mapeo-de-evaluaciones-clínicas">20.5 Currying en la Práctica: Mapeo de Evaluaciones Clínicas</a></li>
+  <li><a href="#eliminación-total-de-nombres-hacia-un-motor-semántico-en-datalog" id="toc-eliminación-total-de-nombres-hacia-un-motor-semántico-en-datalog" class="nav-link" data-scroll-target="#eliminación-total-de-nombres-hacia-un-motor-semántico-en-datalog">20.6 Eliminación Total de Nombres: Hacia un Motor Semántico en Datalog</a>
+  <ul class="collapse">
+  <li><a href="#por-qué-esto-es-crucial-para-tu-motor-datalog-semántico" id="toc-por-qué-esto-es-crucial-para-tu-motor-datalog-semántico" class="nav-link" data-scroll-target="#por-qué-esto-es-crucial-para-tu-motor-datalog-semántico">¿Por qué esto es crucial para tu motor Datalog / Semántico?</a></li>
+  </ul></li>
+  <li><a href="#ejercicios-prácticos-y-aplicados" id="toc-ejercicios-prácticos-y-aplicados" class="nav-link" data-scroll-target="#ejercicios-prácticos-y-aplicados">20.7 Ejercicios Prácticos y Aplicados</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-rastreando-evaluaciones-metabólicas" id="toc-ejercicio-1-rastreando-evaluaciones-metabólicas" class="nav-link" data-scroll-target="#ejercicio-1-rastreando-evaluaciones-metabólicas">Ejercicio 1: Rastreando Evaluaciones Metabólicas</a></li>
+  <li><a href="#ejercicio-2-modificación-del-intérprete-para-métricas-de-salud" id="toc-ejercicio-2-modificación-del-intérprete-para-métricas-de-salud" class="nav-link" data-scroll-target="#ejercicio-2-modificación-del-intérprete-para-métricas-de-salud">Ejercicio 2: Modificación del Intérprete para Métricas de Salud</a></li>
+  <li><a href="#ejercicio-3-pensamiento-de-diseño-de-motor-semántico-nhanes" id="toc-ejercicio-3-pensamiento-de-diseño-de-motor-semántico-nhanes" class="nav-link" data-scroll-target="#ejercicio-3-pensamiento-de-diseño-de-motor-semántico-nhanes">Ejercicio 3: Pensamiento de Diseño de Motor Semántico (NHANES)</a></li>
+  </ul></li>
+  <li><a href="#solucionario-y-corrección-de-ejercicios-prácticos" id="toc-solucionario-y-corrección-de-ejercicios-prácticos" class="nav-link" data-scroll-target="#solucionario-y-corrección-de-ejercicios-prácticos">20.8 Solucionario y Corrección de Ejercicios Prácticos</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-rastreando-evaluaciones-metabólicas-solución" id="toc-ejercicio-1-rastreando-evaluaciones-metabólicas-solución" class="nav-link" data-scroll-target="#ejercicio-1-rastreando-evaluaciones-metabólicas-solución">Ejercicio 1: Rastreando Evaluaciones Metabólicas (Solución)</a></li>
+  <li><a href="#ejercicio-2-modificación-de-make-lex-addr-para-vectores-de-coordenadas" id="toc-ejercicio-2-modificación-de-make-lex-addr-para-vectores-de-coordenadas" class="nav-link" data-scroll-target="#ejercicio-2-modificación-de-make-lex-addr-para-vectores-de-coordenadas">Ejercicio 2: Modificación de <code>make-lex-addr</code> para Vectores de Coordenadas</a></li>
+  <li><a href="#ejercicio-3-análisis-de-rendimiento-en-motores-semánticos-datalog" id="toc-ejercicio-3-análisis-de-rendimiento-en-motores-semánticos-datalog" class="nav-link" data-scroll-target="#ejercicio-3-análisis-de-rendimiento-en-motores-semánticos-datalog">Ejercicio 3: Análisis de Rendimiento en Motores Semánticos (Datalog)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">20. Cálculo de Direcciones Léxicas y Optimización del Entorno</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p><strong>Lección de Hobbes</strong>: <em>“Los problemas complejos parecen abrumadores al principio. El secreto es descomponer el problema en subproblemas más simples. Cuando te das cuenta, ya has terminado.”</em></p>
+</blockquote>
+<hr>
+<section id="de-la-clínica-al-código-diagnóstico-por-descomposición" class="level2">
+<h2 class="anchored" data-anchor-id="de-la-clínica-al-código-diagnóstico-por-descomposición">20.1 De la Clínica al Código: Diagnóstico por Descomposición</h2>
+<p>Cuando entra un paciente críticamente enfermo a la UCI con fallo multiorgánico (obesisidad mórbida, cetoacidosis diabética y crisis hipertensiva), intentar abordarlo todo como un “único gran problema” conduce a la parálisis. Lo que hace un médico con experiencia es descomponer la emergencia por sistemas: 1. <strong>Sistema Respiratorio / Hemodinámico</strong> (Vía aérea y perfusión). 2. <strong>Sistema Endocrino / Metabólico</strong> (Bomba de insulina y corrección de glucosa). 3. <strong>Sistema Renal / Electrolítico</strong> (Ajuste de fluidos).</p>
+<p>Al resolver cada subsistema con su protocolo estándar, el paciente se estabiliza.</p>
+<p>En la construcción de intérpretes y motores semánticos ocurre exactamente lo mismo. Construir un <strong>transformador de direcciones léxicas</strong> (<em>lexical addresser</em>) suena como una tarea titánica. Sin embargo, la gramática inductiva de nuestro lenguaje funcional es nuestro “examen por sistemas”.</p>
+<p>Nuestra gramática objetivo consta de solo cuatro casos:</p>
+<pre><code>
+ ::= 
+| (lambda ( ...) )
+| (  ...)
+| (if   )
+</code></pre>
+<p>Aplicando <strong>recursión estructural</strong> sobre esta definición inductiva, abordamos cada caso de forma aislada.</p>
+<hr>
+</section>
+<section id="direccionamiento-léxico-de-nombres-a-historiales-clínicos-relativos" class="level2">
+<h2 class="anchored" data-anchor-id="direccionamiento-léxico-de-nombres-a-historiales-clínicos-relativos">20.2 Direccionamiento Léxico: De Nombres a Historiales Clínicos Relativos</h2>
+<p>Imagina que en un estudio epidemiológico de <strong>NHANES</strong>, en lugar de registrar datos con nombres propios (“Juan Pérez”, “María Gómez”), usas un identificador de cohorte y un índice relativo de visita: <code>(cohorte: 0, índice: 2)</code>.</p>
+<p>En los lenguajes de programación y en las bases de datos lógicas (como <strong>Datalog</strong>), las variables son meras “etiquetas humanas” (azúcar sintáctico). Cuando el intérprete evalúa una variable como <code>bmi</code> o <code>trigliceridos</code>, perder tiempo buscando la cadena <code>"bmi"</code> en una tabla de símbolos global en cada iteración es devastador para el rendimiento.</p>
+<p>El <strong>direccionamiento léxico</strong> convierte un nombre de variable en un par de coordenadas relativas: <span class="math display">\[\text{Dirección Léxica} \rightarrow (v : \text{depth}, \text{position})\]</span></p>
+<ul>
+<li><strong><code>depth</code> (Profundidad / Alcance):</strong> Cuántos “bloques” o marcos de contexto debemos subir desde el punto actual hacia afuera para encontrar la declaración de la variable.</li>
+<li><strong><code>position</code> (Posición / Desplazamiento):</strong> La posición exacta (basada en índice 0) que ocupa la variable dentro de la lista de parámetros de dicho bloque.</li>
+</ul>
+<section id="ejemplo-clínico-de-anidamiento" class="level3">
+<h3 class="anchored" data-anchor-id="ejemplo-clínico-de-anidamiento">Ejemplo Clínico de Anidamiento:</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>edad sexo<span class="op">)</span>                  <span class="co">; Bloque exterior (Profundidad 2)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>bmi glucosa<span class="op">)</span>              <span class="co">; Bloque intermedio (Profundidad 1)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>hba1c<span class="op">)</span>                  <span class="co">; Bloque interior (Profundidad 0)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">list</span> edad glucosa hba1c<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Para encontrar la variable <code>glucosa</code> dentro del cuerpo más interno (<code>(list ...)</code>):</p>
+<ol type="1">
+<li><p>Buscamos en el bloque actual <code>(hba1c)</code> <span class="math inline">\(\rightarrow\)</span> No está (Profundidad 0).</p></li>
+<li><p>Subimos un bloque <code>(bmi glucosa)</code> <span class="math inline">\(\rightarrow\)</span> ¡Encontrada! Está en la profundidad <code>1</code> y en la posición <code>1</code> de la lista.</p></li>
+<li><p>Su dirección léxica es: <code>(glucosa : 1 1)</code>.</p></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="construcción-del-algoritmo-un-acumulador-de-ámbitos" class="level2">
+<h2 class="anchored" data-anchor-id="construcción-del-algoritmo-un-acumulador-de-ámbitos">20.3 Construcción del Algoritmo: Un Acumulador de Ámbitos</h2>
+<p>Para resolver este problema, necesitamos una función principal llamada <code>lexical-address</code>. Sin embargo, a medida que la recursión se adentra en expresiones <code>lambda</code>, necesita “recordar” qué variables han sido declaradas hasta ese momento.</p>
+<blockquote class="blockquote">
+<p><strong>Regla de Arquitectura</strong>: Cuando una función recursiva necesita arrastrar un contexto o historial cambiante, convertimos la función en un <em>procedimiento de interfaz</em> y creamos un <em>ayudante</em> (<em>helper</em>) que lleve un parámetro acumulador.</p>
+</blockquote>
+<p>En nuestro caso, el acumulador será <code>list-of-decls</code>: una lista que contiene las listas de variables declaradas en cada bloque, ordenadas desde la más reciente (más interna) hasta la más antigua (más externa).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"syntax-procs.rkt"</span> <span class="st">"free-vars.rkt"</span> <span class="st">"list-index.rkt"</span><span class="op">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> lexical-address<span class="op">)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Interfaz principal</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>lexical-address <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">;; Inicializamos el acumulador de declaraciones con las variables libres</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>lexical-address-helper <span class="kw">exp</span> <span class="op">(</span><span class="kw">list</span> <span class="op">(</span>free-vars <span class="kw">exp</span><span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="el-asistente-recursivo-lexical-address-helper" class="level3">
+<h3 class="anchored" data-anchor-id="el-asistente-recursivo-lexical-address-helper">El Asistente Recursivo: <code>lexical-address-helper</code></h3>
+<p>Analicemos cómo maneja cada uno de los 4 casos de la gramática:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>lexical-address-helper <span class="kw">exp</span> list-of-decls<span class="op">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">cond</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; CASO 1: Referencia a Variable -&gt; Calculamos su coordenada</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">((</span>varref? <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>make-lex-addr <span class="kw">exp</span> list-of-decls <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; CASO 2: Expresión Condicional -&gt; Recursión simple en sus 3 partes</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">((</span>if? <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>make-if <span class="op">(</span>lexical-address-helper <span class="op">(</span>if-&gt;test <span class="kw">exp</span><span class="op">)</span> list-of-decls<span class="op">)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span>lexical-address-helper <span class="op">(</span>if-&gt;then <span class="kw">exp</span><span class="op">)</span> list-of-decls<span class="op">)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span>lexical-address-helper <span class="op">(</span>if-&gt;else <span class="kw">exp</span><span class="op">)</span> list-of-decls<span class="op">)))</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; CASO 3: Llamada a Función (Aplicación) -&gt; Aplicamos Currying + map</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">((</span>app? <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>make-app <span class="op">(</span>lexical-address-helper <span class="op">(</span>app-&gt;proc <span class="kw">exp</span><span class="op">)</span> list-of-decls<span class="op">)</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>               <span class="op">(</span><span class="kw">map</span> <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>e<span class="op">)</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                      <span class="op">(</span>lexical-address-helper e list-of-decls<span class="op">))</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                    <span class="op">(</span>app-&gt;args <span class="kw">exp</span><span class="op">))))</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; CASO 4: Abstracción Lambda -&gt; ¡Añade un nuevo bloque al acumulador!</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">((</span>lambda? <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>make-lambda <span class="op">(</span>lambda-&gt;params <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                  <span class="op">(</span>lexical-address-helper</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                    <span class="op">(</span>lambda-&gt;body <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                    <span class="op">(</span><span class="kw">cons</span> <span class="op">(</span>lambda-&gt;params <span class="kw">exp</span><span class="op">)</span> list-of-decls<span class="op">))))</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">else</span> <span class="op">(</span><span class="kw">error</span> 'lexical-address <span class="st">"Expresión desconocida: ~a"</span> <span class="kw">exp</span><span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="la-pieza-faltante-buscando-la-coordenada-con-make-lex-addr" class="level2">
+<h2 class="anchored" data-anchor-id="la-pieza-faltante-buscando-la-coordenada-con-make-lex-addr">20.4 La Pieza Faltante: Buscando la Coordenada con <code>make-lex-addr</code></h2>
+<p>La función <code>make-lex-addr</code> es el motor de búsqueda que localiza la posición de una variable dentro de las listas de contexto acumuladas (<code>list-of-decls</code>).</p>
+<p>Procesa <code>list-of-decls</code> de forma inductiva:</p>
+<ul>
+<li><p>Si la lista de contextos está vacía, la variable es inválida o no está declarada.</p></li>
+<li><p>Si la variable se encuentra en la <strong>primera</strong> lista (<code>(first list-of-decls)</code>), retornamos <code>(var : curr-depth pos)</code>.</p></li>
+<li><p>Si no está en el bloque actual, hacemos una llamada recursiva sobre el <strong>resto</strong> de la lista (<code>(rest list-of-decls)</code>), <strong>incrementando la profundidad</strong> (<code>(add1 curr-depth)</code>).</p></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>make-lex-addr var list-of-decls curr-depth<span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> list-of-decls<span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">error</span> 'lexical-address-for</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>             <span class="st">"Variable ~a no fue encontrada en ningún bloque"</span> var<span class="op">)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>pos <span class="op">(</span>list-index var <span class="op">(</span>first list-of-decls<span class="op">))))</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">if</span> <span class="op">(&gt;</span> pos -<span class="dv">1</span><span class="op">)</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>            <span class="co">;; Encontrada en el bloque actual</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span><span class="kw">list</span> var ': curr-depth pos<span class="op">)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="co">;; Buscar en el siguiente bloque exterior</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>make-lex-addr var</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                           <span class="op">(</span>rest list-of-decls<span class="op">)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                           <span class="op">(</span>add1 curr-depth<span class="op">))))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="currying-en-la-práctica-mapeo-de-evaluaciones-clínicas" class="level2">
+<h2 class="anchored" data-anchor-id="currying-en-la-práctica-mapeo-de-evaluaciones-clínicas">20.5 Currying en la Práctica: Mapeo de Evaluaciones Clínicas</h2>
+<p>Observa cómo resolvimos el caso <code>app?</code> en la sección 20.3:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">map</span> <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>e<span class="op">)</span> <span class="op">(</span>lexical-address-helper e list-of-decls<span class="op">))</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span>app-&gt;args <span class="kw">exp</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>¿Por qué tuvimos que escribir <code>(lambda (e) ...)</code>?</p>
+<p>Porque <code>lexical-address-helper</code> requiere <strong>dos</strong> argumentos (<code>exp</code> y <code>list-of-decls</code>), pero <code>map</code> espera una función que reciba <strong>un solo</strong> argumento (el elemento actual de la lista).</p>
+<p>En la práctica, lo que hicimos fue hacer un <strong>Currying manual</strong>: “congelamos” o fijamos el argumento <code>list-of-decls</code> para generar una función temporal sobre la marcha que solo acepta la expresión <code>e</code>.</p>
+<blockquote class="blockquote">
+<p><strong>Conexión con Análisis de Datos en R</strong>: En R (usando <code>tidyverse</code> o <code>purrr</code>), esto equivale a aplicar un parámetro fijo a una lista de variables de NHANES:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Currying implícito en R para calcular Z-scores fijando la media y SD poblacional</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>calcular_z_score <span class="ot">&lt;-</span> <span class="cf">function</span>(media, sd) {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) (x <span class="sc">-</span> media) <span class="sc">/</span> sd</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>z_bmi <span class="ot">&lt;-</span> <span class="fu">calcular_z_score</span>(<span class="at">media =</span> <span class="fl">28.5</span>, <span class="at">sd =</span> <span class="fl">6.2</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map_dbl</span>(nhanes_data<span class="sc">$</span>bmi, z_bmi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</blockquote>
+<hr>
+</section>
+<section id="eliminación-total-de-nombres-hacia-un-motor-semántico-en-datalog" class="level2">
+<h2 class="anchored" data-anchor-id="eliminación-total-de-nombres-hacia-un-motor-semántico-en-datalog">20.6 Eliminación Total de Nombres: Hacia un Motor Semántico en Datalog</h2>
+<p>Una vez que comprobamos que el algoritmo de direcciones léxicas funciona, podemos dar un paso más audaz: <strong>eliminar por completo los nombres de las variables y los parámetros</strong>.</p>
+<p>Si reemplazamos el nombre de la variable por únicamente sus coordenadas <code>(: depth position)</code>, y sustituimos la lista de parámetros en el <code>lambda</code> por el <strong>número total de parámetros</strong> que acepta, obtenemos una estructura puramente abstracta:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Código Racket Original</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>paciente edad<span class="op">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">eq?</span> edad <span class="dv">65</span><span class="op">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      paciente</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      edad<span class="op">))</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; Transformación Léxica Sin Variables (Bytecode Semántico)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>'<span class="op">(</span><span class="kw">lambda</span> <span class="dv">2</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>   <span class="op">(</span><span class="kw">if</span> <span class="op">((</span>: <span class="dv">1</span> <span class="dv">0</span><span class="op">)</span> <span class="op">(</span>: <span class="dv">0</span> <span class="dv">1</span><span class="op">)</span> <span class="dv">65</span><span class="op">)</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span>: <span class="dv">0</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span>: <span class="dv">0</span> <span class="dv">1</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="por-qué-esto-es-crucial-para-tu-motor-datalog-semántico" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-esto-es-crucial-para-tu-motor-datalog-semántico">¿Por qué esto es crucial para tu motor Datalog / Semántico?</h3>
+<ol type="1">
+<li><strong>Unificación Rápida de Reglas</strong>: En un motor Datalog para consultar fenotipos complejos (por ejemplo, <code>SindromeMetabolico(X) :- ObesidadAbdominal(X), HTA(X)</code>), las variables como <code>X</code> no importan por su nombre, sino por <strong>cómo conectan las reglas de inferencia</strong>.</li>
+<li><strong>Cero Búsqueda por Cadena</strong>: El motor no pierde microsegundos comparando nombres de texto (<code>"paciente" == "paciente"</code>). Accede directamente a los arreglos/vectores de memoria mediante índices enteras <code>[depth, position]</code>.</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="ejercicios-prácticos-y-aplicados" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios-prácticos-y-aplicados">20.7 Ejercicios Prácticos y Aplicados</h2>
+<p>Consolida lo aprendido resolviendo los siguientes ejercicios en tu entorno de Racket.</p>
+<section id="ejercicio-1-rastreando-evaluaciones-metabólicas" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-rastreando-evaluaciones-metabólicas">Ejercicio 1: Rastreando Evaluaciones Metabólicas</h3>
+<p>Dado el siguiente bloque de código que evalúa el riesgo cardiovascular en función del LDL y la Presión Arterial Sistólica (PAS):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>'<span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>paciente-id<span class="op">)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>ldl pas<span class="op">)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">if</span> <span class="op">(&gt;</span> pas <span class="dv">140</span><span class="op">)</span> <span class="dv">#t</span> <span class="op">(&gt;</span> ldl <span class="dv">160</span><span class="op">))</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         paciente-id</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         <span class="dv">0</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol type="1">
+<li>Realiza el rastreo manual e indica la dirección léxica en formato <code>(variable : depth position)</code> para cada una de las siguientes referencias de variable:</li>
+</ol>
+<ul>
+<li><code>pas</code></li>
+<li><code>ldl</code></li>
+<li><code>paciente-id</code></li>
+</ul>
+<ol start="2" type="1">
+<li>Verifica tu respuesta ejecutando <code>(lexical-address ...)</code> cargando el archivo <code>lexical-address.rkt</code>.</li>
+</ol>
+</section>
+<section id="ejercicio-2-modificación-del-intérprete-para-métricas-de-salud" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-modificación-del-intérprete-para-métricas-de-salud">Ejercicio 2: Modificación del Intérprete para Métricas de Salud</h3>
+<p>Modifica la función <code>make-lex-addr</code> en el archivo <code>lexical-address-novars.rkt</code> para que, en lugar de retornar la lista <code>(: depth position)</code>, devuelva una estructura tipo vector <code>#(depth position)</code> usando la función de Racket <code>vector</code>.</p>
+<p><em>Pista:</em> Modifica la siguiente línea en <code>make-lex-addr</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Antes:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">list</span> ': curr-depth pos<span class="op">)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; Modifícalo para generar un vector Racket de coordenadas</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-3-pensamiento-de-diseño-de-motor-semántico-nhanes" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-pensamiento-de-diseño-de-motor-semántico-nhanes">Ejercicio 3: Pensamiento de Diseño de Motor Semántico (NHANES)</h3>
+<p>Imagina una regla en tu motor semántico Datalog que define “Riesgo de Diabetes Mellitus Tipo 2”:</p>
+<p><span class="math display">\[\text{RiesgoDM2}(P) \leftarrow \text{HbA1c}(P, H) \land (H \ge 6.5)\]</span></p>
+<p>Si traducimos esta regla a nuestra representación léxica sin nombres de variable:</p>
+<ol type="1">
+<li>Explica brevemente por qué representar la variable <span class="math inline">\(P\)</span> (Paciente) como un índice relativo <code>(: 0 0)</code> facilita unir múltiples tablas de NHANES (<code>DEMO_J</code>, <code>GHB_J</code>) en comparación con hacer un <code>JOIN</code> por cadenas de texto en SQL convencional.</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="solucionario-y-corrección-de-ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="solucionario-y-corrección-de-ejercicios-prácticos">20.8 Solucionario y Corrección de Ejercicios Prácticos</h2>
+<section id="ejercicio-1-rastreando-evaluaciones-metabólicas-solución" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-rastreando-evaluaciones-metabólicas-solución">Ejercicio 1: Rastreando Evaluaciones Metabólicas (Solución)</h3>
+<p>Dada la expresión original:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>paciente-id<span class="op">)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>ldl pas<span class="op">)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">if</span> <span class="op">(&gt;</span> pas <span class="dv">140</span><span class="op">)</span> <span class="dv">#t</span> <span class="op">(&gt;</span> ldl <span class="dv">160</span><span class="op">))</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        paciente-id</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Análisis de Ámbitos (Scope Stack):</strong> * <strong>Bloque 0 (Más interno):</strong> <code>(ldl pas)</code> * <strong>Bloque 1:</strong> <code>(paciente-id)</code> * <strong>Bloque 2 (Variables Libres / Top-Level):</strong> <code>(&gt;)</code> <em>(calculado automáticamente por <code>free-vars</code>)</em></p>
+<blockquote class="blockquote">
+<p><strong>Nota sobre Literales:</strong> Los números (<code>140</code>, <code>160</code>, <code>0</code>) y booleanos (<code>#t</code>) son constantes literales, por lo que el transformador léxico no los altera.</p>
+</blockquote>
+<p><strong>Resultado de la Transformación Léxica:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>'<span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>paciente-id<span class="op">)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>ldl pas<span class="op">)</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">if</span> <span class="op">((&gt;</span> : <span class="dv">2</span> <span class="dv">0</span><span class="op">)</span> <span class="op">(</span>pas : <span class="dv">0</span> <span class="dv">1</span><span class="op">)</span> <span class="dv">140</span><span class="op">)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>             <span class="dv">#t</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>             <span class="op">((&gt;</span> : <span class="dv">2</span> <span class="dv">0</span><span class="op">)</span> <span class="op">(</span>ldl : <span class="dv">0</span> <span class="dv">0</span><span class="op">)</span> <span class="dv">160</span><span class="op">))</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>         <span class="op">(</span>paciente-id : <span class="dv">1</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="dv">0</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-2-modificación-de-make-lex-addr-para-vectores-de-coordenadas" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-modificación-de-make-lex-addr-para-vectores-de-coordenadas">Ejercicio 2: Modificación de <code>make-lex-addr</code> para Vectores de Coordenadas</h3>
+<p>Código Racket con la función modificada para generar vectores <code>#(var : depth position)</code> e integración de la suite de pruebas con <code>rackunit</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"list-index.rkt"</span><span class="op">)</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Implementación modificada para retornar vectores</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>make-lex-addr var list-of-decls curr-depth<span class="op">)</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> list-of-decls<span class="op">)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">error</span> 'lexical-address-for</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>             <span class="st">"variable ~a -- not found in any block"</span> var<span class="op">)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>pos <span class="op">(</span>list-index var <span class="op">(</span>first list-of-decls<span class="op">))))</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">if</span> <span class="op">(&gt;</span> pos -<span class="dv">1</span><span class="op">)</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span><span class="kw">vector</span> var ': curr-depth pos<span class="op">)</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>make-lex-addr var</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>                           <span class="op">(</span>rest list-of-decls<span class="op">)</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>                           <span class="op">(</span>add1 curr-depth<span class="op">))))))</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">;; -------------------------------------------------------------------------</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas de Unidad (Rackunit)</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">;; -------------------------------------------------------------------------</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> env-nhanes</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>hba1c<span class="op">)</span>               <span class="co">; Profundidad 0</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>bmi glucosa<span class="op">)</span>         <span class="co">; Profundidad 1</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>edad sexo ldl<span class="op">)</span>       <span class="co">; Profundidad 2</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">eq?</span> <span class="op">+)))</span>             <span class="co">; Profundidad 3 (Variables libres/Globales)</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>make-lex-addr 'hba1c env-nhanes <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>              #<span class="op">(</span>hba1c : <span class="dv">0</span> <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>make-lex-addr 'bmi env-nhanes <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>              #<span class="op">(</span>bmi : <span class="dv">1</span> <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>make-lex-addr 'glucosa env-nhanes <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>              #<span class="op">(</span>glucosa : <span class="dv">1</span> <span class="dv">1</span><span class="op">))</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>make-lex-addr 'eq? env-nhanes <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>              #<span class="op">(</span><span class="kw">eq?</span> : <span class="dv">3</span> <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="co">;; Verificación de manejo de errores para variables no declaradas</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-exn exn:fail?</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">lambda</span> <span class="op">()</span> <span class="op">(</span>make-lex-addr 'trigliceridos env-nhanes <span class="dv">0</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="ejercicio-3-análisis-de-rendimiento-en-motores-semánticos-datalog" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-análisis-de-rendimiento-en-motores-semánticos-datalog">Ejercicio 3: Análisis de Rendimiento en Motores Semánticos (Datalog)</h3>
+<blockquote class="blockquote">
+<p><strong>Pregunta:</strong> ¿Por qué representar variables mediante índices relativos <code>(: 0 0)</code> acelera la unificación en Datalog comparado con realizar <code>JOIN</code> sobre cadenas de texto en SQL?</p>
+</blockquote>
+<p><strong>Respuesta Técnica:</strong></p>
+<ol type="1">
+<li><p><strong>Alineación de Memoria y Acceso Directo <span class="math inline">\(O(1)\)</span>:</strong> Al utilizar coordenadas léxicas <code>(profundidad, posición)</code>, el motor de inferencia lógica no realiza comparaciones de cadenas de texto carismáticas ni búsquedas por clave en tablas de símbolos (<em>hashmaps</em>). En su lugar, realiza un salto directo a un desplazamiento de memoria (<em>offset</em>) en un vector en RAM.</p></li>
+<li><p><strong>Costo de Unificación en Motores de Reglas:</strong> En un motor Datalog evaluando millones de registros de NHANES, la operación principal es la <strong>unificación de variables</strong>. Si la unificación requiere comparar símbolos de texto (<code>"paciente_id" == "paciente_id"</code>), la CPU realiza múltiples ciclos de lectura de memoria por cada tupla. Con direcciones léxicas, la unificación se reduce a verificar si dos coordenadas de memoria apuntan al mismo índice entero, transformando una operación costosa en una simple instrucción de comparación de registros numéricos a nivel de ensamblador.</p></li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

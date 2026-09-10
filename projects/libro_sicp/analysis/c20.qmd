@@ -1,0 +1,374 @@
+---
+title: "20. Cálculo de Direcciones Léxicas y Optimización del Entorno"
+format: html
+editor: visual
+---
+
+> **Lección de Hobbes**: *"Los problemas complejos parecen abrumadores al principio. El secreto es descomponer el problema en subproblemas más simples. Cuando te das cuenta, ya has terminado."*
+
+---
+
+## 20.1 De la Clínica al Código: Diagnóstico por Descomposición
+
+Cuando entra un paciente críticamente enfermo a la UCI con fallo multiorgánico (obesisidad mórbida, cetoacidosis diabética y crisis hipertensiva), intentar abordarlo todo como un "único gran problema" conduce a la parálisis. Lo que hace un médico con experiencia es descomponer la emergencia por sistemas:
+1. **Sistema Respiratorio / Hemodinámico** (Vía aérea y perfusión).
+2. **Sistema Endocrino / Metabólico** (Bomba de insulina y corrección de glucosa).
+3. **Sistema Renal / Electrolítico** (Ajuste de fluidos).
+
+Al resolver cada subsistema con su protocolo estándar, el paciente se estabiliza. 
+
+En la construcción de intérpretes y motores semánticos ocurre exactamente lo mismo. Construir un **transformador de direcciones léxicas** (*lexical addresser*) suena como una tarea titánica. Sin embargo, la gramática inductiva de nuestro lenguaje funcional es nuestro "examen por sistemas".
+
+Nuestra gramática objetivo consta de solo cuatro casos:
+
+
+```
+
+ ::= 
+| (lambda ( ...) )
+| (  ...)
+| (if   )
+
+```
+
+Aplicando **recursión estructural** sobre esta definición inductiva, abordamos cada caso de forma aislada.
+
+---
+
+## 20.2 Direccionamiento Léxico: De Nombres a Historiales Clínicos Relativos
+
+Imagina que en un estudio epidemiológico de **NHANES**, en lugar de registrar datos con nombres propios ("Juan Pérez", "María Gómez"), usas un identificador de cohorte y un índice relativo de visita: `(cohorte: 0, índice: 2)`.
+
+En los lenguajes de programación y en las bases de datos lógicas (como **Datalog**), las variables son meras "etiquetas humanas" (azúcar sintáctico). Cuando el intérprete evalúa una variable como `bmi` o `trigliceridos`, perder tiempo buscando la cadena `"bmi"` en una tabla de símbolos global en cada iteración es devastador para el rendimiento.
+
+El **direccionamiento léxico** convierte un nombre de variable en un par de coordenadas relativas:
+$$\text{Dirección Léxica} \rightarrow (v : \text{depth}, \text{position})$$
+
+* **`depth` (Profundidad / Alcance):** Cuántos "bloques" o marcos de contexto debemos subir desde el punto actual hacia afuera para encontrar la declaración de la variable.
+* **`position` (Posición / Desplazamiento):** La posición exacta (basada en índice 0) que ocupa la variable dentro de la lista de parámetros de dicho bloque.
+
+### Ejemplo Clínico de Anidamiento:
+
+```racket
+(lambda (edad sexo)                  ; Bloque exterior (Profundidad 2)
+  (lambda (bmi glucosa)              ; Bloque intermedio (Profundidad 1)
+    (lambda (hba1c)                  ; Bloque interior (Profundidad 0)
+      (list edad glucosa hba1c))))
+
+```
+
+Para encontrar la variable `glucosa` dentro del cuerpo más interno (`(list ...)`):
+
+1. Buscamos en el bloque actual `(hba1c)` $\rightarrow$ No está (Profundidad 0).
+2. Subimos un bloque `(bmi glucosa)` $\rightarrow$ ¡Encontrada! Está en la profundidad `1` y en la posición `1` de la lista.
+
+
+3. Su dirección léxica es: `(glucosa : 1 1)`.
+
+
+
+---
+
+## 20.3 Construcción del Algoritmo: Un Acumulador de Ámbitos
+
+Para resolver este problema, necesitamos una función principal llamada `lexical-address`. Sin embargo, a medida que la recursión se adentra en expresiones `lambda`, necesita "recordar" qué variables han sido declaradas hasta ese momento.
+
+> **Regla de Arquitectura**: Cuando una función recursiva necesita arrastrar un contexto o historial cambiante, convertimos la función en un *procedimiento de interfaz* y creamos un *ayudante* (*helper*) que lleve un parámetro acumulador.
+> 
+> 
+
+En nuestro caso, el acumulador será `list-of-decls`: una lista que contiene las listas de variables declaradas en cada bloque, ordenadas desde la más reciente (más interna) hasta la más antigua (más externa).
+
+```racket
+#lang racket
+(require "syntax-procs.rkt" "free-vars.rkt" "list-index.rkt")
+(provide lexical-address)
+
+;; Interfaz principal
+(define (lexical-address exp)
+  ;; Inicializamos el acumulador de declaraciones con las variables libres
+  (lexical-address-helper exp (list (free-vars exp))))
+
+```
+
+### El Asistente Recursivo: `lexical-address-helper`
+
+Analicemos cómo maneja cada uno de los 4 casos de la gramática:
+
+```racket
+(define (lexical-address-helper exp list-of-decls)
+  (cond 
+    ;; CASO 1: Referencia a Variable -> Calculamos su coordenada
+    ((varref? exp)
+     (make-lex-addr exp list-of-decls 0))
+
+    ;; CASO 2: Expresión Condicional -> Recursión simple en sus 3 partes
+    ((if? exp)
+     (make-if (lexical-address-helper (if->test exp) list-of-decls)
+              (lexical-address-helper (if->then exp) list-of-decls)
+              (lexical-address-helper (if->else exp) list-of-decls)))
+
+    ;; CASO 3: Llamada a Función (Aplicación) -> Aplicamos Currying + map
+    ((app? exp)
+     (make-app (lexical-address-helper (app->proc exp) list-of-decls)
+               (map (lambda (e)
+                      (lexical-address-helper e list-of-decls))
+                    (app->args exp))))
+
+    ;; CASO 4: Abstracción Lambda -> ¡Añade un nuevo bloque al acumulador!
+    ((lambda? exp)
+     (make-lambda (lambda->params exp)
+                  (lexical-address-helper
+                    (lambda->body exp)
+                    (cons (lambda->params exp) list-of-decls))))
+
+    (else (error 'lexical-address "Expresión desconocida: ~a" exp))))
+
+```
+
+---
+
+## 20.4 La Pieza Faltante: Buscando la Coordenada con `make-lex-addr`
+
+La función `make-lex-addr` es el motor de búsqueda que localiza la posición de una variable dentro de las listas de contexto acumuladas (`list-of-decls`).
+
+Procesa `list-of-decls` de forma inductiva:
+
+* Si la lista de contextos está vacía, la variable es inválida o no está declarada.
+
+
+* Si la variable se encuentra en la **primera** lista (`(first list-of-decls)`), retornamos `(var : curr-depth pos)`.
+
+
+* Si no está en el bloque actual, hacemos una llamada recursiva sobre el **resto** de la lista (`(rest list-of-decls)`), **incrementando la profundidad** (`(add1 curr-depth)`).
+
+
+
+```racket
+(define (make-lex-addr var list-of-decls curr-depth)
+  (if (null? list-of-decls)
+      (error 'lexical-address-for
+             "Variable ~a no fue encontrada en ningún bloque" var)
+      (let ((pos (list-index var (first list-of-decls))))
+        (if (> pos -1)
+            ;; Encontrada en el bloque actual
+            (list var ': curr-depth pos)
+            ;; Buscar en el siguiente bloque exterior
+            (make-lex-addr var
+                           (rest list-of-decls)
+                           (add1 curr-depth))))))
+
+```
+
+---
+
+## 20.5 Currying en la Práctica: Mapeo de Evaluaciones Clínicas
+
+Observa cómo resolvimos el caso `app?` en la sección 20.3:
+
+```racket
+(map (lambda (e) (lexical-address-helper e list-of-decls))
+     (app->args exp))
+
+```
+
+¿Por qué tuvimos que escribir `(lambda (e) ...)`?
+
+Porque `lexical-address-helper` requiere **dos** argumentos (`exp` y `list-of-decls`), pero `map` espera una función que reciba **un solo** argumento (el elemento actual de la lista).
+
+En la práctica, lo que hicimos fue hacer un **Currying manual**: "congelamos" o fijamos el argumento `list-of-decls` para generar una función temporal sobre la marcha que solo acepta la expresión `e`.
+
+> **Conexión con Análisis de Datos en R**:
+> En R (usando `tidyverse` o `purrr`), esto equivale a aplicar un parámetro fijo a una lista de variables de NHANES:
+> ```r
+> # Currying implícito en R para calcular Z-scores fijando la media y SD poblacional
+> calcular_z_score <- function(media, sd) {
+>   function(x) (x - media) / sd
+> }
+> z_bmi <- calcular_z_score(media = 28.5, sd = 6.2)
+> purrr::map_dbl(nhanes_data$bmi, z_bmi)
+> 
+> ```
+> 
+> 
+
+---
+
+## 20.6 Eliminación Total de Nombres: Hacia un Motor Semántico en Datalog
+
+Una vez que comprobamos que el algoritmo de direcciones léxicas funciona, podemos dar un paso más audaz: **eliminar por completo los nombres de las variables y los parámetros**.
+
+Si reemplazamos el nombre de la variable por únicamente sus coordenadas `(: depth position)`, y sustituimos la lista de parámetros en el `lambda` por el **número total de parámetros** que acepta, obtenemos una estructura puramente abstracta:
+
+```racket
+;; Código Racket Original
+(lambda (paciente edad)
+  (if (eq? edad 65)
+      paciente
+      edad))
+
+;; Transformación Léxica Sin Variables (Bytecode Semántico)
+'(lambda 2
+   (if ((: 1 0) (: 0 1) 65)
+       (: 0 0)
+       (: 0 1)))
+
+```
+
+### ¿Por qué esto es crucial para tu motor Datalog / Semántico?
+
+1. **Unificación Rápida de Reglas**: En un motor Datalog para consultar fenotipos complejos (por ejemplo, `SindromeMetabolico(X) :- ObesidadAbdominal(X), HTA(X)`), las variables como `X` no importan por su nombre, sino por **cómo conectan las reglas de inferencia**.
+2. **Cero Búsqueda por Cadena**: El motor no pierde microsegundos comparando nombres de texto (`"paciente" == "paciente"`). Accede directamente a los arreglos/vectores de memoria mediante índices enteras `[depth, position]`.
+
+
+
+---
+
+## 20.7 Ejercicios Prácticos y Aplicados
+
+Consolida lo aprendido resolviendo los siguientes ejercicios en tu entorno de Racket.
+
+### Ejercicio 1: Rastreando Evaluaciones Metabólicas
+
+Dado el siguiente bloque de código que evalúa el riesgo cardiovascular en función del LDL y la Presión Arterial Sistólica (PAS):
+
+```racket
+'(lambda (paciente-id)
+   (lambda (ldl pas)
+     (if (if (> pas 140) #t (> ldl 160))
+         paciente-id
+         0)))
+
+```
+
+1. Realiza el rastreo manual e indica la dirección léxica en formato `(variable : depth position)` para cada una de las siguientes referencias de variable:
+* `pas`
+* `ldl`
+* `paciente-id`
+
+
+2. Verifica tu respuesta ejecutando `(lexical-address ...)` cargando el archivo `lexical-address.rkt`.
+
+
+
+### Ejercicio 2: Modificación del Intérprete para Métricas de Salud
+
+Modifica la función `make-lex-addr` en el archivo `lexical-address-novars.rkt` para que, en lugar de retornar la lista `(: depth position)`, devuelva una estructura tipo vector `#(depth position)` usando la función de Racket `vector`.
+
+*Pista:* Modifica la siguiente línea en `make-lex-addr`:
+
+```racket
+;; Antes:
+(list ': curr-depth pos)
+;; Modifícalo para generar un vector Racket de coordenadas
+
+```
+
+### Ejercicio 3: Pensamiento de Diseño de Motor Semántico (NHANES)
+
+Imagina una regla en tu motor semántico Datalog que define "Riesgo de Diabetes Mellitus Tipo 2":
+
+$$\text{RiesgoDM2}(P) \leftarrow \text{HbA1c}(P, H) \land (H \ge 6.5)$$
+
+Si traducimos esta regla a nuestra representación léxica sin nombres de variable:
+
+1. Explica brevemente por qué representar la variable $P$ (Paciente) como un índice relativo `(: 0 0)` facilita unir múltiples tablas de NHANES (`DEMO_J`, `GHB_J`) en comparación con hacer un `JOIN` por cadenas de texto en SQL convencional.
+
+---
+
+## 20.8 Solucionario y Corrección de Ejercicios Prácticos
+
+### Ejercicio 1: Rastreando Evaluaciones Metabólicas (Solución)
+
+Dada la expresión original:
+
+```racket
+(lambda (paciente-id)
+  (lambda (ldl pas)
+    (if (if (> pas 140) #t (> ldl 160))
+        paciente-id
+        0)))
+```
+
+**Análisis de Ámbitos (Scope Stack):**
+* **Bloque 0 (Más interno):** `(ldl pas)`
+* **Bloque 1:** `(paciente-id)`
+* **Bloque 2 (Variables Libres / Top-Level):** `(>)` *(calculado automáticamente por `free-vars`)*
+
+> **Nota sobre Literales:** Los números (`140`, `160`, `0`) y booleanos (`#t`) son constantes literales, por lo que el transformador léxico no los altera.
+
+**Resultado de la Transformación Léxica:**
+
+```racket
+'(lambda (paciente-id)
+   (lambda (ldl pas)
+     (if (if ((> : 2 0) (pas : 0 1) 140)
+             #t
+             ((> : 2 0) (ldl : 0 0) 160))
+         (paciente-id : 1 0)
+         0)))
+```
+
+---
+
+### Ejercicio 2: Modificación de `make-lex-addr` para Vectores de Coordenadas
+
+Código Racket con la función modificada para generar vectores `#(var : depth position)` e integración de la suite de pruebas con `rackunit`:
+
+```racket
+#lang racket
+(require rackunit)
+(require "list-index.rkt")
+
+;; Implementación modificada para retornar vectores
+(define (make-lex-addr var list-of-decls curr-depth)
+  (if (null? list-of-decls)
+      (error 'lexical-address-for
+             "variable ~a -- not found in any block" var)
+      (let ((pos (list-index var (first list-of-decls))))
+        (if (> pos -1)
+            (vector var ': curr-depth pos)
+            (make-lex-addr var
+                           (rest list-of-decls)
+                           (add1 curr-depth))))))
+
+;; -------------------------------------------------------------------------
+;; Pruebas de Unidad (Rackunit)
+;; -------------------------------------------------------------------------
+
+(define env-nhanes
+  '((hba1c)               ; Profundidad 0
+    (bmi glucosa)         ; Profundidad 1
+    (edad sexo ldl)       ; Profundidad 2
+    (eq? +)))             ; Profundidad 3 (Variables libres/Globales)
+
+(check-equal? (make-lex-addr 'hba1c env-nhanes 0)
+              #(hba1c : 0 0))
+
+(check-equal? (make-lex-addr 'bmi env-nhanes 0)
+              #(bmi : 1 0))
+
+(check-equal? (make-lex-addr 'glucosa env-nhanes 0)
+              #(glucosa : 1 1))
+
+(check-equal? (make-lex-addr 'eq? env-nhanes 0)
+              #(eq? : 3 0))
+
+;; Verificación de manejo de errores para variables no declaradas
+(check-exn exn:fail?
+           (lambda () (make-lex-addr 'trigliceridos env-nhanes 0)))
+```
+
+---
+
+### Ejercicio 3: Análisis de Rendimiento en Motores Semánticos (Datalog)
+
+> **Pregunta:** ¿Por qué representar variables mediante índices relativos `(: 0 0)` acelera la unificación en Datalog comparado con realizar `JOIN` sobre cadenas de texto en SQL?
+
+**Respuesta Técnica:**
+
+1. **Alineación de Memoria y Acceso Directo $O(1)$:**
+   Al utilizar coordenadas léxicas `(profundidad, posición)`, el motor de inferencia lógica no realiza comparaciones de cadenas de texto carismáticas ni búsquedas por clave en tablas de símbolos (*hashmaps*). En su lugar, realiza un salto directo a un desplazamiento de memoria (*offset*) en un vector en RAM.
+
+2. **Costo de Unificación en Motores de Reglas:**
+   En un motor Datalog evaluando millones de registros de NHANES, la operación principal es la **unificación de variables**. Si la unificación requiere comparar símbolos de texto (`"paciente_id" == "paciente_id"`), la CPU realiza múltiples ciclos de lectura de memoria por cada tupla. Con direcciones léxicas, la unificación se reduce a verificar si dos coordenadas de memoria apuntan al mismo índice entero, transformando una operación costosa en una simple instrucción de comparación de registros numéricos a nivel de ensamblador.
