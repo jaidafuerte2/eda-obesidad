@@ -56,6 +56,7 @@ website:
         - analysis/c17.qmd
         - analysis/c18.qmd
         - analysis/c19.qmd
+        - analysis/c20.qmd
       #- section: "PARTE IV — ABSTRACCIÓN DE DATOS."
         #href: analysis/m04.qmd
         #contents: 
