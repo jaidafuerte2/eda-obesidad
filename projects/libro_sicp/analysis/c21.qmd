@@ -1,0 +1,240 @@
+---
+title: "21. Creando Nueva Sintaxis"
+format: html
+editor: visual
+---
+
+## 1. Introducción: ¿Por qué conformarse con el recetario del lenguaje?
+
+Cuando un clínico novato llega al hospital, lo primero que hace es aprenderse de memoria los formatos preestablecidos de las historias clínicas electrónicas. Los campos están fijos, los menús desplegables son rígidos y, si necesitas registrar una métrica metabólica inusual, te toca encajarla a martillazos en el sistema.
+
+En el mundo del software tradicional (como Python o Java), pasa exactamente lo mismo: los profesores te enseñan el lenguaje como si fuera un recetario inalterable. Te dicen *"aquí tienes tus bucles y tus estructuras, manéjate con eso"*. Pero Racket viene de otra escuela. En Lisp y Racket, **el código es datos**, lo que significa que la estructura del programa es una simple lista que el propio lenguaje puede manipular, reescribir y expandir antes de ejecutarla. No estás confinado a las reglas del creador del lenguaje; puedes alterar el lenguaje mismo para que se adapte a tu forma de pensar.
+
+Y esto no es ciencia ficción académica. Si quieres ver el poder brutal de esta metaprogramación aplicada al mundo real, búscate un hueco para mirar [Obesidad en Línea](https://obesidadenlinea.rf.gd/index.html), una obra digital sobre obesidad y enfermedades asociadas escrita íntegramente utilizando ecosistemas basados en Racket y metaprogramación. Cuando combinas la flexibilidad de estas herramientas, dejas de ser un simple consumidor de software para convertirte en el arquitecto de tus propios sistemas de análisis de datos y divulgación médica.
+
+---
+
+## 2. La Abstracción Sintáctica: Traduciendo el azúcar sintáctico a formas núcleo
+
+Imagínate que estás harto de escribir la misma lógica repetitiva en tus scripts de R cuando analizas las bases de datos de NHANES. Te gustaría escribir bucles limpios al estilo Python, pero estás atrapado en otro ecosistema. En Racket, podemos inventar una sintaxis limpia y traducirla automáticamente a las formas base (o núcleo) que el evaluador ya conoce.
+
+Por ejemplo, queremos transformar un bucle expresivo:
+
+```racket
+(for i in (range 0 10) : (sqrt i))
+
+```
+
+En su forma de procesamiento nativa usando funciones de orden superior (`map` y `lambda`), que Racket procesa sin pestañear:
+
+```racket
+(map (lambda (i) (sqrt i)) (range 0 10))
+
+```
+
+### El Pipeline del Preprocesador
+
+Antes de que una sola línea de código toque al evaluador para arrojar resultados, ocurre una fase vital en el motor de Racket:
+
+> **El Ciclo de Vida del Código:**
+> 1. **Lectura (`read`):** El código entra como texto y se convierte en un Árbol de Sintaxis Abstracta (AST) con todo y "azúcar sintáctico".
+> 2. **Preprocesamiento (`preprocess`):** Las macros se expanden y traducen las azúcares sintácticas a expresiones núcleo puras.
+> 3. **Evaluación (`evaluate`):** El evaluador recibe el código limpio y devuelve el valor final.
+> 
+> 
+
+---
+
+## 3. Macros en Racket: De funciones de texto ordinarias a superpoderes sintácticos
+
+En lenguajes arcaicos como C o en procesadores de texto complejos como LaTeX, los macros operan a un nivel rudimentario: hacen un simple reemplazo de texto a troche y moche, lo que suele terminar en dolores de cabeza colosales y errores difíciles de depurar.
+
+Racket, en cambio, introduce el operador `define-syntax` junto con `syntax-rules`. Esto nos permite definir patrones de reemplazo limpios a nivel estructural.
+
+Mira qué sencillo luce nuestro bucle `for` convertido en un macro real de Racket:
+
+```racket
+(define-syntax for
+  (syntax-rules (in :)
+    ((for var in lst : exp)
+     (map (lambda (var) exp) lst))))
+
+```
+
+Con esto, el preprocesador de Racket intercepta tu nueva sintaxis personalizada en pleno vuelo, la expande en el acto y ejecuta el resultado como si hubiera estado ahí desde el día de la creación.
+
+---
+
+## 4. Diseñando un Formulario Útil: El caso de `range-case` clínico
+
+Vamos a algo más práctico para nuestra labor analítica con pacientes y datos metabólicos. ¿Te acuerdas de cuando evaluábamos grados de obesidad o calificaciones con cadenas kilométricas e infumables de `if` anidados?
+
+En lugar de volverte loco con la sangría de un `cond` o sufrir porque las funciones de tipo `case` de Racket solo buscan coincidencias exactas, podemos inventar nuestro propio formulario especializado: `range-case`.
+
+Queremos escribir algo intuitivo para clasificar rangos clínicos (por ejemplo, niveles de presión arterial, índice de masa corporal o filtrado glomerular):
+
+```racket
+(range-case student-grade
+  ((>= 0.90) 'A)
+  ((>= 0.80) 'B)
+  ((>= 0.70) 'C)
+  ((>= 0.60) 'D)
+  (else 'F))
+
+```
+
+### Implementando `range-case` con `syntax-rules`
+
+La implementación recursiva del patrón es extraordinariamente compacta:
+
+```racket
+(define-syntax range-case
+  (syntax-rules (else)
+    [(range-case id (else default))
+     default]
+    [(range-case id ((compare bound) value) rest ...)
+     (if (compare id bound)
+         value
+         (range-case id rest ...))]))
+
+```
+
+### La Arruga Técnica y la Higiene Sintáctica
+
+Ojo clínico al parche: ¿Qué pasa si en lugar de pasar una simple variable como `student-grade`, le metemos una función pesada o una consulta costosa a una base de datos externa como primer argumento? Si el macro se limita a expandir texto a ciegas, esa expresión se recalculará una y otra vez en cada rama del `if`, arruinando el rendimiento.
+
+La solución elegante es crear una versión mejorada (`range-case-v2`) que evalúe la expresión una sola vez, guardándola en una variable local mediante un `let`:
+
+```racket
+(define-syntax range-case-v2
+  (syntax-rules ()
+    [(range-case-v2 exp form1 ...)
+     (let ((id-for-exp exp))
+       (range-case id-for-exp form1 ...))]))
+
+```
+
+> **Nota de Seguridad Clínica:** En otros lenguajes de programación, crear una variable interna temporal llamada `id-for-exp` dentro de un macro podría chocar desastrosamente con una variable que tú ya estés usando en tu código principal (un "name clash"). Sin embargo, **los macros de Racket son higiénicos**: el sistema garantiza de forma automática que las variables generadas internamente sean únicas e invisibles a colisiones externas. ¡Pura bioseguridad para tu código!
+
+---
+
+## 5. Ejercicios Prácticos y Casos Aplicados (NHANES & Racket)
+
+Para fijar los conceptos en tu memoria a largo plazo sin fórmulas abstractas, resuelve los siguientes retos combinando Racket y escenarios de gestión de salud y datos:
+
+### Ejercicio 1: El Traductor de Cribados Metabólicos
+
+Imagina que recibes un listado crudo de pacientes con glucemia en ayunas y necesitas traducir una mini-sintaxis personalizada de filtrado rápido al formato tradicional de funciones de orden superior en Racket.
+
+* **Reto:** Escribe una función o macro ligero de traducción llamado `filter-to-find` que tome una expresión del tipo `(filtrar paciente en dataset : (> glucosa 126))` y la convierta automáticamente a su equivalente en `filter`.
+
+### Ejercicio 2: Categorización de Riesgo Cardiovascular con `range-case`
+
+Basándote en el macro `range-case` que estudiamos en este capítulo, diseña una variante clínica llamada `riscos-imc` que reciba el Índice de Masa Corporal (IMC) de un paciente extraído de tu cohorte de NHANES y devuelva automáticamente la categoría clínica correspondiente:
+
+* Menor a 18.5 $\rightarrow$ `'bajo-peso`
+* Entre 18.5 y 24.9 $\rightarrow$ `'normal`
+* Entre 25.0 y 29.9 $\rightarrow$ `'sobrepeso`
+* 30.0 o más $\rightarrow$ `'obesidad`
+* Utiliza una cláusula `else` para atrapar valores anómalos o nulos.
+
+---
+
+
+## Ejercicios Prácticos: Metaprogramación Aplicada a la Salud
+
+En este apartado consolidamos el poder de las macros y la traducción sintáctica utilizando escenarios reales de análisis clínico y filtrado de datos.
+
+### Ejercicio 1: El Traductor y Macro de Cribados Metabólicos
+
+A continuación se muestra la implementación dual: por un lado, un macro limpio (`filtrar`) que actúa como azúcar sintáctico para consultas rápidas en listas de pacientes; por otro, la función traductora que demuestra cómo transformar la sintaxis abstracta en formas núcleo nativas de Racket.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; 1. Macro de filtrado clínico personalizado
+(define-syntax filtrar
+  (syntax-rules (en :)
+    ((filtrar pct en lst : exp)
+     (filter (lambda (pct) exp) lst))))
+
+;; Pruebas del macro (evalúan a la lista filtrada resultante)
+(check-equal? (filtrar paciente en '(125 126 127) : (> paciente 126))
+              '(127))
+(check-equal? (filtrar paciente en '(126 127 128) : (> paciente 126))
+              '(127 128))
+
+;; 2. Función traductora de sintaxis abstracta
+(define (filter-to-find exp)
+  (let ((pcte (second exp))
+        (lst (fourth exp))
+        (logic (sixth exp)))
+    (list 'filter (list 'lambda (list pcte) logic) lst)))
+
+;; Pruebas de la función traductora (evalúan a la forma núcleo 'filter)
+(check-equal? (filter-to-find '(filtrar paciente-1 en '(125 126 127) : (> paciente 126)))
+              '(filter (lambda (paciente-1) (> paciente 126)) '(125 126 127)))
+
+```
+
+> **Nota del Copiloto:** Observa la diferencia fundamental: el macro (`filtrar`) transforma el código y **lo ejecuta** arrojando el resultado clínico (`'(127)`), mientras que la función traductora (`filter-to-find`) manipula el código como si fuera un simple dato, devolviendo la estructura equivalente en forma núcleo (`'(filter ...)`) tal como lo hace el preprocesador por debajo.
+
+---
+
+### Ejercicio 2: Categorización de Riesgo Cardiovascular con `riscos-imc`
+
+Implementación del macro recursivo `riscos-imc` para clasificar de forma elegante y legible los rangos de Índice de Masa Corporal (IMC) extraídos de nuestras cohortes de estudio.
+
+```racket
+#lang racket
+(require rackunit)
+
+;; Definición del macro recursivo para rangos clínicos
+(define-syntax riscos-imc
+  (syntax-rules (else)
+    [(riscos-imc imc (else defecto))
+     defecto]
+    [(riscos-imc imc ((comparacion limite) tipo-peso) rest ...)
+     (if (comparacion imc limite)
+         tipo-peso
+         (riscos-imc imc rest ...))]))
+
+;; Definición de pacientes de prueba con diferentes perfiles de IMC
+(define imc-paciente_delgado 17.2)
+(define imc-paciente_normal 22.4)
+(define imc-paciente_sobrepeso 27.8)
+(define imc-paciente_obesidad 34.1)
+
+;; Batería de pruebas unitarias rackunit
+(check-equal? (riscos-imc imc-paciente_delgado
+                ((< 18.5) 'bajo-peso)
+                ((< 25.0) 'normal)
+                ((< 30.0) 'sobrepeso)
+                (else 'obesidad))
+              'bajo-peso)
+
+(check-equal? (riscos-imc imc-paciente_normal
+                ((< 18.5) 'bajo-peso)
+                ((< 25.0) 'normal)
+                ((< 30.0) 'sobrepeso)
+                (else 'obesidad))
+              'normal)
+
+(check-equal? (riscos-imc imc-paciente_sobrepeso
+                ((< 18.5) 'bajo-peso)
+                ((< 25.0) 'normal)
+                ((< 30.0) 'sobrepeso)
+                (else 'obesidad))
+              'sobrepeso)
+
+(check-equal? (riscos-imc imc-paciente_obesidad
+                ((< 18.5) 'bajo-peso)
+                ((< 25.0) 'normal)
+                ((< 30.0) 'sobrepeso)
+                (else 'obesidad))
+              'obesidad)
+
+```
+
+> **Aviso de Bioseguridad Sintáctica:** Gracias a la higiene de macros de Racket, los nombres internos como `comparacion`, `limite`, `tipo-peso` y `rest` están completamente protegidos. No importa si en tu script principal de Racket usas variables con esos mismos nombres; el compilador se encarga de aislar los universos para evitar colisiones catastróficas en la sala de urgencias.
