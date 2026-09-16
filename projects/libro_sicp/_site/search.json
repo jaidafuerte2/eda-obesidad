@@ -2313,5 +2313,89 @@
       "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
       "21. Creando Nueva Sintaxis"
     ]
+  },
+  {
+    "objectID": "analysis/c22.html",
+    "href": "analysis/c22.html",
+    "title": "22. Abstracción de Datos y Variedad",
+    "section": "",
+    "text": "Nota del Autor: En este capítulo dejamos temporalmente de pelearnos con la sintaxis del lenguaje (como hicimos en las sesiones de let y variables locales) para abordar un dilema arquitectónico fundamental: ¿cómo representamos la información de manera que el sistema sea inmune a los cambios en sus entrañas? Si alguna vez has cambiado de sistema de expediente clínico electrónico (ECE) sabrás exactamente por qué esto importa.",
+    "crumbs": [
+      "Inicio",
+      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "22. Abstracción de Datos y Variedad"
+    ]
+  },
+  {
+    "objectID": "analysis/c22.html#introducción-quirúrgica-interfaz-vs.-implementación",
+    "href": "analysis/c22.html#introducción-quirúrgica-interfaz-vs.-implementación",
+    "title": "22. Abstracción de Datos y Variedad",
+    "section": "1. Introducción Quirúrgica: Interfaz vs. Implementación",
+    "text": "1. Introducción Quirúrgica: Interfaz vs. Implementación\nEn la práctica clínica y administrativa, estamos acostumbrados a separar el qué del cómo. Cuando solicitas un panel metabólico completo para un paciente de la base de datos de NHANES, no te importa si el laboratorio utiliza un espectrómetro de masas de última generación o un ensayo colorimétrico antiguo; lo único que te importa es la interfaz: una función o consulta que recibe el ID del paciente y te devuelve un objeto limpio con los valores de glucosa, colesterol y triglicéridos.\nEn programación, la abstracción de datos hace exactamente lo mismo. Permite que un programa exprese y manipule valores a través de un contrato estricto (una interfaz), ocultando los detalles sórdidos de cómo se almacenan realmente esos datos en la memoria de la computadora.\n\nLa Interfaz: El conjunto de funciones constructoras y selectoras que el programador (o nuestro futuro motor Datalog) utiliza para interactuar con los datos (por ejemplo, hacer-par, primer-elemento, segundo-elemento).\nLa Implementación: El sustrato físico o lógico subyacente (un arreglo, una lista enlazada, una tabla hash o una función matemática pura).\n\n\nAdvertencia de Arquitecto: La regla de oro de la abstracción de datos es simple: Nunca asumas nada sobre la implementación subyacente de una interfaz, ni siquiera en las estructuras más primitivas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "22. Abstracción de Datos y Variedad"
+    ]
+  },
+  {
+    "objectID": "analysis/c22.html#la-variedad-infinita-de-representaciones",
+    "href": "analysis/c22.html#la-variedad-infinita-de-representaciones",
+    "title": "22. Abstracción de Datos y Variedad",
+    "section": "2. La Variedad Infinita de Representaciones",
+    "text": "2. La Variedad Infinita de Representaciones\nPara entender la flexibilidad de la computación, analicemos cómo podemos representar algo tan básico como un número entero no negativo o una pareja de datos clínicos (por ejemplo, la relación entre el Índice de Masa Corporal y la presión arterial sistólica).\nMuchas veces incluso los números enteros se pueden construir sin utilizar los números nativos del lenguaje. Podemos definir la interfaz de un número entero no negativo con cuatro piezas:\n\nEl valor cero (zero).\nUn predicado para saber si es cero (is-zero?).\nEl sucesor (next).\nEl predecesor (previous).\n\nPodemos implementar esto usando los números nativos de Racket (0, add1, sub1), pero con la misma facilidad podríamos implementarlo usando listas donde la longitud de la lista representa el valor numérico:\n#lang racket\n\n;; Implementación alternativa de enteros no negativos usando listas\n(define zero     '())\n(define is-zero? null?)\n(define next     (lambda (n) (cons 1 n)))\n(define previous rest)\nDesde el punto de vista del usuario de la interfaz, evaluar (next (next zero)) significa exactamente el número 2, sin importar si por debajo la computadora está sumando bits o encadenando celdas de memoria vacías.",
+    "crumbs": [
+      "Inicio",
+      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "22. Abstracción de Datos y Variedad"
+    ]
+  },
+  {
+    "objectID": "analysis/c22.html#las-caras-de-un-par-del-estándar-al-malabarismo-funcional",
+    "href": "analysis/c22.html#las-caras-de-un-par-del-estándar-al-malabarismo-funcional",
+    "title": "22. Abstracción de Datos y Variedad",
+    "section": "3. Las Caras de un Par: Del Estándar al Malabarismo Funcional",
+    "text": "3. Las Caras de un Par: Del Estándar al Malabarismo Funcional\nPara aterrizar esto en nuestro análisis de datos de salud, imagina que necesitamos empaquetar una tupla de dos variables metabólicas para una consulta lógica. En Python o R estaríamos tentados a usar listas o diccionarios por defecto. Sin embargo, en Racket podemos construir un Par de al menos ocho formas radicalmente distintas. Veamos tres de las más elocuentes para nuestra evolución mental hacia un motor semántico:\n\nA. El Par como Estructura de Datos Nativa (cons, car, cdr)\nLa forma tradicional en Lisp/Scheme. Eficiente, pero atada a los apuntadores de memoria del lenguaje.\n(define MAKE-PAIR cons)\n(define FIRST     car)\n(define SECOND    cdr)\n\n\nB. El Par como Selector Funcional (Mensajes y Booleanos)\n¿Qué pasa si llevamos la abstracción al extremo y decidimos que un par no es un “contenedor” estático de memoria, sino un comportamiento? Podemos hacer que el constructor devuelva una función que reacciona a un selector booleano o simbólico:\n;; Usando funciones y símbolos (Simulando paso de mensajes)\n(define (MAKE-PAIR a b) \n  (lambda (selector)\n    (cond ((eq? selector 'first) a)\n          ((eq? selector 'second) b))))\n\n(define (FIRST aPair)  (aPair 'first))\n(define (SECOND aPair) (aPair 'second))\nTraducción clínica: Esto es idéntico a un expediente médico inteligente que no te expone carpetas de archivos físicos, sino que responde activamente cuando le preguntas por un campo específico mediante un mensaje ('first o 'second).\n\n\nC. El Par Puro: ¡Sin Datos, Solo Funciones!\nEsta es la cúspide de la elegancia funcional que tanto fascina a los teóricos de lenguajes y que sienta las bases de la lambda cálculo (el motor matemático subyacente que inspiró a Lisp y a los motores de deducción lógica):\n;; Un par construido utilizando ÚNICAMENTE funciones (Lambdas)\n(define (MAKE-PAIR a b) (lambda (proc) (proc a b)))\n(define (FIRST  aPair)  (aPair (lambda (x y) x)))\n(define (SECOND aPair)  (aPair (lambda (x y) y)))\nAquí no hay vectores, ni structs, ni listas, ni siquiera valores booleanos o condicionales if. ¡Solo funciones que envuelven a otras funciones! El constructor empaqueta los dos elementos, y los selectores entregan el procedimiento necesario para extraer el elemento izquierdo o derecho. Esto demuestra que la computación pura es un medio increíblemente flexible.",
+    "crumbs": [
+      "Inicio",
+      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "22. Abstracción de Datos y Variedad"
+    ]
+  },
+  {
+    "objectID": "analysis/c22.html#relevancia-para-nuestro-datalog-y-motor-semántico",
+    "href": "analysis/c22.html#relevancia-para-nuestro-datalog-y-motor-semántico",
+    "title": "22. Abstracción de Datos y Variedad",
+    "section": "4. Relevancia para nuestro Datalog y Motor Semántico",
+    "text": "4. Relevancia para nuestro Datalog y Motor Semántico\n¿Por qué un médico interesado en NHANES necesita devanarse los sesos con pares hechos de puras funciones?\nCuando diseñemos nuestro Datalog/motor semántico para consultar reglas metabólicas del tipo:\n\\[\\text{TieneRiesgo}(x) \\leftarrow \\text{Glucosa}(x, g) \\land g &gt; 126\\]\nNecesitaremos representar hechos y tuplas de datos de forma liviana, desacoplada y puramente lógica. Un motor semántico no debe casarse con la forma en que el disco duro o la memoria RAM guardan las tablas de NHANES; debe operar sobre interfaces lógicas. La abstracción de datos nos enseña que si definimos bien las interfaces de nuestras consultas y hechos, podremos cambiar el motor de almacenamiento subyacente (de archivos CSV a bases de datos en memoria o grafos) sin romper ni una sola línea de nuestras reglas de inferencia clínica.",
+    "crumbs": [
+      "Inicio",
+      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "22. Abstracción de Datos y Variedad"
+    ]
+  },
+  {
+    "objectID": "analysis/c22.html#ejercicios-prácticos-laboratorio-de-salud-y-racket",
+    "href": "analysis/c22.html#ejercicios-prácticos-laboratorio-de-salud-y-racket",
+    "title": "22. Abstracción de Datos y Variedad",
+    "section": "5. Ejercicios Prácticos: Laboratorio de Salud y Racket",
+    "text": "5. Ejercicios Prácticos: Laboratorio de Salud y Racket\nPara consolidar estos conceptos, resuelve los siguientes retos utilizando el archivo de código proporcionado (implementing-pairs.rkt) y tus datos mentales de salud.\n\nEjercicio 1: El Paquete Metabólico Funcional\nUtilizando la implementación de pares puros usando sólo funciones (la sección C del texto anterior), escribe un script en Racket que:\n\nCree un par donde el primer valor sea el ID de un paciente de NHANES (ej. (id-pat-402)) y el segundo valor sea su nivel de glucosa en ayunas (130).\nEcuentra una forma de extraer ambos valores utilizando exclusivamente las funciones FIRST y SECOND provistas por este modelo puramente funcional.\n\n\n\nEjercicio 2: Abstracción de Interfaces Clínicas\nImagina que estás diseñando la interfaz básica para un mini-motor Datalog orientado a salud. Define un tipo de dato abstracto llamado variable-clinica que soporte:\n\nUn constructor crear-variable que reciba el nombre del biomarcador (ej. 'imc) y su valor numérico (29.8).\nSelectores obtener-nombre y obtener-valor.\nImplementa esta interfaz usando Tablas Hash de Racket (hash) y luego reimpleméntala usando Vectores (vector). Comprueba que las funciones que consultan tus datos no necesitan cambiar sin importar qué implementación uses por debajo.",
+    "crumbs": [
+      "Inicio",
+      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "22. Abstracción de Datos y Variedad"
+    ]
+  },
+  {
+    "objectID": "analysis/c22.html#resolución-de-ejercicios-prácticos",
+    "href": "analysis/c22.html#resolución-de-ejercicios-prácticos",
+    "title": "22. Abstracción de Datos y Variedad",
+    "section": "6. Resolución de Ejercicios Prácticos",
+    "text": "6. Resolución de Ejercicios Prácticos\nA continuación se presentan las soluciones implementadas y probadas en Racket para consolidar los conceptos de la sesión.\n#lang racket\n(require rackunit)\n\n;;;;;;;;;;;;;;;;;;;;;;\n;;\n;; Ejercicio 1: El Paquete Metabólico Funcional\n;;\n;;;;;;;;;;;;;;;;;;;;;;\n\n;; Un par construido utilizando ÚNICAMENTE funciones (Lambdas puras)\n(define (myMAKE-PAIR a b) (lambda (proc) (proc a b)))\n(define glucosa-par (myMAKE-PAIR 'id-pat-402 'hiperglicemia))\n\n(define (myFIRST aPair)  (aPair (lambda (x y) x)))\n(check-equal? (myFIRST (myMAKE-PAIR 'id-pat-402 'hiperglicemia))\n              'id-pat-402)\n\n(define (mySECOND aPair) (aPair (lambda (x y) y)))\n(check-equal? (mySECOND (myMAKE-PAIR 'id-pat-402 'hiperglicemia))\n              'hiperglicemia)\n\n\n;;;;;;;;;;;;;;;;;;;;;;\n;;\n;; Ejercicio 2: Abstracción de Interfaces Clínicas (Versión Hash y Vector)\n;;\n;;;;;;;;;;;;;;;;;;;;;;\n\n;; Implementación A: Usando Tablas Hash de Racket\n(define (crear-variable-hash biomarcador valor)\n  (hash 'nombre biomarcador 'valor valor))\n\n(define (obtener-nombre-hash aPair)\n  (hash-ref aPair 'nombre))\n\n(define (obtener-valor-hash aPair)\n  (hash-ref aPair 'valor))\n\n(define imc1-hash (crear-variable-hash 'imc 'sobrepeso))\n(check-equal? (obtener-nombre-hash imc1-hash) 'imc)\n(check-equal? (obtener-valor-hash imc1-hash) 'sobrepeso)\n\n\n;; Implementación B: Usando Vectores de Racket\n(define (crear-variable-vector biomarcador valor)\n  (vector biomarcador valor))\n\n(define (obtener-nombre-vector aPair)\n  (vector-ref aPair 0))\n\n(define (obtener-valor-vector aPair)\n  (vector-ref aPair 1))\n\n(define imc1-vector (crear-variable-vector 'imc 'sobrepeso))\n(check-equal? (obtener-nombre-vector imc1-vector) 'imc)\n(check-equal? (obtener-valor-vector imc1-vector) 'sobrepeso)",
+    "crumbs": [
+      "Inicio",
+      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "22. Abstracción de Datos y Variedad"
+    ]
   }
 ]

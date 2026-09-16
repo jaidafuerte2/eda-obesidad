@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Sobre el autor – Semántica en Acción.</title>
+<title>22. Abstracción de Datos y Variedad – Semántica en Acción.</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -159,7 +194,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c00_sobre_el_autor.html">Sobre el autor</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c16.html">PARTE III — ABSTRACCIÓN SINTÁCTICA.</a></li><li class="breadcrumb-item"><a href="../analysis/c22.html">22. Abstracción de Datos y Variedad</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -185,7 +220,7 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link active">
+  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sobre el autor</span></a>
   </div>
 </li>
@@ -348,7 +383,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c22.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c22.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">22. Abstracción de Datos y Variedad</span></a>
   </div>
 </li>
@@ -364,24 +399,30 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#proyectos" id="toc-proyectos" class="nav-link active" data-scroll-target="#proyectos">Proyectos</a>
+  <li><a href="#introducción-quirúrgica-interfaz-vs.-implementación" id="toc-introducción-quirúrgica-interfaz-vs.-implementación" class="nav-link active" data-scroll-target="#introducción-quirúrgica-interfaz-vs.-implementación">1. Introducción Quirúrgica: Interfaz vs.&nbsp;Implementación</a></li>
+  <li><a href="#la-variedad-infinita-de-representaciones" id="toc-la-variedad-infinita-de-representaciones" class="nav-link" data-scroll-target="#la-variedad-infinita-de-representaciones">2. La Variedad Infinita de Representaciones</a></li>
+  <li><a href="#las-caras-de-un-par-del-estándar-al-malabarismo-funcional" id="toc-las-caras-de-un-par-del-estándar-al-malabarismo-funcional" class="nav-link" data-scroll-target="#las-caras-de-un-par-del-estándar-al-malabarismo-funcional">3. Las Caras de un Par: Del Estándar al Malabarismo Funcional</a>
   <ul class="collapse">
-  <li><a href="#salud-educación-y-divulgación" id="toc-salud-educación-y-divulgación" class="nav-link" data-scroll-target="#salud-educación-y-divulgación">Salud, educación y divulgación</a></li>
-  <li><a href="#análisis-de-datos-y-pensamiento-bayesiano" id="toc-análisis-de-datos-y-pensamiento-bayesiano" class="nav-link" data-scroll-target="#análisis-de-datos-y-pensamiento-bayesiano">Análisis de datos y pensamiento bayesiano</a></li>
-  <li><a href="#programación-y-semántica" id="toc-programación-y-semántica" class="nav-link" data-scroll-target="#programación-y-semántica">Programación y semántica</a></li>
-  <li><a href="#salud-digital-y-transformación-tecnológica" id="toc-salud-digital-y-transformación-tecnológica" class="nav-link" data-scroll-target="#salud-digital-y-transformación-tecnológica">Salud digital y transformación tecnológica</a></li>
+  <li><a href="#a.-el-par-como-estructura-de-datos-nativa-cons-car-cdr" id="toc-a.-el-par-como-estructura-de-datos-nativa-cons-car-cdr" class="nav-link" data-scroll-target="#a.-el-par-como-estructura-de-datos-nativa-cons-car-cdr">A. El Par como Estructura de Datos Nativa (<code>cons</code>, <code>car</code>, <code>cdr</code>)</a></li>
+  <li><a href="#b.-el-par-como-selector-funcional-mensajes-y-booleanos" id="toc-b.-el-par-como-selector-funcional-mensajes-y-booleanos" class="nav-link" data-scroll-target="#b.-el-par-como-selector-funcional-mensajes-y-booleanos">B. El Par como Selector Funcional (Mensajes y Booleanos)</a></li>
+  <li><a href="#c.-el-par-puro-sin-datos-solo-funciones" id="toc-c.-el-par-puro-sin-datos-solo-funciones" class="nav-link" data-scroll-target="#c.-el-par-puro-sin-datos-solo-funciones">C. El Par Puro: ¡Sin Datos, Solo Funciones!</a></li>
   </ul></li>
-  <li><a href="#intereses-actuales" id="toc-intereses-actuales" class="nav-link" data-scroll-target="#intereses-actuales">Intereses actuales</a></li>
-  <li><a href="#proyectos-y-enlaces" id="toc-proyectos-y-enlaces" class="nav-link" data-scroll-target="#proyectos-y-enlaces">Proyectos y enlaces</a></li>
+  <li><a href="#relevancia-para-nuestro-datalog-y-motor-semántico" id="toc-relevancia-para-nuestro-datalog-y-motor-semántico" class="nav-link" data-scroll-target="#relevancia-para-nuestro-datalog-y-motor-semántico">4. Relevancia para nuestro Datalog y Motor Semántico</a></li>
+  <li><a href="#ejercicios-prácticos-laboratorio-de-salud-y-racket" id="toc-ejercicios-prácticos-laboratorio-de-salud-y-racket" class="nav-link" data-scroll-target="#ejercicios-prácticos-laboratorio-de-salud-y-racket">5. Ejercicios Prácticos: Laboratorio de Salud y Racket</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-el-paquete-metabólico-funcional" id="toc-ejercicio-1-el-paquete-metabólico-funcional" class="nav-link" data-scroll-target="#ejercicio-1-el-paquete-metabólico-funcional">Ejercicio 1: El Paquete Metabólico Funcional</a></li>
+  <li><a href="#ejercicio-2-abstracción-de-interfaces-clínicas" id="toc-ejercicio-2-abstracción-de-interfaces-clínicas" class="nav-link" data-scroll-target="#ejercicio-2-abstracción-de-interfaces-clínicas">Ejercicio 2: Abstracción de Interfaces Clínicas</a></li>
+  </ul></li>
+  <li><a href="#resolución-de-ejercicios-prácticos" id="toc-resolución-de-ejercicios-prácticos" class="nav-link" data-scroll-target="#resolución-de-ejercicios-prácticos">6. Resolución de Ejercicios Prácticos</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c16.html">PARTE III — ABSTRACCIÓN SINTÁCTICA.</a></li><li class="breadcrumb-item"><a href="../analysis/c22.html">22. Abstracción de Datos y Variedad</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Sobre el autor</h1>
+<h1 class="title">22. Abstracción de Datos y Variedad</h1>
 </div>
 
 
@@ -398,68 +439,167 @@ window.Quarto = {
 </header>
 
 
-<p><img src="../files/images/mi-foto.jpg" class="img-fluid" style="width:20.0%" alt="Portada de la práctica del borrador del análisis de la tabla obesity latin"></p>
-<p>Soy médico, especialista en Administración de Instituciones de Salud y Máster en Administración de Empresas (MBA). A lo largo de mi trayectoria profesional he trabajado tanto en la atención directa de pacientes como en la gestión de servicios de salud. Estas experiencias me permiten comprender que es importante tomar decisiones informadas y de utilizar adecuadamente la información disponible en contextos de incertidumbre.</p>
-<p>En el ámbito clínico, una parte importante de mi trabajo está relacionada con la atención de personas con sobrepeso y obesidad. Esta experiencia despertó mi interés por la medicina basada en evidencia, la evaluación crítica de la información y el uso de datos para comprender mejor los problemas de salud que enfrentan los pacientes y las organizaciones.</p>
-<p>En el ámbito administrativo participo activamente en iniciativas de educación y gestión sanitaria a través de la Corporación Médica COVSA, organización que impulsa proyectos de divulgación y transformación digital en salud. Entre ellos se encuentra <a href="https://obesidadenlinea.rf.gd/"><strong>Obesidad en Línea</strong></a>, un libro abierto desarrollado con Pollen/Racket, además de diversos recursos educativos dirigidos a pacientes y profesionales.</p>
-<p>Durante los últimos años he ampliado progresivamente mi interés hacia el análisis de datos, la programación y el pensamiento computacional. Este recorrido me ha llevado desde el análisis de información en salud y la inferencia bayesiana hasta la exploración de los paradigmas de programación, la programación funcional y la construcción de sistemas capaces de representar y manipular conocimiento.</p>
-<section id="proyectos" class="level2">
-<h2 class="anchored" data-anchor-id="proyectos">Proyectos</h2>
-<section id="salud-educación-y-divulgación" class="level3">
-<h3 class="anchored" data-anchor-id="salud-educación-y-divulgación">Salud, educación y divulgación</h3>
-<p><a href="https://obesidadenlinea.rf.gd/"><strong>Obesidad en Línea</strong></a></p>
-<p>Proyecto de educación y divulgación sobre obesidad y salud dirigido a pacientes y profesionales. Se trata de un libro abierto desarrollado con herramientas web y Pollen/Racket, que representa uno de mis primeros proyectos de integración entre medicina, educación y tecnología.</p>
-</section>
-<section id="análisis-de-datos-y-pensamiento-bayesiano" class="level3">
-<h3 class="anchored" data-anchor-id="análisis-de-datos-y-pensamiento-bayesiano">Análisis de datos y pensamiento bayesiano</h3>
-<p><a href="https://bayes-blog.netlify.app/"><strong>Business analytics bayesiano</strong></a></p>
-<p>Blog profesional dedicado a explorar el análisis de datos y el pensamiento bayesiano aplicados a problemas reales de negocio.</p>
-<p>El proyecto utiliza <strong>R y rstanarm</strong> para construir modelos bayesianos y comunicar sus resultados de manera práctica e intuitiva. Los ejemplos se desarrollan a partir de datasets empresariales como <strong>Superstore</strong>, <strong>Telco Customer Churn</strong> y <strong>Marketing Campaign</strong>, abordando problemas relacionados con ventas, rentabilidad, marketing, clientes y toma de decisiones.</p>
-<p>El blog forma parte de un proceso continuo de aprendizaje y construcción de un portafolio profesional en Business Analytics Bayesiano.</p>
-<p><a href="https://bayesparadecisiones.netlify.app/"><strong>Decisiones bajo incertidumbre — Business Analytics Bayesiano con R</strong></a> Libro abierto dedicado a explicar conceptos de probabilidad, incertidumbre, pensamiento bayesiano y toma de decisiones mediante ejemplos prácticos y accesibles.</p>
-<p>El libro constituye un desarrollo más amplio de estas ideas y busca mostrar cómo el razonamiento probabilístico puede convertirse en una herramienta práctica para analizar problemas y tomar decisiones cuando la información es incompleta.</p>
-</section>
-<section id="programación-y-semántica" class="level3">
-<h3 class="anchored" data-anchor-id="programación-y-semántica">Programación y semántica</h3>
-<p><a href="https://semantica-en-accion.netlify.app/"><strong>Semántica en Acción</strong></a></p>
-<p>Este libro representa una nueva etapa de mi recorrido de aprendizaje. Inspirado inicialmente por el estudio de los paradigmas de programación, explora diferentes formas de pensar y construir programas, utilizando ejemplos prácticos y algunos problemas relacionados con el ámbito médico.</p>
-<p>El recorrido culmina con la construcción progresiva de un pequeño motor semántico basado en Datalog, como una forma de explorar cómo los programas pueden representar conocimiento, aplicar reglas y producir conclusiones.</p>
-<p>El proyecto toma como punto de partida conceptual el estudio de los paradigmas de programación, pero desarrolla un recorrido propio, incorporando ejemplos, experimentos y herramientas que forman parte de mi proceso personal de aprendizaje.</p>
-</section>
-<section id="salud-digital-y-transformación-tecnológica" class="level3">
-<h3 class="anchored" data-anchor-id="salud-digital-y-transformación-tecnológica">Salud digital y transformación tecnológica</h3>
-<p>A lo largo de mi experiencia profesional también he participado en el diseño y desarrollo de sitios web orientados a instituciones y servicios de salud, combinando conocimientos de gestión, experiencia del paciente y herramientas digitales.</p>
-<p>Entre estos proyectos se encuentran plataformas para la promoción de servicios médicos, captación de pacientes y gestión clínica utilizando WordPress y sistemas especializados para la administración de consultas médicas.</p>
-</section>
-</section>
-<section id="intereses-actuales" class="level2">
-<h2 class="anchored" data-anchor-id="intereses-actuales">Intereses actuales</h2>
+<blockquote class="blockquote">
+<p><strong>Nota del Autor:</strong> En este capítulo dejamos temporalmente de pelearnos con la sintaxis del lenguaje (como hicimos en las sesiones de <em>let</em> y variables locales) para abordar un dilema arquitectónico fundamental: ¿cómo representamos la información de manera que el sistema sea inmune a los cambios en sus entrañas? Si alguna vez has cambiado de sistema de expediente clínico electrónico (ECE) sabrás exactamente por qué esto importa.</p>
+</blockquote>
+<hr>
+<section id="introducción-quirúrgica-interfaz-vs.-implementación" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-quirúrgica-interfaz-vs.-implementación">1. Introducción Quirúrgica: Interfaz vs.&nbsp;Implementación</h2>
+<p>En la práctica clínica y administrativa, estamos acostumbrados a separar el <strong>qué</strong> del <strong>cómo</strong>. Cuando solicitas un panel metabólico completo para un paciente de la base de datos de NHANES, no te importa si el laboratorio utiliza un espectrómetro de masas de última generación o un ensayo colorimétrico antiguo; lo único que te importa es la <strong>interfaz</strong>: una función o consulta que recibe el ID del paciente y te devuelve un objeto limpio con los valores de glucosa, colesterol y triglicéridos.</p>
+<p>En programación, la <strong>abstracción de datos</strong> hace exactamente lo mismo. Permite que un programa exprese y manipule valores a través de un contrato estricto (una interfaz), ocultando los detalles sórdidos de cómo se almacenan realmente esos datos en la memoria de la computadora.</p>
 <ul>
-<li>Ciencia de datos aplicada a la salud.</li>
-<li>Business Analytics.</li>
-<li>Inferencia bayesiana.</li>
-<li>Toma de decisiones bajo incertidumbre.</li>
-<li>Programación y paradigmas de programación.</li>
-<li>Programación funcional y pensamiento computacional.</li>
-<li>Representación del conocimiento y semántica.</li>
-<li>Inteligencia artificial aplicada a problemas reales.</li>
-<li>Programación para profesionales de la salud.</li>
-<li>Transformación digital en organizaciones sanitarias.</li>
+<li><strong>La Interfaz:</strong> El conjunto de funciones constructoras y selectoras que el programador (o nuestro futuro motor Datalog) utiliza para interactuar con los datos (por ejemplo, <code>hacer-par</code>, <code>primer-elemento</code>, <code>segundo-elemento</code>).</li>
+<li><strong>La Implementación:</strong> El sustrato físico o lógico subyacente (un arreglo, una lista enlazada, una tabla hash o una función matemática pura).</li>
 </ul>
-<p>Estos proyectos forman parte de un proceso de aprendizaje continuo. Mi intención no es presentar la tecnología como un conjunto de herramientas aisladas, sino explorar cómo podemos utilizarlas para <strong>pensar mejor, representar problemas, analizar información y construir soluciones</strong>.</p>
-<p>En ese recorrido, la programación deja de ser solamente una herramienta para escribir código y se convierte también en una forma de pensar, experimentar y comprender cómo construimos significado a partir de datos, reglas y conocimiento.</p>
+<blockquote class="blockquote">
+<p><strong>Advertencia de Arquitecto:</strong> La regla de oro de la abstracción de datos es simple: <em>Nunca asumas nada sobre la implementación subyacente de una interfaz, ni siquiera en las estructuras más primitivas</em>.</p>
+</blockquote>
+<hr>
 </section>
-<section id="proyectos-y-enlaces" class="level2">
-<h2 class="anchored" data-anchor-id="proyectos-y-enlaces">Proyectos y enlaces</h2>
-<p>Si deseas explorar algunos de los proyectos mencionados en esta página, puedes visitar:</p>
-<p><a href="https://obesidadenlinea.rf.gd/"><strong>Obesidad en Línea</strong></a></p>
-<p><a href="https://bayes-blog.netlify.app/"><strong>Business analytics bayesiano</strong></a></p>
-<p><a href="https://bayesparadecisiones.netlify.app/"><strong>Decisiones bajo incertidumbre — Business Analytics Bayesiano con R</strong></a></p>
-<p><a href="https://semantica-en-accion.netlify.app/"><strong>Semántica en Acción</strong></a></p>
-<p><a href="https://github.com/jaidafuerte2"><strong>GitHub</strong></a></p>
-<p><a href="https://www.linkedin.com/in/jaimedavidvillafuerte/"><strong>LinkedIn</strong></a></p>
-<p>También comparto reflexiones y avances sobre análisis de datos, salud, programación y tecnología a través de mis redes profesionales.</p>
-<p><strong>David Villafuerte MD, MBA</strong></p>
+<section id="la-variedad-infinita-de-representaciones" class="level2">
+<h2 class="anchored" data-anchor-id="la-variedad-infinita-de-representaciones">2. La Variedad Infinita de Representaciones</h2>
+<p>Para entender la flexibilidad de la computación, analicemos cómo podemos representar algo tan básico como un número entero no negativo o una pareja de datos clínicos (por ejemplo, la relación entre el Índice de Masa Corporal y la presión arterial sistólica).</p>
+<p>Muchas veces incluso los números enteros se pueden construir sin utilizar los números nativos del lenguaje. Podemos definir la interfaz de un número entero no negativo con cuatro piezas:</p>
+<ol type="1">
+<li><p>El valor cero (<code>zero</code>).</p></li>
+<li><p>Un predicado para saber si es cero (<code>is-zero?</code>).</p></li>
+<li><p>El sucesor (<code>next</code>).</p></li>
+<li><p>El predecesor (<code>previous</code>).</p></li>
+</ol>
+<p>Podemos implementar esto usando los números nativos de Racket (<code>0</code>, <code>add1</code>, <code>sub1</code>), pero con la misma facilidad podríamos implementarlo usando listas donde la longitud de la lista representa el valor numérico:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">;; Implementación alternativa de enteros no negativos usando listas</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> zero     </span>'<span class="op">())</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> is-zero? </span><span class="kw">null?</span><span class="op">)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> next     </span><span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>n<span class="op">)</span> <span class="op">(</span><span class="kw">cons</span> <span class="dv">1</span> n<span class="op">)))</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> previous </span>rest<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Desde el punto de vista del usuario de la interfaz, evaluar <code>(next (next zero))</code> significa exactamente el número 2, sin importar si por debajo la computadora está sumando bits o encadenando celdas de memoria vacías.</p>
+<hr>
+</section>
+<section id="las-caras-de-un-par-del-estándar-al-malabarismo-funcional" class="level2">
+<h2 class="anchored" data-anchor-id="las-caras-de-un-par-del-estándar-al-malabarismo-funcional">3. Las Caras de un Par: Del Estándar al Malabarismo Funcional</h2>
+<p>Para aterrizar esto en nuestro análisis de datos de salud, imagina que necesitamos empaquetar una tupla de dos variables metabólicas para una consulta lógica. En Python o R estaríamos tentados a usar listas o diccionarios por defecto. Sin embargo, en Racket podemos construir un <strong>Par</strong> de al menos ocho formas radicalmente distintas. Veamos tres de las más elocuentes para nuestra evolución mental hacia un motor semántico:</p>
+<section id="a.-el-par-como-estructura-de-datos-nativa-cons-car-cdr" class="level3">
+<h3 class="anchored" data-anchor-id="a.-el-par-como-estructura-de-datos-nativa-cons-car-cdr">A. El Par como Estructura de Datos Nativa (<code>cons</code>, <code>car</code>, <code>cdr</code>)</h3>
+<p>La forma tradicional en Lisp/Scheme. Eficiente, pero atada a los apuntadores de memoria del lenguaje.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> MAKE-PAIR </span><span class="kw">cons</span><span class="op">)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> FIRST     </span><span class="kw">car</span><span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> SECOND    </span><span class="kw">cdr</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="b.-el-par-como-selector-funcional-mensajes-y-booleanos" class="level3">
+<h3 class="anchored" data-anchor-id="b.-el-par-como-selector-funcional-mensajes-y-booleanos">B. El Par como Selector Funcional (Mensajes y Booleanos)</h3>
+<p>¿Qué pasa si llevamos la abstracción al extremo y decidimos que un par no es un “contenedor” estático de memoria, sino un <em>comportamiento</em>? Podemos hacer que el constructor devuelva una función que reacciona a un selector booleano o simbólico:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Usando funciones y símbolos (Simulando paso de mensajes)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>MAKE-PAIR a b<span class="op">)</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>selector<span class="op">)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">cond</span> <span class="op">((</span><span class="kw">eq?</span> selector 'first<span class="op">)</span> a<span class="op">)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>          <span class="op">((</span><span class="kw">eq?</span> selector 'second<span class="op">)</span> b<span class="op">))))</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>FIRST aPair<span class="op">)</span>  <span class="op">(</span>aPair 'first<span class="op">))</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>SECOND aPair<span class="op">)</span> <span class="op">(</span>aPair 'second<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Traducción clínica:</em> Esto es idéntico a un expediente médico inteligente que no te expone carpetas de archivos físicos, sino que responde activamente cuando le preguntas por un campo específico mediante un mensaje (<code>'first</code> o <code>'second</code>).</p>
+</section>
+<section id="c.-el-par-puro-sin-datos-solo-funciones" class="level3">
+<h3 class="anchored" data-anchor-id="c.-el-par-puro-sin-datos-solo-funciones">C. El Par Puro: ¡Sin Datos, Solo Funciones!</h3>
+<p>Esta es la cúspide de la elegancia funcional que tanto fascina a los teóricos de lenguajes y que sienta las bases de la <strong>lambda cálculo</strong> (el motor matemático subyacente que inspiró a Lisp y a los motores de deducción lógica):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Un par construido utilizando ÚNICAMENTE funciones (Lambdas)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>MAKE-PAIR a b<span class="op">)</span> <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>proc<span class="op">)</span> <span class="op">(</span>proc a b<span class="op">)))</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>FIRST  aPair<span class="op">)</span>  <span class="op">(</span>aPair <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>x y<span class="op">)</span> x<span class="op">)))</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>SECOND aPair<span class="op">)</span>  <span class="op">(</span>aPair <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>x y<span class="op">)</span> y<span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Aquí no hay vectores, ni structs, ni listas, ni siquiera valores booleanos o condicionales <code>if</code>. ¡Solo funciones que envuelven a otras funciones! El constructor empaqueta los dos elementos, y los selectores entregan el procedimiento necesario para extraer el elemento izquierdo o derecho. Esto demuestra que la computación pura es un medio increíblemente flexible.</p>
+<hr>
+</section>
+</section>
+<section id="relevancia-para-nuestro-datalog-y-motor-semántico" class="level2">
+<h2 class="anchored" data-anchor-id="relevancia-para-nuestro-datalog-y-motor-semántico">4. Relevancia para nuestro Datalog y Motor Semántico</h2>
+<p>¿Por qué un médico interesado en NHANES necesita devanarse los sesos con pares hechos de puras funciones?</p>
+<p>Cuando diseñemos nuestro <strong>Datalog/motor semántico</strong> para consultar reglas metabólicas del tipo:</p>
+<p><span class="math display">\[\text{TieneRiesgo}(x) \leftarrow \text{Glucosa}(x, g) \land g &gt; 126\]</span></p>
+<p>Necesitaremos representar <strong>hechos</strong> y <strong>tuplas de datos</strong> de forma liviana, desacoplada y puramente lógica. Un motor semántico no debe casarse con la forma en que el disco duro o la memoria RAM guardan las tablas de NHANES; debe operar sobre <strong>interfaces lógicas</strong>. La abstracción de datos nos enseña que si definimos bien las interfaces de nuestras consultas y hechos, podremos cambiar el motor de almacenamiento subyacente (de archivos CSV a bases de datos en memoria o grafos) sin romper ni una sola línea de nuestras reglas de inferencia clínica.</p>
+<hr>
+</section>
+<section id="ejercicios-prácticos-laboratorio-de-salud-y-racket" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios-prácticos-laboratorio-de-salud-y-racket">5. Ejercicios Prácticos: Laboratorio de Salud y Racket</h2>
+<p>Para consolidar estos conceptos, resuelve los siguientes retos utilizando el archivo de código proporcionado (<code>implementing-pairs.rkt</code>) y tus datos mentales de salud.</p>
+<section id="ejercicio-1-el-paquete-metabólico-funcional" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-el-paquete-metabólico-funcional">Ejercicio 1: El Paquete Metabólico Funcional</h3>
+<p>Utilizando la implementación de <strong>pares puros usando sólo funciones</strong> (la sección <em>C</em> del texto anterior), escribe un script en Racket que:</p>
+<ol type="1">
+<li>Cree un par donde el primer valor sea el ID de un paciente de NHANES (ej. <code>(id-pat-402)</code>) y el segundo valor sea su nivel de glucosa en ayunas (<code>130</code>).</li>
+<li>Ecuentra una forma de extraer ambos valores utilizando exclusivamente las funciones <code>FIRST</code> y <code>SECOND</code> provistas por este modelo puramente funcional.</li>
+</ol>
+</section>
+<section id="ejercicio-2-abstracción-de-interfaces-clínicas" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-abstracción-de-interfaces-clínicas">Ejercicio 2: Abstracción de Interfaces Clínicas</h3>
+<p>Imagina que estás diseñando la interfaz básica para un mini-motor Datalog orientado a salud. Define un tipo de dato abstracto llamado <code>variable-clinica</code> que soporte:</p>
+<ul>
+<li>Un constructor <code>crear-variable</code> que reciba el nombre del biomarcador (ej. <code>'imc</code>) y su valor numérico (<code>29.8</code>).</li>
+<li>Selectores <code>obtener-nombre</code> y <code>obtener-valor</code>.</li>
+<li>Implementa esta interfaz usando <strong>Tablas Hash</strong> de Racket (<code>hash</code>) y luego reimpleméntala usando <strong>Vectores</strong> (<code>vector</code>). Comprueba que las funciones que consultan tus datos no necesitan cambiar sin importar qué implementación uses por debajo.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="resolución-de-ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="resolución-de-ejercicios-prácticos">6. Resolución de Ejercicios Prácticos</h2>
+<p>A continuación se presentan las soluciones implementadas y probadas en Racket para consolidar los conceptos de la sesión.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">;;;;;;;;;;;;;;;;;;;;;;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">;;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 1: El Paquete Metabólico Funcional</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">;;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">;;;;;;;;;;;;;;;;;;;;;;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; Un par construido utilizando ÚNICAMENTE funciones (Lambdas puras)</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>myMAKE-PAIR a b<span class="op">)</span> <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>proc<span class="op">)</span> <span class="op">(</span>proc a b<span class="op">)))</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> glucosa-par </span><span class="op">(</span>myMAKE-PAIR 'id-pat-402 'hiperglicemia<span class="op">))</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>myFIRST aPair<span class="op">)</span>  <span class="op">(</span>aPair <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>x y<span class="op">)</span> x<span class="op">)))</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>myFIRST <span class="op">(</span>myMAKE-PAIR 'id-pat-402 'hiperglicemia<span class="op">))</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>              'id-pat-402<span class="op">)</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>mySECOND aPair<span class="op">)</span> <span class="op">(</span>aPair <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>x y<span class="op">)</span> y<span class="op">)))</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>mySECOND <span class="op">(</span>myMAKE-PAIR 'id-pat-402 'hiperglicemia<span class="op">))</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>              'hiperglicemia<span class="op">)</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">;;;;;;;;;;;;;;;;;;;;;;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">;;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">;; Ejercicio 2: Abstracción de Interfaces Clínicas (Versión Hash y Vector)</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">;;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">;;;;;;;;;;;;;;;;;;;;;;</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">;; Implementación A: Usando Tablas Hash de Racket</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>crear-variable-hash biomarcador valor<span class="op">)</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>hash 'nombre biomarcador 'valor valor<span class="op">))</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>obtener-nombre-hash aPair<span class="op">)</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>hash-ref aPair 'nombre<span class="op">))</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>obtener-valor-hash aPair<span class="op">)</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>hash-ref aPair 'valor<span class="op">))</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> imc1-hash </span><span class="op">(</span>crear-variable-hash 'imc 'sobrepeso<span class="op">))</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>obtener-nombre-hash imc1-hash<span class="op">)</span> 'imc<span class="op">)</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>obtener-valor-hash imc1-hash<span class="op">)</span> 'sobrepeso<span class="op">)</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="co">;; Implementación B: Usando Vectores de Racket</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>crear-variable-vector biomarcador valor<span class="op">)</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">vector</span> biomarcador valor<span class="op">))</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>obtener-nombre-vector aPair<span class="op">)</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">vector-ref</span> aPair <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>obtener-valor-vector aPair<span class="op">)</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">vector-ref</span> aPair <span class="dv">1</span><span class="op">))</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> imc1-vector </span><span class="op">(</span>crear-variable-vector 'imc 'sobrepeso<span class="op">))</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>obtener-nombre-vector imc1-vector<span class="op">)</span> 'imc<span class="op">)</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>obtener-valor-vector imc1-vector<span class="op">)</span> 'sobrepeso<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
