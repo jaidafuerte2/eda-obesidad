@@ -1,0 +1,247 @@
+---
+title: "23. El tipo de dato abstracto de función finita"
+format: html
+editor: visual
+---
+
+
+> **Nota del Copiloto:** Olvídate por un momento de los pizarrones universitarios llenos de notaciones crípticas. Si has sobrevivido a un turno de urgencias o a depurar bases de datos masivas de NHANES con miles de registros de pacientes, ya entiendes conceptualmente de qué trata este capítulo. Hoy vamos a construir un **diccionario de datos inteligente** desde las entrañas de Racket, preparando el terreno para el motor semántico y de reglas (*Datalog*) que quieres armar.
+
+---
+
+## 1. Introducción: ¿Por qué necesitamos mapear el mundo clínico sin morir en el intento?
+
+Imagina que estás analizando los datos de la encuesta **NHANES** (*National Health and Nutrition Examination Survey*). Tienes cientos de variables metabólicas: índice de masa corporal (`IMC`), presión arterial sistólica (`PAS`), triglicéridos, glucosa en ayunas, entre otras.
+
+En programación, constantemente necesitamos responder a una pregunta fundamental: *dada una clave (el nombre de una variable o el ID de un paciente), ¿cuál es su valor correspondiente?*
+
+En análisis de datos tradicional o en lenguajes convencionales, esto se resuelve con un diccionario, un hash map o un data frame. Pero en el diseño de lenguajes y en la construcción de intérpretes, necesitamos algo más ligero, puramente funcional y transparente: una **función finita** (*finite function*).
+
+Una función finita no es más que un mapeo con un dominio finito (un número limitado de entradas posibles asociadas a salidas únicas). En términos clínicos, es como tu tarjetero de cabecera o el diccionario de códigos de diagnóstico de un estudio: sabes exactamente qué valor corresponde a cada clave registrada, y si preguntas por una que no existe, el sistema debe avisarte en lugar de inventar datos falsos.
+
+---
+
+## 2. De la Lista Estática al Comportamiento Dinámico (Funciones como Datos)
+
+¿Cómo representarías un conjunto pequeño de variables y sus valores en código? Una opción ingenua sería usar una lista de pares ordenados:
+
+```racket
+;; Una lista estática de pares clave-valor
+(define f-lista '((foo . 2) (bar . 5) (baz . 15)))
+
+```
+
+El problema con este enfoque es que cada vez que queremos buscar un valor, tenemos que recorrer la lista elemento por elemento (búsqueda lineal). Si la base de datos de NHANES crece, esto se vuelve ineficiente.
+
+¿Y si en lugar de guardar *datos inertes* (como listas estáticas), usamos **una función de Racket** que encapsule la lógica de búsqueda? Piénsalo como un protocolo clínico inteligente: en lugar de cargar impreso el expediente de cada paciente en la mano, tienes una función mental (o un algoritmo) que sabe exactamente qué hacer ante cada ID:
+
+```racket
+;; Una función finita implementada directamente como función en Racket
+(define (f arg)
+  (cond ((eq? arg 'foo) 2)
+        ((eq? arg 'bar) 5)
+        ((eq? arg 'baz) 15)
+        (else (error 'ff "no such key -- ~a" arg))))
+
+```
+
+Si ejecutas `(f 'foo)`, obtendrás `2`. Si le pasas una clave desconocida como `'bif`, el sistema se protege arrojando un error clínico controlado (*"argument not in domain"*), evitando que tomes decisiones con datos inexistentes.
+
+### Extendiendo el conocimiento sin romper el pasado
+
+¿Qué pasa cuando el estudio clínico avanza y descubres una nueva variable o paciente que incorporar? No quieres reescribir todo el diccionario anterior. Quieres **extenderlo**.
+
+Si queremos añadir el par `(bif . 41)` a nuestra función existente `f`, podemos crear una nueva función que evalúe primero si la clave es la nueva, y si no, que delegue la responsabilidad a la función original `f`:
+
+```racket
+(define (f-plus-bif arg)
+  (cond ((eq? arg 'bif) 41)
+        (else (f arg))))
+
+```
+
+Esto es brillante porque utiliza una técnica de envoltura (*wrapping*): la nueva función intercepta la consulta. Si conoce la respuesta, la da de inmediato; si no, le pasa la estafeta al clínico anterior (la función previa).
+
+---
+
+## 3. El ADT de Funciones Finitas (Finite Function API)
+
+Para evitar hacer esto a mano cada vez, formalizamos el concepto mediante un **Tipo de Dato Abstracto (ADT)**. Un buen ADT separa limpiamente el **contrato (API)** de su **implementación interna**.
+
+Nuestra interfaz consta de tres operaciones esenciales:
+
+1. `(empty-ff)`: Crea un diccionario vacío (una historia clínica en blanco que rechaza cualquier consulta por falta de registros).
+2. `(extend-ff sym val ff)`: Extiende una función finita existente `ff` con una nueva asociación `sym -> val`.
+3. `(apply-ff ff sym)`: Consulta el valor asociado a la clave `sym` dentro de la función finita `ff`.
+
+### La implementación procedural en Racket
+
+Veamos cómo se implementa esto utilizando funciones de orden superior:
+
+```racket
+#lang racket
+(provide empty-ff extend-ff apply-ff)
+
+;; 1. El constructor de la función finita vacía
+(define (empty-ff)
+  (lambda (symbol)
+    (error 'finite-function "no such key -- ~a" symbol)))
+
+;; 2. El constructor para extender una función finita existente
+(define (extend-ff sym val ff)
+  (lambda (symbol)
+    (if (eq? symbol sym)
+        val 
+        (apply-ff ff symbol))))
+
+;; 3. El accesor para consultar la función finita
+(define (apply-ff ff symbol)
+  (ff symbol))
+
+```
+
+> **¿Por qué usar `apply-ff` si una función finita ya es una función de Racket?**
+> Podrías simplemente llamar al diccionario como `(my-ff 'foo)`. Sin embargo, definir explícitamente la función `apply-ff` crea una muralla protectora (la separación de incumbencias de un ADT). Si el día de mañana decidimos dejar de usar funciones de Racket bajo el cofre y migrar a una estructura de árboles o tablas hash tradicionales, ningún pedazo de código de los clientes (tus análisis de NHANES) tendrá que reescribirse; solo cambiaremos la implementación interna del ADT.
+> 
+> 
+
+### Construyendo nuestro primer diccionario clínico modular
+
+Con este ADT, podemos recrear nuestro diccionario original de forma limpia y elegante:
+
+```racket
+(require "finite-function.rkt")
+
+(define my-ff
+  (extend-ff 'foo 2
+    (extend-ff 'bar 5
+      (extend-ff 'baz 15
+        (empty-ff)))))
+
+;; Consultando valores
+;; > (apply-ff my-ff 'foo)  -> 2
+;; > (apply-ff my-ff 'bif)  -> Error: no such key -- bif
+
+```
+
+---
+
+## 4. Escalando el Sistema: Inserciones Múltiples (`extend-ff*`)
+
+En el análisis de datos de salud real, rara vez registramos una sola variable de forma aislada. Cuando importas un panel metabólico de un paciente de NHANES, te llega un lote completo de variables y valores de un solo golpe.
+
+Extender el diccionario de uno en uno con código repetitivo sería engorroso. Para solucionar esto, podemos crear una versión ampliada (`extend-ff*`) que procese listas paralelas de símbolos y valores utilizando **recursividad estructural**:
+
+```racket
+#lang racket
+(require "finite-function.rkt")
+(provide extend-ff*)
+
+(define (extend-ff* symbol-list value-list ff)
+  (if (null? symbol-list)
+      ff
+      (extend-ff (first symbol-list) (first value-list)
+                 (extend-ff* (rest symbol-list) (rest value-list) ff))))
+
+```
+
+### ¿Cómo funciona esta maquinaria?
+
+La función recorre simultáneamente la lista de variables y la lista de valores paso a paso. Toma la cabeza (`car`) de ambas listas, realiza una extensión unitaria mediante `extend-ff`, y delega el resto de la lista recursivamente hasta vaciarla. Es el equivalente computacional a procesar una hoja de Excel fila por fila de manera automatizada.
+
+Ejemplo de uso:
+
+```racket
+(define panel-metabolico 
+  (extend-ff* '(glucosa colesterol trigliceridos) 
+              '(95 210 150) 
+              (empty-ff)))
+
+;; > (apply-ff panel-metabolico 'colesterol)
+;; 210
+
+```
+
+---
+
+## 5. Apéndice Conceptual: Hacia el Motor Semántico (Datalog)
+
+¿Por qué se insiste tanto en las funciones finitas en un curso de paradigmas? Porque en la construcción de lenguajes de programación, **un entorno (*environment*) que mapea variables locales a sus valores en memoria no es más que una función finita**.
+
+Cuando estés diseñando un motor semántico basado en reglas para consultar datos de NHANES, necesitarás almacenar hechos y reglas lógicas donde las variables cambien de ámbito (*scope*). Al dominar las funciones finitas implementadas como closures funcionales, tienes en tus manos el bloque de construcción exacto para manejar contextos de ejecución y bases de conocimiento lógicas sin dependencias externas pesadas.
+
+---
+
+## 6. Sección de Ejercicios Prácticos
+
+Para afianzar estos conceptos sin cruzar la línea hacia las matemáticas abstractas, resuelve los siguientes ejercicios combinando Racket y escenarios clínicos/analíticos:
+
+### Ejercicio 1: El Tarjetero de Comorbilidades
+
+Utilizando el ADT de funciones finitas (`empty-ff`, `extend-ff`, `apply-ff`), construye un diccionario clínico llamado `historial-paciente` que almacene los siguientes códigos de riesgo para un paciente de NHANES:
+
+* `'hTA` (Hipertensión) -> `1` (Presente)
+* `'dm2` (Diabetes Mellitus tipo 2) -> `0` (Ausente)
+* `'obesidad` -> `1` (Presente)
+
+Escribe las sentencias en Racket para crearlo y realiza una consulta para verificar el estado de la obesidad.
+
+### Ejercicio 2: Automatizando Paneles de Laboratorio con `extend-ff*`
+
+Imagina que estás procesando un bloque masivo automatizado para un subset de pacientes. Utiliza `extend-ff*` para registrar en una sola operación un mini-panel de biomarcadores inflamatorios:
+
+* Símbolos: `'(pcr interleucina6 ldl)`
+* Valores: `'(3.2 12.5 140)`
+* Partiendo de un `(empty-ff)`.
+
+Verifica mediante `apply-ff` qué valor arroja al consultar `'interleucina6`.
+
+
+
+## Soluciones a los Ejercicios Prácticos:
+
+> **Nota del Copiloto:** Validar nuestros modelos clínicos mediante pruebas unitarias (`rackunit`) es el equivalente funcional a realizar un ensayo clínico controlado antes de lanzar una directriz al quirófano de datos. A continuación, revisamos las soluciones para el registro de comorbilidades y paneles de laboratorio masivos.
+
+### Ejercicio 1: El Tarjetero de Comorbilidades
+
+Para resolver el primer ejercicio, construimos un expediente clínico secuencial utilizando `extend-ff` sobre una base vacía `empty-ff`. Esto nos permite registrar los códigos de riesgo (como hipertensión, diabetes y obesidad) de manera limpia y estructurada.
+
+```racket
+#lang racket
+(require rackunit)
+(require "finite-function.rkt")
+
+;; Definición del historial del paciente con comorbilidades
+(define historial-paciente
+  (extend-ff 'htA 1
+    (extend-ff 'dm2 0
+      (extend-ff 'obesidad 1
+        (empty-ff)))))
+
+;; Prueba de validación para la obesidad
+(check-equal? (apply-ff historial-paciente 'obesidad)
+              1)
+
+```
+
+### Ejercicio 2: Automatizando Paneles de Laboratorio con `extend-ff*`
+
+En el análisis de datos masivos (como los perfiles metabólicos de NHANES), rara vez registramos una variable a la vez. Aquí aplicamos la función de extensión por lotes `extend-ff*`, que recorre listas paralelas de símbolos y valores mediante recursividad estructural para poblar el diccionario de un solo golpe.
+
+```racket
+#lang racket
+(require rackunit)
+(require "finite-function.rkt")
+(require "extend-ff-star.rkt")
+
+;; Población masiva del panel de biomarcadores inflamatorios
+(define panel-laboratorio 
+  (extend-ff* '(pcr interleucina6 ldl) 
+              '(3.2 12.5 140) 
+              (empty-ff)))
+
+;; Prueba de validación para la interleucina-6
+(check-equal? (apply-ff panel-laboratorio 'interleucina6)
+              12.5)
+
+```

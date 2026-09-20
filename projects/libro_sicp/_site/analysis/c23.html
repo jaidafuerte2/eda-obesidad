@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación – Semántica en Acción.</title>
+<title>23. El tipo de dato abstracto de función finita – Semántica en Acción.</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -194,7 +194,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">PARTE I — INTRODUCCIÓN A RACKET Y LA PROGRAMACIÓN FUNCIONAL.</a></li><li class="breadcrumb-item"><a href="../analysis/c02.html">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c22.html">PARTE IV — ABSTRACCIÓN DE DATOS.</a></li><li class="breadcrumb-item"><a href="../analysis/c23.html">23. El tipo de dato abstracto de función finita</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -241,7 +241,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link active">
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
   </div>
 </li>
@@ -400,7 +400,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c23.html" class="sidebar-item-text sidebar-link">
+  <a href="../analysis/c23.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">23. El tipo de dato abstracto de función finita</span></a>
   </div>
 </li>
@@ -416,30 +416,30 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introducción-el-ecosistema-y-los-datos" id="toc-introducción-el-ecosistema-y-los-datos" class="nav-link active" data-scroll-target="#introducción-el-ecosistema-y-los-datos">Introducción: El Ecosistema y los Datos</a></li>
-  <li><a href="#el-repl-nuestro-monitor-de-signos-vitales" id="toc-el-repl-nuestro-monitor-de-signos-vitales" class="nav-link" data-scroll-target="#el-repl-nuestro-monitor-de-signos-vitales">El REPL: Nuestro Monitor de Signos Vitales</a></li>
-  <li><a href="#anatomía-de-una-expresión-en-racket-sin-notación-matemática" id="toc-anatomía-de-una-expresión-en-racket-sin-notación-matemática" class="nav-link" data-scroll-target="#anatomía-de-una-expresión-en-racket-sin-notación-matemática">Anatomía de una Expresión en Racket (Sin Notación Matemática)</a>
+  <li><a href="#introducción-por-qué-necesitamos-mapear-el-mundo-clínico-sin-morir-en-el-intento" id="toc-introducción-por-qué-necesitamos-mapear-el-mundo-clínico-sin-morir-en-el-intento" class="nav-link active" data-scroll-target="#introducción-por-qué-necesitamos-mapear-el-mundo-clínico-sin-morir-en-el-intento">1. Introducción: ¿Por qué necesitamos mapear el mundo clínico sin morir en el intento?</a></li>
+  <li><a href="#de-la-lista-estática-al-comportamiento-dinámico-funciones-como-datos" id="toc-de-la-lista-estática-al-comportamiento-dinámico-funciones-como-datos" class="nav-link" data-scroll-target="#de-la-lista-estática-al-comportamiento-dinámico-funciones-como-datos">2. De la Lista Estática al Comportamiento Dinámico (Funciones como Datos)</a>
   <ul class="collapse">
-  <li><a href="#la-notación-prefija" id="toc-la-notación-prefija" class="nav-link" data-scroll-target="#la-notación-prefija">La Notación Prefija</a></li>
-  <li><a href="#evaluación-en-árbol" id="toc-evaluación-en-árbol" class="nav-link" data-scroll-target="#evaluación-en-árbol">Evaluación en Árbol</a></li>
+  <li><a href="#extendiendo-el-conocimiento-sin-romper-el-pasado" id="toc-extendiendo-el-conocimiento-sin-romper-el-pasado" class="nav-link" data-scroll-target="#extendiendo-el-conocimiento-sin-romper-el-pasado">Extendiendo el conocimiento sin romper el pasado</a></li>
   </ul></li>
-  <li><a href="#tipos-de-datos-básicos-los-ladrillos-de-la-historia-clínica" id="toc-tipos-de-datos-básicos-los-ladrillos-de-la-historia-clínica" class="nav-link" data-scroll-target="#tipos-de-datos-básicos-los-ladrillos-de-la-historia-clínica">Tipos de Datos Básicos: Los Ladrillos de la Historia Clínica</a>
+  <li><a href="#el-adt-de-funciones-finitas-finite-function-api" id="toc-el-adt-de-funciones-finitas-finite-function-api" class="nav-link" data-scroll-target="#el-adt-de-funciones-finitas-finite-function-api">3. El ADT de Funciones Finitas (Finite Function API)</a>
   <ul class="collapse">
-  <li><a href="#números-exactos-e-inexactos" id="toc-números-exactos-e-inexactos" class="nav-link" data-scroll-target="#números-exactos-e-inexactos">Números Exactos e Inexactos</a></li>
-  <li><a href="#cadenas-símbolos-y-booleanos" id="toc-cadenas-símbolos-y-booleanos" class="nav-link" data-scroll-target="#cadenas-símbolos-y-booleanos">Cadenas, Símbolos y Booleanos</a></li>
+  <li><a href="#la-implementación-procedural-en-racket" id="toc-la-implementación-procedural-en-racket" class="nav-link" data-scroll-target="#la-implementación-procedural-en-racket">La implementación procedural en Racket</a></li>
+  <li><a href="#construyendo-nuestro-primer-diccionario-clínico-modular" id="toc-construyendo-nuestro-primer-diccionario-clínico-modular" class="nav-link" data-scroll-target="#construyendo-nuestro-primer-diccionario-clínico-modular">Construyendo nuestro primer diccionario clínico modular</a></li>
   </ul></li>
-  <li><a href="#hacia-el-motor-semántico-pensando-en-reglas-y-datos" id="toc-hacia-el-motor-semántico-pensando-en-reglas-y-datos" class="nav-link" data-scroll-target="#hacia-el-motor-semántico-pensando-en-reglas-y-datos">Hacia el Motor Semántico: Pensando en Reglas y Datos</a></li>
-  <li><a href="#ejercicios-prácticos-pruebas-de-laboratorio-racket" id="toc-ejercicios-prácticos-pruebas-de-laboratorio-racket" class="nav-link" data-scroll-target="#ejercicios-prácticos-pruebas-de-laboratorio-racket">Ejercicios Prácticos: Pruebas de Laboratorio Racket</a>
+  <li><a href="#escalando-el-sistema-inserciones-múltiples-extend-ff" id="toc-escalando-el-sistema-inserciones-múltiples-extend-ff" class="nav-link" data-scroll-target="#escalando-el-sistema-inserciones-múltiples-extend-ff">4. Escalando el Sistema: Inserciones Múltiples (<code>extend-ff*</code>)</a>
   <ul class="collapse">
-  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1">Ejercicio 1</a></li>
-  <li><a href="#ejercicio-2-caso-clínicodatos-metabólicos" id="toc-ejercicio-2-caso-clínicodatos-metabólicos" class="nav-link" data-scroll-target="#ejercicio-2-caso-clínicodatos-metabólicos">Ejercicio 2 (Caso Clínico/Datos Metabólicos)</a></li>
-  <li><a href="#ejercicio-3-pensamiento-datalog" id="toc-ejercicio-3-pensamiento-datalog" class="nav-link" data-scroll-target="#ejercicio-3-pensamiento-datalog">Ejercicio 3 (Pensamiento Datalog)</a></li>
+  <li><a href="#cómo-funciona-esta-maquinaria" id="toc-cómo-funciona-esta-maquinaria" class="nav-link" data-scroll-target="#cómo-funciona-esta-maquinaria">¿Cómo funciona esta maquinaria?</a></li>
   </ul></li>
-  <li><a href="#solucionario-de-ejercicios-prácticos" id="toc-solucionario-de-ejercicios-prácticos" class="nav-link" data-scroll-target="#solucionario-de-ejercicios-prácticos">Solucionario de Ejercicios Prácticos</a>
+  <li><a href="#apéndice-conceptual-hacia-el-motor-semántico-datalog" id="toc-apéndice-conceptual-hacia-el-motor-semántico-datalog" class="nav-link" data-scroll-target="#apéndice-conceptual-hacia-el-motor-semántico-datalog">5. Apéndice Conceptual: Hacia el Motor Semántico (Datalog)</a></li>
+  <li><a href="#sección-de-ejercicios-prácticos" id="toc-sección-de-ejercicios-prácticos" class="nav-link" data-scroll-target="#sección-de-ejercicios-prácticos">6. Sección de Ejercicios Prácticos</a>
   <ul class="collapse">
-  <li><a href="#ejercicio-1-basado-en-home01.pdf" id="toc-ejercicio-1-basado-en-home01.pdf" class="nav-link" data-scroll-target="#ejercicio-1-basado-en-home01.pdf">Ejercicio 1 (Basado en <code>home01.pdf</code>)</a></li>
-  <li><a href="#ejercicio-2-caso-clínicodatos-metabólicos-1" id="toc-ejercicio-2-caso-clínicodatos-metabólicos-1" class="nav-link" data-scroll-target="#ejercicio-2-caso-clínicodatos-metabólicos-1">Ejercicio 2 (Caso Clínico/Datos Metabólicos)</a></li>
-  <li><a href="#ejercicio-3-pensamiento-datalog-1" id="toc-ejercicio-3-pensamiento-datalog-1" class="nav-link" data-scroll-target="#ejercicio-3-pensamiento-datalog-1">Ejercicio 3 (Pensamiento Datalog)</a></li>
+  <li><a href="#ejercicio-1-el-tarjetero-de-comorbilidades" id="toc-ejercicio-1-el-tarjetero-de-comorbilidades" class="nav-link" data-scroll-target="#ejercicio-1-el-tarjetero-de-comorbilidades">Ejercicio 1: El Tarjetero de Comorbilidades</a></li>
+  <li><a href="#ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff" id="toc-ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff" class="nav-link" data-scroll-target="#ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff">Ejercicio 2: Automatizando Paneles de Laboratorio con <code>extend-ff*</code></a></li>
+  </ul></li>
+  <li><a href="#soluciones-a-los-ejercicios-prácticos" id="toc-soluciones-a-los-ejercicios-prácticos" class="nav-link" data-scroll-target="#soluciones-a-los-ejercicios-prácticos">Soluciones a los Ejercicios Prácticos:</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-el-tarjetero-de-comorbilidades-1" id="toc-ejercicio-1-el-tarjetero-de-comorbilidades-1" class="nav-link" data-scroll-target="#ejercicio-1-el-tarjetero-de-comorbilidades-1">Ejercicio 1: El Tarjetero de Comorbilidades</a></li>
+  <li><a href="#ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff-1" id="toc-ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff-1" class="nav-link" data-scroll-target="#ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff-1">Ejercicio 2: Automatizando Paneles de Laboratorio con <code>extend-ff*</code></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -447,9 +447,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">PARTE I — INTRODUCCIÓN A RACKET Y LA PROGRAMACIÓN FUNCIONAL.</a></li><li class="breadcrumb-item"><a href="../analysis/c02.html">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c22.html">PARTE IV — ABSTRACCIÓN DE DATOS.</a></li><li class="breadcrumb-item"><a href="../analysis/c23.html">23. El tipo de dato abstracto de función finita</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</h1>
+<h1 class="title">23. El tipo de dato abstracto de función finita</h1>
 </div>
 
 
@@ -466,210 +466,191 @@ window.Quarto = {
 </header>
 
 
-<section id="introducción-el-ecosistema-y-los-datos" class="level2">
-<h2 class="anchored" data-anchor-id="introducción-el-ecosistema-y-los-datos">Introducción: El Ecosistema y los Datos</h2>
-<p>Al igual que en la medicina no existe un único fármaco para todas las patologías, en informática no existe un único lenguaje para todos los problemas.</p>
 <blockquote class="blockquote">
-<p><strong>Nota Importante:</strong> Python es el “paracetamol” de la programación en este curso: muy popular y útil para muchas cosas (como generar nubes de palabras rápidamente). Sin embargo, para nuestra meta de construir un motor semántico para NHANES, necesitamos un instrumento más preciso y maleable. Ahí es donde entra Racket. Racket nos permitirá abstraer conceptos médicos de una forma que Python o Java no pueden hacer fácilmente.</p>
+<p><strong>Nota del Copiloto:</strong> Olvídate por un momento de los pizarrones universitarios llenos de notaciones crípticas. Si has sobrevivido a un turno de urgencias o a depurar bases de datos masivas de NHANES con miles de registros de pacientes, ya entiendes conceptualmente de qué trata este capítulo. Hoy vamos a construir un <strong>diccionario de datos inteligente</strong> desde las entrañas de Racket, preparando el terreno para el motor semántico y de reglas (<em>Datalog</em>) que quieres armar.</p>
+</blockquote>
+<hr>
+<section id="introducción-por-qué-necesitamos-mapear-el-mundo-clínico-sin-morir-en-el-intento" class="level2">
+<h2 class="anchored" data-anchor-id="introducción-por-qué-necesitamos-mapear-el-mundo-clínico-sin-morir-en-el-intento">1. Introducción: ¿Por qué necesitamos mapear el mundo clínico sin morir en el intento?</h2>
+<p>Imagina que estás analizando los datos de la encuesta <strong>NHANES</strong> (<em>National Health and Nutrition Examination Survey</em>). Tienes cientos de variables metabólicas: índice de masa corporal (<code>IMC</code>), presión arterial sistólica (<code>PAS</code>), triglicéridos, glucosa en ayunas, entre otras.</p>
+<p>En programación, constantemente necesitamos responder a una pregunta fundamental: <em>dada una clave (el nombre de una variable o el ID de un paciente), ¿cuál es su valor correspondiente?</em></p>
+<p>En análisis de datos tradicional o en lenguajes convencionales, esto se resuelve con un diccionario, un hash map o un data frame. Pero en el diseño de lenguajes y en la construcción de intérpretes, necesitamos algo más ligero, puramente funcional y transparente: una <strong>función finita</strong> (<em>finite function</em>).</p>
+<p>Una función finita no es más que un mapeo con un dominio finito (un número limitado de entradas posibles asociadas a salidas únicas). En términos clínicos, es como tu tarjetero de cabecera o el diccionario de códigos de diagnóstico de un estudio: sabes exactamente qué valor corresponde a cada clave registrada, y si preguntas por una que no existe, el sistema debe avisarte en lugar de inventar datos falsos.</p>
+<hr>
+</section>
+<section id="de-la-lista-estática-al-comportamiento-dinámico-funciones-como-datos" class="level2">
+<h2 class="anchored" data-anchor-id="de-la-lista-estática-al-comportamiento-dinámico-funciones-como-datos">2. De la Lista Estática al Comportamiento Dinámico (Funciones como Datos)</h2>
+<p>¿Cómo representarías un conjunto pequeño de variables y sus valores en código? Una opción ingenua sería usar una lista de pares ordenados:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Una lista estática de pares clave-valor</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> f-lista </span>'<span class="op">((</span>foo . <span class="dv">2</span><span class="op">)</span> <span class="op">(</span>bar . <span class="dv">5</span><span class="op">)</span> <span class="op">(</span>baz . <span class="dv">15</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El problema con este enfoque es que cada vez que queremos buscar un valor, tenemos que recorrer la lista elemento por elemento (búsqueda lineal). Si la base de datos de NHANES crece, esto se vuelve ineficiente.</p>
+<p>¿Y si en lugar de guardar <em>datos inertes</em> (como listas estáticas), usamos <strong>una función de Racket</strong> que encapsule la lógica de búsqueda? Piénsalo como un protocolo clínico inteligente: en lugar de cargar impreso el expediente de cada paciente en la mano, tienes una función mental (o un algoritmo) que sabe exactamente qué hacer ante cada ID:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Una función finita implementada directamente como función en Racket</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>f arg<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">cond</span> <span class="op">((</span><span class="kw">eq?</span> arg 'foo<span class="op">)</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">((</span><span class="kw">eq?</span> arg 'bar<span class="op">)</span> <span class="dv">5</span><span class="op">)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">((</span><span class="kw">eq?</span> arg 'baz<span class="op">)</span> <span class="dv">15</span><span class="op">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">else</span> <span class="op">(</span><span class="kw">error</span> 'ff <span class="st">"no such key -- ~a"</span> arg<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Si ejecutas <code>(f 'foo)</code>, obtendrás <code>2</code>. Si le pasas una clave desconocida como <code>'bif</code>, el sistema se protege arrojando un error clínico controlado (<em>“argument not in domain”</em>), evitando que tomes decisiones con datos inexistentes.</p>
+<section id="extendiendo-el-conocimiento-sin-romper-el-pasado" class="level3">
+<h3 class="anchored" data-anchor-id="extendiendo-el-conocimiento-sin-romper-el-pasado">Extendiendo el conocimiento sin romper el pasado</h3>
+<p>¿Qué pasa cuando el estudio clínico avanza y descubres una nueva variable o paciente que incorporar? No quieres reescribir todo el diccionario anterior. Quieres <strong>extenderlo</strong>.</p>
+<p>Si queremos añadir el par <code>(bif . 41)</code> a nuestra función existente <code>f</code>, podemos crear una nueva función que evalúe primero si la clave es la nueva, y si no, que delegue la responsabilidad a la función original <code>f</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>f-plus-bif arg<span class="op">)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">cond</span> <span class="op">((</span><span class="kw">eq?</span> arg 'bif<span class="op">)</span> <span class="dv">41</span><span class="op">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">else</span> <span class="op">(</span>f arg<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Esto es brillante porque utiliza una técnica de envoltura (<em>wrapping</em>): la nueva función intercepta la consulta. Si conoce la respuesta, la da de inmediato; si no, le pasa la estafeta al clínico anterior (la función previa).</p>
+<hr>
+</section>
+</section>
+<section id="el-adt-de-funciones-finitas-finite-function-api" class="level2">
+<h2 class="anchored" data-anchor-id="el-adt-de-funciones-finitas-finite-function-api">3. El ADT de Funciones Finitas (Finite Function API)</h2>
+<p>Para evitar hacer esto a mano cada vez, formalizamos el concepto mediante un <strong>Tipo de Dato Abstracto (ADT)</strong>. Un buen ADT separa limpiamente el <strong>contrato (API)</strong> de su <strong>implementación interna</strong>.</p>
+<p>Nuestra interfaz consta de tres operaciones esenciales:</p>
+<ol type="1">
+<li><code>(empty-ff)</code>: Crea un diccionario vacío (una historia clínica en blanco que rechaza cualquier consulta por falta de registros).</li>
+<li><code>(extend-ff sym val ff)</code>: Extiende una función finita existente <code>ff</code> con una nueva asociación <code>sym -&gt; val</code>.</li>
+<li><code>(apply-ff ff sym)</code>: Consulta el valor asociado a la clave <code>sym</code> dentro de la función finita <code>ff</code>.</li>
+</ol>
+<section id="la-implementación-procedural-en-racket" class="level3">
+<h3 class="anchored" data-anchor-id="la-implementación-procedural-en-racket">La implementación procedural en Racket</h3>
+<p>Veamos cómo se implementa esto utilizando funciones de orden superior:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> empty-ff extend-ff apply-ff<span class="op">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; 1. El constructor de la función finita vacía</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>empty-ff<span class="op">)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>symbol<span class="op">)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">error</span> 'finite-function <span class="st">"no such key -- ~a"</span> symbol<span class="op">)))</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">;; 2. El constructor para extender una función finita existente</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>extend-ff sym val ff<span class="op">)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>symbol<span class="op">)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">eq?</span> symbol sym<span class="op">)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        val </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>apply-ff ff symbol<span class="op">))))</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">;; 3. El accesor para consultar la función finita</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>apply-ff ff symbol<span class="op">)</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>ff symbol<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>¿Por qué usar <code>apply-ff</code> si una función finita ya es una función de Racket?</strong> Podrías simplemente llamar al diccionario como <code>(my-ff 'foo)</code>. Sin embargo, definir explícitamente la función <code>apply-ff</code> crea una muralla protectora (la separación de incumbencias de un ADT). Si el día de mañana decidimos dejar de usar funciones de Racket bajo el cofre y migrar a una estructura de árboles o tablas hash tradicionales, ningún pedazo de código de los clientes (tus análisis de NHANES) tendrá que reescribirse; solo cambiaremos la implementación interna del ADT.</p>
 </blockquote>
 </section>
-<section id="el-repl-nuestro-monitor-de-signos-vitales" class="level2">
-<h2 class="anchored" data-anchor-id="el-repl-nuestro-monitor-de-signos-vitales">El REPL: Nuestro Monitor de Signos Vitales</h2>
-<p>Para aprender Racket, no vamos a escribir largos tratados de código de inmediato. Usaremos el <strong>REPL</strong> (Read-Eval-Print Loop), que es el corazón interactivo de DrRacket. Piensa en el REPL como un monitor de signos vitales: tú haces una intervención (teclas código) y el monitor te da una lectura instantánea (el resultado).</p>
-<p>En DrRacket, tenemos dos paneles principales:</p>
-<ol type="1">
-<li><strong>Panel de Definiciones (arriba):</strong> Aquí escribimos el “tratamiento complete” (el programa).</li>
-<li><strong>Panel de Interacciones (abajo):</strong> Este es el REPL. Aquí “oscultamos” expresiones individuales.</li>
-</ol>
-<blockquote class="blockquote">
-<p><strong>Regla de Oro del Copiloto:</strong> Para limpiar el monitor de signos vitales (las interacciones) y empezar de cero, simplemente pulsa el botón <strong>“Run”</strong> en la parte superior.</p>
-</blockquote>
-</section>
-<section id="anatomía-de-una-expresión-en-racket-sin-notación-matemática" class="level2">
-<h2 class="anchored" data-anchor-id="anatomía-de-una-expresión-en-racket-sin-notación-matemática">Anatomía de una Expresión en Racket (Sin Notación Matemática)</h2>
-<p>Olvida las fórmulas complejas. En Racket, todo se reduce a diagnósticos y tratamientos.</p>
-<section id="la-notación-prefija" class="level3">
-<h3 class="anchored" data-anchor-id="la-notación-prefija">La Notación Prefija</h3>
-<p>En Racket, siempre pones la acción (el operador o función) <em>antes</em> de los datos (los operandos).</p>
-<p>En R, usas esta sintaxis para tus análisis de NHANES:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sintaxis en R: Función(Dato)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(mis_datos_nhanes, obesidad)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Racket usa exactamente la misma lógica para <strong>todo</strong>. Es como dar una orden médica clara: <code>(Acción Paciente1 Paciente2 ...)</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Sintaxis en Racket: (Función Dato1 Dato2 ...)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(+</span> <span class="dv">10</span> <span class="dv">5</span><span class="op">)</span>  <span class="co">; "Haga una suma de 10 y 5"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dv">15</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Las ventajas de este enfoque son clínicas:</p>
-<ol type="1">
-<li><strong>Cero ambigüedad:</strong> Sabes exactamente qué función se aplica a qué datos.</li>
-<li><strong>Parámetros variables:</strong> Una sola “orden” puede aceptar múltiples “pacientes”.</li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(+</span> <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span> <span class="dv">7</span> <span class="dv">8</span> <span class="dv">9</span> <span class="dv">10</span><span class="op">)</span> <span class="co">; Suma una lista larga de datos de una sola vez</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dv">55</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="evaluación-en-árbol" class="level3">
-<h3 class="anchored" data-anchor-id="evaluación-en-árbol">Evaluación en Árbol</h3>
-<p>Cuando anidamos expresiones, Racket las procesa como el metabolismo de un fármaco: de adentro hacia afuera.</p>
-<p>Considera este cálculo de un indicador metabólico complejo:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(-</span> <span class="dv">100</span> <span class="op">(/</span> <span class="op">(*</span> <span class="dv">5</span> <span class="dv">10</span><span class="op">)</span> <span class="op">(+</span> <span class="dv">2</span> <span class="dv">3</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Racket no se confunde con la precedencia. Lo desglosa así:</p>
-<ol type="1">
-<li>Primero diagnostica/evalúa lo más interno: <code>(* 5 10)</code> se convierte en <code>50</code>, y <code>(+ 2 3)</code> se convierte en <code>5</code>.</li>
-<li>La expresión ahora es: <code>(- 100 (/ 50 5))</code>.</li>
-<li>Evalúa la siguiente capa: <code>(/ 50 5)</code> se convierte en <code>10</code>.</li>
-<li>La expresión final es: <code>(- 100 10)</code>.</li>
-<li>Resultado final: <code>90</code>.</li>
-</ol>
-<blockquote class="blockquote">
-<p><strong>¡Cuidado con los Paréntesis!</strong> En Racket, los paréntesis son sagrados. No son opcionales como en R o Python. Poner paréntesis de más o de menos no es un error de estilo; cambia el significado del código. <code>(5)</code> en Racket significa “llame a la función número 5”, lo cual no tiene sentido y causará un error.</p>
-</blockquote>
+<section id="construyendo-nuestro-primer-diccionario-clínico-modular" class="level3">
+<h3 class="anchored" data-anchor-id="construyendo-nuestro-primer-diccionario-clínico-modular">Construyendo nuestro primer diccionario clínico modular</h3>
+<p>Con este ADT, podemos recrear nuestro diccionario original de forma limpia y elegante:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"finite-function.rkt"</span><span class="op">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> my-ff</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>extend-ff 'foo <span class="dv">2</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>extend-ff 'bar <span class="dv">5</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>extend-ff 'baz <span class="dv">15</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>empty-ff<span class="op">)))))</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">;; Consultando valores</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">;; &gt; (apply-ff my-ff 'foo)  -&gt; 2</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">;; &gt; (apply-ff my-ff 'bif)  -&gt; Error: no such key -- bif</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 </section>
 </section>
-<section id="tipos-de-datos-básicos-los-ladrillos-de-la-historia-clínica" class="level2">
-<h2 class="anchored" data-anchor-id="tipos-de-datos-básicos-los-ladrillos-de-la-historia-clínica">Tipos de Datos Básicos: Los Ladrillos de la Historia Clínica</h2>
-<p>Para tu motor semántico de NHANES, necesitas categorizar tus datos. Racket tiene “tipos de sangre” (tipos de datos) muy claros para esto.</p>
-<section id="números-exactos-e-inexactos" class="level3">
-<h3 class="anchored" data-anchor-id="números-exactos-e-inexactos">Números Exactos e Inexactos</h3>
-<p>Aquí es donde Racket brilla con precisión quirúrgica, a diferencia de R, Java o Ada. Racket distingue entre:</p>
+<section id="escalando-el-sistema-inserciones-múltiples-extend-ff" class="level2">
+<h2 class="anchored" data-anchor-id="escalando-el-sistema-inserciones-múltiples-extend-ff">4. Escalando el Sistema: Inserciones Múltiples (<code>extend-ff*</code>)</h2>
+<p>En el análisis de datos de salud real, rara vez registramos una sola variable de forma aislada. Cuando importas un panel metabólico de un paciente de NHANES, te llega un lote completo de variables y valores de un solo golpe.</p>
+<p>Extender el diccionario de uno en uno con código repetitivo sería engorroso. Para solucionar esto, podemos crear una versión ampliada (<code>extend-ff*</code>) que procese listas paralelas de símbolos y valores utilizando <strong>recursividad estructural</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"finite-function.rkt"</span><span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> extend-ff*<span class="op">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>extend-ff* symbol-list value-list ff<span class="op">)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span><span class="kw">null?</span> symbol-list<span class="op">)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      ff</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>extend-ff <span class="op">(</span>first symbol-list<span class="op">)</span> <span class="op">(</span>first value-list<span class="op">)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                 <span class="op">(</span>extend-ff* <span class="op">(</span>rest symbol-list<span class="op">)</span> <span class="op">(</span>rest value-list<span class="op">)</span> ff<span class="op">))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="cómo-funciona-esta-maquinaria" class="level3">
+<h3 class="anchored" data-anchor-id="cómo-funciona-esta-maquinaria">¿Cómo funciona esta maquinaria?</h3>
+<p>La función recorre simultáneamente la lista de variables y la lista de valores paso a paso. Toma la cabeza (<code>car</code>) de ambas listas, realiza una extensión unitaria mediante <code>extend-ff</code>, y delega el resto de la lista recursivamente hasta vaciarla. Es el equivalente computacional a procesar una hoja de Excel fila por fila de manera automatizada.</p>
+<p>Ejemplo de uso:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> panel-metabolico </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>extend-ff* '<span class="op">(</span>glucosa colesterol trigliceridos<span class="op">)</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="dv">95</span> <span class="dv">210</span> <span class="dv">150</span><span class="op">)</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span>empty-ff<span class="op">)))</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; &gt; (apply-ff panel-metabolico 'colesterol)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">;; 210</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="apéndice-conceptual-hacia-el-motor-semántico-datalog" class="level2">
+<h2 class="anchored" data-anchor-id="apéndice-conceptual-hacia-el-motor-semántico-datalog">5. Apéndice Conceptual: Hacia el Motor Semántico (Datalog)</h2>
+<p>¿Por qué se insiste tanto en las funciones finitas en un curso de paradigmas? Porque en la construcción de lenguajes de programación, <strong>un entorno (<em>environment</em>) que mapea variables locales a sus valores en memoria no es más que una función finita</strong>.</p>
+<p>Cuando estés diseñando un motor semántico basado en reglas para consultar datos de NHANES, necesitarás almacenar hechos y reglas lógicas donde las variables cambien de ámbito (<em>scope</em>). Al dominar las funciones finitas implementadas como closures funcionales, tienes en tus manos el bloque de construcción exacto para manejar contextos de ejecución y bases de conocimiento lógicas sin dependencias externas pesadas.</p>
+<hr>
+</section>
+<section id="sección-de-ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="sección-de-ejercicios-prácticos">6. Sección de Ejercicios Prácticos</h2>
+<p>Para afianzar estos conceptos sin cruzar la línea hacia las matemáticas abstractas, resuelve los siguientes ejercicios combinando Racket y escenarios clínicos/analíticos:</p>
+<section id="ejercicio-1-el-tarjetero-de-comorbilidades" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-el-tarjetero-de-comorbilidades">Ejercicio 1: El Tarjetero de Comorbilidades</h3>
+<p>Utilizando el ADT de funciones finitas (<code>empty-ff</code>, <code>extend-ff</code>, <code>apply-ff</code>), construye un diccionario clínico llamado <code>historial-paciente</code> que almacene los siguientes códigos de riesgo para un paciente de NHANES:</p>
 <ul>
-<li><strong>Números Exactos:</strong> Como los enteros o las fracciones. Si divides 1 entre 3, Racket te da <em>exactamente</em> un tercio, no una aproximación decimal. Esto es vital para calcular dosis exactas.</li>
-<li><strong>Números Inexactos:</strong> Aproximaciones decimales (como los <em>floats</em> en R). Se usan cuando la medición tiene un margen de error inherente.</li>
+<li><code>'hTA</code> (Hipertensión) -&gt; <code>1</code> (Presente)</li>
+<li><code>'dm2</code> (Diabetes Mellitus tipo 2) -&gt; <code>0</code> (Ausente)</li>
+<li><code>'obesidad</code> -&gt; <code>1</code> (Presente)</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(/</span> <span class="dv">1</span> <span class="dv">3</span><span class="op">)</span>   <span class="co">; Resultado exacto (Racional)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span>/3</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">sqrt</span> <span class="dv">2</span><span class="op">)</span>  <span class="co">; Resultado inexacto</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fl">1.4142135623730951</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(+</span> <span class="dv">3</span> <span class="fl">5.2</span><span class="op">)</span> <span class="co">; Combinación: el resultado es inexacto</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fl">8.2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Escribe las sentencias en Racket para crearlo y realiza una consulta para verificar el estado de la obesidad.</p>
 </section>
-<section id="cadenas-símbolos-y-booleanos" class="level3">
-<h3 class="anchored" data-anchor-id="cadenas-símbolos-y-booleanos">Cadenas, Símbolos y Booleanos</h3>
+<section id="ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff">Ejercicio 2: Automatizando Paneles de Laboratorio con <code>extend-ff*</code></h3>
+<p>Imagina que estás procesando un bloque masivo automatizado para un subset de pacientes. Utiliza <code>extend-ff*</code> para registrar en una sola operación un mini-panel de biomarcadores inflamatorios:</p>
 <ul>
-<li><strong>Strings (Cadenas):</strong> Texto plano entre comillas dobles, usado para notas narrativas o nombres de pacientes. <code>"Paciente con IMC elevado"</code></li>
-<li><strong>Booleans (Booleanos):</strong> Los diagnósticos binarios de toda la vida: verdadero (<code>#t</code>) o falso (<code>#f</code>).</li>
-<li><strong>Symbols (Símbolos):</strong> Etiquetas categóricas muy potentes. Son como los <em>factors</em> en R, pero más flexibles. En Racket, se escriben con una comilla simple al principio (<code>'</code>). Son fundamentales para nuestro motor semántico.</li>
+<li>Símbolos: <code>'(pcr interleucina6 ldl)</code></li>
+<li>Valores: <code>'(3.2 12.5 140)</code></li>
+<li>Partiendo de un <code>(empty-ff)</code>.</li>
 </ul>
+<p>Verifica mediante <code>apply-ff</code> qué valor arroja al consultar <code>'interleucina6</code>.</p>
+</section>
+</section>
+<section id="soluciones-a-los-ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="soluciones-a-los-ejercicios-prácticos">Soluciones a los Ejercicios Prácticos:</h2>
 <blockquote class="blockquote">
-<p><strong>Uso Clínico de Símbolos:</strong> Podemos usar símbolos para etiquetar diagnósticos sin la pesada carga de procesar texto largo.</p>
+<p><strong>Nota del Copiloto:</strong> Validar nuestros modelos clínicos mediante pruebas unitarias (<code>rackunit</code>) es el equivalente funcional a realizar un ensayo clínico controlado antes de lanzar una directriz al quirófano de datos. A continuación, revisamos las soluciones para el registro de comorbilidades y paneles de laboratorio masivos.</p>
 </blockquote>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="ex">define</span><span class="fu"> diagnostico </span>'obesidad_morbida<span class="op">)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">eq?</span> diagnostico 'obesidad_morbida<span class="op">)</span> <span class="co">; Prueba diagnóstica rápida</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dv">#t</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="ejercicio-1-el-tarjetero-de-comorbilidades-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-el-tarjetero-de-comorbilidades-1">Ejercicio 1: El Tarjetero de Comorbilidades</h3>
+<p>Para resolver el primer ejercicio, construimos un expediente clínico secuencial utilizando <code>extend-ff</code> sobre una base vacía <code>empty-ff</code>. Esto nos permite registrar los códigos de riesgo (como hipertensión, diabetes y obesidad) de manera limpia y estructurada.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"finite-function.rkt"</span><span class="op">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; Definición del historial del paciente con comorbilidades</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> historial-paciente</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>extend-ff 'htA <span class="dv">1</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>extend-ff 'dm2 <span class="dv">0</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span>extend-ff 'obesidad <span class="dv">1</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>empty-ff<span class="op">)))))</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba de validación para la obesidad</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>apply-ff historial-paciente 'obesidad<span class="op">)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>              <span class="dv">1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-</section>
-<section id="hacia-el-motor-semántico-pensando-en-reglas-y-datos" class="level2">
-<h2 class="anchored" data-anchor-id="hacia-el-motor-semántico-pensando-en-reglas-y-datos">Hacia el Motor Semántico: Pensando en Reglas y Datos</h2>
-<p>El primer paso para tu motor de NHANES es aprender a dar nombres a los valores diagnósticos. Usamos la forma especial <code>define</code>.</p>
-<blockquote class="blockquote">
-<p><strong>Nota Técnica:</strong> <code>define</code> no es una función normal; es una “forma especial”. Su regla es distinta: el primer argumento (<code>area</code>) <em>no</em> se evalúa, se convierte en el nombre.</p>
-</blockquote>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Definimos constantes diagnósticas para nuestro análisis</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> IMC-umbral-obesidad </span><span class="fl">30.0</span><span class="op">)</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> IMC-umbral-sobrepeso </span><span class="fl">25.0</span><span class="op">)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">; Asignamos datos de un paciente hipotético de NHANES</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> peso-kg </span><span class="fl">95.0</span><span class="op">)</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> altura-m </span><span class="fl">1.75</span><span class="op">)</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">; Calculamos el IMC (Tratamiento de datos)</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> IMC-paciente </span><span class="op">(/</span> peso-kg <span class="op">(*</span> altura-m altura-m<span class="op">)))</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">; Mostramos el resultado en el REPL (Monitor)</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> IMC-paciente</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fl">31.020408163265305</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="ejercicios-prácticos-pruebas-de-laboratorio-racket" class="level2">
-<h2 class="anchored" data-anchor-id="ejercicios-prácticos-pruebas-de-laboratorio-racket">Ejercicios Prácticos: Pruebas de Laboratorio Racket</h2>
-<p>Usa el Panel de Interacciones (REPL) de DrRacket para confirmar estas “pruebas de laboratorio”.</p>
-<section id="ejercicio-1" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-1">Ejercicio 1</h3>
-<p>Transcribe las siguientes expresiones aritméticas complejas a la sintaxis limpia de Racket y evalúalas:</p>
-<ol type="a">
-<li><span class="math inline">\(4 \times 7 - 11 + 6\)</span></li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Tu código Racket aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ol start="2" type="a">
-<li><span class="math inline">\(1.6 + 1/3 \times (6 - (-1.7))\)</span></li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Tu código Racket aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="ejercicio-2-caso-clínicodatos-metabólicos" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-2-caso-clínicodatos-metabólicos">Ejercicio 2 (Caso Clínico/Datos Metabólicos)</h3>
-<p>Vamos a modelar una regla semántica simple.</p>
-<ol type="1">
-<li>Define una constante para el umbral de glucosa en ayunas para diabetes (digamos, 126 mg/dL).</li>
-<li>Define el valor de glucosa de un paciente (digamos, 140 mg/dL).</li>
-<li>Escribe una expresión Racket que devuelva <code>#t</code> si el paciente supera el umbral y <code>#f</code> si no (pista: usa la función <code>&gt;</code>).</li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">; 1. Definir umbral</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> umbral-diabetes </span>...<span class="op">)</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">; 2. Definir dato paciente</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> glucosa-paciente </span>...<span class="op">)</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">; 3. Expresión de diagnóstico binario</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span>... glucosa-paciente umbral-diabetes<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="ejercicio-3-pensamiento-datalog" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-3-pensamiento-datalog">Ejercicio 3 (Pensamiento Datalog)</h3>
-<p>Imagina que en tu motor semántico tienes una regla: <em>“Si un paciente tiene obesidad (IMC &gt; 30) Y hipertensión, requiere seguimiento metabólico”</em>.</p>
-<p>Traduce esa lógica de diagnóstico combinado a una expresión de Racket usando <code>#t</code> y <code>#f</code> para representar la presencia de las condiciones. Deberás usar la función booleana <code>(and ...)</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Asumimos: Paciente SÍ tiene obesidad (#t) Y SÍ tiene hipertensión (#t)</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">and</span> ... ...<span class="op">)</span> <span class="co">; Debería devolver #t</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">; Asumimos: Paciente SÍ tiene obesidad (#t) pero NO tiene hipertensión (#f)</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">and</span> ... ...<span class="op">)</span> <span class="co">; Debería devolver #f</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="solucionario-de-ejercicios-prácticos" class="level2">
-<h2 class="anchored" data-anchor-id="solucionario-de-ejercicios-prácticos">Solucionario de Ejercicios Prácticos</h2>
-<p>Aquí tienes las soluciones corregidas a tus “pruebas de laboratorio” de Racket.</p>
-<section id="ejercicio-1-basado-en-home01.pdf" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-1-basado-en-home01.pdf">Ejercicio 1 (Basado en <code>home01.pdf</code>)</h3>
-<p>Transcripción de expresiones aritméticas complejas a la sintaxis prefija de Racket:</p>
-<ol type="a">
-<li><span class="math inline">\(4 \times 7 - 11 + 6\)</span></li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Solución: Primero multiplicamos, luego restamos 11, y al final sumamos 6.</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(+</span> <span class="op">(-</span> <span class="op">(*</span> <span class="dv">4</span> <span class="dv">7</span><span class="op">)</span> <span class="dv">11</span><span class="op">)</span> <span class="dv">6</span><span class="op">)</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="dv">23</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ol start="2" type="a">
-<li><span class="math inline">\(1.6 + 1/3 \times (6 - (-1.7))\)</span></li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Solución: Cuidado con el doble negativo (- -1.7). Racket maneja el 1/3 exactamente.</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(+</span> <span class="fl">1.6</span> <span class="op">(*</span> <span class="op">(/</span> <span class="dv">1</span> <span class="dv">3</span><span class="op">)</span> <span class="op">(-</span> <span class="dv">6</span> -<span class="fl">1.7</span><span class="op">)))</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fl">4.166666666666666</span> <span class="co">; El resultado es inexacto debido al 1.6 inicial.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="ejercicio-2-caso-clínicodatos-metabólicos-1" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-2-caso-clínicodatos-metabólicos-1">Ejercicio 2 (Caso Clínico/Datos Metabólicos)</h3>
-<p>Modelado de una regla semántica simple de diagnóstico de diabetes.</p>
-<ol type="1">
-<li>Define una constante para el umbral de glucosa en ayunas para diabetes (digamos, 126 mg/dL).</li>
-<li>Define el valor de glucosa de un paciente (digamos, 140 mg/dL).</li>
-<li>Expresión que devuelve <code>#t</code> si el paciente supera el umbral y <code>#f</code> si no.</li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Solución</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">; 1. Definir umbral</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> umbral-diabetes </span><span class="dv">126</span><span class="op">)</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">; 2. Definir dato paciente</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> glucosa-paciente </span><span class="dv">140</span><span class="op">)</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">; 3. Expresión de diagnóstico binario</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(&gt;</span> glucosa-paciente umbral-diabetes<span class="op">)</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="dv">#t</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="ejercicio-3-pensamiento-datalog-1" class="level3">
-<h3 class="anchored" data-anchor-id="ejercicio-3-pensamiento-datalog-1">Ejercicio 3 (Pensamiento Datalog)</h3>
-<p>Traducción de una regla de diagnóstico combinado (“Si un paciente tiene obesidad (IMC &gt; 30) Y hipertensión, requiere seguimiento metabólico”) usando la función booleana <code>and</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">; Solución</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">; Escenario A: Paciente SÍ tiene obesidad (#t) Y SÍ tiene hipertensión (#t)</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">and</span> <span class="dv">#t</span> <span class="dv">#t</span><span class="op">)</span> <span class="co">; Debería devolver #t</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="dv">#t</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">; Escenario B: Paciente SÍ tiene obesidad (#t) pero NO tiene hipertensión (#f)</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> <span class="op">(</span><span class="kw">and</span> <span class="dv">#t</span> <span class="dv">#f</span><span class="op">)</span> <span class="co">; Debería devolver #f</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="dv">#f</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-automatizando-paneles-de-laboratorio-con-extend-ff-1">Ejercicio 2: Automatizando Paneles de Laboratorio con <code>extend-ff*</code></h3>
+<p>En el análisis de datos masivos (como los perfiles metabólicos de NHANES), rara vez registramos una variable a la vez. Aquí aplicamos la función de extensión por lotes <code>extend-ff*</code>, que recorre listas paralelas de símbolos y valores mediante recursividad estructural para poblar el diccionario de un solo golpe.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"finite-function.rkt"</span><span class="op">)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"extend-ff-star.rkt"</span><span class="op">)</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Población masiva del panel de biomarcadores inflamatorios</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> panel-laboratorio </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>extend-ff* '<span class="op">(</span>pcr interleucina6 ldl<span class="op">)</span> </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="fl">3.2</span> <span class="fl">12.5</span> <span class="dv">140</span><span class="op">)</span> </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span>empty-ff<span class="op">)))</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba de validación para la interleucina-6</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>apply-ff panel-laboratorio 'interleucina6<span class="op">)</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>              <span class="fl">12.5</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

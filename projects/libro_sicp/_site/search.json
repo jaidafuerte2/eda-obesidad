@@ -2322,7 +2322,7 @@
     "text": "Nota del Autor: En este capítulo dejamos temporalmente de pelearnos con la sintaxis del lenguaje (como hicimos en las sesiones de let y variables locales) para abordar un dilema arquitectónico fundamental: ¿cómo representamos la información de manera que el sistema sea inmune a los cambios en sus entrañas? Si alguna vez has cambiado de sistema de expediente clínico electrónico (ECE) sabrás exactamente por qué esto importa.",
     "crumbs": [
       "Inicio",
-      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "22. Abstracción de Datos y Variedad"
     ]
   },
@@ -2334,7 +2334,7 @@
     "text": "1. Introducción Quirúrgica: Interfaz vs. Implementación\nEn la práctica clínica y administrativa, estamos acostumbrados a separar el qué del cómo. Cuando solicitas un panel metabólico completo para un paciente de la base de datos de NHANES, no te importa si el laboratorio utiliza un espectrómetro de masas de última generación o un ensayo colorimétrico antiguo; lo único que te importa es la interfaz: una función o consulta que recibe el ID del paciente y te devuelve un objeto limpio con los valores de glucosa, colesterol y triglicéridos.\nEn programación, la abstracción de datos hace exactamente lo mismo. Permite que un programa exprese y manipule valores a través de un contrato estricto (una interfaz), ocultando los detalles sórdidos de cómo se almacenan realmente esos datos en la memoria de la computadora.\n\nLa Interfaz: El conjunto de funciones constructoras y selectoras que el programador (o nuestro futuro motor Datalog) utiliza para interactuar con los datos (por ejemplo, hacer-par, primer-elemento, segundo-elemento).\nLa Implementación: El sustrato físico o lógico subyacente (un arreglo, una lista enlazada, una tabla hash o una función matemática pura).\n\n\nAdvertencia de Arquitecto: La regla de oro de la abstracción de datos es simple: Nunca asumas nada sobre la implementación subyacente de una interfaz, ni siquiera en las estructuras más primitivas.",
     "crumbs": [
       "Inicio",
-      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "22. Abstracción de Datos y Variedad"
     ]
   },
@@ -2346,7 +2346,7 @@
     "text": "2. La Variedad Infinita de Representaciones\nPara entender la flexibilidad de la computación, analicemos cómo podemos representar algo tan básico como un número entero no negativo o una pareja de datos clínicos (por ejemplo, la relación entre el Índice de Masa Corporal y la presión arterial sistólica).\nMuchas veces incluso los números enteros se pueden construir sin utilizar los números nativos del lenguaje. Podemos definir la interfaz de un número entero no negativo con cuatro piezas:\n\nEl valor cero (zero).\nUn predicado para saber si es cero (is-zero?).\nEl sucesor (next).\nEl predecesor (previous).\n\nPodemos implementar esto usando los números nativos de Racket (0, add1, sub1), pero con la misma facilidad podríamos implementarlo usando listas donde la longitud de la lista representa el valor numérico:\n#lang racket\n\n;; Implementación alternativa de enteros no negativos usando listas\n(define zero     '())\n(define is-zero? null?)\n(define next     (lambda (n) (cons 1 n)))\n(define previous rest)\nDesde el punto de vista del usuario de la interfaz, evaluar (next (next zero)) significa exactamente el número 2, sin importar si por debajo la computadora está sumando bits o encadenando celdas de memoria vacías.",
     "crumbs": [
       "Inicio",
-      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "22. Abstracción de Datos y Variedad"
     ]
   },
@@ -2358,7 +2358,7 @@
     "text": "3. Las Caras de un Par: Del Estándar al Malabarismo Funcional\nPara aterrizar esto en nuestro análisis de datos de salud, imagina que necesitamos empaquetar una tupla de dos variables metabólicas para una consulta lógica. En Python o R estaríamos tentados a usar listas o diccionarios por defecto. Sin embargo, en Racket podemos construir un Par de al menos ocho formas radicalmente distintas. Veamos tres de las más elocuentes para nuestra evolución mental hacia un motor semántico:\n\nA. El Par como Estructura de Datos Nativa (cons, car, cdr)\nLa forma tradicional en Lisp/Scheme. Eficiente, pero atada a los apuntadores de memoria del lenguaje.\n(define MAKE-PAIR cons)\n(define FIRST     car)\n(define SECOND    cdr)\n\n\nB. El Par como Selector Funcional (Mensajes y Booleanos)\n¿Qué pasa si llevamos la abstracción al extremo y decidimos que un par no es un “contenedor” estático de memoria, sino un comportamiento? Podemos hacer que el constructor devuelva una función que reacciona a un selector booleano o simbólico:\n;; Usando funciones y símbolos (Simulando paso de mensajes)\n(define (MAKE-PAIR a b) \n  (lambda (selector)\n    (cond ((eq? selector 'first) a)\n          ((eq? selector 'second) b))))\n\n(define (FIRST aPair)  (aPair 'first))\n(define (SECOND aPair) (aPair 'second))\nTraducción clínica: Esto es idéntico a un expediente médico inteligente que no te expone carpetas de archivos físicos, sino que responde activamente cuando le preguntas por un campo específico mediante un mensaje ('first o 'second).\n\n\nC. El Par Puro: ¡Sin Datos, Solo Funciones!\nEsta es la cúspide de la elegancia funcional que tanto fascina a los teóricos de lenguajes y que sienta las bases de la lambda cálculo (el motor matemático subyacente que inspiró a Lisp y a los motores de deducción lógica):\n;; Un par construido utilizando ÚNICAMENTE funciones (Lambdas)\n(define (MAKE-PAIR a b) (lambda (proc) (proc a b)))\n(define (FIRST  aPair)  (aPair (lambda (x y) x)))\n(define (SECOND aPair)  (aPair (lambda (x y) y)))\nAquí no hay vectores, ni structs, ni listas, ni siquiera valores booleanos o condicionales if. ¡Solo funciones que envuelven a otras funciones! El constructor empaqueta los dos elementos, y los selectores entregan el procedimiento necesario para extraer el elemento izquierdo o derecho. Esto demuestra que la computación pura es un medio increíblemente flexible.",
     "crumbs": [
       "Inicio",
-      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "22. Abstracción de Datos y Variedad"
     ]
   },
@@ -2370,7 +2370,7 @@
     "text": "4. Relevancia para nuestro Datalog y Motor Semántico\n¿Por qué un médico interesado en NHANES necesita devanarse los sesos con pares hechos de puras funciones?\nCuando diseñemos nuestro Datalog/motor semántico para consultar reglas metabólicas del tipo:\n\\[\\text{TieneRiesgo}(x) \\leftarrow \\text{Glucosa}(x, g) \\land g &gt; 126\\]\nNecesitaremos representar hechos y tuplas de datos de forma liviana, desacoplada y puramente lógica. Un motor semántico no debe casarse con la forma en que el disco duro o la memoria RAM guardan las tablas de NHANES; debe operar sobre interfaces lógicas. La abstracción de datos nos enseña que si definimos bien las interfaces de nuestras consultas y hechos, podremos cambiar el motor de almacenamiento subyacente (de archivos CSV a bases de datos en memoria o grafos) sin romper ni una sola línea de nuestras reglas de inferencia clínica.",
     "crumbs": [
       "Inicio",
-      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "22. Abstracción de Datos y Variedad"
     ]
   },
@@ -2382,7 +2382,7 @@
     "text": "5. Ejercicios Prácticos: Laboratorio de Salud y Racket\nPara consolidar estos conceptos, resuelve los siguientes retos utilizando el archivo de código proporcionado (implementing-pairs.rkt) y tus datos mentales de salud.\n\nEjercicio 1: El Paquete Metabólico Funcional\nUtilizando la implementación de pares puros usando sólo funciones (la sección C del texto anterior), escribe un script en Racket que:\n\nCree un par donde el primer valor sea el ID de un paciente de NHANES (ej. (id-pat-402)) y el segundo valor sea su nivel de glucosa en ayunas (130).\nEcuentra una forma de extraer ambos valores utilizando exclusivamente las funciones FIRST y SECOND provistas por este modelo puramente funcional.\n\n\n\nEjercicio 2: Abstracción de Interfaces Clínicas\nImagina que estás diseñando la interfaz básica para un mini-motor Datalog orientado a salud. Define un tipo de dato abstracto llamado variable-clinica que soporte:\n\nUn constructor crear-variable que reciba el nombre del biomarcador (ej. 'imc) y su valor numérico (29.8).\nSelectores obtener-nombre y obtener-valor.\nImplementa esta interfaz usando Tablas Hash de Racket (hash) y luego reimpleméntala usando Vectores (vector). Comprueba que las funciones que consultan tus datos no necesitan cambiar sin importar qué implementación uses por debajo.",
     "crumbs": [
       "Inicio",
-      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "22. Abstracción de Datos y Variedad"
     ]
   },
@@ -2394,8 +2394,104 @@
     "text": "6. Resolución de Ejercicios Prácticos\nA continuación se presentan las soluciones implementadas y probadas en Racket para consolidar los conceptos de la sesión.\n#lang racket\n(require rackunit)\n\n;;;;;;;;;;;;;;;;;;;;;;\n;;\n;; Ejercicio 1: El Paquete Metabólico Funcional\n;;\n;;;;;;;;;;;;;;;;;;;;;;\n\n;; Un par construido utilizando ÚNICAMENTE funciones (Lambdas puras)\n(define (myMAKE-PAIR a b) (lambda (proc) (proc a b)))\n(define glucosa-par (myMAKE-PAIR 'id-pat-402 'hiperglicemia))\n\n(define (myFIRST aPair)  (aPair (lambda (x y) x)))\n(check-equal? (myFIRST (myMAKE-PAIR 'id-pat-402 'hiperglicemia))\n              'id-pat-402)\n\n(define (mySECOND aPair) (aPair (lambda (x y) y)))\n(check-equal? (mySECOND (myMAKE-PAIR 'id-pat-402 'hiperglicemia))\n              'hiperglicemia)\n\n\n;;;;;;;;;;;;;;;;;;;;;;\n;;\n;; Ejercicio 2: Abstracción de Interfaces Clínicas (Versión Hash y Vector)\n;;\n;;;;;;;;;;;;;;;;;;;;;;\n\n;; Implementación A: Usando Tablas Hash de Racket\n(define (crear-variable-hash biomarcador valor)\n  (hash 'nombre biomarcador 'valor valor))\n\n(define (obtener-nombre-hash aPair)\n  (hash-ref aPair 'nombre))\n\n(define (obtener-valor-hash aPair)\n  (hash-ref aPair 'valor))\n\n(define imc1-hash (crear-variable-hash 'imc 'sobrepeso))\n(check-equal? (obtener-nombre-hash imc1-hash) 'imc)\n(check-equal? (obtener-valor-hash imc1-hash) 'sobrepeso)\n\n\n;; Implementación B: Usando Vectores de Racket\n(define (crear-variable-vector biomarcador valor)\n  (vector biomarcador valor))\n\n(define (obtener-nombre-vector aPair)\n  (vector-ref aPair 0))\n\n(define (obtener-valor-vector aPair)\n  (vector-ref aPair 1))\n\n(define imc1-vector (crear-variable-vector 'imc 'sobrepeso))\n(check-equal? (obtener-nombre-vector imc1-vector) 'imc)\n(check-equal? (obtener-valor-vector imc1-vector) 'sobrepeso)",
     "crumbs": [
       "Inicio",
-      "PARTE III — ABSTRACCIÓN SINTÁCTICA.",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "22. Abstracción de Datos y Variedad"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html",
+    "href": "analysis/c23.html",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "",
+    "text": "Nota del Copiloto: Olvídate por un momento de los pizarrones universitarios llenos de notaciones crípticas. Si has sobrevivido a un turno de urgencias o a depurar bases de datos masivas de NHANES con miles de registros de pacientes, ya entiendes conceptualmente de qué trata este capítulo. Hoy vamos a construir un diccionario de datos inteligente desde las entrañas de Racket, preparando el terreno para el motor semántico y de reglas (Datalog) que quieres armar.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html#introducción-por-qué-necesitamos-mapear-el-mundo-clínico-sin-morir-en-el-intento",
+    "href": "analysis/c23.html#introducción-por-qué-necesitamos-mapear-el-mundo-clínico-sin-morir-en-el-intento",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "1. Introducción: ¿Por qué necesitamos mapear el mundo clínico sin morir en el intento?",
+    "text": "1. Introducción: ¿Por qué necesitamos mapear el mundo clínico sin morir en el intento?\nImagina que estás analizando los datos de la encuesta NHANES (National Health and Nutrition Examination Survey). Tienes cientos de variables metabólicas: índice de masa corporal (IMC), presión arterial sistólica (PAS), triglicéridos, glucosa en ayunas, entre otras.\nEn programación, constantemente necesitamos responder a una pregunta fundamental: dada una clave (el nombre de una variable o el ID de un paciente), ¿cuál es su valor correspondiente?\nEn análisis de datos tradicional o en lenguajes convencionales, esto se resuelve con un diccionario, un hash map o un data frame. Pero en el diseño de lenguajes y en la construcción de intérpretes, necesitamos algo más ligero, puramente funcional y transparente: una función finita (finite function).\nUna función finita no es más que un mapeo con un dominio finito (un número limitado de entradas posibles asociadas a salidas únicas). En términos clínicos, es como tu tarjetero de cabecera o el diccionario de códigos de diagnóstico de un estudio: sabes exactamente qué valor corresponde a cada clave registrada, y si preguntas por una que no existe, el sistema debe avisarte en lugar de inventar datos falsos.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html#de-la-lista-estática-al-comportamiento-dinámico-funciones-como-datos",
+    "href": "analysis/c23.html#de-la-lista-estática-al-comportamiento-dinámico-funciones-como-datos",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "2. De la Lista Estática al Comportamiento Dinámico (Funciones como Datos)",
+    "text": "2. De la Lista Estática al Comportamiento Dinámico (Funciones como Datos)\n¿Cómo representarías un conjunto pequeño de variables y sus valores en código? Una opción ingenua sería usar una lista de pares ordenados:\n;; Una lista estática de pares clave-valor\n(define f-lista '((foo . 2) (bar . 5) (baz . 15)))\nEl problema con este enfoque es que cada vez que queremos buscar un valor, tenemos que recorrer la lista elemento por elemento (búsqueda lineal). Si la base de datos de NHANES crece, esto se vuelve ineficiente.\n¿Y si en lugar de guardar datos inertes (como listas estáticas), usamos una función de Racket que encapsule la lógica de búsqueda? Piénsalo como un protocolo clínico inteligente: en lugar de cargar impreso el expediente de cada paciente en la mano, tienes una función mental (o un algoritmo) que sabe exactamente qué hacer ante cada ID:\n;; Una función finita implementada directamente como función en Racket\n(define (f arg)\n  (cond ((eq? arg 'foo) 2)\n        ((eq? arg 'bar) 5)\n        ((eq? arg 'baz) 15)\n        (else (error 'ff \"no such key -- ~a\" arg))))\nSi ejecutas (f 'foo), obtendrás 2. Si le pasas una clave desconocida como 'bif, el sistema se protege arrojando un error clínico controlado (“argument not in domain”), evitando que tomes decisiones con datos inexistentes.\n\nExtendiendo el conocimiento sin romper el pasado\n¿Qué pasa cuando el estudio clínico avanza y descubres una nueva variable o paciente que incorporar? No quieres reescribir todo el diccionario anterior. Quieres extenderlo.\nSi queremos añadir el par (bif . 41) a nuestra función existente f, podemos crear una nueva función que evalúe primero si la clave es la nueva, y si no, que delegue la responsabilidad a la función original f:\n(define (f-plus-bif arg)\n  (cond ((eq? arg 'bif) 41)\n        (else (f arg))))\nEsto es brillante porque utiliza una técnica de envoltura (wrapping): la nueva función intercepta la consulta. Si conoce la respuesta, la da de inmediato; si no, le pasa la estafeta al clínico anterior (la función previa).",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html#el-adt-de-funciones-finitas-finite-function-api",
+    "href": "analysis/c23.html#el-adt-de-funciones-finitas-finite-function-api",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "3. El ADT de Funciones Finitas (Finite Function API)",
+    "text": "3. El ADT de Funciones Finitas (Finite Function API)\nPara evitar hacer esto a mano cada vez, formalizamos el concepto mediante un Tipo de Dato Abstracto (ADT). Un buen ADT separa limpiamente el contrato (API) de su implementación interna.\nNuestra interfaz consta de tres operaciones esenciales:\n\n(empty-ff): Crea un diccionario vacío (una historia clínica en blanco que rechaza cualquier consulta por falta de registros).\n(extend-ff sym val ff): Extiende una función finita existente ff con una nueva asociación sym -&gt; val.\n(apply-ff ff sym): Consulta el valor asociado a la clave sym dentro de la función finita ff.\n\n\nLa implementación procedural en Racket\nVeamos cómo se implementa esto utilizando funciones de orden superior:\n#lang racket\n(provide empty-ff extend-ff apply-ff)\n\n;; 1. El constructor de la función finita vacía\n(define (empty-ff)\n  (lambda (symbol)\n    (error 'finite-function \"no such key -- ~a\" symbol)))\n\n;; 2. El constructor para extender una función finita existente\n(define (extend-ff sym val ff)\n  (lambda (symbol)\n    (if (eq? symbol sym)\n        val \n        (apply-ff ff symbol))))\n\n;; 3. El accesor para consultar la función finita\n(define (apply-ff ff symbol)\n  (ff symbol))\n\n¿Por qué usar apply-ff si una función finita ya es una función de Racket? Podrías simplemente llamar al diccionario como (my-ff 'foo). Sin embargo, definir explícitamente la función apply-ff crea una muralla protectora (la separación de incumbencias de un ADT). Si el día de mañana decidimos dejar de usar funciones de Racket bajo el cofre y migrar a una estructura de árboles o tablas hash tradicionales, ningún pedazo de código de los clientes (tus análisis de NHANES) tendrá que reescribirse; solo cambiaremos la implementación interna del ADT.\n\n\n\nConstruyendo nuestro primer diccionario clínico modular\nCon este ADT, podemos recrear nuestro diccionario original de forma limpia y elegante:\n(require \"finite-function.rkt\")\n\n(define my-ff\n  (extend-ff 'foo 2\n    (extend-ff 'bar 5\n      (extend-ff 'baz 15\n        (empty-ff)))))\n\n;; Consultando valores\n;; &gt; (apply-ff my-ff 'foo)  -&gt; 2\n;; &gt; (apply-ff my-ff 'bif)  -&gt; Error: no such key -- bif",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html#escalando-el-sistema-inserciones-múltiples-extend-ff",
+    "href": "analysis/c23.html#escalando-el-sistema-inserciones-múltiples-extend-ff",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "4. Escalando el Sistema: Inserciones Múltiples (extend-ff*)",
+    "text": "4. Escalando el Sistema: Inserciones Múltiples (extend-ff*)\nEn el análisis de datos de salud real, rara vez registramos una sola variable de forma aislada. Cuando importas un panel metabólico de un paciente de NHANES, te llega un lote completo de variables y valores de un solo golpe.\nExtender el diccionario de uno en uno con código repetitivo sería engorroso. Para solucionar esto, podemos crear una versión ampliada (extend-ff*) que procese listas paralelas de símbolos y valores utilizando recursividad estructural:\n#lang racket\n(require \"finite-function.rkt\")\n(provide extend-ff*)\n\n(define (extend-ff* symbol-list value-list ff)\n  (if (null? symbol-list)\n      ff\n      (extend-ff (first symbol-list) (first value-list)\n                 (extend-ff* (rest symbol-list) (rest value-list) ff))))\n\n¿Cómo funciona esta maquinaria?\nLa función recorre simultáneamente la lista de variables y la lista de valores paso a paso. Toma la cabeza (car) de ambas listas, realiza una extensión unitaria mediante extend-ff, y delega el resto de la lista recursivamente hasta vaciarla. Es el equivalente computacional a procesar una hoja de Excel fila por fila de manera automatizada.\nEjemplo de uso:\n(define panel-metabolico \n  (extend-ff* '(glucosa colesterol trigliceridos) \n              '(95 210 150) \n              (empty-ff)))\n\n;; &gt; (apply-ff panel-metabolico 'colesterol)\n;; 210",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html#apéndice-conceptual-hacia-el-motor-semántico-datalog",
+    "href": "analysis/c23.html#apéndice-conceptual-hacia-el-motor-semántico-datalog",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "5. Apéndice Conceptual: Hacia el Motor Semántico (Datalog)",
+    "text": "5. Apéndice Conceptual: Hacia el Motor Semántico (Datalog)\n¿Por qué se insiste tanto en las funciones finitas en un curso de paradigmas? Porque en la construcción de lenguajes de programación, un entorno (environment) que mapea variables locales a sus valores en memoria no es más que una función finita.\nCuando estés diseñando un motor semántico basado en reglas para consultar datos de NHANES, necesitarás almacenar hechos y reglas lógicas donde las variables cambien de ámbito (scope). Al dominar las funciones finitas implementadas como closures funcionales, tienes en tus manos el bloque de construcción exacto para manejar contextos de ejecución y bases de conocimiento lógicas sin dependencias externas pesadas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html#sección-de-ejercicios-prácticos",
+    "href": "analysis/c23.html#sección-de-ejercicios-prácticos",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "6. Sección de Ejercicios Prácticos",
+    "text": "6. Sección de Ejercicios Prácticos\nPara afianzar estos conceptos sin cruzar la línea hacia las matemáticas abstractas, resuelve los siguientes ejercicios combinando Racket y escenarios clínicos/analíticos:\n\nEjercicio 1: El Tarjetero de Comorbilidades\nUtilizando el ADT de funciones finitas (empty-ff, extend-ff, apply-ff), construye un diccionario clínico llamado historial-paciente que almacene los siguientes códigos de riesgo para un paciente de NHANES:\n\n'hTA (Hipertensión) -&gt; 1 (Presente)\n'dm2 (Diabetes Mellitus tipo 2) -&gt; 0 (Ausente)\n'obesidad -&gt; 1 (Presente)\n\nEscribe las sentencias en Racket para crearlo y realiza una consulta para verificar el estado de la obesidad.\n\n\nEjercicio 2: Automatizando Paneles de Laboratorio con extend-ff*\nImagina que estás procesando un bloque masivo automatizado para un subset de pacientes. Utiliza extend-ff* para registrar en una sola operación un mini-panel de biomarcadores inflamatorios:\n\nSímbolos: '(pcr interleucina6 ldl)\nValores: '(3.2 12.5 140)\nPartiendo de un (empty-ff).\n\nVerifica mediante apply-ff qué valor arroja al consultar 'interleucina6.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
+    ]
+  },
+  {
+    "objectID": "analysis/c23.html#soluciones-a-los-ejercicios-prácticos",
+    "href": "analysis/c23.html#soluciones-a-los-ejercicios-prácticos",
+    "title": "23. El tipo de dato abstracto de función finita",
+    "section": "Soluciones a los Ejercicios Prácticos:",
+    "text": "Soluciones a los Ejercicios Prácticos:\n\nNota del Copiloto: Validar nuestros modelos clínicos mediante pruebas unitarias (rackunit) es el equivalente funcional a realizar un ensayo clínico controlado antes de lanzar una directriz al quirófano de datos. A continuación, revisamos las soluciones para el registro de comorbilidades y paneles de laboratorio masivos.\n\n\nEjercicio 1: El Tarjetero de Comorbilidades\nPara resolver el primer ejercicio, construimos un expediente clínico secuencial utilizando extend-ff sobre una base vacía empty-ff. Esto nos permite registrar los códigos de riesgo (como hipertensión, diabetes y obesidad) de manera limpia y estructurada.\n#lang racket\n(require rackunit)\n(require \"finite-function.rkt\")\n\n;; Definición del historial del paciente con comorbilidades\n(define historial-paciente\n  (extend-ff 'htA 1\n    (extend-ff 'dm2 0\n      (extend-ff 'obesidad 1\n        (empty-ff)))))\n\n;; Prueba de validación para la obesidad\n(check-equal? (apply-ff historial-paciente 'obesidad)\n              1)\n\n\nEjercicio 2: Automatizando Paneles de Laboratorio con extend-ff*\nEn el análisis de datos masivos (como los perfiles metabólicos de NHANES), rara vez registramos una variable a la vez. Aquí aplicamos la función de extensión por lotes extend-ff*, que recorre listas paralelas de símbolos y valores mediante recursividad estructural para poblar el diccionario de un solo golpe.\n#lang racket\n(require rackunit)\n(require \"finite-function.rkt\")\n(require \"extend-ff-star.rkt\")\n\n;; Población masiva del panel de biomarcadores inflamatorios\n(define panel-laboratorio \n  (extend-ff* '(pcr interleucina6 ldl) \n              '(3.2 12.5 140) \n              (empty-ff)))\n\n;; Prueba de validación para la interleucina-6\n(check-equal? (apply-ff panel-laboratorio 'interleucina6)\n              12.5)",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "23. El tipo de dato abstracto de función finita"
     ]
   }
 ]
