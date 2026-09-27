@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Taller Práctico. Diseñando un Mini-Motor Datalog Clínico – Semántica en Acción.</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Semántica en Acción.</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_sobre_el_autor.html"> 
+<span class="menu-text">Sobre el autor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../analysis/c00_proyectos.html"> 
+<span class="menu-text">Proyectos</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c22.html">PARTE IV — ABSTRACCIÓN DE DATOS.</a></li><li class="breadcrumb-item"><a href="../analysis/c23-1-taller.html">Taller Práctico. Diseñando un Mini-Motor Datalog Clínico</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semántica en Acción - Paradigmas de Programación, Ejemplos Médicos y Construcción de un Pequeño Motor Semántico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sobre el autor</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE I — INTRODUCCIÓN A RACKET Y LA PROGRAMACIÓN FUNCIONAL.</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE II — ESPECIFICACIONES INDUCTIVAS Y PROGRAMAS RECURSIVOS.</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">12. Recursión Eficiente y la Anatomía de un Minilenguaje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">13. Análisis Estático de Variables: El alcance de un Expediente Clínico</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">14. De los Datos al Motor Lógico — Creando un Intérprete Evaluador</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">15. Repaso de Programación Recursiva y Análisis Sintáctico</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE III — ABSTRACCIÓN SINTÁCTICA.</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">16. Abstracción Sintáctica</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">17. Abstracción Sintáctica y Variables Locales</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">18. Referencias de Variables, Alcance (Scope) y Direcciones Léxicas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c19.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">19. Automatizando la Dirección Léxica (De Nombres a Coordenadas de Servidor)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">20. Cálculo de Direcciones Léxicas y Optimización del Entorno</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c21.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">21. Creando Nueva Sintaxis</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">PARTE IV — ABSTRACCIÓN DE DATOS.</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c22.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">22. Abstracción de Datos y Variedad</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c23.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">23. El tipo de dato abstracto de función finita</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../analysis/c23-1-taller.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Taller Práctico. Diseñando un Mini-Motor Datalog Clínico</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#el-manual-del-usuario-de-mini-datalog" id="toc-el-manual-del-usuario-de-mini-datalog" class="nav-link active" data-scroll-target="#el-manual-del-usuario-de-mini-datalog">1. El Manual del Usuario de Mini-Datalog</a>
+  <ul class="collapse">
+  <li><a href="#estructura-de-un-hecho" id="toc-estructura-de-un-hecho" class="nav-link" data-scroll-target="#estructura-de-un-hecho">Estructura de un Hecho</a></li>
+  <li><a href="#estructura-de-una-consulta" id="toc-estructura-de-una-consulta" class="nav-link" data-scroll-target="#estructura-de-una-consulta">Estructura de una Consulta</a></li>
+  </ul></li>
+  <li><a href="#anatomía-del-código-explicación-detallada-por-módulos" id="toc-anatomía-del-código-explicación-detallada-por-módulos" class="nav-link" data-scroll-target="#anatomía-del-código-explicación-detallada-por-módulos">2. Anatomía del Código: Explicación Detallada por Módulos</a>
+  <ul class="collapse">
+  <li><a href="#módulo-1-syntax-procs.rkt-procedimientos-de-sintaxis" id="toc-módulo-1-syntax-procs.rkt-procedimientos-de-sintaxis" class="nav-link" data-scroll-target="#módulo-1-syntax-procs.rkt-procedimientos-de-sintaxis">Módulo 1: <code>syntax-procs.rkt</code> (Procedimientos de Sintaxis)</a></li>
+  <li><a href="#módulo-2-utilities.rkt-concordancia-de-patrones" id="toc-módulo-2-utilities.rkt-concordancia-de-patrones" class="nav-link" data-scroll-target="#módulo-2-utilities.rkt-concordancia-de-patrones">Módulo 2: <code>utilities.rkt</code> (Concordancia de Patrones)</a></li>
+  <li><a href="#módulo-3-interpreter.rkt-el-motor-de-evaluación" id="toc-módulo-3-interpreter.rkt-el-motor-de-evaluación" class="nav-link" data-scroll-target="#módulo-3-interpreter.rkt-el-motor-de-evaluación">Módulo 3: <code>interpreter.rkt</code> (El Motor de Evaluación)</a></li>
+  <li><a href="#módulo-4-tests.rkt-pruebas-clínicas-automatizadas" id="toc-módulo-4-tests.rkt-pruebas-clínicas-automatizadas" class="nav-link" data-scroll-target="#módulo-4-tests.rkt-pruebas-clínicas-automatizadas">Módulo 4: <code>tests.rkt</code> (Pruebas Clínicas Automatizadas)</a></li>
+  </ul></li>
+  <li><a href="#ejercicios-prácticos" id="toc-ejercicios-prácticos" class="nav-link" data-scroll-target="#ejercicios-prácticos">3. Ejercicios Prácticos</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-ampliando-el-registro-metabólico" id="toc-ejercicio-1-ampliando-el-registro-metabólico" class="nav-link" data-scroll-target="#ejercicio-1-ampliando-el-registro-metabólico">Ejercicio 1: Ampliando el Registro Metabólico</a></li>
+  <li><a href="#ejercicio-2-consulta-abierta-de-biomarcadores" id="toc-ejercicio-2-consulta-abierta-de-biomarcadores" class="nav-link" data-scroll-target="#ejercicio-2-consulta-abierta-de-biomarcadores">Ejercicio 2: Consulta Abierta de Biomarcadores</a></li>
+  <li><a href="#ejercicio-3-verificación-estricta-de-expediente" id="toc-ejercicio-3-verificación-estricta-de-expediente" class="nav-link" data-scroll-target="#ejercicio-3-verificación-estricta-de-expediente">Ejercicio 3: Verificación Estricta de Expediente</a></li>
+  <li><a href="#ejercicio-4-control-de-falsos-positivos" id="toc-ejercicio-4-control-de-falsos-positivos" class="nav-link" data-scroll-target="#ejercicio-4-control-de-falsos-positivos">Ejercicio 4: Control de Falsos Positivos</a></li>
+  </ul></li>
+  <li><a href="#soluciones-de-los-ejercicios" id="toc-soluciones-de-los-ejercicios" class="nav-link" data-scroll-target="#soluciones-de-los-ejercicios">Soluciones de los Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1-ampliando-el-registro-metabólico-my-nhanes" id="toc-ejercicio-1-ampliando-el-registro-metabólico-my-nhanes" class="nav-link" data-scroll-target="#ejercicio-1-ampliando-el-registro-metabólico-my-nhanes">Ejercicio 1: Ampliando el Registro Metabólico (<code>my-nhanes</code>)</a></li>
+  <li><a href="#ejercicio-2-consulta-abierta-de-colesterol-alto" id="toc-ejercicio-2-consulta-abierta-de-colesterol-alto" class="nav-link" data-scroll-target="#ejercicio-2-consulta-abierta-de-colesterol-alto">Ejercicio 2: Consulta Abierta de Colesterol Alto</a></li>
+  <li><a href="#ejercicio-3-verificación-estricta-de-expediente-1" id="toc-ejercicio-3-verificación-estricta-de-expediente-1" class="nav-link" data-scroll-target="#ejercicio-3-verificación-estricta-de-expediente-1">Ejercicio 3: Verificación Estricta de Expediente</a></li>
+  <li><a href="#ejercicio-4-control-de-falsos-positivos-vacío-clínico" id="toc-ejercicio-4-control-de-falsos-positivos-vacío-clínico" class="nav-link" data-scroll-target="#ejercicio-4-control-de-falsos-positivos-vacío-clínico">Ejercicio 4: Control de Falsos Positivos (Vacío Clínico)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c22.html">PARTE IV — ABSTRACCIÓN DE DATOS.</a></li><li class="breadcrumb-item"><a href="../analysis/c23-1-taller.html">Taller Práctico. Diseñando un Mini-Motor Datalog Clínico</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Taller Práctico. Diseñando un Mini-Motor Datalog Clínico</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p><strong>Nota del Copiloto:</strong> Hoy vamos a demostrar que los mismos principios de abstracción de sintaxis y evaluación modular (que hemos visto hasta ahora) sirven para algo BASTANTE ambicioso: construir un <strong>motor de programación lógica (Datalog)</strong> en miniatura. Este será nuestro asistente semántico para consultar expedientes metabólicos y de salud pública sin depender de bases de datos pesadas.</p>
+</blockquote>
+<hr>
+<section id="el-manual-del-usuario-de-mini-datalog" class="level2">
+<h2 class="anchored" data-anchor-id="el-manual-del-usuario-de-mini-datalog">1. El Manual del Usuario de Mini-Datalog</h2>
+<p>Antes de revisar el código fuente, veamos cómo interactúa un usuario con este mini-lenguaje lógico. Mini-Datalog opera bajo dos conceptos fundamentales: <strong>Hechos</strong> (afirmaciones inmutables sobre el mundo real) y <strong>Consultas</strong> (preguntas lógicas que pueden incluir variables abiertas precedidas por un signo de interrogación <code>?</code>).</p>
+<section id="estructura-de-un-hecho" class="level3">
+<h3 class="anchored" data-anchor-id="estructura-de-un-hecho">Estructura de un Hecho</h3>
+<p>Un hecho declara una relación clínica de la forma <code>(predicado entidad valor)</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>diagnostico paciente_01 obesidad<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="estructura-de-una-consulta" class="level3">
+<h3 class="anchored" data-anchor-id="estructura-de-una-consulta">Estructura de una Consulta</h3>
+<p>Una consulta busca coincidencias en la base de datos utilizando la estructura <code>(query predicado arg1 arg2)</code>. Si usas una variable como <code>?p</code>, el motor extraerá los valores que cumplan con la regla:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; ¿Qué pacientes tienen diagnóstico de obesidad?</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>query diagnostico ?p obesidad<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="anatomía-del-código-explicación-detallada-por-módulos" class="level2">
+<h2 class="anchored" data-anchor-id="anatomía-del-código-explicación-detallada-por-módulos">2. Anatomía del Código: Explicación Detallada por Módulos</h2>
+<p>Siguiendo la misma arquitectura limpia que hemos visto hasta ahora, dividiremos nuestro motor en cuatro módulos independientes.</p>
+<section id="módulo-1-syntax-procs.rkt-procedimientos-de-sintaxis" class="level3">
+<h3 class="anchored" data-anchor-id="módulo-1-syntax-procs.rkt-procedimientos-de-sintaxis">Módulo 1: <code>syntax-procs.rkt</code> (Procedimientos de Sintaxis)</h3>
+<p>Este módulo actúa como el “filtro de admisión” del lenguaje. Define qué formas son válidas para los hechos y las consultas, e introduce una función clave: identificar variables lógicas.</p>
+<ul>
+<li><strong>¿Cómo detectamos una variable?</strong> Evaluamos si un símbolo comienza con el carácter <code>#\?</code> (por ejemplo, <code>?p</code> o <code>?paciente</code>). Esto le avisa al motor que esa posición no es un valor fijo, sino una incógnita a resolver.</li>
+<li><strong>Selectores:</strong> Las funciones <code>fact-pred</code>, <code>fact-arg1</code>, etc., aíslan la estructura interna para evitar que el evaluador dependa de cómo representamos las listas físicamente.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> fact? fact-pred fact-arg1 fact-arg2</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         query? query-pred query-arg1 query-arg2</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         var?<span class="op">)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Identifica si un símbolo es una variable lógica (comienza con '?')</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>var? x<span class="op">)</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">and</span> <span class="op">(</span><span class="kw">symbol?</span> x<span class="op">)</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span><span class="kw">not</span> <span class="op">(</span><span class="kw">string=?</span> <span class="st">""</span> <span class="op">(</span><span class="kw">symbol-&gt;string</span> x<span class="op">)))</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span><span class="kw">char=?</span> <span class="ch">#\?</span> <span class="op">(</span><span class="kw">string-ref</span> <span class="op">(</span><span class="kw">symbol-&gt;string</span> x<span class="op">)</span> <span class="dv">0</span><span class="op">))))</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; Estructura de un hecho: (predicado entidad valor)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>fact? <span class="kw">exp</span><span class="op">)</span> </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">and</span> <span class="op">(</span><span class="kw">list?</span> <span class="kw">exp</span><span class="op">)</span> <span class="op">(=</span> <span class="op">(</span><span class="kw">length</span> <span class="kw">exp</span><span class="op">)</span> <span class="dv">3</span><span class="op">)))</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>fact-pred f<span class="op">)</span> <span class="op">(</span>first f<span class="op">))</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>fact-arg1 f<span class="op">)</span> <span class="op">(</span>second f<span class="op">))</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>fact-arg2 f<span class="op">)</span> <span class="op">(</span>third f<span class="op">))</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">;; Estructura de una consulta: (query predicado arg1 arg2)</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>query? <span class="kw">exp</span><span class="op">)</span> </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">and</span> <span class="op">(</span><span class="kw">list?</span> <span class="kw">exp</span><span class="op">)</span> <span class="op">(=</span> <span class="op">(</span><span class="kw">length</span> <span class="kw">exp</span><span class="op">)</span> <span class="dv">4</span><span class="op">)</span> <span class="op">(</span><span class="kw">eq?</span> <span class="op">(</span>first <span class="kw">exp</span><span class="op">)</span> 'query<span class="op">)))</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>query-pred q<span class="op">)</span> <span class="op">(</span>second q<span class="op">))</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>query-arg1 q<span class="op">)</span> <span class="op">(</span>third q<span class="op">))</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>query-arg2 q<span class="op">)</span> <span class="op">(</span>fourth q<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="módulo-2-utilities.rkt-concordancia-de-patrones" class="level3">
+<h3 class="anchored" data-anchor-id="módulo-2-utilities.rkt-concordancia-de-patrones">Módulo 2: <code>utilities.rkt</code> (Concordancia de Patrones)</h3>
+<p>La función principal de este módulo es comparar un argumento de consulta (que puede ser una constante como <code>obesidad</code> o una variable como <code>?p</code>) contra un valor real almacenado en la base de datos de hechos.</p>
+<ul>
+<li><strong>La lógica:</strong> Si el patrón es exactamente igual al valor, hay coincidencia. Si el patrón es una variable lógica (empezada con <code>?</code>), <strong>siempre coincide</strong>, porque una variable tiene la capacidad de “abrazar” cualquier valor correspondiente.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> match-pattern?<span class="op">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">;; Comprueba si un patrón de consulta coincide con un valor de la base de datos</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>match-pattern? pattern val<span class="op">)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">or</span> <span class="op">(</span><span class="kw">equal?</span> pattern val<span class="op">)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">and</span> <span class="op">(</span><span class="kw">symbol?</span> pattern<span class="op">)</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">not</span> <span class="op">(</span><span class="kw">string=?</span> <span class="st">""</span> <span class="op">(</span><span class="kw">symbol-&gt;string</span> pattern<span class="op">)))</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>           <span class="op">(</span><span class="kw">char=?</span> <span class="ch">#\?</span> <span class="op">(</span><span class="kw">string-ref</span> <span class="op">(</span><span class="kw">symbol-&gt;string</span> pattern<span class="op">)</span> <span class="dv">0</span><span class="op">)))))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="módulo-3-interpreter.rkt-el-motor-de-evaluación" class="level3">
+<h3 class="anchored" data-anchor-id="módulo-3-interpreter.rkt-el-motor-de-evaluación">Módulo 3: <code>interpreter.rkt</code> (El Motor de Evaluación)</h3>
+<p>Aquí reside la inteligencia del sistema. El evaluador cruza la consulta con cada uno de los hechos de la base de datos.</p>
+<ol type="1">
+<li><strong>Filtro de Predicado y Patrones:</strong> Utiliza <code>filter-map</code> combinado con <code>match-pattern?</code> para descartar todo lo que no coincida.</li>
+<li><strong>Extracción de Enlaces (<em>Bindings</em>):</strong> Si la consulta contenida en <code>arg1</code> era una variable, <code>get-binding</code> rescata el par variable-valor encontrado (ej. <code>(?p paciente_01)</code>). Si la consulta era puramente estricta (sin variables), devuelve una lista vacía <code>()</code> para certificar que el hecho clínico existe formalmente en el sistema.</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"syntax-procs.rkt"</span><span class="op">)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"utilities.rkt"</span><span class="op">)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> eval-query<span class="op">)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Genera el enlace de la variable si la consulta lo requiere</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>get-binding q-arg f-arg<span class="op">)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span>var? q-arg<span class="op">)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">list</span> q-arg f-arg<span class="op">)</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="dv">#f</span><span class="op">))</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; Evalúa una consulta lógica contra una base de datos de hechos clínicos</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>eval-query q db<span class="op">)</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">if</span> <span class="op">(</span>query? q<span class="op">)</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>pred <span class="op">(</span>query-pred q<span class="op">))</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>arg1 <span class="op">(</span>query-arg1 q<span class="op">))</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span>arg2 <span class="op">(</span>query-arg2 q<span class="op">)))</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>filter-map <span class="op">(</span><span class="kw">lambda</span> <span class="op">(</span>f<span class="op">)</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>                      <span class="op">(</span><span class="kw">and</span> <span class="op">(</span><span class="kw">eq?</span> pred <span class="op">(</span>fact-pred f<span class="op">))</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>                           <span class="op">(</span>match-pattern? arg1 <span class="op">(</span>fact-arg1 f<span class="op">))</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>                           <span class="op">(</span>match-pattern? arg2 <span class="op">(</span>fact-arg2 f<span class="op">))</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                           <span class="co">;; Extraemos enlaces si hay variables, o éxito '() si es estricto</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                           <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>b <span class="op">(</span>get-binding arg1 <span class="op">(</span>fact-arg1 f<span class="op">))))</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                             <span class="op">(</span><span class="kw">if</span> b b '<span class="op">()))))</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                    db<span class="op">))</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">error</span> 'eval-query <span class="st">"consulta ilegal -- ~a"</span> q<span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="módulo-4-tests.rkt-pruebas-clínicas-automatizadas" class="level3">
+<h3 class="anchored" data-anchor-id="módulo-4-tests.rkt-pruebas-clínicas-automatizadas">Módulo 4: <code>tests.rkt</code> (Pruebas Clínicas Automatizadas)</h3>
+<p>Validamos nuestro motor simulando una mini-base de datos inspirada en los estudios epidemiológicos de NHANES.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"syntax-procs.rkt"</span><span class="op">)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"interpreter.rkt"</span><span class="op">)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Base de datos clínica simulada (Hechos Datalog)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> nhanes-db</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>diagnostico paciente_01 obesidad<span class="op">)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>diagnostico paciente_02 diabetes<span class="op">)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>diagnostico paciente_03 obesidad<span class="op">)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>biomarcador paciente_01 glucosa_alta<span class="op">)))</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba 1: Búsqueda abierta con variable (?p)</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>eval-query '<span class="op">(</span>query diagnostico ?p obesidad<span class="op">)</span> nhanes-db<span class="op">)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>              '<span class="op">((</span>?p paciente_01<span class="op">)</span> <span class="op">(</span>?p paciente_03<span class="op">)))</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba 2: Consulta estricta sin variables (confirma existencia)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>eval-query '<span class="op">(</span>query biomarcador paciente_01 glucosa_alta<span class="op">)</span> nhanes-db<span class="op">)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(()))</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">;; Prueba 3: Consulta sin coincidencias (debe devolver lista vacía)</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>eval-query '<span class="op">(</span>query diagnostico ?p hipertension<span class="op">)</span> nhanes-db<span class="op">)</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>              '<span class="op">())</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>displayln <span class="st">"¡Pruebas del Mini-Datalog clínico superadas con éxito!"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="ejercicios-prácticos" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios-prácticos">3. Ejercicios Prácticos</h2>
+<section id="ejercicio-1-ampliando-el-registro-metabólico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-ampliando-el-registro-metabólico">Ejercicio 1: Ampliando el Registro Metabólico</h3>
+<p>Integra dos nuevos hechos a tu base de datos <code>nhanes-db</code> que especifiquen que el <code>paciente_02</code> presenta el biomarcador <code>colesterol_alto</code> y el <code>paciente_03</code> tiene presión arterial elevada (<code>presion_alta</code>).</p>
+</section>
+<section id="ejercicio-2-consulta-abierta-de-biomarcadores" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-consulta-abierta-de-biomarcadores">Ejercicio 2: Consulta Abierta de Biomarcadores</h3>
+<p>Escribe una consulta Datalog utilizando la variable lógica <code>?x</code> para averiguar qué pacientes registran la condición de <code>colesterol_alto</code> en tu base de datos ampliada. Añade su respectiva prueba unitaria con <code>check-equal?</code>.</p>
+</section>
+<section id="ejercicio-3-verificación-estricta-de-expediente" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-verificación-estricta-de-expediente">Ejercicio 3: Verificación Estricta de Expediente</h3>
+<p>Diseña una consulta estricta (sin variables, utilizando identificadores fijos) para corroborar si el <code>paciente_02</code> padece diabetes en el sistema. Asegúrate de que la prueba espere el indicador de éxito adecuado <code>'(())</code>.</p>
+</section>
+<section id="ejercicio-4-control-de-falsos-positivos" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-control-de-falsos-positivos">Ejercicio 4: Control de Falsos Positivos</h3>
+<p>Lanza una consulta buscando registros de un padecimiento inexistente en la base de datos (por ejemplo, <code>'enfermedad_rara'</code>) asignado a una variable <code>?paciente</code>. Comprueba que el motor devuelva limpiamente una lista vacía <code>'()</code>.</p>
+<hr>
+</section>
+</section>
+<section id="soluciones-de-los-ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="soluciones-de-los-ejercicios">Soluciones de los Ejercicios</h2>
+<section id="ejercicio-1-ampliando-el-registro-metabólico-my-nhanes" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-1-ampliando-el-registro-metabólico-my-nhanes">Ejercicio 1: Ampliando el Registro Metabólico (<code>my-nhanes</code>)</h3>
+<p>Ampliamos nuestra base de datos original incorporando nuevos hechos clínicos sobre biomarcadores de colesterol y presión arterial para los pacientes 02 y 03:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"syntax-procs.rkt"</span><span class="op">)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"interpreter.rkt"</span><span class="op">)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">;; Base de datos ampliada</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> my-nhanes</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  '<span class="op">((</span>diagnostico paciente_01 obesidad<span class="op">)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>diagnostico paciente_02 diabetes<span class="op">)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>diagnostico paciente_03 obesidad<span class="op">)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>biomarcador paciente_01 glucosa_alta<span class="op">)</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>biomarcador paciente_02 colesterol_alto<span class="op">)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>biomarcador paciente_03 presion_alta<span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-2-consulta-abierta-de-colesterol-alto" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-2-consulta-abierta-de-colesterol-alto">Ejercicio 2: Consulta Abierta de Colesterol Alto</h3>
+<p>Utilizamos la variable lógica <code>?x</code> en la posición del paciente para extraer dinámicamente quiénes presentan el biomarcador de colesterol alto:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; ¿Qué pacientes tienen colesterol alto?</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>eval-query '<span class="op">(</span>query biomarcador ?x colesterol_alto<span class="op">)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                          my-nhanes<span class="op">)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>              '<span class="op">((</span>?x paciente_02<span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-3-verificación-estricta-de-expediente-1" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-3-verificación-estricta-de-expediente-1">Ejercicio 3: Verificación Estricta de Expediente</h3>
+<p>Lanzamos una consulta cerrada (sin variables) para confirmar de manera inequívoca si el diagnóstico del <code>paciente_02</code> corresponde a <code>diabetes</code>. El motor responde con el indicador de éxito <code>'(())</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; ¿Tiene el paciente_02 diagnóstico de diabetes?</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>eval-query '<span class="op">(</span>query diagnostico paciente_02 diabetes<span class="op">)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                          my-nhanes<span class="op">)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(()))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ejercicio-4-control-de-falsos-positivos-vacío-clínico" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-4-control-de-falsos-positivos-vacío-clínico">Ejercicio 4: Control de Falsos Positivos (Vacío Clínico)</h3>
+<p>Consultamos por un padecimiento inexistente (<code>enfermedad_rara</code>) asignado a una variable <code>?paciente</code>. El motor demuestra su solidez devolviendo una lista vacía <code>'()</code> al no encontrar ninguna coincidencia:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; ¿Qué pacientes tienen una enfermedad rara inexistente?</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>eval-query '<span class="op">(</span>query diagnostico ?paciente enfermedad_rara<span class="op">)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                          my-nhanes<span class="op">)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>              '<span class="op">())</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>displayln <span class="st">"¡Todas las soluciones del Mini-Datalog clínico validadas con éxito!"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>SICP accesible, David Villafuerte MD, MBA.</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/jaimedavidvillafuerte/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/jaidafuerte2">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/jvillafuertemd">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,247 @@
+---
+title: "Taller Práctico. Diseñando un Mini-Motor Datalog Clínico"
+format: html
+editor: visual
+---
+
+
+> **Nota del Copiloto:** Hoy vamos a demostrar que los mismos principios de abstracción de sintaxis y evaluación modular (que hemos visto hasta ahora) sirven para algo BASTANTE ambicioso: construir un **motor de programación lógica (Datalog)** en miniatura. Este será nuestro asistente semántico para consultar expedientes metabólicos y de salud pública sin depender de bases de datos pesadas.
+
+---
+
+## 1. El Manual del Usuario de Mini-Datalog
+
+Antes de revisar el código fuente, veamos cómo interactúa un usuario con este mini-lenguaje lógico. Mini-Datalog opera bajo dos conceptos fundamentales: **Hechos** (afirmaciones inmutables sobre el mundo real) y **Consultas** (preguntas lógicas que pueden incluir variables abiertas precedidas por un signo de interrogación `?`).
+
+### Estructura de un Hecho
+Un hecho declara una relación clínica de la forma `(predicado entidad valor)`:
+```racket
+(diagnostico paciente_01 obesidad)
+
+```
+
+### Estructura de una Consulta
+
+Una consulta busca coincidencias en la base de datos utilizando la estructura `(query predicado arg1 arg2)`. Si usas una variable como `?p`, el motor extraerá los valores que cumplan con la regla:
+
+```racket
+;; ¿Qué pacientes tienen diagnóstico de obesidad?
+(query diagnostico ?p obesidad)
+
+```
+
+---
+
+## 2. Anatomía del Código: Explicación Detallada por Módulos
+
+Siguiendo la misma arquitectura limpia que hemos visto hasta ahora, dividiremos nuestro motor en cuatro módulos independientes.
+
+### Módulo 1: `syntax-procs.rkt` (Procedimientos de Sintaxis)
+
+Este módulo actúa como el "filtro de admisión" del lenguaje. Define qué formas son válidas para los hechos y las consultas, e introduce una función clave: identificar variables lógicas.
+
+* **¿Cómo detectamos una variable?** Evaluamos si un símbolo comienza con el carácter `#\?` (por ejemplo, `?p` o `?paciente`). Esto le avisa al motor que esa posición no es un valor fijo, sino una incógnita a resolver.
+* **Selectores:** Las funciones `fact-pred`, `fact-arg1`, etc., aíslan la estructura interna para evitar que el evaluador dependa de cómo representamos las listas físicamente.
+
+```racket
+#lang racket
+(provide fact? fact-pred fact-arg1 fact-arg2
+         query? query-pred query-arg1 query-arg2
+         var?)
+
+;; Identifica si un símbolo es una variable lógica (comienza con '?')
+(define (var? x) 
+  (and (symbol? x) 
+       (not (string=? "" (symbol->string x)))
+       (char=? #\? (string-ref (symbol->string x) 0))))
+
+;; Estructura de un hecho: (predicado entidad valor)
+(define (fact? exp) 
+  (and (list? exp) (= (length exp) 3)))
+
+(define (fact-pred f) (first f))
+(define (fact-arg1 f) (second f))
+(define (fact-arg2 f) (third f))
+
+;; Estructura de una consulta: (query predicado arg1 arg2)
+(define (query? exp) 
+  (and (list? exp) (= (length exp) 4) (eq? (first exp) 'query)))
+
+(define (query-pred q) (second q))
+(define (query-arg1 q) (third q))
+(define (query-arg2 q) (fourth q))
+
+```
+
+### Módulo 2: `utilities.rkt` (Concordancia de Patrones)
+
+La función principal de este módulo es comparar un argumento de consulta (que puede ser una constante como `obesidad` o una variable como `?p`) contra un valor real almacenado en la base de datos de hechos.
+
+* **La lógica:** Si el patrón es exactamente igual al valor, hay coincidencia. Si el patrón es una variable lógica (empezada con `?`), **siempre coincide**, porque una variable tiene la capacidad de "abrazar" cualquier valor correspondiente.
+
+```racket
+#lang racket
+(provide match-pattern?)
+
+;; Comprueba si un patrón de consulta coincide con un valor de la base de datos
+(define (match-pattern? pattern val)
+  (or (equal? pattern val)
+      (and (symbol? pattern) 
+           (not (string=? "" (symbol->string pattern)))
+           (char=? #\? (string-ref (symbol->string pattern) 0)))))
+
+```
+
+### Módulo 3: `interpreter.rkt` (El Motor de Evaluación)
+
+Aquí reside la inteligencia del sistema. El evaluador cruza la consulta con cada uno de los hechos de la base de datos.
+
+1. **Filtro de Predicado y Patrones:** Utiliza `filter-map` combinado con `match-pattern?` para descartar todo lo que no coincida.
+2. **Extracción de Enlaces (*Bindings*):** Si la consulta contenida en `arg1` era una variable, `get-binding` rescata el par variable-valor encontrado (ej. `(?p paciente_01)`). Si la consulta era puramente estricta (sin variables), devuelve una lista vacía `()` para certificar que el hecho clínico existe formalmente en el sistema.
+
+```racket
+#lang racket
+(require "syntax-procs.rkt")
+(require "utilities.rkt")
+(provide eval-query)
+
+;; Genera el enlace de la variable si la consulta lo requiere
+(define (get-binding q-arg f-arg)
+  (if (var? q-arg)
+      (list q-arg f-arg)
+      #f))
+
+;; Evalúa una consulta lógica contra una base de datos de hechos clínicos
+(define (eval-query q db)
+  (if (query? q)
+      (let ((pred (query-pred q))
+            (arg1 (query-arg1 q))
+            (arg2 (query-arg2 q)))
+        (filter-map (lambda (f)
+                      (and (eq? pred (fact-pred f))
+                           (match-pattern? arg1 (fact-arg1 f))
+                           (match-pattern? arg2 (fact-arg2 f))
+                           ;; Extraemos enlaces si hay variables, o éxito '() si es estricto
+                           (let ((b (get-binding arg1 (fact-arg1 f))))
+                             (if b b '()))))
+                    db))
+      (error 'eval-query "consulta ilegal -- ~a" q)))
+
+```
+
+### Módulo 4: `tests.rkt` (Pruebas Clínicas Automatizadas)
+
+Validamos nuestro motor simulando una mini-base de datos inspirada en los estudios epidemiológicos de NHANES.
+
+```racket
+#lang racket
+(require rackunit)
+(require "syntax-procs.rkt")
+(require "interpreter.rkt")
+
+;; Base de datos clínica simulada (Hechos Datalog)
+(define nhanes-db
+  '((diagnostico paciente_01 obesidad)
+    (diagnostico paciente_02 diabetes)
+    (diagnostico paciente_03 obesidad)
+    (biomarcador paciente_01 glucosa_alta)))
+
+;; Prueba 1: Búsqueda abierta con variable (?p)
+(check-equal? (eval-query '(query diagnostico ?p obesidad) nhanes-db)
+              '((?p paciente_01) (?p paciente_03)))
+
+;; Prueba 2: Consulta estricta sin variables (confirma existencia)
+(check-equal? (eval-query '(query biomarcador paciente_01 glucosa_alta) nhanes-db)
+              '(()))
+
+;; Prueba 3: Consulta sin coincidencias (debe devolver lista vacía)
+(check-equal? (eval-query '(query diagnostico ?p hipertension) nhanes-db)
+              '())
+
+(displayln "¡Pruebas del Mini-Datalog clínico superadas con éxito!")
+
+```
+
+---
+
+## 3. Ejercicios Prácticos
+
+### Ejercicio 1: Ampliando el Registro Metabólico
+
+Integra dos nuevos hechos a tu base de datos `nhanes-db` que especifiquen que el `paciente_02` presenta el biomarcador `colesterol_alto` y el `paciente_03` tiene presión arterial elevada (`presion_alta`).
+
+### Ejercicio 2: Consulta Abierta de Biomarcadores
+
+Escribe una consulta Datalog utilizando la variable lógica `?x` para averiguar qué pacientes registran la condición de `colesterol_alto` en tu base de datos ampliada. Añade su respectiva prueba unitaria con `check-equal?`.
+
+### Ejercicio 3: Verificación Estricta de Expediente
+
+Diseña una consulta estricta (sin variables, utilizando identificadores fijos) para corroborar si el `paciente_02` padece diabetes en el sistema. Asegúrate de que la prueba espere el indicador de éxito adecuado `'(())`.
+
+### Ejercicio 4: Control de Falsos Positivos
+
+Lanza una consulta buscando registros de un padecimiento inexistente en la base de datos (por ejemplo, `'enfermedad_rara'`) asignado a una variable `?paciente`. Comprueba que el motor devuelva limpiamente una lista vacía `'()`.
+
+---
+
+
+## Soluciones de los Ejercicios
+
+### Ejercicio 1: Ampliando el Registro Metabólico (`my-nhanes`)
+Ampliamos nuestra base de datos original incorporando nuevos hechos clínicos sobre biomarcadores de colesterol y presión arterial para los pacientes 02 y 03:
+
+```racket
+#lang racket
+(require rackunit)
+(require "syntax-procs.rkt")
+(require "interpreter.rkt")
+
+;; Base de datos ampliada
+(define my-nhanes
+  '((diagnostico paciente_01 obesidad)
+    (diagnostico paciente_02 diabetes)
+    (diagnostico paciente_03 obesidad)
+    (biomarcador paciente_01 glucosa_alta)
+    (biomarcador paciente_02 colesterol_alto)
+    (biomarcador paciente_03 presion_alta)))
+
+```
+
+### Ejercicio 2: Consulta Abierta de Colesterol Alto
+
+Utilizamos la variable lógica `?x` en la posición del paciente para extraer dinámicamente quiénes presentan el biomarcador de colesterol alto:
+
+```racket
+;; ¿Qué pacientes tienen colesterol alto?
+(check-equal? (eval-query '(query biomarcador ?x colesterol_alto)
+                          my-nhanes)
+              '((?x paciente_02)))
+
+```
+
+### Ejercicio 3: Verificación Estricta de Expediente
+
+Lanzamos una consulta cerrada (sin variables) para confirmar de manera inequívoca si el diagnóstico del `paciente_02` corresponde a `diabetes`. El motor responde con el indicador de éxito `'(())`:
+
+```racket
+;; ¿Tiene el paciente_02 diagnóstico de diabetes?
+(check-equal? (eval-query '(query diagnostico paciente_02 diabetes)
+                          my-nhanes)
+              '(()))
+
+```
+
+### Ejercicio 4: Control de Falsos Positivos (Vacío Clínico)
+
+Consultamos por un padecimiento inexistente (`enfermedad_rara`) asignado a una variable `?paciente`. El motor demuestra su solidez devolviendo una lista vacía `'()` al no encontrar ninguna coincidencia:
+
+```racket
+;; ¿Qué pacientes tienen una enfermedad rara inexistente?
+(check-equal? (eval-query '(query diagnostico ?paciente enfermedad_rara)
+                          my-nhanes)
+              '())
+
+(displayln "¡Todas las soluciones del Mini-Datalog clínico validadas con éxito!")
+
+```
+
