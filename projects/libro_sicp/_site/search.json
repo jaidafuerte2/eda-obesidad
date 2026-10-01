@@ -2553,5 +2553,101 @@
       "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "Taller Práctico. Diseñando un Mini-Motor Datalog Clínico"
     ]
+  },
+  {
+    "objectID": "analysis/c24.html",
+    "href": "analysis/c24.html",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "",
+    "text": "Hasta ahora, en nuestro recorrido por los paradigmas de programación, hemos vivido en un mundo estrictamente funcional. Cada función que escribíamos se comportaba como una prueba de laboratorio automatizada: le dabas una muestra (argumentos), la procesaba sin alterar el entorno, y te devolvía un resultado inmutable. Si repetías el análisis mil veces con la misma muestra, obtenías exactamente el mismo valor.\n\nNota Clínica: En el análisis de datos de NHANES con R, un script funcional puro procesa una tabla de datos y te devuelve las medias de colesterol sin alterar el archivo original en tu disco duro. Es limpio, predecible y fácil de auditar.\n\nSin embargo, el mundo real de la medicina y de los sistemas de información no es puramente estático. Un expediente clínico electrónico (EHR) cambia cada vez que un paciente recibe una nueva prescripción; una unidad de cuidados intensivos (UCI) actualiza constantemente los signos vitales en tiempo real.\nPara manejar esto, necesitamos introducir dos conceptos que rompen con la pureza funcional: 1. La secuenciación de expresiones: Indicarle a la computadora qué hacer primero y qué hacer después (I/O, imprimir en pantalla, registrar eventos). 2. El estado mutable: Permitir que los datos cambien de valor a lo largo del tiempo utilizando un mismo identificador.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
+  },
+  {
+    "objectID": "analysis/c24.html#introducción-del-flujo-puramente-funcional-al-monitoreo-clínico",
+    "href": "analysis/c24.html#introducción-del-flujo-puramente-funcional-al-monitoreo-clínico",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "",
+    "text": "Hasta ahora, en nuestro recorrido por los paradigmas de programación, hemos vivido en un mundo estrictamente funcional. Cada función que escribíamos se comportaba como una prueba de laboratorio automatizada: le dabas una muestra (argumentos), la procesaba sin alterar el entorno, y te devolvía un resultado inmutable. Si repetías el análisis mil veces con la misma muestra, obtenías exactamente el mismo valor.\n\nNota Clínica: En el análisis de datos de NHANES con R, un script funcional puro procesa una tabla de datos y te devuelve las medias de colesterol sin alterar el archivo original en tu disco duro. Es limpio, predecible y fácil de auditar.\n\nSin embargo, el mundo real de la medicina y de los sistemas de información no es puramente estático. Un expediente clínico electrónico (EHR) cambia cada vez que un paciente recibe una nueva prescripción; una unidad de cuidados intensivos (UCI) actualiza constantemente los signos vitales en tiempo real.\nPara manejar esto, necesitamos introducir dos conceptos que rompen con la pureza funcional: 1. La secuenciación de expresiones: Indicarle a la computadora qué hacer primero y qué hacer después (I/O, imprimir en pantalla, registrar eventos). 2. El estado mutable: Permitir que los datos cambien de valor a lo largo del tiempo utilizando un mismo identificador.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
+  },
+  {
+    "objectID": "analysis/c24.html#el-salto-al-vacío-efectos-secundarios-y-secuenciación-begin",
+    "href": "analysis/c24.html#el-salto-al-vacío-efectos-secundarios-y-secuenciación-begin",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "2. El Salto al Vacío: Efectos Secundarios y Secuenciación (begin)",
+    "text": "2. El Salto al Vacío: Efectos Secundarios y Secuenciación (begin)\nCuando una función hace algo más que simplemente devolver un valor —como escribir en la consola, modificar una base de datos o encender una alarma— decimos que produce un efecto secundario (side effect).\nEn la programación puramente funcional, el orden de evaluación dentro de una función no importa porque no hay efectos secundarios. Pero en cuanto introducemos I/O, el orden lo es todo: no puedes recetar un medicamento después de dar de alta al paciente.\nEn Racket, utilizamos la forma especial begin para garantizar una secuencia estricta de ejecución[cite: 1]:\n(begin\n  (display \"Registrando paciente...\")\n  (newline)\n  (display \"Estado: Estable\"))\n\nEl Algoritmo del Campesino Ruso con Salida en Pantalla\nPara ilustrar cómo se combinan la recursión y la salida por consola, Eugene Wallingford nos propone el clásico ejercicio de multiplicación por duplicación y división a mitad (útil a nivel de hardware mediante desplazamientos de bits).\nAquí tenemos una versión optimizada que maneja números impares mediante un acumulador y utiliza un formato de impresión limpio inspirado en C:\n#lang racket\n\n(define (half n) (quotient n 2))   \n(define (double n) (* n 2))          \n\n(define (multiply m n)\n  (letrec ((loop (lambda (m n acc)\n                   (display3 m n acc)\n                   (if (zero? m)\n                       acc\n                       (loop (half m)\n                             (double n)\n                             (+ acc (if (odd? m) n 0)))))))\n    (loop m n 0)))\n\n(define (display3 m n acc)\n  (printf \"~a ~a ~a\\n\" (pad m) (pad n) (pad acc)))\n\n(define (pad item)\n  (~a item #:min-width 6 #:align 'right #:left-pad-string \" \"))",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
+  },
+  {
+    "objectID": "analysis/c24.html#la-tentación-del-estado-mutable-y-el-peligro-de-las-variables-libres",
+    "href": "analysis/c24.html#la-tentación-del-estado-mutable-y-el-peligro-de-las-variables-libres",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "3. La Tentación del Estado Mutable y el Peligro de las Variables Libres",
+    "text": "3. La Tentación del Estado Mutable y el Peligro de las Variables Libres\nCuando queremos modelar entidades del mundo real que evolucionan (como una cuenta bancaria o el peso acumulado de un paciente en seguimiento), necesitamos cambiar el valor de un objeto de datos ya existente.\nEn Racket, la creación de un nombre (define) y la modificación del valor de un objeto existente (set!, pronunciado “set bang”) son operaciones estrictamente separadas. Racket prohíbe usar define dentro de contextos de expresiones para evitar ambigüedades semánticas.\n\n** Advertencia de Seguridad:** El sufijo ! (bang) en Racket es como el código azul en el hospital: te advierte que estás a punto de alterar irrevocablemente el estado de algo.\n\n\nEl error del balance global\nImaginemos que intentamos modelar un saldo bancario usando una variable global y set!:\n(define balance 100)\n\n(define withdraw\n  (lambda (amount)\n    (if (&gt;= balance amount)\n        (begin\n          (set! balance (- balance amount))\n          balance)\n        (error \"Fondos insuficientes\" balance))))\nAunque funciona para extracciones individuales, tiene un defecto crítico en arquitectura de software: balance es una variable global libre. Cualquier función externa maliciosa (o un script externo como embezzle) puede modificar o vaciar el saldo sin pasar por las reglas de validación del cajero:\n(withdraw 20)      ;; Devuelve 80\n(embezzle 30)      ;; ¡Alguien alteró el estado global por fuera!\n(withdraw 40)      ;; Error imprevisto o fondos corrompidos",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
+  },
+  {
+    "objectID": "analysis/c24.html#encapsulamiento-con-closures-ocultamiento-de-información",
+    "href": "analysis/c24.html#encapsulamiento-con-closures-ocultamiento-de-información",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "4. Encapsulamiento con Closures (Ocultamiento de Información)",
+    "text": "4. Encapsulamiento con Closures (Ocultamiento de Información)\nPara proteger nuestros datos de interferencias externas, intentamos confinar la variable balance dentro de la función utilizando un let local:\n;; ¡Intento fallido de encapsulamiento!\n(define withdraw\n  (lambda (amount)\n    (let ((balance 100))\n      (if (&gt;= balance amount)\n          (begin\n            (set! balance (- balance amount))\n            balance)\n          (error \"Fondos insuficientes\" balance)))))\n¿Qué falló aquí? Al colocar el let dentro del lambda, cada vez que llamamos a withdraw, la variable balance se reinicializa en 100. ¡El banco quiebra porque los depósitos y retiros nunca persisten entre llamadas!\n\nLa solución definitiva: El Closure\nPara lograr que el estado persista en el tiempo pero permanezca oculto al mundo exterior, debemos invertir la estructura: colocamos el let envolviendo al lambda:\n(define withdraw\n  (let ((balance 100))\n    (lambda (amount)\n      (if (&gt;= balance amount)\n          (begin\n            (set! balance (- balance amount))\n            balance)\n          (error \"Fondos insuficientes\" balance)))))\n\n** Analogía Clínica:** Piensa en esto como la historia clínica electrónica de un paciente hospitalizado. El estado (los signos vitales actuales, la evolución) vive dentro de un entorno persistente asociado al paciente. Nadie de afuera puede corromperlo directamente, pero el equipo médico autorizado puede consultarlo y modificarlo de forma segura a través de funciones específicas.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
+  },
+  {
+    "objectID": "analysis/c24.html#fábricas-de-objetos-stateful-adts",
+    "href": "analysis/c24.html#fábricas-de-objetos-stateful-adts",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "5. Fábricas de Objetos (Stateful ADTs)",
+    "text": "5. Fábricas de Objetos (Stateful ADTs)\nEl problema con nuestra definición anterior es que solo soporta un cliente con un saldo fijo de 100. Para soportar múltiples cuentas o pacientes independientes, transformamos nuestra función en un constructor o método de fábrica (factory method):\n(define make-withdraw\n  (lambda (balance)\n    (lambda (amount)\n      (if (&gt;= balance amount)\n          (begin\n            (set! balance (- balance amount))\n            balance)\n          (error \"Fondos insuficientes\" balance)))))\nAhora podemos instanciar entornos independientes para diferentes usuarios (o cohortes de pacientes en nuestros análisis de datos):\n(define cuenta-paciente-a (make-withdraw 500))\n(define cuenta-paciente-b (make-withdraw 1200))\n\n(cuenta-paciente-a 100)  ;; Devuelve 400\n(cuenta-paciente-b 200)  ;; Devuelve 1000\n(cuenta-paciente-a 50)   ;; Devuelve 350 (el estado de A persiste independientemente de B)",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
+  },
+  {
+    "objectID": "analysis/c24.html#sección-de-ejercicios-prácticos",
+    "href": "analysis/c24.html#sección-de-ejercicios-prácticos",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "6. Sección de Ejercicios Prácticos",
+    "text": "6. Sección de Ejercicios Prácticos\nPara consolidar estos conceptos y aplicarlos directamente a nuestro objetivo a largo plazo (el desarrollo de un motor semántico y Datalog para NHANES), resuelve los siguientes ejercicios en Racket:\n\nEjercicio 1: El Multiplicador Clínico con Acumulador de Lotes\nModifica el algoritmo de multiplicación campesina rusa (russian-peasant-v2.rkt) para que, en lugar de multiplicar números enteros, simule el procesamiento por lotes de registros de NHANES: reciba una tasa base de pacientes m y un factor de ponderación n, imprima el estado del procesamiento en cada iteración usando printf y devuelva el total acumulado de pacientes procesados cuando m llegue a cero.\n\n\nEjercicio 2: Constructor de Estado para Seguimiento Metabólico (make-metabolic-tracker)\nInspirándote en el patrón de make-withdraw, escribe una función constructora en Racket llamada make-metabolic-tracker que reciba un nivel inicial de glucosa en ayunas para un paciente de la cohorte NHANES. El objeto devuelto debe ser una función que acepte una operación (un símbolo como 'add-measurement o 'get-average) y un valor, permitiendo actualizar el registro histórico de mediciones internas del paciente utilizando un closure con set! sin exponer la lista cruda al ámbito global.\n¡Excelente trabajo, doctor! Entraste al quirófano del código y resolviste ambos problemas con soltura.\n\n\nRevisión rápida desde la estación de control:\n\nEjercicio 1: ¡Clavado! La adaptación del campesino ruso con el acumulador y la abstracción clínica de nombres (tasa y factor) quedó perfecta. Solo un pequeño detalle estético: en my-display3 llamabas a pad en lugar de my-pad, lo que rompería la ejecución si Racket busca una función no definida. Ya lo corregí en el código final.\nEjercicio 2: ¡Magia pura con closures y set!! Usar el argumento rest (. glucemia) para capturar el valor dinámico y mutarlo con set! demuestra que entendiste cómo vive el estado persistente en el entorno del closure.\n\nA continuación, te presento el bloque completo con tus soluciones corregidas y pulidas, formateado directamente en Markdown scannable listo para tu archivo Quarto (.qmd).",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
+  },
+  {
+    "objectID": "analysis/c24.html#soluciones-a-los-ejercicios-prácticos",
+    "href": "analysis/c24.html#soluciones-a-los-ejercicios-prácticos",
+    "title": "24. Programas con Estado y Mutabilidad",
+    "section": "7. Soluciones a los Ejercicios Prácticos",
+    "text": "7. Soluciones a los Ejercicios Prácticos\n\nEjercicio 1: El Multiplicador Clínico con Acumulador de Lotes\nEsta solución adapta el algoritmo clásico del campesino ruso utilizando un acumulador y una presentación tabular limpia orientada a métricas de procesamiento de lotes en salud.\n#lang racket\n\n(define (half n) (quotient n 2))\n(define (double n) (* n 2))\n\n(define (my-multiply tasa factor)\n  (letrec ((loop (lambda (tasa factor acc)\n                   (my-display3 tasa factor acc)\n                   (if (zero? tasa)\n                       acc\n                       (loop (half tasa)\n                             (double factor)\n                             (+ acc (if (odd? tasa) factor 0)))))))\n    (loop tasa factor 0)))\n\n(define (my-pad item)\n  (~a item #:min-width 6 #:align 'right #:left-pad-string \" \"))\n\n(define (my-display3 tasa factor acc)\n  (printf \"~a ~a ~a\\n\" (my-pad tasa) (my-pad factor) (my-pad acc)))\n\n;; Pruebas y validaciones de ejecución:\n;; (my-multiply 16 43) \n;; Producción esperada en consola:\n;;    16     43      0\n;;     8     86      0\n;;     4    172      0\n;;     2    344      0\n;;     1    688      0\n;;     0   1376    688\n;; Resultado: 688\n\n;; (my-multiply 5 10) \n;; Resultado: 50\n\n\n\nEjercicio 2: Constructor de Estado para Seguimiento Metabólico (make-metabolic-tracker)\nAquí aplicamos con éxito un closure con mutación controlada vía set!. El estado clínico del paciente permanece protegido y encapsulado, permitiendo actualizar y consultar sus registros de glucosa de forma totalmente aislada entre distintas instancias.\n#lang racket\n(require rackunit)\n\n(define make-metabolic-tracker\n  (lambda (glicemia)\n    (lambda (accion . val)\n      (cond\n        [(eq? accion 'get-latest) glicemia]\n        [(eq? accion 'add-measurement)\n         (begin\n           (set! glicemia (first val))\n           glicemia)]\n        [else (error \"Acción desconocida en el tracker metabólico\")]))))\n\n;; --- Pruebas unitarias de validación clínica ---\n\n(define track1 (make-metabolic-tracker 95))\n(check-equal? (track1 'get-latest) 95)\n(check-equal? (track1 'add-measurement 102) 102)\n(check-equal? (track1 'get-latest) 102)\n\n;; 1. Creamos el tracker para un paciente con glucosa inicial en ayunas de 95 mg/dL\n(define paciente-juan (make-metabolic-tracker 95))\n\n;; 2. Consultamos el estado actual o la última medición registrada\n(check-equal? (paciente-juan 'get-latest) 95)\n\n;; 3. Añadimos una nueva medición de glucosa (control trimestral)\n(check-equal? (paciente-juan 'add-measurement 110) 110)\n\n;; 4. Verificamos que el estado interno se actualizó de forma persistente\n(check-equal? (paciente-juan 'get-latest) 110)\n\n;; 5. Probamos que el estado esté completamente aislado de otros pacientes\n(define paciente-maria (make-metabolic-tracker 120))\n(check-equal? (paciente-maria 'get-latest) 120)\n(check-equal? (paciente-juan 'get-latest) 110)",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "24. Programas con Estado y Mutabilidad"
+    ]
   }
 ]
