@@ -2649,5 +2649,113 @@
       "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "24. Programas con Estado y Mutabilidad"
     ]
+  },
+  {
+    "objectID": "analysis/c25.html",
+    "href": "analysis/c25.html",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "",
+    "text": "Nota Clínica Importante: En medicina, un paciente no es una función pura que devuelve siempre el mismo resultado para los mismos signos vitales; su estado evoluciona con el tiempo. Un expediente clínico abierto recuerda antecedentes, tratamientos y variaciones de peso. En programación, un closure es exactamente ese expediente: una estructura que empaqueta código y un estado mutable que sobrevive a lo largo de múltiples interacciones.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#ejercicios-prácticos-1",
+    "href": "analysis/c25.html#ejercicios-prácticos-1",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "7. Ejercicios Prácticos",
+    "text": "7. Ejercicios Prácticos\n\nNota Metodológica: Los siguientes ejercicios consolidan el uso de closures para mantener estado mutable, aplicando los conceptos de Racket directamente a la simulación de expedientes clínicos y al diseño de bases de datos lógicas.\n\n\nEjercicio 1: El Monitor de Glucemia (Bounded Counter)\nModifica la fábrica de contadores para crear un monitor de glucemia en ayunas que cuente las mediciones realizadas por un paciente y se reinicie automáticamente a 0 al llegar a un límite de 7 días de control continuo.\n#lang racket\n(require rackunit)\n\n(define counter-to\n  (lambda (limit)\n    (let ((n 0))\n      (lambda ()\n        (set! n (if (= n (sub1 limit))\n                    0\n                    (add1 n)))\n        n))))\n\n;; Pruebas del monitor de glucemia\n(define contar-glicemias (counter-to 7))\n(check-equal? (contar-glicemias) 1)\n(check-equal? (contar-glicemias) 2)\n\n\nEjercicio 2: Expediente Clínico Multivariable\nImplementa una función make-metabolic-profile utilizando el patrón de selectores por mensajes. Debe recibir un nivel inicial de colesterol y permitir tres operaciones: 'check-colesterol, 'add-colesterol (incrementar valor) y 'reduce-colesterol (disminuir valor).\n#lang racket\n(require rackunit)\n\n(define make-metabolic-profile\n  (lambda (initial-chol)\n    (let ((chol initial-chol))\n      (lambda (transaction . val)\n        (case transaction\n          ('check-colesterol\n           chol)\n          ('add-colesterol\n           (set! chol (+ chol (first val)))\n           chol)\n          ('reduce-colesterol\n           (set! chol (- chol (first val)))\n           chol)\n          (else\n           (error \"Mensaje desconocido para el expediente\" transaction)))))))\n\n;; Pruebas unitarias del perfil metabólico\n(define paciente-test2 (make-metabolic-profile 200))\n(check-equal? (paciente-test2 'check-colesterol) 200)\n(check-equal? (paciente-test2 'add-colesterol 30) 230)\n(check-equal? (paciente-test2 'check-colesterol) 230)\n(check-equal? (paciente-test2 'reduce-colesterol 50) 180)\n(check-equal? (paciente-test2 'check-colesterol) 180)\n\n(define paciente-control2 (make-metabolic-profile 150))\n(check-equal? (paciente-control2 'check-colesterol) 150)\n(check-equal? (paciente-test2 'check-colesterol) 180) ; Aislamiento verificado",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#introducción-de-las-funciones-puras-al-estado-mutable",
+    "href": "analysis/c25.html#introducción-de-las-funciones-puras-al-estado-mutable",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "1. Introducción: De las Funciones Puras al Estado Mutable",
+    "text": "1. Introducción: De las Funciones Puras al Estado Mutable\nHasta hace poco, en nuestro viaje por los lenguajes de programación, hemos vivido en un entorno puramente funcional. Sin embargo, los sistemas del mundo real —y los sistemas de salud— requieren modelar entidades que cambian de estado con el tiempo.\nPara entender cómo logramos esto en Racket sin caer en abstracciones matemáticas bizarras, repasemos tres conceptos fundamentales de nuestro glosario:\n\nIdentificador: El nombre que usamos en el código (por ejemplo, presion_arterial).\nBinding (Enlace): La conexión entre ese identificador y un valor o función real en la memoria.\nVariable: La combinación de un identificador y su binding.\n\nCuando introdujimos la primitiva set! en sesiones anteriores, aprendimos a modificar el valor de un objeto existente. Pero para construir modelos robustos, necesitamos que los datos no se destruyan ni se recreen cada vez que ejecutamos una función. Aquí es donde entran en juego los closures.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#la-diplomacia-del-closure-ámbito-scope-región-y-la-embajada-en-parís",
+    "href": "analysis/c25.html#la-diplomacia-del-closure-ámbito-scope-región-y-la-embajada-en-parís",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "2. La Diplomacia del Closure: Ámbito (Scope), Región y la Embajada en París",
+    "text": "2. La Diplomacia del Closure: Ámbito (Scope), Región y la Embajada en París\nUna confusión clásica al estudiar lenguajes es asumir que la región de una variable (dónde es visible en el texto del código) coincide con su tiempo de vida (scope). Con los closures, esto cambia radicalmente.\nEs posible explicar este fenómeno con una gran analogía política:\n\nLa embajada de Estados Unidos en París ocupa un edificio físico dentro de territorio francés. Sin embargo, cuando cruzas sus puertas, ya no te riges por las leyes de Francia: estás bajo la jurisdicción de la ley estadounidense.\n\nUn closure se comporta exactamente igual: es un paquete soberano que contiene una función y un conjunto de bindings (su entorno local). Aunque el código viaje a otras partes del programa, las variables dentro de ese closure retienen el significado y el valor del lugar donde fueron creadas.\n#lang racket\n\n;; Un contador simple con memoria utilizando un closure básico\n(define counter\n  (let ((n 0))                ; Variable local protegida\n    (lambda ()                ; Función devuelta (el closure)\n      (set! n (add1 n))\n      n)))\nSi ejecutamos este counter repetidas veces, recordará su estado anterior sin exponer la variable n al ámbito global.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#fábricas-de-objetos-y-estado-compartido-del-contador-al-expediente-clínico",
+    "href": "analysis/c25.html#fábricas-de-objetos-y-estado-compartido-del-contador-al-expediente-clínico",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "3. Fábricas de Objetos y Estado Compartido: Del Contador al Expediente Clínico",
+    "text": "3. Fábricas de Objetos y Estado Compartido: Del Contador al Expediente Clínico\n¿Qué pasa si necesitamos múltiples contadores o múltiples cuentas bancarias que no interfieran entre sí? Creamos una fábrica de objetos (factory method) anidando funciones:\n#lang racket\n\n;; Fábrica de contadores independientes\n(define make-counter\n  (lambda ()\n    (let ((n 0))\n      (lambda ()\n        (set! n (add1 n))\n        n))))\nLlevando esto al ámbito clínico, imagina que queremos modelar el seguimiento metabólico de pacientes en el estudio NHANES. Cada paciente necesita mantener su propio registro de evolución de glucosa o índice de masa corporal (IMC), compartiendo múltiples operaciones (consultar, actualizar, registrar mediciones).\nPodemos implementar una estructura basada en un selector de mensajes (message-passing style), donde un único closure encapsula varias funciones que comparten la misma variable de estado (balance o, en nuestro caso clínico, imc_actual):\n#lang racket\n(provide make-patient-record)\n\n(define make-patient-record\n  (lambda (initial-bmi)\n    (let ((bmi initial-bmi))\n      (lambda (transaction)\n        (case transaction\n          ('get-bmi\n           (lambda () bmi))\n          ('update-bmi\n           (lambda (new-measurement)\n             (set! bmi new-measurement)\n             bmi))\n          (else\n           (error \"Mensaje desconocido para el expediente\" transaction)))))))",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#patrones-de-interacción-sintaxis-abstracción-y-el-motor-semántico",
+    "href": "analysis/c25.html#patrones-de-interacción-sintaxis-abstracción-y-el-motor-semántico",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "4. Patrones de Interacción: Sintaxis, Abstracción y el Motor Semántico",
+    "text": "4. Patrones de Interacción: Sintaxis, Abstracción y el Motor Semántico\nLa sintaxis inicial para interactuar con un objeto basado en selectores puede volverse incómoda en Racket, ya que requiere evaluar la función primero para invocar el método:\n&gt; (define patient-001 (make-patient-record 28.5))\n&gt; ((patient-001 'get-bmi))\n28.5\nPara ocultar estos detalles de implementación al código cliente, introducimos funciones de azúcar sintáctico como send y look-up-method, emulando el comportamiento de un motor semántico o un despachador de reglas en Datalog:\n#lang racket\n\n(define send\n  (lambda (object message . args)\n    (apply (look-up-method object message) args)))\n\n(define look-up-method\n  (lambda (object selector)\n    (object selector)))\nGracias a esto, la interacción con nuestros “objetos clínicos” se vuelve mucho más limpia y natural:\n&gt; (send patient-001 'update-bmi 27.8)\n27.8",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#un-viaje-a-la-nostalgia-la-semántica-traslacional-de-letrec",
+    "href": "analysis/c25.html#un-viaje-a-la-nostalgia-la-semántica-traslacional-de-letrec",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "5. Un Viaje a la Nostalgia: La Semántica Traslacional de letrec",
+    "text": "5. Un Viaje a la Nostalgia: La Semántica Traslacional de letrec\n¿Cómo maneja Racket las funciones recursivas locales sin romper el flujo del intérprete? Semanas atrás conocimos letrec. Hoy descubrimos su secreto mejor guardado: letrec es pura azúcar sintáctica que se puede construir combinando un let normal con la asignación destructiva set!.\nUna función recursiva (como el cálculo factorial) se puede expresar creando primero una referencia vacua con set! y luego enlazándola a su propia estructura de closure:\n#lang racket\n\n(define factorial\n  (let ((fact #f))\n    (set! fact (lambda (n)\n                 (if (zero? n)\n                     1\n                     (* n (fact (sub1 n))))))\n    fact))\nEste principio de autorreferencia mediante closures es el motor oculto que permite a los intérpretes de lenguajes dinámicos resolver dependencias circulares y construir jerarquías de clases en la programación orientada a objetos.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#ejercicios-prácticos",
+    "href": "analysis/c25.html#ejercicios-prácticos",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "6. Ejercicios Prácticos",
+    "text": "6. Ejercicios Prácticos\nPara consolidar lo aprendido, resuelve los siguientes ejercicios combinando código en Racket y escenarios aplicados al análisis de datos clínicos (NHANES) y gestión de salud.\n\nEl Monitor de Glucemia (Contador Bounded):\n\n\nModifica la fábrica de contadores (counter-to) vista en clase para crear un monitor de glucemia en ayunas que cuente las mediciones realizadas por un paciente y se reinicie automáticamente a 0 al llegar a un límite de 7 días de control continuo.\n\n\nExpediente Clínico Multivariable:\n\n\nUtilizando el patrón de make-account visto en las notas (con withdraw y deposit), implementa una función make-metabolic-profile que reciba un nivel inicial de colesterol y permita ejecutar tres transacciones vía mensajes: 'check-colesterol, 'add-colesterol (incrementar valor) y 'reduce-colesterol (disminuir valor por tratamiento).",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
+  },
+  {
+    "objectID": "analysis/c25.html#respuestas-a-los-ejercicios-prácticos",
+    "href": "analysis/c25.html#respuestas-a-los-ejercicios-prácticos",
+    "title": "25. Implementando Objetos con Closures",
+    "section": "7. Respuestas a los Ejercicios Prácticos",
+    "text": "7. Respuestas a los Ejercicios Prácticos\n\nNota Metodológica: Los siguientes ejercicios consolidan el uso de closures para mantener estado mutable, aplicando los conceptos de Racket directamente a la simulación de expedientes clínicos y al diseño de bases de datos lógicas.\n\n\nEjercicio 1: El Monitor de Glucemia (Bounded Counter)\nModifica la fábrica de contadores para crear un monitor de glucemia en ayunas que cuente las mediciones realizadas por un paciente y se reinicie automáticamente a 0 al llegar a un límite de 7 días de control continuo.\n#lang racket\n(require rackunit)\n\n(define counter-to\n  (lambda (limit)\n    (let ((n 0))\n      (lambda ()\n        (set! n (if (= n (sub1 limit))\n                    0\n                    (add1 n)))\n        n))))\n\n;; Pruebas del monitor de glucemia\n(define contar-glicemias (counter-to 7))\n(check-equal? (contar-glicemias) 1)\n(check-equal? (contar-glicemias) 2)\n\n\nEjercicio 2: Expediente Clínico Multivariable\nImplementa una función make-metabolic-profile utilizando el patrón de selectores por mensajes. Debe recibir un nivel inicial de colesterol y permitir tres operaciones: 'check-colesterol, 'add-colesterol (incrementar valor) y 'reduce-colesterol (disminuir valor).\n#lang racket\n(require rackunit)\n\n(define make-metabolic-profile\n  (lambda (initial-chol)\n    (let ((chol initial-chol))\n      (lambda (transaction . val)\n        (case transaction\n          ('check-colesterol\n           chol)\n          ('add-colesterol\n           (set! chol (+ chol (first val)))\n           chol)\n          ('reduce-colesterol\n           (set! chol (- chol (first val)))\n           chol)\n          (else\n           (error \"Mensaje desconocido para el expediente\" transaction)))))))\n\n;; Pruebas unitarias del perfil metabólico\n(define paciente-test2 (make-metabolic-profile 200))\n(check-equal? (paciente-test2 'check-colesterol) 200)\n(check-equal? (paciente-test2 'add-colesterol 30) 230)\n(check-equal? (paciente-test2 'check-colesterol) 230)\n(check-equal? (paciente-test2 'reduce-colesterol 50) 180)\n(check-equal? (paciente-test2 'check-colesterol) 180)\n\n(define paciente-control2 (make-metabolic-profile 150))\n(check-equal? (paciente-control2 'check-colesterol) 150)\n(check-equal? (paciente-test2 'check-colesterol) 180) ; Aislamiento verificado",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "25. Implementando Objetos con Closures"
+    ]
   }
 ]
