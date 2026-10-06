@@ -2757,5 +2757,134 @@
       "PARTE IV — ABSTRACCIÓN DE DATOS.",
       "25. Implementando Objetos con Closures"
     ]
+  },
+  {
+    "objectID": "analysis/c26.html",
+    "href": "analysis/c26.html",
+    "title": "26. Construyendo un Intérprete",
+    "section": "",
+    "text": "Nota del Copiloto: Olvídate por un momento de las demostraciones formales de pizarrón. Hoy vamos a entender cómo construir un mini-lenguaje (el famoso lenguaje Huey de las notas) no porque vayamos a competir con Python, sino porque los principios para diseñar un intérprete son exactamente los mismos que usarás para construir tu motor semántico en Datalog para consultar tus bases de datos de NHANES sin volverte loco con SQL anidado.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "analysis/c26.html#introducción-de-la-memoria-clínica-al-estado-en-los-intérpretes",
+    "href": "analysis/c26.html#introducción-de-la-memoria-clínica-al-estado-en-los-intérpretes",
+    "title": "26. Construyendo un Intérprete",
+    "section": "1. Introducción: De la Memoria Clínica al Estado en los Intérpretes",
+    "text": "1. Introducción: De la Memoria Clínica al Estado en los Intérpretes\nImagina que estás en la consulta externa y cada vez que entra un paciente con factores de riesgo cardiovascular, el sistema no solo evalúa su presión actual, sino que acumula un puntaje de riesgo histórico a lo largo del año. Necesitamos una función que recuerde su estado anterior sin que tengamos que pasarle la historia clínica completa en cada llamada.\nEn programación, esto se logra combinando closures y variables de estado (set!). Veamos el ejemplo clásico de la función add con memoria:\n#lang racket\n(require \"display-line.rkt\")\n(provide add)\n\n(define add\n  (let ((sum 0))\n    (lambda args\n      (let ((result (apply + args)))\n        (set! sum (+ sum result))\n        (display-line \"... running total:\" sum)\n        result))))\n\nAnalogía Clínica: Piensa en la variable sum dentro del let como el acumulador de triglicéridos o la dosis acumulada de un fármaco nefrotóxico en el expediente del paciente. La función no solo calcula el valor de la consulta actual (result), sino que actualiza sigilosamente el acumulador global del paciente para la posteridad.\n\n\nEl arte de la importación: No pises al sistema\nCuando intentamos llamar a nuestra función personalizada simplemente +, Racket se pone nervioso y entra en un bucle infinito porque protege sus funciones primitivas. Para evitar desastres en nuestro entorno de trabajo (o en producción), usamos los operadores provide y require con clase:\n;; Al importar en otro módulo, podemos renombrarla limpiamente:\n(require (rename-in \"add-with-memory.rkt\" (add +)))\nAsí mantenemos la paz en el consultorio: nuestra herramienta personalizada coexiste con las matemáticas básicas del sistema sin romper nada.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "analysis/c26.html#anatomía-de-un-lenguaje-pequeño-el-caso-huey",
+    "href": "analysis/c26.html#anatomía-de-un-lenguaje-pequeño-el-caso-huey",
+    "title": "26. Construyendo un Intérprete",
+    "section": "2. Anatomía de un Lenguaje Pequeño: El Caso “Huey”",
+    "text": "2. Anatomía de un Lenguaje Pequeño: El Caso “Huey”\nUna de las preguntas más recurrentes es: ¿Por qué hay tantos archivos al crear un lenguaje? ¿No podríamos poner todo en un solo script de Racket de mil líneas?\nLa respuesta corta es: absolutamente no.\nSi metes el diagnóstico, la receta, la facturación y la cirugía en una sola libreta, vas directito al burnout administrativo. En ingeniería de lenguajes —y en el diseño de un motor Datalog para NHANES—, separamos responsabilidades:\n\nUtilidades y Constantes: El catálogo general de medicamentos y diagnósticos (utilities.rkt).\nSintaxis y Constructores: Las reglas gramaticales de cómo se escribe una orden médica (syntax-procs.rkt).\nEl Preprocesador: El triage que simplifica notas apresuradas en datos normalizados (preprocess).\nEl Evaluador: El motor lógico que ejecuta la regla de decisión clínica (eval-exp).",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "analysis/c26.html#el-preprocesador-el-triage-del-intérprete",
+    "href": "analysis/c26.html#el-preprocesador-el-triage-del-intérprete",
+    "title": "26. Construyendo un Intérprete",
+    "section": "3. El Preprocesador (El Triage del Intérprete)",
+    "text": "3. El Preprocesador (El Triage del Intérprete)\nAntes de que el evaluador principal procese una expresión, el preprocesador toma el código y lo limpia. Aquí ocurre la magia del azúcar sintáctico (syntactic sugar): atajos cómodos para los humanos que la computadora traduce a formas primitivas elementales.\nPor ejemplo, en el lenguaje Huey, la operación mix de colores se traduce en el preprocesador de esta forma:\n;; Lo que escribe el humano: (mix left right)\n;; Lo que genera el preprocesador por debajo:\n(+ (* left 0.5) (* right 0.5))\n\nNota del Copiloto: ¿Por qué no evaluar mix directamente en el evaluador principal? Porque al transformar el azúcar sintáctico en código primitivo antes de evaluar, adelgazamos el evaluador. En un motor Datalog, esto equivale a transformar consultas complejas de usuario (ej. “dame los pacientes con obesidad metabólica severa”) en un conjunto estándar de tuplas lógicas básicas antes de golpear el motor de inferencia. Menos complejidad en el núcleo significa un sistema más rápido y fácil de mantener.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "analysis/c26.html#el-evaluador-y-el-árbol-de-sintaxis-abstracta-ast",
+    "href": "analysis/c26.html#el-evaluador-y-el-árbol-de-sintaxis-abstracta-ast",
+    "title": "26. Construyendo un Intérprete",
+    "section": "4. El Evaluador y el Árbol de Sintaxis Abstracta (AST)",
+    "text": "4. El Evaluador y el Árbol de Sintaxis Abstracta (AST)\nUna vez que el preprocesador hizo su trabajo de triage, entra el evaluador (eval-exp). Este componente recorre el Árbol de Sintaxis Abstracta (AST) utilizando estructuras condicionales limpias (cond o match).\nUna duda clásica de los estudiantes es: ¿Por qué el evaluador tiene casos de error que “nunca deberían alcanzarse” (unreachable)?\n(define (eval-core exp)\n  (cond\n    [(number? exp) exp]\n    [(addition? exp) (...)]\n    [else (error 'eval-core \"unreachable\")])) ; ¿Por qué poner esto?\n\nAnalogía de Gestión de Datos: Ese bloque else es como la alarma contra incendios en el hospital. Esperas nunca escucharla, pero si un fallo extraño en los datos de NHANES introduce una categoría fantasma que corrompe el sistema, prefieres que el software detenga la ejecución con un error controlado (unreachable) en lugar de corromper silenciosamente tus análisis epidemiológicos de obesidad. La robustez defensiva no es opcional.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "analysis/c26.html#pruebas-y-decisiones-de-ingeniería-para-un-motor-datalog",
+    "href": "analysis/c26.html#pruebas-y-decisiones-de-ingeniería-para-un-motor-datalog",
+    "title": "26. Construyendo un Intérprete",
+    "section": "5. Pruebas y Decisiones de Ingeniería para un Motor Datalog",
+    "text": "5. Pruebas y Decisiones de Ingeniería para un Motor Datalog\nCuando construyes un intérprete te enfrentas al dilema de la flexibilidad frente al código duro (hard-coded). Escribir predicados de tipo para cada operador puede parecer pesado al principio:\n;; ¿Por qué escribir esto explícitamente?\n(define (unary-op-core? op)\n  (member op unary-ops-core))\nLa respuesta orientada a la arquitectura de sistemas es que la validación temprana previene dolores de cabeza tardíos. Cuando diseñes las reglas de inferencia para tus datos de NHANES, querrás que el sistema rechace consultas mal formadas desde la puerta (en la fase sintáctica) y no a mitad de un procesamiento pesado de 10,000 registros metabólicos.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "analysis/c26.html#ejercicios-prácticos-del-racket-al-consultorio-metabólico",
+    "href": "analysis/c26.html#ejercicios-prácticos-del-racket-al-consultorio-metabólico",
+    "title": "26. Construyendo un Intérprete",
+    "section": "6. Ejercicios Prácticos: Del Racket al Consultorio Metabólico",
+    "text": "6. Ejercicios Prácticos: Del Racket al Consultorio Metabólico\nPara fijar el conocimiento, resuelve los siguientes ejercicios combinando Racket y tu dominio clínico:\n\nEjercicio 1: El Acumulador de Dosis (Racket)\nModifica el código de add-with-memory.rkt para crear una función llamada track-glucose que acepte lecturas de glucosa en ayunas de un paciente, imprima un mensaje dinámico si el valor acumulado promedio supera un umbral de alerta (ej. 100 mg/dL), y devuelva el running total actualizado.\n\n\nEjercicio 2: Diseño del Preprocesador de Consultas NHANES\nImagina que en tu futuro motor Datalog quieres permitir que los usuarios escriban la consulta abreviada (obese-metabolic? patient-id).\n\nRedacta un pseudo-preprocesador en Racket que traduzca esa consulta de azúcar sintáctico a una conjunción lógica básica de dos variables de tu dataset: Índice de Masa Corporal (\\(\\text{IMC} \\ge 30\\)) y Circunferencia de Cintura elevada.\nRazona por qué hacer esta transformación previa te ahorrará escribir código repetitivo en el evaluador principal.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "analysis/c26.html#ejercicios-prácticos-del-racket-al-consultorio-metabólico-1",
+    "href": "analysis/c26.html#ejercicios-prácticos-del-racket-al-consultorio-metabólico-1",
+    "title": "26. Construyendo un Intérprete",
+    "section": "Ejercicios Prácticos: Del Racket al Consultorio Metabólico",
+    "text": "Ejercicios Prácticos: Del Racket al Consultorio Metabólico\nEn esta sección aplicamos los conceptos de clausuras con estado (closures) y transformación sintáctica (preprocesadores) a escenarios de análisis de datos clínicos y epidemiológicos (NHANES).\n\nEjercicio 1: El Acumulador de Glucosa Histórico\nPara evitar sobrescribir el valor del paciente en cada consulta y mantener un expediente acumulativo real (como vimos en el ejemplo de la función add con memoria), utilizamos un estado persistente que rastrea la suma acumulada de glucosa y el número total de mediciones.\n#lang racket\n(require \"display-line.rkt\")\n(provide track-glucose)\n\n(define track-glucose\n  (let ((glucose-sum 0)\n        (count 0))\n    (lambda args\n      (let ((result (apply + args)))\n        (set! glucose-sum (+ glucose-sum result))\n        (set! count (+ count (length args)))\n        (let ((promedio (/ glucose-sum count)))\n          (if (&lt;= promedio 100)\n              (display-line \"... promedio de glucosa normal:\" promedio)\n              (display-line \"... ¡Alerta, promedio de glicosa alto!\" promedio))\n          promedio)))))\n\n;; Pruebas de uso:\n;; (track-glucose 98)  --&gt; Imprime promedio normal y devuelve 98\n;; (track-glucose 105) --&gt; Acumula, calcula nuevo promedio y evalúa alerta\n\nNota Clínica: Gracias al uso del let externo que envuelve al lambda, logramos un almacenamiento privado y persistente que emula perfectamente la historia clínica longitudinal del paciente sin contaminar el entorno global.\n\n\n\nEjercicio 2: Diseño del Preprocesador de Consultas NHANES y Uso de Quasiquote\nAquí estructuramos el reconocedor de sintaxis (syntax-procs) y el preprocesador utilizando la técnica de Quasiquotation (backquote ` y unquote ,), inspirada en herramientas como Pollen, para inyectar variables de forma limpia y legible dentro de las plantillas de expresiones lógicas.\n#lang racket\n(require rackunit)\n(provide preprocess-nhanes metabolic-pred?)\n\n;; ;;;;;;;;;;; syntax-procs ;;;;;;;;;;;;;\n\n(define (metabolic-pred? pred)\n  (and (list? pred)\n       (= (length pred) 2)\n       (eq? (first pred) 'obese-metabolic?)))\n\n;; ;;;;;;;;;;; preprocess ;;;;;;;;;;;;;\n\n(define (preprocess-nhanes exp)\n  (cond \n    ;; Si detectamos la consulta azucarada, usamos quasiquote y unquote (`, patient`)\n    [(metabolic-pred? exp)\n     (let ((patient (cadr exp)))\n       `(and (&gt;= (imc ,patient) 30)\n             (&gt;= (waist-circumference ,patient) 102)))]\n    [else exp]))\n\n;; ;;;;;;;;;;; Test Suite ;;;;;;;;;;;;;\n\n(check-equal? (preprocess-nhanes '(obese-metabolic? patient-42))\n              '(and (&gt;= (imc patient-42) 30)\n                    (&gt;= (waist-circumference patient-42) 102)))\n\n(check-equal? (preprocess-nhanes 'patient-01) \n              'patient-01)\n\n(check-equal? (preprocess-nhanes '(and (&gt;= (imc patient-99) 25)\n                                     (&gt;= (bp patient-99) 140)))\n              '(and (&gt;= (imc patient-99) 25) (&gt;= (bp patient-99) 140)))\n\nTruco de Arquitectura: El uso de ` y ,patient nos evita tener que anidar llamadas verbosas a la función list, permitiendo maquetar plantillas de reglas lógicas idénticas a la forma en la que conceptualizamos las consultas a nuestro futuro motor Datalog.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
+  },
+  {
+    "objectID": "files/others/exercises_solution.html",
+    "href": "files/others/exercises_solution.html",
+    "title": "Sesión 26: Soluciones de Ejercicios - Intérpretes y Preprocesadores Clínicos",
+    "section": "",
+    "text": "En esta sección aplicamos los conceptos de clausuras con estado (closures) y transformación sintáctica (preprocesadores) a escenarios de análisis de datos clínicos y epidemiológicos (NHANES).\n\n\nPara evitar sobrescribir el valor del paciente en cada consulta y mantener un expediente acumulativo real (como vimos en el ejemplo de la función add con memoria), utilizamos un estado persistente que rastrea la suma acumulada de glucosa y el número total de mediciones.\n#lang racket\n(require \"display-line.rkt\")\n(provide track-glucose)\n\n(define track-glucose\n  (let ((glucose-sum 0)\n        (count 0))\n    (lambda args\n      (let ((result (apply + args)))\n        (set! glucose-sum (+ glucose-sum result))\n        (set! count (+ count (length args)))\n        (let ((promedio (/ glucose-sum count)))\n          (if (&lt;= promedio 100)\n              (display-line \"... promedio de glucosa normal:\" promedio)\n              (display-line \"... ¡Alerta, promedio de glicosa alto!\" promedio))\n          promedio)))))\n\n;; Pruebas de uso:\n;; (track-glucose 98)  --&gt; Imprime promedio normal y devuelve 98\n;; (track-glucose 105) --&gt; Acumula, calcula nuevo promedio y evalúa alerta\n\nNota Clínica: Gracias al uso del let externo que envuelve al lambda, logramos un almacenamiento privado y persistente que emula perfectamente la historia clínica longitudinal del paciente sin contaminar el entorno global.\n\n\n\n\nAquí estructuramos el reconocedor de sintaxis (syntax-procs) y el preprocesador utilizando la técnica de Quasiquotation (backquote ` y unquote ,), inspirada en herramientas como Pollen, para inyectar variables de forma limpia y legible dentro de las plantillas de expresiones lógicas.\n#lang racket\n(require rackunit)\n(provide preprocess-nhanes metabolic-pred?)\n\n;; ;;;;;;;;;;; syntax-procs ;;;;;;;;;;;;;\n\n(define (metabolic-pred? pred)\n  (and (list? pred)\n       (= (length pred) 2)\n       (eq? (first pred) 'obese-metabolic?)))\n\n;; ;;;;;;;;;;; preprocess ;;;;;;;;;;;;;\n\n(define (preprocess-nhanes exp)\n  (cond \n    ;; Si detectamos la consulta azucarada, usamos quasiquote y unquote (`, patient`)\n    [(metabolic-pred? exp)\n     (let ((patient (cadr exp)))\n       `(and (&gt;= (imc ,patient) 30)\n             (&gt;= (waist-circumference ,patient) 102)))]\n    [else exp]))\n\n;; ;;;;;;;;;;; Test Suite ;;;;;;;;;;;;;\n\n(check-equal? (preprocess-nhanes '(obese-metabolic? patient-42))\n              '(and (&gt;= (imc patient-42) 30)\n                    (&gt;= (waist-circumference patient-42) 102)))\n\n(check-equal? (preprocess-nhanes 'patient-01) \n              'patient-01)\n\n(check-equal? (preprocess-nhanes '(and (&gt;= (imc patient-99) 25)\n                                     (&gt;= (bp patient-99) 140)))\n              '(and (&gt;= (imc patient-99) 25) (&gt;= (bp patient-99) 140)))\n\nTruco de Arquitectura: El uso de ` y ,patient nos evita tener que anidar llamadas verbosas a la función list, permitiendo maquetar plantillas de reglas lógicas idénticas a la forma en la que conceptualizamos las consultas a nuestro futuro motor Datalog."
+  },
+  {
+    "objectID": "files/others/exercises_solution.html#ejercicio-1-el-acumulador-de-glucosa-histórico",
+    "href": "files/others/exercises_solution.html#ejercicio-1-el-acumulador-de-glucosa-histórico",
+    "title": "Sesión 26: Soluciones de Ejercicios - Intérpretes y Preprocesadores Clínicos",
+    "section": "",
+    "text": "Para evitar sobrescribir el valor del paciente en cada consulta y mantener un expediente acumulativo real (como vimos en el ejemplo de la función add con memoria), utilizamos un estado persistente que rastrea la suma acumulada de glucosa y el número total de mediciones.\n#lang racket\n(require \"display-line.rkt\")\n(provide track-glucose)\n\n(define track-glucose\n  (let ((glucose-sum 0)\n        (count 0))\n    (lambda args\n      (let ((result (apply + args)))\n        (set! glucose-sum (+ glucose-sum result))\n        (set! count (+ count (length args)))\n        (let ((promedio (/ glucose-sum count)))\n          (if (&lt;= promedio 100)\n              (display-line \"... promedio de glucosa normal:\" promedio)\n              (display-line \"... ¡Alerta, promedio de glicosa alto!\" promedio))\n          promedio)))))\n\n;; Pruebas de uso:\n;; (track-glucose 98)  --&gt; Imprime promedio normal y devuelve 98\n;; (track-glucose 105) --&gt; Acumula, calcula nuevo promedio y evalúa alerta\n\nNota Clínica: Gracias al uso del let externo que envuelve al lambda, logramos un almacenamiento privado y persistente que emula perfectamente la historia clínica longitudinal del paciente sin contaminar el entorno global."
+  },
+  {
+    "objectID": "files/others/exercises_solution.html#ejercicio-2-diseño-del-preprocesador-de-consultas-nhanes-y-uso-de-quasiquote",
+    "href": "files/others/exercises_solution.html#ejercicio-2-diseño-del-preprocesador-de-consultas-nhanes-y-uso-de-quasiquote",
+    "title": "Sesión 26: Soluciones de Ejercicios - Intérpretes y Preprocesadores Clínicos",
+    "section": "",
+    "text": "Aquí estructuramos el reconocedor de sintaxis (syntax-procs) y el preprocesador utilizando la técnica de Quasiquotation (backquote ` y unquote ,), inspirada en herramientas como Pollen, para inyectar variables de forma limpia y legible dentro de las plantillas de expresiones lógicas.\n#lang racket\n(require rackunit)\n(provide preprocess-nhanes metabolic-pred?)\n\n;; ;;;;;;;;;;; syntax-procs ;;;;;;;;;;;;;\n\n(define (metabolic-pred? pred)\n  (and (list? pred)\n       (= (length pred) 2)\n       (eq? (first pred) 'obese-metabolic?)))\n\n;; ;;;;;;;;;;; preprocess ;;;;;;;;;;;;;\n\n(define (preprocess-nhanes exp)\n  (cond \n    ;; Si detectamos la consulta azucarada, usamos quasiquote y unquote (`, patient`)\n    [(metabolic-pred? exp)\n     (let ((patient (cadr exp)))\n       `(and (&gt;= (imc ,patient) 30)\n             (&gt;= (waist-circumference ,patient) 102)))]\n    [else exp]))\n\n;; ;;;;;;;;;;; Test Suite ;;;;;;;;;;;;;\n\n(check-equal? (preprocess-nhanes '(obese-metabolic? patient-42))\n              '(and (&gt;= (imc patient-42) 30)\n                    (&gt;= (waist-circumference patient-42) 102)))\n\n(check-equal? (preprocess-nhanes 'patient-01) \n              'patient-01)\n\n(check-equal? (preprocess-nhanes '(and (&gt;= (imc patient-99) 25)\n                                     (&gt;= (bp patient-99) 140)))\n              '(and (&gt;= (imc patient-99) 25) (&gt;= (bp patient-99) 140)))\n\nTruco de Arquitectura: El uso de ` y ,patient nos evita tener que anidar llamadas verbosas a la función list, permitiendo maquetar plantillas de reglas lógicas idénticas a la forma en la que conceptualizamos las consultas a nuestro futuro motor Datalog."
+  },
+  {
+    "objectID": "analysis/c26.html#respuesta-a-los-ejercicios-prácticos",
+    "href": "analysis/c26.html#respuesta-a-los-ejercicios-prácticos",
+    "title": "26. Construyendo un Intérprete",
+    "section": "Respuesta a los Ejercicios Prácticos:",
+    "text": "Respuesta a los Ejercicios Prácticos:\nEn esta sección aplicamos los conceptos de clausuras con estado (closures) y transformación sintáctica (preprocesadores) a escenarios de análisis de datos clínicos y epidemiológicos (NHANES).\n\nEjercicio 1: El Acumulador de Glucosa Histórico\nPara evitar sobrescribir el valor del paciente en cada consulta y mantener un expediente acumulativo real (como vimos en el ejemplo de la función add con memoria), utilizamos un estado persistente que rastrea la suma acumulada de glucosa y el número total de mediciones.\n#lang racket\n(require \"display-line.rkt\")\n(provide track-glucose)\n\n(define track-glucose\n  (let ((glucose-sum 0)\n        (count 0))\n    (lambda args\n      (let ((result (apply + args)))\n        (set! glucose-sum (+ glucose-sum result))\n        (set! count (+ count (length args)))\n        (let ((promedio (/ glucose-sum count)))\n          (if (&lt;= promedio 100)\n              (display-line \"... promedio de glucosa normal:\" promedio)\n              (display-line \"... ¡Alerta, promedio de glicosa alto!\" promedio))\n          promedio)))))\n\n;; Pruebas de uso:\n;; (track-glucose 98)  --&gt; Imprime promedio normal y devuelve 98\n;; (track-glucose 105) --&gt; Acumula, calcula nuevo promedio y evalúa alerta\n\nNota Clínica: Gracias al uso del let externo que envuelve al lambda, logramos un almacenamiento privado y persistente que emula perfectamente la historia clínica longitudinal del paciente sin contaminar el entorno global.\n\n\n\nEjercicio 2: Diseño del Preprocesador de Consultas NHANES y Uso de Quasiquote\nAquí estructuramos el reconocedor de sintaxis (syntax-procs) y el preprocesador utilizando la técnica de Quasiquotation (backquote ` y unquote ,), inspirada en herramientas como Pollen, para inyectar variables de forma limpia y legible dentro de las plantillas de expresiones lógicas.\n#lang racket\n(require rackunit)\n(provide preprocess-nhanes metabolic-pred?)\n\n;; ;;;;;;;;;;; syntax-procs ;;;;;;;;;;;;;\n\n(define (metabolic-pred? pred)\n  (and (list? pred)\n       (= (length pred) 2)\n       (eq? (first pred) 'obese-metabolic?)))\n\n;; ;;;;;;;;;;; preprocess ;;;;;;;;;;;;;\n\n(define (preprocess-nhanes exp)\n  (cond \n    ;; Si detectamos la consulta azucarada, usamos quasiquote y unquote (`, patient`)\n    [(metabolic-pred? exp)\n     (let ((patient (cadr exp)))\n       `(and (&gt;= (imc ,patient) 30)\n             (&gt;= (waist-circumference ,patient) 102)))]\n    [else exp]))\n\n;; ;;;;;;;;;;; Test Suite ;;;;;;;;;;;;;\n\n(check-equal? (preprocess-nhanes '(obese-metabolic? patient-42))\n              '(and (&gt;= (imc patient-42) 30)\n                    (&gt;= (waist-circumference patient-42) 102)))\n\n(check-equal? (preprocess-nhanes 'patient-01) \n              'patient-01)\n\n(check-equal? (preprocess-nhanes '(and (&gt;= (imc patient-99) 25)\n                                     (&gt;= (bp patient-99) 140)))\n              '(and (&gt;= (imc patient-99) 25) (&gt;= (bp patient-99) 140)))\n\nTruco de Arquitectura: El uso de ` y ,patient nos evita tener que anidar llamadas verbosas a la función list, permitiendo maquetar plantillas de reglas lógicas idénticas a la forma en la que conceptualizamos las consultas a nuestro futuro motor Datalog.",
+    "crumbs": [
+      "Inicio",
+      "PARTE IV — ABSTRACCIÓN DE DATOS.",
+      "26. Construyendo un Intérprete"
+    ]
   }
 ]

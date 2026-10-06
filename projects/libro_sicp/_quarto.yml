@@ -66,6 +66,7 @@ website:
         - analysis/c23-1-taller.qmd
         - analysis/c24.qmd
         - analysis/c25.qmd
+        - analysis/c26.qmd
       #- section: "PARTE IV — ABSTRACCIÓN DE DATOS."
         #href: analysis/m04.qmd
         #contents: 

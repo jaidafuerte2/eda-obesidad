@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Dr.&nbsp;Consultor">
 
-<title>1. Una Introducción Médica al Estudio de los Lenguajes de Programación – Semántica en Acción.</title>
+<title>Sesión 26: Soluciones de Ejercicios - Intérpretes y Preprocesadores Clínicos – Semántica en Acción.</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,25 +59,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../favicon.ico" rel="icon">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-9efd1a19f0673d5f394fb4b19d557e1c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -144,7 +145,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Semántica en Acción.</span>
     </a>
   </div>
@@ -155,15 +156,15 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../index.html" aria-current="page"> 
+    <a class="nav-link active" href="../../index.html" aria-current="page"> 
 <span class="menu-text">Inicio</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../analysis/c00_sobre_el_autor.html"> 
+    <a class="nav-link" href="../../analysis/c00_sobre_el_autor.html"> 
 <span class="menu-text">Sobre el autor</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../analysis/c00_proyectos.html"> 
+    <a class="nav-link" href="../../analysis/c00_proyectos.html"> 
 <span class="menu-text">Proyectos</span></a>
   </li>  
 </ul>
@@ -194,7 +195,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">PARTE I — INTRODUCCIÓN A RACKET Y LA PROGRAMACIÓN FUNCIONAL.</a></li><li class="breadcrumb-item"><a href="../analysis/c01.html">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Sesión 26: Soluciones de Ejercicios - Intérpretes y Preprocesadores Clínicos</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -208,19 +209,19 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Semántica en Acción - Paradigmas de Programación, Ejemplos Médicos y Construcción de un Pequeño Motor Semántico</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c00_prefacio.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Prefacio</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c00_sobre_el_autor.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sobre el autor</span></a>
   </div>
 </li>
@@ -235,43 +236,43 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c01.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../analysis/c01.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c02.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c02.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">2. El Diagnóstico de Racket (Aprender un Nuevo Lenguaje) Programación</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c03.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c03.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">3. Más Racket Primitivo — El Triaje del Lenguaje</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c04.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c04.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">4. Estructuras de Datos en Racket</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c05.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c05.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">5. Funciones en Racket: Abstracción de Comportamiento para Análisis de Datos</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c06.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c06.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">6. Funciones de Orden Superior y Motores Semánticos</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c07.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c07.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">7. Pensar Funcionalmente – El Pipeline de Datos Clínicos</span></a>
   </div>
 </li>
@@ -288,49 +289,49 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c08.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c08.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">8. Definiciones Inductivas de Datos y el Genoma de los Datos Clínicos</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c09.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c09.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">9. El Algoritmo Clínico de la Recursión Estructural</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c10.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c10.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">10. Patrones Recursivos Avanzados — Procedimientos Interfaz, <span class="math inline">\(s\)</span>-lists y Recursión Mutual</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c11.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c11.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">11. Funciones Recursivas y Bucles — El Arte de Procesar Datos sin Agotar la Pila</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c12.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c12.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">12. Recursión Eficiente y la Anatomía de un Minilenguaje</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c13.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c13.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">13. Análisis Estático de Variables: El alcance de un Expediente Clínico</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c14.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c14.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">14. De los Datos al Motor Lógico — Creando un Intérprete Evaluador</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c15.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c15.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">15. Repaso de Programación Recursiva y Análisis Sintáctico</span></a>
   </div>
 </li>
@@ -347,37 +348,37 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c16.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c16.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">16. Abstracción Sintáctica</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c17.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c17.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">17. Abstracción Sintáctica y Variables Locales</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c18.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c18.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">18. Referencias de Variables, Alcance (Scope) y Direcciones Léxicas</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c19.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c19.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">19. Automatizando la Dirección Léxica (De Nombres a Coordenadas de Servidor)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c20.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c20.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">20. Cálculo de Direcciones Léxicas y Optimización del Entorno</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c21.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c21.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">21. Creando Nueva Sintaxis</span></a>
   </div>
 </li>
@@ -394,37 +395,37 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c22.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c22.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">22. Abstracción de Datos y Variedad</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c23.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c23.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">23. El tipo de dato abstracto de función finita</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c23-1-taller.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c23-1-taller.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Taller Práctico. Diseñando un Mini-Motor Datalog Clínico</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c24.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c24.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">24. Programas con Estado y Mutabilidad</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c25.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c25.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">25. Implementando Objetos con Closures</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../analysis/c26.html" class="sidebar-item-text sidebar-link">
+  <a href="../../analysis/c26.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">26. Construyendo un Intérprete</span></a>
   </div>
 </li>
@@ -440,22 +441,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#cómo-se-estudia-un-lenguaje-de-programación-sin-morir-en-la-torre-de-babel" id="toc-cómo-se-estudia-un-lenguaje-de-programación-sin-morir-en-la-torre-de-babel" class="nav-link active" data-scroll-target="#cómo-se-estudia-un-lenguaje-de-programación-sin-morir-en-la-torre-de-babel">1. ¿Cómo se Estudia un Lenguaje de Programación? (Sin morir en la Torre de Babel)</a></li>
-  <li><a href="#hacia-una-ciencia-de-los-lenguajes-de-linneo-a-dr.-racket" id="toc-hacia-una-ciencia-de-los-lenguajes-de-linneo-a-dr.-racket" class="nav-link" data-scroll-target="#hacia-una-ciencia-de-los-lenguajes-de-linneo-a-dr.-racket">2. Hacia una Ciencia de los Lenguajes (De Linneo a Dr.&nbsp;Racket)</a></li>
-  <li><a href="#el-lenguaje-como-un-marco-de-trabajo-para-procesos" id="toc-el-lenguaje-como-un-marco-de-trabajo-para-procesos" class="nav-link" data-scroll-target="#el-lenguaje-como-un-marco-de-trabajo-para-procesos">3. El Lenguaje como un Marco de Trabajo para Procesos</a></li>
-  <li><a href="#el-enfoque-funcional-tu-primer-tratamiento-sin-efectos-secundarios" id="toc-el-enfoque-funcional-tu-primer-tratamiento-sin-efectos-secundarios" class="nav-link" data-scroll-target="#el-enfoque-funcional-tu-primer-tratamiento-sin-efectos-secundarios">4. El Enfoque Funcional: Tu Primer “Tratamiento” Sin Efectos Secundarios</a></li>
-  <li><a href="#conclusión-y-siguiente-consulta" id="toc-conclusión-y-siguiente-consulta" class="nav-link" data-scroll-target="#conclusión-y-siguiente-consulta">5. Conclusión y Siguiente Consulta</a></li>
-  <li><a href="#diagnóstico-práctico-sección-de-ejercicios" id="toc-diagnóstico-práctico-sección-de-ejercicios" class="nav-link" data-scroll-target="#diagnóstico-práctico-sección-de-ejercicios">6. Diagnóstico Práctico (Sección de Ejercicios)</a>
+  <li><a href="#ejercicios-prácticos-del-racket-al-consultorio-metabólico" id="toc-ejercicios-prácticos-del-racket-al-consultorio-metabólico" class="nav-link active" data-scroll-target="#ejercicios-prácticos-del-racket-al-consultorio-metabólico">Ejercicios Prácticos: Del Racket al Consultorio Metabólico</a>
   <ul class="collapse">
-  <li><a href="#escenario-1-el-historial-clínico-contaminado-análisis-de-paradigmas" id="toc-escenario-1-el-historial-clínico-contaminado-análisis-de-paradigmas" class="nav-link" data-scroll-target="#escenario-1-el-historial-clínico-contaminado-análisis-de-paradigmas">Escenario 1: El Historial Clínico Contaminado (Análisis de Paradigmas)</a></li>
-  <li><a href="#escenario-2-desazucarando-la-evaluación-de-obesidad" id="toc-escenario-2-desazucarando-la-evaluación-de-obesidad" class="nav-link" data-scroll-target="#escenario-2-desazucarando-la-evaluación-de-obesidad">Escenario 2: Desazucarando la Evaluación de Obesidad</a></li>
-  <li><a href="#escenario-3-la-anatomía-de-racket-homework-0" id="toc-escenario-3-la-anatomía-de-racket-homework-0" class="nav-link" data-scroll-target="#escenario-3-la-anatomía-de-racket-homework-0">Escenario 3: La Anatomía de Racket (Homework 0)</a></li>
-  </ul></li>
-  <li><a href="#resolviendo-los-ejercicios" id="toc-resolviendo-los-ejercicios" class="nav-link" data-scroll-target="#resolviendo-los-ejercicios">Resolviendo los ejercicios</a>
-  <ul class="collapse">
-  <li><a href="#solución-al-ejercicio-1-el-historial-clínico-contaminado" id="toc-solución-al-ejercicio-1-el-historial-clínico-contaminado" class="nav-link" data-scroll-target="#solución-al-ejercicio-1-el-historial-clínico-contaminado">Solución al Ejercicio 1: El Historial Clínico Contaminado</a></li>
-  <li><a href="#solución-al-ejercicio-2-desazucarando-la-evaluación-de-obesidad" id="toc-solución-al-ejercicio-2-desazucarando-la-evaluación-de-obesidad" class="nav-link" data-scroll-target="#solución-al-ejercicio-2-desazucarando-la-evaluación-de-obesidad">Solución al Ejercicio 2: Desazucarando la Evaluación de Obesidad</a></li>
-  <li><a href="#solución-al-ejercicio-3-la-anatomía-de-racket-homework-0" id="toc-solución-al-ejercicio-3-la-anatomía-de-racket-homework-0" class="nav-link" data-scroll-target="#solución-al-ejercicio-3-la-anatomía-de-racket-homework-0">Solución al Ejercicio 3: La Anatomía de Racket (Homework 0)</a></li>
+  <li><a href="#ejercicio-1-el-acumulador-de-glucosa-histórico" id="toc-ejercicio-1-el-acumulador-de-glucosa-histórico" class="nav-link" data-scroll-target="#ejercicio-1-el-acumulador-de-glucosa-histórico">Ejercicio 1: El Acumulador de Glucosa Histórico</a></li>
+  <li><a href="#ejercicio-2-diseño-del-preprocesador-de-consultas-nhanes-y-uso-de-quasiquote" id="toc-ejercicio-2-diseño-del-preprocesador-de-consultas-nhanes-y-uso-de-quasiquote" class="nav-link" data-scroll-target="#ejercicio-2-diseño-del-preprocesador-de-consultas-nhanes-y-uso-de-quasiquote">Ejercicio 2: Diseño del Preprocesador de Consultas NHANES y Uso de Quasiquote</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -463,15 +452,21 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../analysis/c01.html">PARTE I — INTRODUCCIÓN A RACKET Y LA PROGRAMACIÓN FUNCIONAL.</a></li><li class="breadcrumb-item"><a href="../analysis/c01.html">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">1. Una Introducción Médica al Estudio de los Lenguajes de Programación</h1>
+<h1 class="title">Sesión 26: Soluciones de Ejercicios - Intérpretes y Preprocesadores Clínicos</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Consultor </p>
+          </div>
+  </div>
     
   
     
@@ -482,123 +477,76 @@ window.Quarto = {
 </header>
 
 
-<section id="cómo-se-estudia-un-lenguaje-de-programación-sin-morir-en-la-torre-de-babel" class="level2">
-<h2 class="anchored" data-anchor-id="cómo-se-estudia-un-lenguaje-de-programación-sin-morir-en-la-torre-de-babel">1. ¿Cómo se Estudia un Lenguaje de Programación? (Sin morir en la Torre de Babel)</h2>
-<p>Cuando decides adentrarte en el mundo de los lenguajes de programación, es fácil abrumarse ante la cantidad de nombres que flotan en el ambiente: Python, R, Java, C++, SQL, Racket. La primera tentación (y el enfoque de muchos cursos tradicionales) es intentar aprender una docena de lenguajes para “compararlos”.</p>
-<p>Aprender Java, luego C# y después C++ para entender la programación es el equivalente a estudiar la gestión de salud pública visitando tres hospitales idénticos que solo cambian el color de las paredes y el logotipo de las batas. Te vas a comer una cantidad brutal de detalles administrativos irrelevantes (sintaxis, librerías, burocracia del compilador) sin aprender nada nuevo sobre cómo atender al paciente (el proceso computacional).</p>
-<p>El verdadero problema radica en las etiquetas que usamos en los paneles de discusión:</p>
-<ul>
-<li><p>¿Es de alto nivel o bajo nivel?</p></li>
-<li><p>¿Es procedimental, orientado a objetos (OO), funcional o declarativo?</p></li>
-<li><p>¿Es un lenguaje de scripting o compilado?</p></li>
-</ul>
-<p>Si intentas clasificar lenguajes comerciales como Python, JavaScript o tu querido R bajo estas etiquetas fijas, vas a terminar con un dolor de cabeza metodológico.</p>
-<p><strong>Nota de gestión</strong>: Los lenguajes del mundo real no son “puros”; son auténticos <strong>monstruos multi-paradigma (BLOBs de características)</strong>. Tienen un trozo de objetos, un injerto funcional y una base procedimental. Para un analista de datos, esto es como un paciente con síndrome metabólico crónico: una amalgama de síntomas interconectados que no caben en una sola caja clínica.</p>
+<section id="ejercicios-prácticos-del-racket-al-consultorio-metabólico" class="level1">
+<h1>Ejercicios Prácticos: Del Racket al Consultorio Metabólico</h1>
+<p>En esta sección aplicamos los conceptos de clausuras con estado (<em>closures</em>) y transformación sintáctica (<em>preprocesadores</em>) a escenarios de análisis de datos clínicos y epidemiológicos (NHANES).</p>
+<section id="ejercicio-1-el-acumulador-de-glucosa-histórico" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicio-1-el-acumulador-de-glucosa-histórico">Ejercicio 1: El Acumulador de Glucosa Histórico</h2>
+<p>Para evitar sobrescribir el valor del paciente en cada consulta y mantener un expediente acumulativo real (como vimos en el ejemplo de la función <code>add</code> con memoria), utilizamos un estado persistente que rastrea la suma acumulada de glucosa y el número total de mediciones.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rkt code-with-copy"><code class="sourceCode racket"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> <span class="st">"display-line.rkt"</span><span class="op">)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> track-glucose<span class="op">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> track-glucose</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>glucose-sum <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span>count <span class="dv">0</span><span class="op">))</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span><span class="kw">lambda</span> args</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>result <span class="op">(</span><span class="kw">apply</span> <span class="op">+</span> args<span class="op">)))</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">set!</span> glucose-sum <span class="op">(+</span> glucose-sum result<span class="op">))</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">set!</span> count <span class="op">(+</span> count <span class="op">(</span><span class="kw">length</span> args<span class="op">)))</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>promedio <span class="op">(/</span> glucose-sum count<span class="op">)))</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>          <span class="op">(</span><span class="kw">if</span> <span class="op">(&lt;=</span> promedio <span class="dv">100</span><span class="op">)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span>display-line <span class="st">"... promedio de glucosa normal:"</span> promedio<span class="op">)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>              <span class="op">(</span>display-line <span class="st">"... ¡Alerta, promedio de glicosa alto!"</span> promedio<span class="op">))</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>          promedio<span class="op">)))))</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">;; Pruebas de uso:</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">;; (track-glucose 98)  --&gt; Imprime promedio normal y devuelve 98</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">;; (track-glucose 105) --&gt; Acumula, calcula nuevo promedio y evalúa alerta</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Nota Clínica:</strong> Gracias al uso del <code>let</code> externo que envuelve al <code>lambda</code>, logramos un almacenamiento privado y persistente que emula perfectamente la historia clínica longitudinal del paciente sin contaminar el entorno global.</p>
+</blockquote>
 </section>
-<section id="hacia-una-ciencia-de-los-lenguajes-de-linneo-a-dr.-racket" class="level2">
-<h2 class="anchored" data-anchor-id="hacia-una-ciencia-de-los-lenguajes-de-linneo-a-dr.-racket">2. Hacia una Ciencia de los Lenguajes (De Linneo a Dr.&nbsp;Racket)</h2>
-<p>En la ciencia tradicional, nos encanta meter cosas en cajas para registrar nuestro entendimiento del mundo:</p>
-<ol type="1">
-<li><p><strong>Carl Linneo</strong> creó la nomenclatura binomial para categorizar seres vivos (gracias a él dices Homo sapiens o Escherichia coli).</p></li>
-<li><p><strong>John Dalton</strong> nos dio la teoría atómica para identificar los bloques fundamentales de la materia.</p></li>
-<li><p><strong>Erwin Chargaff</strong> descubrió las reglas de composición de las bases nitrogenadas en el ADN (las reglas gramaticales de la biología).</p></li>
-</ol>
-<p>Los informáticos intentaron hacer lo mismo con los lenguajes de programación, pero con resultados bastante deficientes. Al no ponerse de acuerdo sobre cuáles son los “átomos” del software, crearon una taxonomía confusa. Tomemos de nuevo a Python: es procedimental, pero tiene clases (OO), sirve para hacer scripts de pegamento, es interpretado pero se compila just-in-time… Un caos organizativo.</p>
-<p>Para construir tu <strong>motor semántico y lógico (Datalog)</strong> sobre los datos de NHANES, no necesitamos estudiar el “BLOB” entero de un lenguaje comercial. Lo que haremos en este curso es aplicar un proceso clínico de aislamiento: el <strong>DESUGAR</strong> (desazucarar).</p>
-<pre><code>   +-----------------------------------+
-   |    BLOB de un Lenguaje Comercial  | (Python, R, JavaScript...)
-   +-----------------------------------+
-                     |
-                     v  [DESUGAR] (Quitar azúcar sintáctica y ruido)
-   +-----------------------------------+
-   |         NÚCLEO ESENCIAL          | (Bloques de construcción puros)
-   +-----------------------------------+
-   </code></pre>
-<p>Al remover la “azúcar sintáctica” (esos atajos visuales y características redundantes que ponen los diseñadores para que el código se vea bonito), nos quedamos con el núcleo esencial: un conjunto mínimo de bloques de construcción (átomos) y reglas de composición. Si entendemos estos átomos (como las funciones de primera clase o la inmutabilidad), podrás diseñar las reglas de tu motor lógico sin importar el lenguaje final.</p>
-</section>
-<section id="el-lenguaje-como-un-marco-de-trabajo-para-procesos" class="level2">
-<h2 class="anchored" data-anchor-id="el-lenguaje-como-un-marco-de-trabajo-para-procesos">3. El Lenguaje como un Marco de Trabajo para Procesos</h2>
-<p>Abelson y Sussman (los autores de SICP) dejaron caer una definición dorada, desprovista de la matemática densa que nos fastidia:</p>
-<p>“Un lenguaje de programación es un marco de trabajo para organizar ideas sobre procesos.”</p>
-<p>A diferencia de un modelo estadístico estático en un papel, lo fascinante de la computación es que <strong>nuestros modelos están vivos</strong>. Cuando escribes código para analizar la prevalencia de la obesidad, estás creando un proceso dinámico que cobra vida al ejecutarse.</p>
-<p>¿Y qué es un <strong>paradigma</strong>? Olvídate de la definición filosófica corporativa. Piensa en él simplemente como un <strong>estilo o un patrón de práctica médica</strong>.</p>
-<p>Es exactamente igual a los lenguajes humanos. Si hablas español, te costará menos aprender italiano que mandarín, porque el italiano comparte la misma “familia” e historia cultural. En programación, si dominas la manipulación de vectores y <em>data frames</em> en R, saltar a un enfoque declarativo y lógico (como SQL o Datalog) te resultará mucho más natural que pelearte con la gestión de memoria explícita de C++. El paradigma es la cultura del lenguaje.</p>
-</section>
-<section id="el-enfoque-funcional-tu-primer-tratamiento-sin-efectos-secundarios" class="level2">
-<h2 class="anchored" data-anchor-id="el-enfoque-funcional-tu-primer-tratamiento-sin-efectos-secundarios">4. El Enfoque Funcional: Tu Primer “Tratamiento” Sin Efectos Secundarios</h2>
-<p>Como analista en NHANES, sabes perfectamente lo que ocurre cuando alguien altera la base de datos original a mitad de un script de análisis en R: las variables se contaminan, los resultados de la regresión se vuelven locos y pierdes la trazabilidad del estudio.</p>
-<p>En la programación tradicional (procedimental/OO), los programadores sufren de una adicción peligrosa: la <strong>mutación de datos</strong> (cambiar el valor de una variable global de forma destructiva) y la dependencia del <strong>estado externo</strong>. Mira este flujo problemático:</p>
-<pre class="text"><code># Malas prácticas analíticas (Efectos secundarios)
-IMC_PACIENTE &lt;- 32.5
-
-calcular_riesgo &lt;- function() {
-  # Depende de una variable global y altera el estado externo
-  if (IMC_PACIENTE &gt; 30) {
-    print("Alerta: Obesidad detectada")
-  }
-}</code></pre>
-<p>La función <code>calcular_riesgo</code> tiene una “entrada oculta” (<code>IMC_PACIENTE</code>) y no retorna un valor limpio, sino que altera la consola. Si la variable global cambia en otro lugar del código, tu función se rompe sin que te des cuenta.</p>
-<p>El <strong>paradigma funcional</strong> que estudiaremos usando Racket nos obliga a adoptar una disciplina clínica estricta basada en dos reglas de oro:</p>
-<ol type="1">
-<li><p><strong>No mutarás datos</strong>: Los datos no se modifican de forma destructiva; se transforman en nuevos datos.</p></li>
-<li><p><strong>No dependerás del estado externo</strong>: Las funciones solo saben lo que entra explícitamente por sus parámetros.</p></li>
-</ol>
-<p>Una función pura se comporta como un laboratorio clínico automatizado bien calibrado:</p>
-<pre class="text"><code>   [ Datos de Entrada ] ---&gt; ( Proceso Aislado ) ---&gt; [ Valor de Retorno ]
-(Muestra de sangre/Filtro)                      (Resultado de laboratorio limpio)</code></pre>
-<p>Al remover la mutación y el estado externo, cada bloque de código se vuelve autónomo. Es predecible, es fácil de testear y, lo más importante para ti: <strong>es el cimiento perfecto para un motor semántico basado en lógica y reglas</strong>, donde necesitas tener la certeza absoluta de que una regla (<code>A -&gt; B</code>) no va a cambiar de significado a mitad de la ejecución debido a un efecto secundario inesperado.</p>
-</section>
-<section id="conclusión-y-siguiente-consulta" class="level2">
-<h2 class="anchored" data-anchor-id="conclusión-y-siguiente-consulta">5. Conclusión y Siguiente Consulta</h2>
-<p>Este libro usa <strong>Racket</strong> no porque vayamos a construir aplicaciones web comerciales en él, sino porque es el bisturí perfecto para abrir el tórax de los lenguajes y estudiar sus órganos vitales. Al principio, su sintaxis llena de paréntesis te parecerá extraña, pero confía en el proceso. Hacer un esfuerzo honesto por aprender este estilo te va a abrir la mente tanto como aprender a volar un avión abre la perspectiva de alguien que solo sabe conducir automóviles.</p>
-</section>
-<section id="diagnóstico-práctico-sección-de-ejercicios" class="level2">
-<h2 class="anchored" data-anchor-id="diagnóstico-práctico-sección-de-ejercicios">6. Diagnóstico Práctico (Sección de Ejercicios)</h2>
-<p>Para consolidar el ojo clínico de esta sesión, resuelve los siguientes escenarios aplicados.</p>
-<section id="escenario-1-el-historial-clínico-contaminado-análisis-de-paradigmas" class="level3">
-<h3 class="anchored" data-anchor-id="escenario-1-el-historial-clínico-contaminado-análisis-de-paradigmas">Escenario 1: El Historial Clínico Contaminado (Análisis de Paradigmas)</h3>
-<p>Estás revisando un script en R diseñado por un colega para filtrar pacientes de la encuesta NHANES con hipertensión arterial sistólica <span class="math inline">\(&gt; 140\)</span>. El código utiliza un bucle <code>for</code> global que va modificando una variable externa <code>conteo_hipertensos &lt;- conteo_hipertensos + 1</code> a medida que recorre las filas.</p>
-<ul>
-<li><strong>Pregunta</strong>: Explica, utilizando los conceptos del capítulo, por qué este enfoque procedimental genera “efectos secundarios” y cómo un enfoque funcional (como el uso de <code>filter()</code> en <code>tidyverse</code> o funciones puras en Racket) reduce el riesgo de errores en el análisis epidemiológico.</li>
-</ul>
-</section>
-<section id="escenario-2-desazucarando-la-evaluación-de-obesidad" class="level3">
-<h3 class="anchored" data-anchor-id="escenario-2-desazucarando-la-evaluación-de-obesidad">Escenario 2: Desazucarando la Evaluación de Obesidad</h3>
-<p>En muchos lenguajes, la estructura condicional se escribe con una sintaxis compleja llena de llaves o palabras clave (<code>if-else</code>). Imagina que en nuestro núcleo esencial de diseño de lenguajes, la única regla sintáctica válida es que <strong>todo debe ser una llamada a una función</strong> con el formato (<code>operación argumento1 argumento2 ...</code>).</p>
-<ul>
-<li><strong>Reto de Diseño</strong>: Si tuvieras que reescribir la regla lógica “Si el IMC es mayor a 30, clasificar como Obesidad, de lo contrario clasificar como Normal” siguiendo ese formato estricto de función (sin usar la palabra <code>if</code> tradicional), ¿cómo estructurarías los elementos visualmente? (Tip: Piensa en cómo <em>The Little Schemer</em> organiza sus preguntas).</li>
-</ul>
-</section>
-<section id="escenario-3-la-anatomía-de-racket-homework-0" class="level3">
-<h3 class="anchored" data-anchor-id="escenario-3-la-anatomía-de-racket-homework-0">Escenario 3: La Anatomía de Racket (Homework 0)</h3>
-<p>Basándote en tus lecturas iniciales de la documentación de Racket y la sesión:</p>
-<ol type="1">
-<li><p>Redacta una síntesis corta (tres frases) que defina qué es Racket, cuáles son sus rasgos principales y en qué se diferencia conceptualmente de un lenguaje de análisis de datos puro como R.</p></li>
-<li><p>Plantea una pregunta crítica sobre la <strong>semántica</strong> (el comportamiento en ejecución) de un lenguaje que prohíbe la mutación de datos cuando se trabaja con bases de datos masivas como NHANES.</p></li>
-</ol>
-</section>
-</section>
-<section id="resolviendo-los-ejercicios" class="level2">
-<h2 class="anchored" data-anchor-id="resolviendo-los-ejercicios">Resolviendo los ejercicios</h2>
-<section id="solución-al-ejercicio-1-el-historial-clínico-contaminado" class="level3">
-<h3 class="anchored" data-anchor-id="solución-al-ejercicio-1-el-historial-clínico-contaminado">Solución al Ejercicio 1: El Historial Clínico Contaminado</h3>
-<p>El enfoque procedimental basado en un bucle <code>for</code> y una variable global mutable <code>conteo_hipertensos</code> genera un <strong>efecto secundario</strong> porque el resultado de la función depende del momento exacto en que se ejecuta y del estado previo de la memoria. Si otra función del script altera esa variable global, el análisis epidemiológico arrojará un falso positivo o un falso negativo.</p>
-<p>El enfoque funcional (usar <code>filter</code> en R o Racket) elimina la mutación. En lugar de “ir sumando de uno en uno”, el paradigma funcional toma el set de datos original de NHANES como una entrada inmutable y genera un <em>nuevo</em> set de datos que contiene únicamente a los pacientes que cumplen la regla. No hay variables globales que puedan contaminarse.</p>
-</section>
-<section id="solución-al-ejercicio-2-desazucarando-la-evaluación-de-obesidad" class="level3">
-<h3 class="anchored" data-anchor-id="solución-al-ejercicio-2-desazucarando-la-evaluación-de-obesidad">Solución al Ejercicio 2: Desazucarando la Evaluación de Obesidad</h3>
-<p>Si eliminamos la palabra clave <code>if</code> tradicional y nos obligamos a que todo sea una función con formato de prefijo <code>(operación argumento1 argumento2)</code>, la evaluación lógica se estructuraría como una expresión de evaluación pura:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode racket code-with-copy"><code class="sourceCode racket"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">cond</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">((&gt;</span> imc <span class="dv">30</span><span class="op">)</span> <span class="st">"Obesidad"</span><span class="op">)</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">else</span> <span class="st">"Normal"</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>En este diseño, <code>cond</code> no es un interruptor procedimental; es una función que recibe parejas de “Pregunta-Respuesta” (predicados). El motor evalúa de forma lógica la primera pregunta; si es verdadera, toda la expresión se transforma inmediatamente en el valor <code>"Obesidad"</code>, sin pasos intermedios ni asignaciones de variables de estado.</p>
-</section>
-<section id="solución-al-ejercicio-3-la-anatomía-de-racket-homework-0" class="level3">
-<h3 class="anchored" data-anchor-id="solución-al-ejercicio-3-la-anatomía-de-racket-homework-0">Solución al Ejercicio 3: La Anatomía de Racket (Homework 0)</h3>
-<ol type="1">
-<li><p><strong>Síntesis:</strong> Racket es un lenguaje de la familia Lisp/Scheme diseñado para explorar el diseño de sistemas mediante la creación de nuevos lenguajes y componentes. Sus rasgos principales son una sintaxis uniforme basada en expresiones entre paréntesis y un soporte nativo de primer nivel para el paradigma funcional. A diferencia de R, que nació especializado en el análisis estadístico y manipulación de data frames, Racket es un lenguaje de propósito general optimizado para construir procesadores de lenguajes, intérpretes y motores de reglas lógicas.</p></li>
-<li><p><strong>Pregunta Semántica sobre Datos Masivos:</strong> <em>Si el paradigma funcional prohíbe la mutación destructiva de datos y nos obliga a generar copias transformadas, ¿cómo gestiona la semántica de Racket la memoria ram al procesar millones de registros de la encuesta NHANES sin sufrir un colapso por duplicación de estructuras?</em></p></li>
-</ol>
+<section id="ejercicio-2-diseño-del-preprocesador-de-consultas-nhanes-y-uso-de-quasiquote" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicio-2-diseño-del-preprocesador-de-consultas-nhanes-y-uso-de-quasiquote">Ejercicio 2: Diseño del Preprocesador de Consultas NHANES y Uso de Quasiquote</h2>
+<p>Aquí estructuramos el reconocedor de sintaxis (<code>syntax-procs</code>) y el preprocesador utilizando la técnica de <strong>Quasiquotation</strong> (backquote <code>`</code> y unquote <code>,</code>), inspirada en herramientas como <em>Pollen</em>, para inyectar variables de forma limpia y legible dentro de las plantillas de expresiones lógicas.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rkt code-with-copy"><code class="sourceCode racket"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lang racket</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">require</span> rackunit<span class="op">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="kw">provide</span> preprocess-nhanes metabolic-pred?<span class="op">)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">;; ;;;;;;;;;;; syntax-procs ;;;;;;;;;;;;;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>metabolic-pred? pred<span class="op">)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">and</span> <span class="op">(</span><span class="kw">list?</span> pred<span class="op">)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>       <span class="op">(=</span> <span class="op">(</span><span class="kw">length</span> pred<span class="op">)</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>       <span class="op">(</span><span class="kw">eq?</span> <span class="op">(</span>first pred<span class="op">)</span> 'obese-metabolic?<span class="op">)))</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">;; ;;;;;;;;;;; preprocess ;;;;;;;;;;;;;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="ex">define</span><span class="fu"> </span><span class="op">(</span>preprocess-nhanes <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span><span class="kw">cond</span> </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">;; Si detectamos la consulta azucarada, usamos quasiquote y unquote (`, patient`)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">[(</span>metabolic-pred? <span class="kw">exp</span><span class="op">)</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>     <span class="op">(</span><span class="kw">let</span> <span class="op">((</span>patient <span class="op">(</span><span class="kw">cadr</span> <span class="kw">exp</span><span class="op">)))</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>       `<span class="op">(</span><span class="kw">and</span> <span class="op">(&gt;=</span> <span class="op">(</span>imc ,patient<span class="op">)</span> <span class="dv">30</span><span class="op">)</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>             <span class="op">(&gt;=</span> <span class="op">(</span>waist-circumference ,patient<span class="op">)</span> <span class="dv">102</span><span class="op">)))]</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">[</span><span class="kw">else</span> <span class="kw">exp</span><span class="op">]))</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">;; ;;;;;;;;;;; Test Suite ;;;;;;;;;;;;;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>preprocess-nhanes '<span class="op">(</span>obese-metabolic? patient-42<span class="op">))</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="kw">and</span> <span class="op">(&gt;=</span> <span class="op">(</span>imc patient-42<span class="op">)</span> <span class="dv">30</span><span class="op">)</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>                    <span class="op">(&gt;=</span> <span class="op">(</span>waist-circumference patient-42<span class="op">)</span> <span class="dv">102</span><span class="op">)))</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>preprocess-nhanes 'patient-01<span class="op">)</span> </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>              'patient-01<span class="op">)</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>check-equal? <span class="op">(</span>preprocess-nhanes '<span class="op">(</span><span class="kw">and</span> <span class="op">(&gt;=</span> <span class="op">(</span>imc patient-99<span class="op">)</span> <span class="dv">25</span><span class="op">)</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>                                     <span class="op">(&gt;=</span> <span class="op">(</span>bp patient-99<span class="op">)</span> <span class="dv">140</span><span class="op">)))</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>              '<span class="op">(</span><span class="kw">and</span> <span class="op">(&gt;=</span> <span class="op">(</span>imc patient-99<span class="op">)</span> <span class="dv">25</span><span class="op">)</span> <span class="op">(&gt;=</span> <span class="op">(</span>bp patient-99<span class="op">)</span> <span class="dv">140</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>Truco de Arquitectura:</strong> El uso de <code>`</code> y <code>,patient</code> nos evita tener que anidar llamadas verbosas a la función <code>list</code>, permitiendo maquetar plantillas de reglas lógicas idénticas a la forma en la que conceptualizamos las consultas a nuestro futuro motor Datalog.</p>
+</blockquote>
 
 
 </section>
